@@ -12,15 +12,15 @@ import PageTransition from "@/components/PageTransition";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { plan } = useSubscription();
-  const isElite = plan === "elite";
+  const isPremium = plan === "pro" || plan === "elite";
   const location = useLocation();
   const navigate = useNavigate();
   const showBack = location.pathname !== "/";
 
   return (
     <SidebarProvider>
-      <div className={`min-h-screen flex w-full animated-bg ${isElite ? "elite-theme" : ""}`}>
-        {isElite && <EliteBackground />}
+      <div className={`min-h-screen flex w-full animated-bg ${isPremium ? "elite-theme" : ""}`}>
+        {isPremium && <EliteBackground />}
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header
