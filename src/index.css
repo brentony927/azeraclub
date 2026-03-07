@@ -404,11 +404,14 @@
 .elite-theme .glass-card {
   backdrop-filter: blur(40px) saturate(1.4);
   -webkit-backdrop-filter: blur(40px) saturate(1.4);
-  border-color: hsl(42 20% 18% / 0.5) !important;
+  border-color: hsl(42 30% 70% / 0.3) !important;
   box-shadow:
     0 8px 32px -8px hsl(42 50% 56% / 0.08),
     inset 0 1px 0 0 hsl(42 50% 56% / 0.06) !important;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dark.elite-theme .glass-card {
+  border-color: hsl(42 20% 18% / 0.5) !important;
 }
 
 .elite-theme .glass-card-hover:hover {
@@ -453,19 +456,23 @@
 .elite-theme .elite-header {
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border-bottom: 1px solid hsl(42 20% 18% / 0.4);
+  border-bottom: 1px solid hsl(42 30% 70% / 0.3);
+  background: hsl(0 0% 100% / 0.7);
+}
+.dark.elite-theme .elite-header {
+  border-bottom-color: hsl(42 20% 18% / 0.4);
   background: hsl(0 0% 4% / 0.7);
 }
 
 /* ── Elite scrollbar ── */
-.elite-theme ::-webkit-scrollbar-track {
+.dark.elite-theme ::-webkit-scrollbar-track {
   background: hsl(0, 0%, 4%) !important;
 }
-.elite-theme ::-webkit-scrollbar-thumb {
+.dark.elite-theme ::-webkit-scrollbar-thumb {
   background: hsl(42, 20%, 18%) !important;
   box-shadow: inset 0 0 4px hsl(42 50% 56% / 0.15);
 }
-.elite-theme ::-webkit-scrollbar-thumb:hover {
+.dark.elite-theme ::-webkit-scrollbar-thumb:hover {
   background: hsl(42, 35%, 30%) !important;
   box-shadow: 0 0 8px hsl(42 50% 56% / 0.3);
 }
