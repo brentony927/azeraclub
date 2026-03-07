@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import azeraLogo from "@/assets/azera-logo.jpg";
 
 export default function Login() {
@@ -16,14 +16,25 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorState, setErrorState] = useState<"invalid_credentials" | null>(null);
+
+  const normalizedEmail = email.trim().toLowerCase();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorState(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
+    });
     setLoading(false);
     if (error) {
-      toast.error(error.message);
+      if (error.message.includes("Invalid login credentials")) {
+        setErrorState("invalid_credentials");
+      } else {
+        toast.error(error.message);
+      }
     } else {
       navigate("/");
     }
@@ -41,6 +52,22 @@ export default function Login() {
       redirect_uri: window.location.origin,
     });
     if (error) toast.error("Erro ao entrar com Apple");
+  };
+
+  const handleSendResetLink = async () => {
+    if (!normalizedEmail) {
+      toast.error("Preencha o campo de email primeiro.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Link de recuperação enviado! Verifique seu email.");
+      setErrorState(null);
+    }
   };
 
   return (
@@ -93,6 +120,44 @@ export default function Login() {
             <div className="flex-1 h-px bg-border/50" />
           </div>
 
+          {/* Error banner for invalid credentials */}
+          {errorState === "invalid_credentials" && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 space-y-3"
+            >
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-destructive">Email ou senha incorretos</p>
+                  <p className="text-xs text-muted-foreground">
+                    Se você criou a conta com Google ou Apple, use o botão correspondente acima. 
+                    Ou redefina sua senha abaixo.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={handleGoogleLogin}
+                >
+                  Tentar com Google
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={handleSendResetLink}
+                >
+                  Enviar link para redefinir senha
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
           {/* Email Form */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-2">
@@ -104,7 +169,7 @@ export default function Login() {
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setErrorState(null); }}
                   className="pl-10 h-11 bg-secondary/50 border-border/50"
                   required
                 />
@@ -119,7 +184,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setErrorState(null); }}
                   className="pl-10 pr-10 h-11 bg-secondary/50 border-border/50"
                   required
                 />
