@@ -9,6 +9,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import Layout from "@/components/Layout";
 import UpgradeCelebration from "@/components/UpgradeCelebration";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import HomeRoute from "@/components/HomeRoute";
 import Landing from "./pages/Landing";
 import AI from "./pages/AI";
 import Experiences from "./pages/Experiences";
@@ -61,7 +62,7 @@ const App = () => (
             <Route path="/cookies" element={<CookiePolicy />} />
 
             {/* Protected routes */}
-            <Route path="/" element={<ProtectedRoute><Layout><Index /></Layout></ProtectedRoute>} />
+            <Route path="/" element={<HomeRoute />} />
             <Route path="/ia" element={<ProtectedRoute><Layout><AI /></Layout></ProtectedRoute>} />
             <Route path="/agenda" element={<ProtectedRoute><Layout><Agenda /></Layout></ProtectedRoute>} />
             <Route path="/networking" element={<ProtectedRoute><Layout><Networking /></Layout></ProtectedRoute>} />
