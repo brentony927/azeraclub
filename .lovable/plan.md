@@ -1,21 +1,18 @@
 
 
-## Plano: Definir conta como Elite
+## Stripe Integration Fix
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+The Stripe integration has been enabled and your secret key is now configured.
 
-### O que fazer
+### Root Cause
+The `create-checkout` and `customer-portal` edge functions were failing because the `STRIPE_SECRET_KEY` environment variable was not set. The logs confirmed: "Neither apiKey nor config.authenticator provided".
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+### What Was Done
+- Enabled the Stripe integration, which securely stores your API key as a backend secret accessible by your edge functions.
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+### What to Verify
+- Navigate to `/planos` and try subscribing to a Pro or Elite plan — the checkout should now open a Stripe payment page instead of showing an error.
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
-
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+### No Code Changes Needed
+The existing `create-checkout`, `check-subscription`, and `customer-portal` edge functions already reference `STRIPE_SECRET_KEY` correctly. They just needed the secret to be configured.
 
