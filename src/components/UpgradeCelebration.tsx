@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +36,13 @@ export default function UpgradeCelebration() {
   const navigate = useNavigate();
   const features = PLAN_FEATURES[plan] || [];
 
+  // Auto-dismiss after 8 seconds
+  useEffect(() => {
+    if (!showUpgradeCelebration) return;
+    const timer = setTimeout(dismissCelebration, 8000);
+    return () => clearTimeout(timer);
+  }, [showUpgradeCelebration, dismissCelebration]);
+
   return (
     <AnimatePresence>
       {showUpgradeCelebration && (
@@ -42,7 +50,8 @@ export default function UpgradeCelebration() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          className="fixed inset-0 z-[9999] flex items-center justify-center cursor-pointer"
+          onClick={dismissCelebration}
         >
           <div className="absolute inset-0 bg-[hsl(0,0%,4%)]/95" />
 

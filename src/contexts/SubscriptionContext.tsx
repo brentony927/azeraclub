@@ -40,7 +40,11 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [showUpgradeCelebration, setShowUpgradeCelebration] = useState(false);
 
-  const refresh = useCallback(async () => {
+  const isInitialLoad = useCallback(() => {
+    return !sessionStorage.getItem("azera_sub_loaded");
+  }, []);
+
+  const refresh = useCallback(async (isInterval = false) => {
     if (!user) {
       setPlan("free");
       setLoading(false);
@@ -56,13 +60,16 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       }
       setPlan(newPlan);
       setSubscriptionEnd(data?.subscription_end || null);
-      if (newPlan !== "free") {
+      // Only show celebration on initial load, not interval refreshes, and once per session
+      if (!isInterval && newPlan !== "free" && !sessionStorage.getItem("azera_celebrated_session")) {
         const lastCelebrated = localStorage.getItem("azera_last_celebrated_plan");
         if (newPlan !== lastCelebrated) {
           setShowUpgradeCelebration(true);
           localStorage.setItem("azera_last_celebrated_plan", newPlan);
+          sessionStorage.setItem("azera_celebrated_session", "true");
         }
       }
+      sessionStorage.setItem("azera_sub_loaded", "true");
     } catch {
       // keep current plan on error
     } finally {
@@ -75,7 +82,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   // Auto-refresh every 60s
   useEffect(() => {
     if (!user) return;
-    const interval = setInterval(refresh, 60000);
+    const interval = setInterval(() => refresh(true), 60000);
     return () => clearInterval(interval);
   }, [user, refresh]);
 
