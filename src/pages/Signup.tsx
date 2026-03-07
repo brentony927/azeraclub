@@ -44,7 +44,7 @@ export default function Signup() {
       // Auto-confirm is enabled, so if we got a session, go straight in
       if (data.session) {
         toast.success("Conta criada com sucesso!");
-        navigate("/dashboard");
+        navigate("/inicio");
       } else {
         toast.success("Conta criada! Você já pode fazer login.");
         navigate("/login");

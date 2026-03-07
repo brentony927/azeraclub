@@ -18,5 +18,5 @@ export default function HomeRoute() {
   }
 
   // User is authenticated — redirect to the nested "/" inside ProtectedLayout
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/inicio" replace />;
 }

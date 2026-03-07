@@ -64,6 +64,7 @@ const App = () => (
 
             {/* Protected routes with shared Layout */}
             <Route element={<ProtectedLayout />}>
+              <Route path="/inicio" element={<Landing />} />
               <Route path="/dashboard" element={<Index />} />
               <Route path="/ia" element={<AI />} />
               <Route path="/agenda" element={<Agenda />} />
