@@ -263,8 +263,24 @@
   --gold-glow: 42 50% 56%;
 }
 
-/* ====== ELITE THEME ====== */
+/* ====== ELITE THEME (light mode) ====== */
 .elite-theme {
+  --primary: 42 50% 46%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 42 40% 92%;
+  --accent-foreground: 42 50% 30%;
+  --ring: 42 50% 56%;
+  --border: 42 15% 82%;
+  --sidebar-primary: 42 50% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 42 30% 93%;
+  --sidebar-accent-foreground: 42 50% 30%;
+  --sidebar-border: 42 15% 85%;
+  --sidebar-ring: 42 50% 56%;
+}
+
+/* ====== ELITE THEME (dark mode) ====== */
+.dark.elite-theme {
   --background: 0 0% 4%;
   --foreground: 0 0% 96%;
   --card: 0 0% 6%;
