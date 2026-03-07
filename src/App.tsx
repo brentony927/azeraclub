@@ -7,7 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import Layout from "@/components/Layout";
-import UpgradeCelebration from "@/components/UpgradeCelebration";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
 import HomeRoute from "@/components/HomeRoute";
 import Landing from "./pages/Landing";
@@ -49,7 +49,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <SubscriptionProvider>
-          <UpgradeCelebration />
+          
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />

@@ -50,8 +50,7 @@ export default function UpgradeCelebration() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center cursor-pointer"
-          onClick={dismissCelebration}
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
         >
           <div className="absolute inset-0 bg-[hsl(0,0%,4%)]/95" />
 
