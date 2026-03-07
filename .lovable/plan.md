@@ -1,21 +1,29 @@
 
 
-## Plano: Definir conta como Elite
+## Adicionar rota `/inicio` com a Landing Page dentro do layout protegido
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+### O que será feito
+O usuário quer que a Landing Page (hero "Your Life. Organized...") esteja acessível em `/inicio` dentro da área autenticada, aparecendo como primeiro item na sidebar.
 
-### O que fazer
+### Alterações
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+**1. `src/App.tsx`**
+- Adicionar rota `/inicio` dentro do `<ProtectedLayout />` apontando para `<Landing />`
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+**2. `src/components/AppSidebar.tsx`**
+- Alterar o primeiro item de `mainItems`: `{ title: "Início", url: "/inicio", icon: LayoutDashboard }`
+- Manter `/dashboard` como rota separada (não muda)
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+**3. `src/components/HomeRoute.tsx`**
+- Redirecionar usuários autenticados para `/inicio` em vez de `/dashboard`
+
+**4. Outros arquivos com referência `/dashboard`**
+- `Layout.tsx` (`showBack`): manter lógica de "voltar" para `/inicio`
+- `Login.tsx`, `Signup.tsx`, `ResetPassword.tsx`: redirecionar pós-login para `/inicio`
+- `Profile.tsx`, `AI.tsx`, `UpgradeCelebration.tsx`: atualizar navegação de "voltar" para `/inicio`
 
 ### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+- `/inicio` mostra a Landing Page dentro do layout protegido (com sidebar)
+- `/dashboard` continua existindo como a página Index
+- Sidebar mostra "Início" apontando para `/inicio`
 
