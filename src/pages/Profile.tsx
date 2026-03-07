@@ -133,7 +133,7 @@ export default function Profile() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         {/* Back */}
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/inicio")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar

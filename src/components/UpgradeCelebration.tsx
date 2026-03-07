@@ -111,7 +111,7 @@ export default function UpgradeCelebration() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5 }}
-              onClick={() => { dismissCelebration(); navigate("/dashboard"); }}
+              onClick={() => { dismissCelebration(); navigate("/inicio"); }}
               className="px-8 py-3 rounded-full font-semibold text-sm text-[hsl(0,0%,4%)] transition-all hover:scale-105"
               style={{ background: "linear-gradient(135deg, hsl(42, 50%, 56%), hsl(42, 60%, 70%))", boxShadow: "0 0 30px hsl(42, 50%, 56% / 0.3)" }}
             >

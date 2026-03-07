@@ -275,7 +275,7 @@ export default function AI() {
               <PanelLeft className="h-4 w-4 text-muted-foreground" />
             </button>
           )}
-          <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-secondary transition-colors">
+          <button onClick={() => navigate("/inicio")} className="p-1.5 rounded-lg hover:bg-secondary transition-colors">
             <ArrowLeft className="h-4 w-4 text-muted-foreground" />
           </button>
           <span className="text-[13px] font-semibold text-foreground">AZR AI</span>
