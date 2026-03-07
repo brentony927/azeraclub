@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react";
 import azeraLogo from "@/assets/azera-logo.jpg";
 
 export default function Signup() {
@@ -17,12 +17,16 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorState, setErrorState] = useState<"user_exists" | null>(null);
+
+  const normalizedEmail = email.trim().toLowerCase();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorState(null);
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
+    const { data, error } = await supabase.auth.signUp({
+      email: normalizedEmail,
       password,
       options: {
         data: { full_name: name },
@@ -31,10 +35,20 @@ export default function Signup() {
     });
     setLoading(false);
     if (error) {
-      toast.error(error.message);
+      if (error.message.includes("User already registered")) {
+        setErrorState("user_exists");
+      } else {
+        toast.error(error.message);
+      }
     } else {
-      toast.success("Conta criada! Verifique seu email para confirmar.");
-      navigate("/login");
+      // Auto-confirm is enabled, so if we got a session, go straight in
+      if (data.session) {
+        toast.success("Conta criada com sucesso!");
+        navigate("/");
+      } else {
+        toast.success("Conta criada! Você já pode fazer login.");
+        navigate("/login");
+      }
     }
   };
 
@@ -50,6 +64,22 @@ export default function Signup() {
       redirect_uri: window.location.origin,
     });
     if (error) toast.error("Erro ao entrar com Apple");
+  };
+
+  const handleSendResetLink = async () => {
+    if (!normalizedEmail) {
+      toast.error("Preencha o campo de email primeiro.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Link enviado! Verifique seu email para definir uma senha.");
+      setErrorState(null);
+    }
   };
 
   return (
@@ -98,6 +128,49 @@ export default function Signup() {
             <div className="flex-1 h-px bg-border/50" />
           </div>
 
+          {/* Error banner for existing user */}
+          {errorState === "user_exists" && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 space-y-3"
+            >
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-destructive">Este email já possui conta</p>
+                  <p className="text-xs text-muted-foreground">
+                    Pode ter sido criada via Google ou Apple. Tente entrar com um desses métodos, 
+                    ou redefina sua senha.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={handleGoogleLogin}
+                >
+                  Entrar com Google
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-xs"
+                  onClick={handleSendResetLink}
+                >
+                  Enviar link para definir senha
+                </Button>
+                <Link to="/login" className="text-center">
+                  <Button variant="ghost" size="sm" className="w-full text-xs">
+                    Ir para Login
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm text-muted-foreground">Nome completo</Label>
@@ -123,7 +196,7 @@ export default function Signup() {
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setErrorState(null); }}
                   className="pl-10 h-11 bg-secondary/50 border-border/50"
                   required
                 />
