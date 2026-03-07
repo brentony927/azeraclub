@@ -10,6 +10,7 @@ import Layout from "@/components/Layout";
 import UpgradeCelebration from "@/components/UpgradeCelebration";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Landing from "./pages/Landing";
 import AI from "./pages/AI";
 import Experiences from "./pages/Experiences";
 import Travel from "./pages/Travel";
