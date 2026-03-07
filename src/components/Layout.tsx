@@ -4,13 +4,13 @@ import AzeraChatbot from "@/components/AzeraChatbot";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Footer from "@/components/Footer";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout() {
   const { plan } = useSubscription();
   const isPremium = plan === "pro" || plan === "elite";
   const location = useLocation();
@@ -51,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 relative z-10">
             <AnimatePresence mode="wait">
               <PageTransition key={location.pathname}>
-                {children}
+                <Outlet />
               </PageTransition>
             </AnimatePresence>
           </main>
