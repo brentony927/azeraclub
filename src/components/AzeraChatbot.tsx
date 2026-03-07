@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import azeraLogo from "@/assets/azera-logo.jpg";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -95,12 +96,11 @@ export default function AzeraChatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
-
-  // Don't load history in floating chatbot to avoid mixing conversations
 
   const send = async () => {
     const trimmed = input.trim();
@@ -154,7 +154,7 @@ export default function AzeraChatbot() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
+            className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
           >
             <MessageSquare className="h-6 w-6 text-primary-foreground" />
           </motion.button>
@@ -168,8 +168,12 @@ export default function AzeraChatbot() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 w-[400px] h-[540px] rounded-[20px] border border-border/40 bg-background flex flex-col overflow-hidden"
-            style={{ boxShadow: "0 25px 60px -12px hsla(0,0%,0%,0.25)" }}
+            className={`fixed z-50 border border-border/40 bg-background flex flex-col overflow-hidden ${
+              isMobile
+                ? "inset-0 rounded-none"
+                : "bottom-6 right-6 w-[400px] h-[540px] rounded-[20px]"
+            }`}
+            style={{ boxShadow: isMobile ? "none" : "0 25px 60px -12px hsla(0,0%,0%,0.25)" }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border/30">
@@ -180,8 +184,8 @@ export default function AzeraChatbot() {
                   <p className="text-[11px] text-muted-foreground">Assistente Inteligente</p>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-secondary/60">
-                <X className="h-4 w-4" />
+              <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors p-2.5 rounded-lg hover:bg-secondary/60 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                <X className="h-5 w-5" />
               </button>
             </div>
 
@@ -222,21 +226,21 @@ export default function AzeraChatbot() {
             </div>
 
             {/* Input */}
-            <div className="px-4 py-3 border-t border-border/30">
+            <div className="px-4 py-3 border-t border-border/30 pb-safe">
               <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex items-center gap-2 rounded-[16px] border border-border bg-background px-3 py-1.5 focus-within:border-ring/50 transition-colors" style={{ boxShadow: "0 1px 3px 0 hsla(0,0%,0%,0.06)" }}>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Pergunte ao AZR AI..."
-                  className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground outline-none py-1.5"
+                  className="flex-1 bg-transparent text-[14px] text-foreground placeholder:text-muted-foreground outline-none py-2.5"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 hover:opacity-80 transition-opacity shrink-0"
+                  className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 hover:opacity-80 transition-opacity shrink-0"
                 >
-                  <Send className="h-3.5 w-3.5" />
+                  <Send className="h-4 w-4" />
                 </button>
               </form>
             </div>

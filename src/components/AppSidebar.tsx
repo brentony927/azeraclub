@@ -91,7 +91,7 @@ export function AppSidebar() {
 
       return (
         <SidebarMenuItem key={navItem.title}>
-          <SidebarMenuButton asChild className="h-10 mb-0.5">
+          <SidebarMenuButton asChild className="h-11 mb-0.5">
             <NavLink
               to={navItem.url}
               end={navItem.url === "/"}
