@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-1 flex flex-col min-w-0">
           <header
             className={`h-14 flex items-center justify-between border-b border-border/30 px-4 shrink-0 ${
-              isElite
+              isPremium
                 ? "elite-header"
                 : "backdrop-blur-xl bg-background/50"
             }`}
@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <button
                   onClick={() => navigate(-1)}
                   className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md transition-colors ${
-                    isElite
+                    isPremium
                       ? "elite-back-btn"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
