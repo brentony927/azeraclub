@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { HeroSection } from "@/components/ui/hero-section";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Conversation = { id: string; title: string; mood: string | null; created_at: string; updated_at: string };
@@ -294,46 +295,8 @@ export default function AI() {
         {/* Messages or empty state */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           {!hasMessages ? (
-            <div className="flex flex-col items-center justify-center h-full px-6">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="text-3xl md:text-5xl font-bold tracking-tight text-foreground text-center"
-              >
-                O que posso fazer
-                <br />
-                por você?
-              </motion.h1>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-xl mt-8"
-              >
-                <form onSubmit={(e) => { e.preventDefault(); send(); }}
-                  className="flex items-end gap-2 rounded-2xl border border-border bg-background px-4 py-3 focus-within:border-ring/50 transition-colors"
-                  style={{ boxShadow: "0 2px 12px 0 hsla(0,0%,0%,0.06)" }}
-                >
-                  <textarea
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-                    placeholder="Pergunte ao AZR AI..."
-                    rows={1}
-                    className="flex-1 bg-transparent text-[14px] text-foreground placeholder:text-muted-foreground outline-none resize-none leading-relaxed min-h-[24px] max-h-[120px]"
-                    disabled={isLoading || isLimitReached}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isLoading || !input.trim() || isLimitReached}
-                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-30 hover:opacity-80 transition-opacity shrink-0"
-                  >
-                    {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-                  </button>
-                </form>
-              </motion.div>
+            <div className="flex flex-col items-center justify-center h-full px-6 py-8">
+              <HeroSection onSubmit={send} suggestions={isLimitReached ? [] : SUGGESTIONS} />
 
               {/* Limit reached banner */}
               {isLimitReached && (
@@ -347,17 +310,6 @@ export default function AI() {
                   <button onClick={() => navigate("/planos")} className="text-xs font-medium px-4 py-2 rounded-full bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] hover:opacity-90 transition-opacity">
                     Fazer Upgrade para Pro
                   </button>
-                </motion.div>
-              )}
-
-              {/* Suggestions */}
-              {!isLimitReached && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.3 }} className="flex flex-wrap justify-center gap-2 mt-4">
-                  {SUGGESTIONS.map((s) => (
-                    <button key={s} onClick={() => send(s)} className="text-[12px] px-3.5 py-1.5 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-border transition-all hover:bg-secondary/50">
-                      {s}
-                    </button>
-                  ))}
                 </motion.div>
               )}
 
