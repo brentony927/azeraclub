@@ -6,9 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
-import Layout from "@/components/Layout";
 
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedLayout from "@/components/ProtectedLayout";
 import HomeRoute from "@/components/HomeRoute";
 import Landing from "./pages/Landing";
 import AI from "./pages/AI";
@@ -37,6 +36,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +52,7 @@ const App = () => (
           
           <Routes>
             {/* Public routes */}
+            <Route path="/" element={<HomeRoute />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -61,26 +62,29 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiePolicy />} />
 
-            {/* Protected routes */}
-            <Route path="/" element={<HomeRoute />} />
-            <Route path="/ia" element={<ProtectedRoute><Layout><AI /></Layout></ProtectedRoute>} />
-            <Route path="/agenda" element={<ProtectedRoute><Layout><Agenda /></Layout></ProtectedRoute>} />
-            <Route path="/networking" element={<ProtectedRoute><Layout><Networking /></Layout></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
-            <Route path="/diario" element={<ProtectedRoute><Layout><Journal /></Layout></ProtectedRoute>} />
-            <Route path="/ideias" element={<ProtectedRoute><Layout><IdeasVault /></Layout></ProtectedRoute>} />
-            <Route path="/objetivos" element={<ProtectedRoute><Layout><Objectives /></Layout></ProtectedRoute>} />
-            <Route path="/desafios" element={<ProtectedRoute><Layout><Challenges /></Layout></ProtectedRoute>} />
-            <Route path="/radar-oportunidades" element={<ProtectedRoute><Layout><OpportunityRadar /></Layout></ProtectedRoute>} />
-            <Route path="/radar-tendencias" element={<ProtectedRoute><Layout><TrendsRadar /></Layout></ProtectedRoute>} />
-            <Route path="/biblioteca" element={<ProtectedRoute><Layout><KnowledgeLibrary /></Layout></ProtectedRoute>} />
-            {/* Legacy routes */}
-            <Route path="/experiencias" element={<ProtectedRoute><Layout><Experiences /></Layout></ProtectedRoute>} />
-            <Route path="/viagens" element={<ProtectedRoute><Layout><Travel /></Layout></ProtectedRoute>} />
-            <Route path="/propriedades" element={<ProtectedRoute><Layout><Properties /></Layout></ProtectedRoute>} />
-            <Route path="/social" element={<ProtectedRoute><Layout><Social /></Layout></ProtectedRoute>} />
-            <Route path="/saude" element={<ProtectedRoute><Layout><Health /></Layout></ProtectedRoute>} />
-            <Route path="/memorias" element={<ProtectedRoute><Layout><Memories /></Layout></ProtectedRoute>} />
+            {/* Protected routes with shared Layout */}
+            <Route element={<ProtectedLayout />}>
+              <Route path="/dashboard" element={<Index />} />
+              <Route path="/ia" element={<AI />} />
+              <Route path="/agenda" element={<Agenda />} />
+              <Route path="/networking" element={<Networking />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/diario" element={<Journal />} />
+              <Route path="/ideias" element={<IdeasVault />} />
+              <Route path="/objetivos" element={<Objectives />} />
+              <Route path="/desafios" element={<Challenges />} />
+              <Route path="/radar-oportunidades" element={<OpportunityRadar />} />
+              <Route path="/radar-tendencias" element={<TrendsRadar />} />
+              <Route path="/biblioteca" element={<KnowledgeLibrary />} />
+              {/* Legacy routes */}
+              <Route path="/experiencias" element={<Experiences />} />
+              <Route path="/viagens" element={<Travel />} />
+              <Route path="/propriedades" element={<Properties />} />
+              <Route path="/social" element={<Social />} />
+              <Route path="/saude" element={<Health />} />
+              <Route path="/memorias" element={<Memories />} />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
           </SubscriptionProvider>

@@ -1,8 +1,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import Landing from "@/pages/Landing";
+import Layout from "@/components/Layout";
 
-export default function HomeRoute() {
+export default function ProtectedLayout() {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -14,9 +14,8 @@ export default function HomeRoute() {
   }
 
   if (!user) {
-    return <Landing />;
+    return <Navigate to="/login" replace />;
   }
 
-  // User is authenticated — redirect to the nested "/" inside ProtectedLayout
-  return <Navigate to="/dashboard" replace />;
+  return <Layout />;
 }

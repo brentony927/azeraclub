@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainItems = [
-  { title: "Início", url: "/", icon: LayoutDashboard },
+  { title: "Início", url: "/dashboard", icon: LayoutDashboard },
   { title: "IA", url: "/ia", icon: Brain },
   { title: "Agenda", url: "/agenda", icon: CalendarDays },
   { title: "Networking", url: "/networking", icon: Handshake },
