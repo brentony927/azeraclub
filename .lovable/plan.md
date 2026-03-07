@@ -1,21 +1,21 @@
 
 
-## Plano: Definir conta como Elite
+## Restaurar o HeroSection na página de IA
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+### Problema
+O componente `HeroSection` (`src/components/ui/hero-section.tsx`) existe no projeto mas não está sendo importado em nenhuma página. Ele era a tela inicial da página de IA com o título "Central de Inteligência Artificial", campo de prompt e sugestões — e foi perdido durante o refactoring de rotas.
 
-### O que fazer
+### Solução
+Integrar o `HeroSection` de volta na página de IA (`src/pages/AI.tsx`) como o estado vazio (quando não há mensagens). Substituir o bloco atual de empty state (linhas ~296-395) pelo `HeroSection`, conectando:
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+- `onSubmit` → função `send()` existente
+- `suggestions` → array `SUGGESTIONS` já definido na página
+- Manter os seletores de mood e o banner de limite abaixo do hero
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+### Alteração
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
-
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+**`src/pages/AI.tsx`**
+- Importar `HeroSection` de `@/components/ui/hero-section`
+- No bloco `!hasMessages`, substituir o título "O que posso fazer por você?" e o form duplicado pelo `<HeroSection onSubmit={send} suggestions={SUGGESTIONS} />`
+- Manter moods e limit banner abaixo do hero
 
