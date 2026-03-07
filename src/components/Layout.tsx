@@ -15,7 +15,7 @@ export default function Layout() {
   const isPremium = plan === "pro" || plan === "elite";
   const location = useLocation();
   const navigate = useNavigate();
-  const showBack = location.pathname !== "/";
+  const showBack = location.pathname !== "/dashboard";
 
   return (
     <SidebarProvider>
