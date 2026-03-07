@@ -43,7 +43,7 @@ export default function ResetPassword() {
       toast.error(error.message);
     } else {
       toast.success("Senha atualizada com sucesso! Você já pode fazer login.");
-      navigate("/");
+      navigate("/dashboard");
     }
   };
 
