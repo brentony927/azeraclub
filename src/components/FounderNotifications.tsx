@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, UserPlus, MessageCircle, Eye, Briefcase, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import {
+  Bell, UserPlus, MessageCircle, Eye, Briefcase, Sparkles,
+  Lightbulb, Rocket, TrendingUp, Users, FileText, Trophy, BarChart3,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,6 +21,8 @@ interface Notification {
   body: string | null;
   read: boolean;
   created_at: string;
+  action_url: string | null;
+  related_user_id: string | null;
 }
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
@@ -26,10 +31,37 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   profile_view: Eye,
   opportunity: Briefcase,
   match: Sparkles,
+  startup_idea: Lightbulb,
+  venture_activity: Rocket,
+  investor_interest: TrendingUp,
+  team_invitation: Users,
+  weekly_report: FileText,
+  ranking_change: Trophy,
+  new_founders: UserPlus,
+  trending_industry: BarChart3,
+  ai_opportunity: Sparkles,
+};
+
+const TYPE_ROUTES: Record<string, string> = {
+  connection: "/founder-feed",
+  message: "/founder-messages",
+  profile_view: "/founder-profile",
+  opportunity: "/founder-opportunities",
+  match: "/founder-feed",
+  startup_idea: "/ideas",
+  venture_activity: "/venture-builder",
+  investor_interest: "/founder-profile",
+  team_invitation: "/venture-builder",
+  weekly_report: "/weekly-review",
+  ranking_change: "/leaderboard",
+  new_founders: "/founder-feed",
+  trending_industry: "/trend-scanner",
+  ai_opportunity: "/opportunity-radar",
 };
 
 export default function FounderNotifications() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -45,7 +77,7 @@ export default function FounderNotifications() {
       .order("created_at", { ascending: false })
       .limit(20)
       .then(({ data }) => {
-        if (data) setNotifications(data);
+        if (data) setNotifications(data as Notification[]);
       });
 
     const channel = supabase
@@ -63,9 +95,21 @@ export default function FounderNotifications() {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  const markAsRead = async (id: string) => {
-    await supabase.from("founder_notifications").update({ read: true }).eq("id", id);
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  const handleClick = async (n: Notification) => {
+    if (!n.read) {
+      await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
+      setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+    }
+    setOpen(false);
+
+    if (n.action_url) {
+      navigate(n.action_url);
+    } else if (n.type === "profile_view" && n.related_user_id) {
+      navigate(`/founder-profile/${n.related_user_id}`);
+    } else {
+      const route = TYPE_ROUTES[n.type];
+      if (route) navigate(route);
+    }
   };
 
   const markAllRead = async () => {
@@ -103,7 +147,7 @@ export default function FounderNotifications() {
             return (
               <button
                 key={n.id}
-                onClick={() => markAsRead(n.id)}
+                onClick={() => handleClick(n)}
                 className={`w-full flex items-start gap-3 p-3 text-left transition-colors hover:bg-secondary/50 ${
                   !n.read ? "bg-primary/5" : ""
                 }`}
