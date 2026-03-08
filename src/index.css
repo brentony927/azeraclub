@@ -685,3 +685,157 @@
   border-radius: 8px;
   box-shadow: 0 0 16px hsla(42, 80%, 55%, 0.2);
 }
+
+/* ====== INTENSIFIED THEME OVERRIDES ====== */
+
+/* ── PRO: Inputs focus glow ── */
+.pro-theme input:focus,
+.pro-theme textarea:focus,
+.pro-theme select:focus,
+.pro-theme [data-state="open"] {
+  border-color: hsl(152 100% 50% / 0.5) !important;
+  box-shadow: 0 0 0 2px hsl(152 100% 50% / 0.15), 0 0 14px hsl(152 100% 50% / 0.2) !important;
+}
+
+/* ── BUSINESS: Inputs focus glow ── */
+.business-theme input:focus,
+.business-theme textarea:focus,
+.business-theme select:focus,
+.business-theme [data-state="open"] {
+  border-color: hsl(51 100% 50% / 0.5) !important;
+  box-shadow: 0 0 0 2px hsl(51 100% 50% / 0.15), 0 0 16px hsl(51 100% 50% / 0.2) !important;
+}
+
+/* ── PRO: Progress bars ── */
+.pro-theme [role="progressbar"] > div,
+.pro-theme .bg-primary {
+  background: linear-gradient(90deg, hsl(152 100% 40%), hsl(152 100% 50%), hsl(152 80% 60%)) !important;
+  box-shadow: 0 0 8px hsl(152 100% 50% / 0.4);
+}
+
+/* ── BUSINESS: Progress bars ── */
+.business-theme [role="progressbar"] > div,
+.business-theme .bg-primary {
+  background: linear-gradient(90deg, hsl(42 50% 46%), hsl(51 100% 50%), hsl(42 60% 70%)) !important;
+  box-shadow: 0 0 8px hsl(51 100% 50% / 0.4);
+}
+
+/* ── PRO: Stat card top border ── */
+.pro-theme .stat-card::before {
+  background: linear-gradient(90deg, transparent, hsl(152 100% 50% / 0.7), transparent) !important;
+  height: 2px !important;
+}
+
+/* ── BUSINESS: Stat card top border ── */
+.business-theme .stat-card::before {
+  background: linear-gradient(90deg, transparent, hsl(51 100% 50% / 0.7), transparent) !important;
+  height: 2px !important;
+}
+
+/* ── PRO: Sidebar section labels ── */
+.pro-theme [data-sidebar="group-label"] {
+  color: hsl(152 100% 50% / 0.7) !important;
+}
+
+/* ── BUSINESS: Sidebar section labels ── */
+.business-theme [data-sidebar="group-label"] {
+  color: hsl(51 100% 50% / 0.7) !important;
+}
+
+/* ── PRO: Active sidebar item override ── */
+.pro-theme [data-sidebar="menu-button"] .bg-primary\/10 {
+  background: hsl(152 100% 50% / 0.12) !important;
+}
+
+/* ── BUSINESS: Active sidebar item override ── */
+.business-theme [data-sidebar="menu-button"] .bg-primary\/10 {
+  background: hsl(51 100% 50% / 0.12) !important;
+}
+
+/* ── PRO: Sidebar border tint ── */
+.dark.pro-theme [data-sidebar="sidebar"] {
+  border-color: hsl(152 20% 18% / 0.6) !important;
+}
+.dark.pro-theme [data-sidebar="header"],
+.dark.pro-theme [data-sidebar="footer"] {
+  border-color: hsl(152 20% 18% / 0.4) !important;
+}
+
+/* ── BUSINESS: Sidebar border tint ── */
+.dark.business-theme [data-sidebar="sidebar"] {
+  border-color: hsl(42 20% 18% / 0.6) !important;
+}
+.dark.business-theme [data-sidebar="header"],
+.dark.business-theme [data-sidebar="footer"] {
+  border-color: hsl(42 20% 18% / 0.4) !important;
+}
+
+/* ── PRO: Avatar ring glow ── */
+.pro-theme .avatar-ring {
+  border: 2px solid hsl(152 100% 50% / 0.5);
+  box-shadow: 0 0 12px hsl(152 100% 50% / 0.3);
+}
+
+/* ── BUSINESS: Avatar ring glow ── */
+.business-theme .avatar-ring {
+  border: 2px solid hsl(51 100% 50% / 0.5);
+  box-shadow: 0 0 12px hsl(51 100% 50% / 0.3);
+}
+
+/* ── PRO: Badges ── */
+.pro-theme .badge-plan {
+  background: linear-gradient(135deg, hsl(152 100% 50%), hsl(152 80% 60%)) !important;
+  color: hsl(0 0% 4%) !important;
+  box-shadow: 0 0 10px hsl(152 100% 50% / 0.3);
+}
+
+/* ── BUSINESS: Badges ── */
+.business-theme .badge-plan {
+  background: linear-gradient(135deg, hsl(51 100% 50%), hsl(42 60% 70%)) !important;
+  color: hsl(0 0% 4%) !important;
+  box-shadow: 0 0 10px hsl(51 100% 50% / 0.3);
+}
+
+/* ── PRO: Separator tinting ── */
+.pro-theme hr,
+.pro-theme [data-orientation="horizontal"] {
+  border-color: hsl(152 30% 25% / 0.3);
+}
+
+/* ── BUSINESS: Separator tinting ── */
+.business-theme hr,
+.business-theme [data-orientation="horizontal"] {
+  border-color: hsl(42 30% 25% / 0.3);
+}
+
+/* ── PRO: Text accent for icons ── */
+.pro-theme .text-primary {
+  color: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Text accent for icons ── */
+.business-theme .text-primary {
+  color: hsl(51 100% 50%) !important;
+}
+
+/* ── PRO: Tabs active indicator ── */
+.pro-theme [data-state="active"][role="tab"] {
+  border-color: hsl(152 100% 50%) !important;
+  color: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Tabs active indicator ── */
+.business-theme [data-state="active"][role="tab"] {
+  border-color: hsl(51 100% 50%) !important;
+  color: hsl(51 100% 50%) !important;
+}
+
+/* ── PRO: Switch checked ── */
+.pro-theme [data-state="checked"][role="switch"] {
+  background: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Switch checked ── */
+.business-theme [data-state="checked"][role="switch"] {
+  background: hsl(51 100% 50%) !important;
+}

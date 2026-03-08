@@ -275,7 +275,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-4 border-t border-border/30">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+          <div className={`w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0 ${isPremium ? "avatar-ring" : ""}`}>
             {user?.user_metadata?.avatar_url ? (
               <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
             ) : (
