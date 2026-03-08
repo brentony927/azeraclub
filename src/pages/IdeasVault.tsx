@@ -163,6 +163,13 @@ export default function IdeasVault() {
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </CardContent>
+                {expandedContent[idea.id] && (
+                  <div className="px-4 pb-4 pt-0 border-t border-border/50 mt-2">
+                    <div className="prose prose-sm dark:prose-invert max-w-none mt-3">
+                      <ReactMarkdown>{expandedContent[idea.id]}</ReactMarkdown>
+                    </div>
+                  </div>
+                )}
               </Card>
             </motion.div>
           ))}
