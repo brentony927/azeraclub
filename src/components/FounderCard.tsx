@@ -22,6 +22,7 @@ interface FounderCardProps {
   isConnected?: boolean;
   isPending?: boolean;
   matchScore?: number;
+  username?: string | null;
 }
 
 export default function FounderCard({
