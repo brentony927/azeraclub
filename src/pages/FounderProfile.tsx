@@ -344,7 +344,7 @@ export default function FounderProfile() {
       {profile.interests?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interests</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interesses</h3>
             <div className="flex flex-wrap gap-1.5">
               {profile.interests.map((i: string) => (
                 <Badge key={i} className="text-[10px] bg-accent text-accent-foreground border-border/30">{i}</Badge>
