@@ -61,7 +61,17 @@ export default function FounderProfile() {
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data: prof } = await supabase.from("founder_profiles").select("*").eq("id", id).single();
+      // Try username first, then fallback to uuid
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let prof: any = null;
+      if (!isUuid) {
+        const { data } = await supabase.from("founder_profiles").select("*").eq("username" as any, id).maybeSingle();
+        prof = data;
+      }
+      if (!prof) {
+        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id).maybeSingle();
+        prof = data;
+      }
       if (!prof) { setLoading(false); return; }
       setProfile(prof);
 
