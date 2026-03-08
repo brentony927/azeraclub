@@ -419,9 +419,17 @@ export default function FounderProfile() {
                 <Send className="h-4 w-4 mr-2" /> Invite to Venture
               </Button>
               <BookmarkButton itemId={profile.id} itemType="founder" />
+              <ReportUserDialog reportedUserId={profile.user_id} reportedUserName={profile.name} />
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Legal disclaimer */}
+      {!isOwn && (
+        <p className="text-[10px] text-muted-foreground text-center px-4">
+          ⚠️ A AZERA não verifica identidades nem garante a veracidade das informações dos perfis. Interaja com cautela.
+        </p>
       )}
     </div>
   );

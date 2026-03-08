@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderChat from "@/components/FounderChat";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MessageCircle, Loader2, ArrowLeft } from "lucide-react";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
 interface Conversation {
@@ -27,7 +28,6 @@ export default function FounderMessages() {
   useEffect(() => {
     if (!user) return;
     const fetchConversations = async () => {
-      // Get all messages involving this user
       const { data: msgs } = await supabase
         .from("founder_messages")
         .select("*")
@@ -36,7 +36,6 @@ export default function FounderMessages() {
 
       if (!msgs) { setLoading(false); return; }
 
-      // Group by other user
       const convMap = new Map<string, { lastMsg: string; lastAt: string; unread: number }>();
       const userIds = new Set<string>();
 
@@ -52,7 +51,6 @@ export default function FounderMessages() {
         }
       });
 
-      // Fetch names from founder_profiles
       if (userIds.size > 0) {
         const { data: profiles } = await supabase
           .from("founder_profiles")
@@ -75,7 +73,6 @@ export default function FounderMessages() {
 
         setConversations(convList);
 
-        // If navigated with state and user not in list, add it
         if (selectedUser && !convMap.has(selectedUser.userId)) {
           setConversations(prev => [{ userId: selectedUser.userId, name: selectedUser.name, lastMessage: "", lastAt: new Date().toISOString(), unread: 0 }, ...prev]);
         }
@@ -89,6 +86,9 @@ export default function FounderMessages() {
     return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
   }
 
+  // Mobile: show chat if selected, list otherwise
+  const showChatOnMobile = !!selectedUser;
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 relative">
       <FounderParticlesBackground />
@@ -97,8 +97,8 @@ export default function FounderMessages() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[70vh]">
-        {/* Conversation list */}
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm overflow-y-auto">
+        {/* Conversation list — hidden on mobile when chat is open */}
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm overflow-y-auto ${showChatOnMobile ? "hidden md:block" : ""}`}>
           {conversations.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">Nenhuma conversa ainda.</div>
           ) : (
@@ -122,10 +122,17 @@ export default function FounderMessages() {
           )}
         </Card>
 
-        {/* Chat area */}
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 overflow-hidden">
+        {/* Chat area — hidden on mobile when no chat selected */}
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 overflow-hidden ${!showChatOnMobile ? "hidden md:block" : ""}`}>
           {selectedUser ? (
-            <FounderChat otherUserId={selectedUser.userId} otherUserName={selectedUser.name} />
+            <>
+              <div className="md:hidden p-2 border-b border-border/30">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedUser(null)}>
+                  <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
+                </Button>
+              </div>
+              <FounderChat otherUserId={selectedUser.userId} otherUserName={selectedUser.name} />
+            </>
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
               Selecione uma conversa para começar.
