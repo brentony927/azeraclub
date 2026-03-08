@@ -416,6 +416,8 @@ export type Database = {
           interests: string[] | null
           is_published: boolean | null
           is_verified: boolean | null
+          latitude: number | null
+          longitude: number | null
           looking_for: string[] | null
           name: string
           profile_views: number | null
@@ -439,6 +441,8 @@ export type Database = {
           interests?: string[] | null
           is_published?: boolean | null
           is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           looking_for?: string[] | null
           name: string
           profile_views?: number | null
@@ -462,6 +466,8 @@ export type Database = {
           interests?: string[] | null
           is_published?: boolean | null
           is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           looking_for?: string[] | null
           name?: string
           profile_views?: number | null
