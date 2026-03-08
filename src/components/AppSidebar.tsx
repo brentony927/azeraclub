@@ -14,6 +14,23 @@ import {
   Library,
   Crown,
   CreditCard,
+  GraduationCap,
+  Crosshair,
+  Focus,
+  PenTool,
+  BarChart3,
+  Repeat,
+  FolderKanban,
+  CalendarCheck,
+  PiggyBank,
+  Globe,
+  DollarSign,
+  Users,
+  Link,
+  BookMarked,
+  Bell,
+  BrainCircuit,
+  Map,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import azeraLogo from "@/assets/azera-logo.jpg";
@@ -54,6 +71,30 @@ const radarItems = [
   { title: "Oportunidades", url: "/radar-oportunidades", icon: Radar },
   { title: "Tendências", url: "/radar-tendencias", icon: TrendingUp },
   { title: "Biblioteca", url: "/biblioteca", icon: Library },
+];
+
+const proItems = [
+  { title: "Skill Growth", url: "/skill-growth", icon: GraduationCap },
+  { title: "Goal Planner", url: "/goal-planner", icon: Crosshair },
+  { title: "Daily Focus", url: "/daily-focus", icon: Focus },
+  { title: "Content Strategy", url: "/content-strategy", icon: PenTool },
+  { title: "Produtividade", url: "/productivity", icon: BarChart3 },
+  { title: "Habits", url: "/habits", icon: Repeat },
+  { title: "Projects", url: "/projects", icon: FolderKanban },
+  { title: "Weekly Review", url: "/weekly-review", icon: CalendarCheck },
+];
+
+const businessItems = [
+  { title: "Investments", url: "/investments", icon: PiggyBank },
+  { title: "Life Simulation", url: "/life-simulation", icon: Globe },
+  { title: "Wealth Strategy", url: "/wealth-strategy", icon: DollarSign },
+  { title: "Elite Events", url: "/elite-events", icon: Crown },
+  { title: "Partners", url: "/strategic-partners", icon: Users },
+  { title: "Investor Match", url: "/investor-match", icon: Link },
+  { title: "Elite Library", url: "/elite-library", icon: BookMarked },
+  { title: "Alerts", url: "/opportunity-alerts", icon: Bell },
+  { title: "AI Advisor", url: "/ai-advisor", icon: BrainCircuit },
+  { title: "Life Master Plan", url: "/life-master-plan", icon: Map },
 ];
 
 export function AppSidebar() {
@@ -157,6 +198,20 @@ export function AppSidebar() {
           {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Radares</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>{renderItems(radarItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Pro</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>{renderItems(proItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Business</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>{renderItems(businessItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

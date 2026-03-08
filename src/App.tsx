@@ -38,6 +38,28 @@ import CookiePolicy from "./pages/CookiePolicy";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 
+// PRO pages
+import SkillGrowth from "./pages/SkillGrowth";
+import GoalBreakdown from "./pages/GoalBreakdown";
+import DailyFocus from "./pages/DailyFocus";
+import ContentStrategy from "./pages/ContentStrategy";
+import ProductivityInsights from "./pages/ProductivityInsights";
+import HabitBuilder from "./pages/HabitBuilder";
+import ProjectOrganizer from "./pages/ProjectOrganizer";
+import WeeklyReview from "./pages/WeeklyReview";
+
+// BUSINESS pages
+import InvestmentRadar from "./pages/InvestmentRadar";
+import LifeSimulation from "./pages/LifeSimulation";
+import WealthPlanner from "./pages/WealthPlanner";
+import EliteEvents from "./pages/EliteEvents";
+import StrategicPartners from "./pages/StrategicPartners";
+import InvestorMatch from "./pages/InvestorMatch";
+import EliteLibrary from "./pages/EliteLibrary";
+import OpportunityAlerts from "./pages/OpportunityAlerts";
+import AIAdvisor from "./pages/AIAdvisor";
+import LifeMasterPlan from "./pages/LifeMasterPlan";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -76,6 +98,29 @@ const App = () => (
               <Route path="/radar-oportunidades" element={<OpportunityRadar />} />
               <Route path="/radar-tendencias" element={<TrendsRadar />} />
               <Route path="/biblioteca" element={<KnowledgeLibrary />} />
+
+              {/* PRO routes */}
+              <Route path="/skill-growth" element={<SkillGrowth />} />
+              <Route path="/goal-planner" element={<GoalBreakdown />} />
+              <Route path="/daily-focus" element={<DailyFocus />} />
+              <Route path="/content-strategy" element={<ContentStrategy />} />
+              <Route path="/productivity" element={<ProductivityInsights />} />
+              <Route path="/habits" element={<HabitBuilder />} />
+              <Route path="/projects" element={<ProjectOrganizer />} />
+              <Route path="/weekly-review" element={<WeeklyReview />} />
+
+              {/* BUSINESS routes */}
+              <Route path="/investments" element={<InvestmentRadar />} />
+              <Route path="/life-simulation" element={<LifeSimulation />} />
+              <Route path="/wealth-strategy" element={<WealthPlanner />} />
+              <Route path="/elite-events" element={<EliteEvents />} />
+              <Route path="/strategic-partners" element={<StrategicPartners />} />
+              <Route path="/investor-match" element={<InvestorMatch />} />
+              <Route path="/elite-library" element={<EliteLibrary />} />
+              <Route path="/opportunity-alerts" element={<OpportunityAlerts />} />
+              <Route path="/ai-advisor" element={<AIAdvisor />} />
+              <Route path="/life-master-plan" element={<LifeMasterPlan />} />
+
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
               <Route path="/viagens" element={<Travel />} />
