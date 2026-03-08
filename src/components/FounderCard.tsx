@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
+import BookmarkButton from "@/components/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,11 +54,12 @@ export default function FounderCard({
           : "border-border/50 bg-card/80 backdrop-blur-sm"
       }`}
     >
-      {isHighlighted && (
-        <div className="absolute top-2 right-2">
+      <div className="absolute top-2 right-2 flex items-center gap-1.5">
+        <BookmarkButton itemType="founder" itemId={id} size={14} />
+        {isHighlighted && (
           <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold">⭐ DESTAQUE</Badge>
-        </div>
-      )}
+        )}
+      </div>
 
       {matchScore !== undefined && matchScore > 0 && (
         <div className="absolute top-2 left-2">
