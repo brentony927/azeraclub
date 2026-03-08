@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
   MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck,
-  Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send,
+  Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send, Check, X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
@@ -43,6 +43,7 @@ export default function FounderProfile() {
   const [myProfile, setMyProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
+  const [isIncomingPending, setIsIncomingPending] = useState(false);
 
   // social proof
   const [connectionsCount, setConnectionsCount] = useState(0);
@@ -72,14 +73,21 @@ export default function FounderProfile() {
       // parallel fetches
       const uid = prof.user_id;
       const [connRes, myRes, venturesRes, oppsRes, membersRes] = await Promise.all([
-        user ? supabase.from("founder_connections").select("status").or(`and(from_user_id.eq.${user.id},to_user_id.eq.${uid}),and(from_user_id.eq.${uid},to_user_id.eq.${user.id})`).maybeSingle() : Promise.resolve({ data: null }),
+        user ? supabase.from("founder_connections").select("status, from_user_id, to_user_id").or(`and(from_user_id.eq.${user.id},to_user_id.eq.${uid}),and(from_user_id.eq.${uid},to_user_id.eq.${user.id})`).maybeSingle() : Promise.resolve({ data: null }),
         user ? supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
         supabase.from("ventures").select("*").eq("user_id", uid).order("created_at", { ascending: false }),
         supabase.from("founder_opportunities").select("id").eq("user_id", uid),
         supabase.from("venture_members").select("id").eq("user_id", uid),
       ]);
 
-      if (connRes.data) setConnectionStatus((connRes.data as any).status);
+      if (connRes.data) {
+        const conn = connRes.data as any;
+        setConnectionStatus(conn.status);
+        // Check if current user is the recipient of a pending request
+        if (conn.status === "pending" && conn.to_user_id === user?.id) {
+          setIsIncomingPending(true);
+        }
+      }
       if (myRes.data) setMyProfile(myRes.data);
 
       // connections count (accepted)
@@ -120,9 +128,35 @@ export default function FounderProfile() {
     const { error } = await supabase.from("founder_connections").insert({ from_user_id: user.id, to_user_id: profile.user_id, status: "pending" });
     if (!error) {
       setConnectionStatus("pending");
-      await supabase.from("founder_notifications").insert({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar` });
+      await supabase.from("founder_notifications").insert({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar`, related_user_id: user.id });
       toast({ title: "Solicitação enviada! 🤝" });
     }
+  };
+
+  const handleAcceptConnection = async () => {
+    if (!user || !profile) return;
+    const { error } = await supabase.from("founder_connections").update({ status: "accepted" })
+      .eq("from_user_id", profile.user_id).eq("to_user_id", user.id).eq("status", "pending");
+    if (!error) {
+      setConnectionStatus("accepted");
+      setIsIncomingPending(false);
+      await supabase.from("founder_notifications").insert({
+        user_id: profile.user_id,
+        type: "connection",
+        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        related_user_id: user.id,
+      });
+      toast({ title: "Conexão aceita! 🤝" });
+    }
+  };
+
+  const handleRejectConnection = async () => {
+    if (!user || !profile) return;
+    await supabase.from("founder_connections").delete()
+      .eq("from_user_id", profile.user_id).eq("to_user_id", user.id).eq("status", "pending");
+    setConnectionStatus(null);
+    setIsIncomingPending(false);
+    toast({ title: "Conexão recusada" });
   };
 
   if (loading) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
@@ -349,10 +383,21 @@ export default function FounderProfile() {
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex flex-wrap gap-3">
-              <Button onClick={handleConnect} disabled={!!connectionStatus}>
-                <UserPlus className="h-4 w-4 mr-2" />
-                {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
-              </Button>
+              {isIncomingPending ? (
+                <>
+                  <Button onClick={handleAcceptConnection}>
+                    <Check className="h-4 w-4 mr-2" /> Aceitar Conexão
+                  </Button>
+                  <Button variant="outline" onClick={handleRejectConnection}>
+                    <X className="h-4 w-4 mr-2" /> Recusar
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={handleConnect} disabled={!!connectionStatus}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
+                </Button>
+              )}
               <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
                 <MessageCircle className="h-4 w-4 mr-2" /> Message
               </Button>
