@@ -22,11 +22,12 @@ interface FounderCardProps {
   isConnected?: boolean;
   isPending?: boolean;
   matchScore?: number;
+  username?: string | null;
 }
 
 export default function FounderCard({
   id, userId, name, avatarUrl, skills, lookingFor, country, building,
-  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore,
+  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username,
 }: FounderCardProps) {
   const navigate = useNavigate();
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
@@ -118,7 +119,7 @@ export default function FounderCard({
             variant="outline"
             className="flex-1 text-xs transition-transform duration-200"
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
-            onClick={() => navigate(`/founder-profile/${id}`)}
+            onClick={() => navigate(`/founder-profile/${username || id}`)}
           >
             <Eye className="h-3 w-3 mr-1" /> Ver Perfil
           </Button>

@@ -10,7 +10,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 type LeaderEntry = {
   id: string; user_id: string; name: string; avatar_url: string | null;
   reputation_score: number | null; skills: string[] | null; is_verified: boolean | null;
-  country: string | null; building: string | null;
+  country: string | null; building: string | null; username: string | null;
 };
 
 const MEDALS = ["🥇", "🥈", "🥉"];
@@ -22,7 +22,7 @@ export default function FounderLeaderboard() {
   useEffect(() => {
     supabase
       .from("founder_profiles")
-      .select("id, user_id, name, avatar_url, reputation_score, skills, is_verified, country, building")
+      .select("id, user_id, name, avatar_url, reputation_score, skills, is_verified, country, building, username")
       .eq("is_published", true)
       .order("reputation_score", { ascending: false })
       .limit(50)
@@ -48,7 +48,7 @@ export default function FounderLeaderboard() {
             const initials = f.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
             const isTop3 = i < 3;
             return (
-              <motion.div key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+              <motion.div key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }} onClick={() => window.location.href = `/founder-profile/${f.username || f.id}`} className="cursor-pointer">
                 <Card className={`transition-all ${isTop3 ? "border-yellow-500/30 bg-yellow-500/5" : ""}`}>
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className="text-2xl font-bold w-10 text-center shrink-0">

@@ -99,8 +99,8 @@ export default function FounderNotifications() {
   }, [user]);
 
   const resolveProfileNavigation = async (userId: string) => {
-    const { data } = await supabase.from("founder_profiles").select("id").eq("user_id", userId).maybeSingle();
-    if (data) navigate(`/founder-profile/${data.id}`);
+    const { data } = await supabase.from("founder_profiles").select("id, username").eq("user_id", userId).maybeSingle();
+    if (data) navigate(`/founder-profile/${(data as any).username || data.id}`);
   };
 
   const handleAcceptConnection = async (n: Notification, e: React.MouseEvent) => {

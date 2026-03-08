@@ -61,7 +61,17 @@ export default function FounderProfile() {
   useEffect(() => {
     if (!id) return;
     const load = async () => {
-      const { data: prof } = await supabase.from("founder_profiles").select("*").eq("id", id).single();
+      // Try username first, then fallback to uuid
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let prof: any = null;
+      if (!isUuid) {
+        const { data } = await supabase.from("founder_profiles").select("*").eq("username" as any, id).maybeSingle();
+        prof = data;
+      }
+      if (!prof) {
+        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id).maybeSingle();
+        prof = data;
+      }
       if (!prof) { setLoading(false); return; }
       setProfile(prof);
 
@@ -211,6 +221,20 @@ export default function FounderProfile() {
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>
+              {profile.username && (
+                <div className="flex items-center gap-2 justify-center sm:justify-start">
+                  <span className="text-sm text-muted-foreground font-mono">@{profile.username}</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/founder-profile/${profile.username}`);
+                      toast({ title: "Link copiado! 📋" });
+                    }}
+                    className="text-[10px] text-primary hover:underline"
+                  >
+                    Copiar
+                  </button>
+                </div>
+              )}
               {(profile.country || profile.city) && (
                 <div className="flex items-center gap-1 justify-center sm:justify-start">
                   <MapPin className="h-4 w-4 text-muted-foreground" />

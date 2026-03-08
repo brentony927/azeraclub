@@ -38,6 +38,7 @@ interface FounderProfile {
   continent: string | null;
   reputation_score: number | null;
   is_verified: boolean | null;
+  username: string | null;
 }
 
 export default function FounderFeed() {
@@ -127,7 +128,7 @@ export default function FounderFeed() {
   const hasActiveFilters = skillFilter.length > 0 || lookingFilter.length > 0 || continentFilter || countryFilter || interestFilter.length > 0 || ageRange[0] !== 18 || ageRange[1] !== 65;
 
   let filtered = profiles.filter(p => {
-    if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.building?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.building?.toLowerCase().includes(search.toLowerCase()) && !p.username?.toLowerCase().includes(search.toLowerCase())) return false;
     if (skillFilter.length && !skillFilter.some(s => p.skills?.includes(s))) return false;
     if (lookingFilter.length && !lookingFilter.some(l => p.looking_for?.includes(l))) return false;
     if (continentFilter && p.continent !== continentFilter) return false;
@@ -298,6 +299,7 @@ export default function FounderFeed() {
                 isConnected={connections[p.user_id] === "accepted"}
                 isPending={connections[p.user_id] === "pending"}
                 matchScore={p.matchScore}
+                username={p.username}
               />
             ))}
           </div>
