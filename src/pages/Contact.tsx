@@ -17,13 +17,13 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast({ title: "Please fill in all fields", variant: "destructive" });
+      toast({ title: "Por favor, preencha todos os campos", variant: "destructive" });
       return;
     }
     setSending(true);
     setTimeout(() => {
       setSending(false);
-      toast({ title: "Message sent!", description: "We'll get back to you soon." });
+      toast({ title: "Mensagem enviada!", description: "Retornaremos em breve." });
       setName("");
       setEmail("");
       setMessage("");
@@ -38,7 +38,7 @@ export default function Contact() {
         className="max-w-3xl mx-auto space-y-8"
       >
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
 
         <div className="grid gap-8 md:grid-cols-[1fr_1.2fr]">
@@ -48,14 +48,14 @@ export default function Contact() {
               <div className="p-2 rounded-xl bg-primary/10 w-fit">
                 <Mail className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="text-3xl font-serif font-bold gold-text">Contact Us</h1>
+              <h1 className="text-3xl font-serif font-bold gold-text">Contacte-nos</h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Have a question, suggestion or partnership inquiry? We'd love to hear from you.
+                Tem uma pergunta, sugestão ou proposta de parceria? Adoraríamos ouvir de você.
               </p>
             </div>
 
             <div className="space-y-3 pt-4 border-t border-border/30">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Email us directly</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Envie-nos um email</p>
               <a
                 href="mailto:support@azeraclub.com"
                 className="inline-flex items-center gap-2 text-primary hover:underline font-semibold text-lg"
@@ -70,19 +70,19 @@ export default function Contact() {
           <div className="glass-card p-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+                <Label htmlFor="name">Nome</Label>
+                <Input id="name" placeholder="Seu nome" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="How can we help?" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
+                <Label htmlFor="message">Mensagem</Label>
+                <Textarea id="message" placeholder="Como podemos ajudar?" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
               </div>
               <Button type="submit" className="w-full moss-gradient text-primary-foreground btn-premium" disabled={sending}>
-                {sending ? "Sending..." : (<>Send Message <Send className="ml-2 h-4 w-4" /></>)}
+                {sending ? "Enviando..." : (<>Enviar Mensagem <Send className="ml-2 h-4 w-4" /></>)}
               </Button>
             </form>
           </div>

@@ -18,7 +18,7 @@ export default function VentureRoadmapTab({ roadmap, onBuildWithAI, aiLoading }:
         <p className="text-muted-foreground">Nenhum roadmap gerado. Clique para gerar com IA.</p>
         <Button onClick={onBuildWithAI} disabled={aiLoading}>
           {aiLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Rocket className="h-4 w-4 mr-2" />}
-          Build With AI
+          Construir com IA
         </Button>
       </div>
     );

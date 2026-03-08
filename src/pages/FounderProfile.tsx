@@ -22,12 +22,12 @@ import ReportUserDialog from "@/components/ReportUserDialog";
 function getFounderBadge(profile: any): string {
   const skills: string[] = profile.skills || [];
   const c = profile.commitment;
-  if (c === "full_business") return "Founder";
-  if (c === "startup_idea") return "Co-Founder";
-  if (skills.some((s: string) => /develop|dev|code/i.test(s))) return "Developer";
+  if (c === "full_business") return "Fundador";
+  if (c === "startup_idea") return "Co-Fundador";
+  if (skills.some((s: string) => /develop|dev|code/i.test(s))) return "Desenvolvedor";
   if (skills.some((s: string) => /design/i.test(s))) return "Designer";
-  if (skills.some((s: string) => /market/i.test(s))) return "Marketer";
-  if (skills.some((s: string) => /financ|invest/i.test(s))) return "Investor";
+  if (skills.some((s: string) => /market/i.test(s))) return "Estrategista";
+  if (skills.some((s: string) => /financ|invest/i.test(s))) return "Investidor";
   return "Builder";
 }
 
@@ -201,7 +201,7 @@ export default function FounderProfile() {
   const theirInterests: string[] = profile.interests || [];
   const sharedInterests = myInterests.filter(i => theirInterests.includes(i));
 
-  const stageLabel: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", building: "Early Startup", active: "Growth", scaling: "Scaling" };
+  const stageLabel: Record<string, string> = { idea: "Ideia", prototype: "Protótipo", mvp: "MVP", building: "Startup Inicial", active: "Crescimento", scaling: "Escalando" };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 relative space-y-6">
@@ -251,7 +251,7 @@ export default function FounderProfile() {
                 <Badge variant="outline" className="text-xs">{COMMITMENT_LABELS[profile.commitment] || profile.commitment}</Badge>
               )}
               <div className="flex items-center gap-3 text-xs text-muted-foreground justify-center sm:justify-start">
-                <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} views</span>
+                <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} visualizações</span>
               </div>
               {/* Founder Score */}
               <div className="pt-2">
@@ -269,10 +269,10 @@ export default function FounderProfile() {
       {/* === 2. SOCIAL PROOF === */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Connections", value: connectionsCount, icon: Users },
+          { label: "Conexões", value: connectionsCount, icon: Users },
           { label: "Ventures", value: venturesCount, icon: Rocket },
-          { label: "Projects", value: projectsJoined, icon: Briefcase },
-          { label: "Opportunities", value: oppsCount, icon: Lightbulb },
+          { label: "Projetos", value: projectsJoined, icon: Briefcase },
+          { label: "Oportunidades", value: oppsCount, icon: Lightbulb },
         ].map(s => (
           <Card key={s.label} className="border-border/50 bg-card/80 backdrop-blur-sm">
             <CardContent className="p-4 flex flex-col items-center gap-1">
@@ -298,7 +298,7 @@ export default function FounderProfile() {
       <Card className="border-primary/20 bg-card/80 backdrop-blur-sm">
         <CardContent className="p-6">
           <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-            <Rocket className="h-3.5 w-3.5" /> Current Venture
+            <Rocket className="h-3.5 w-3.5" /> Venture Atual
           </h3>
           {currentVenture ? (
             <div className="space-y-2">
@@ -306,7 +306,7 @@ export default function FounderProfile() {
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                 {currentVenture.industry && <Badge variant="outline">{currentVenture.industry}</Badge>}
                 <Badge variant="secondary">{stageLabel[currentVenture.status] || currentVenture.status}</Badge>
-                <Badge variant="outline">Team: {currentVentureTeamSize}</Badge>
+                <Badge variant="outline">Equipe: {currentVentureTeamSize}</Badge>
               </div>
               {currentVenture.problem && <p className="text-xs text-muted-foreground mt-1">{currentVenture.problem}</p>}
             </div>
@@ -320,7 +320,7 @@ export default function FounderProfile() {
       {profile.looking_for?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Looking For</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Procurando</h3>
             <div className="flex flex-wrap gap-2">
               {profile.looking_for.map((l: string) => <Badge key={l} className="bg-primary/10 text-primary border-primary/20">{l}</Badge>)}
             </div>
@@ -332,7 +332,7 @@ export default function FounderProfile() {
       {profile.skills?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Skills</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Habilidades</h3>
             <div className="flex flex-wrap gap-2">
               {profile.skills.map((s: string) => <Badge key={s} variant="secondary">{s}</Badge>)}
             </div>
@@ -344,7 +344,7 @@ export default function FounderProfile() {
       {profile.interests?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interests</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interesses</h3>
             <div className="flex flex-wrap gap-1.5">
               {profile.interests.map((i: string) => (
                 <Badge key={i} className="text-[10px] bg-accent text-accent-foreground border-border/30">{i}</Badge>
@@ -379,13 +379,13 @@ export default function FounderProfile() {
         <Card className="border-primary/20 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Compatibility
+              <Sparkles className="h-3.5 w-3.5" /> Compatibilidade
             </h3>
             <div className="flex items-center gap-4">
               <span className={`text-3xl font-bold ${getMatchColor(matchScore)}`}>{matchScore}%</span>
               {sharedInterests.length > 0 && (
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Shared Interests</p>
+                  <p className="text-xs text-muted-foreground mb-1">Interesses em Comum</p>
                   <div className="flex flex-wrap gap-1">
                     {sharedInterests.slice(0, 6).map(i => (
                       <Badge key={i} className="text-[10px] bg-primary/10 text-primary border-primary/20">{i}</Badge>
@@ -402,7 +402,7 @@ export default function FounderProfile() {
       {activity.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Activity</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Atividade</h3>
             <div className="space-y-2.5">
               {activity.map((a, i) => (
                 <div key={i} className="flex items-start gap-2">
@@ -437,16 +437,16 @@ export default function FounderProfile() {
               ) : (
                 <Button onClick={handleConnect} disabled={!!connectionStatus}>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
+                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Conectar"}
                 </Button>
               )}
               {connectionStatus === "accepted" && (
                 <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
-                  <MessageCircle className="h-4 w-4 mr-2" /> Message
+                  <MessageCircle className="h-4 w-4 mr-2" /> Mensagem
                 </Button>
               )}
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
-                <Send className="h-4 w-4 mr-2" /> Invite to Venture
+                <Send className="h-4 w-4 mr-2" /> Convidar para Venture
               </Button>
               <BookmarkButton itemId={profile.id} itemType="founder" />
               <ReportUserDialog reportedUserId={profile.user_id} reportedUserName={profile.name} />

@@ -19,9 +19,9 @@ type Task = {
 type Member = { user_id: string; role: string };
 
 const COLUMNS = [
-  { key: "todo", label: "To Do", color: "bg-muted" },
-  { key: "in_progress", label: "In Progress", color: "bg-primary/10" },
-  { key: "done", label: "Done", color: "bg-green-500/10" },
+  { key: "todo", label: "A Fazer", color: "bg-muted" },
+  { key: "in_progress", label: "Em Progresso", color: "bg-primary/10" },
+  { key: "done", label: "Concluído", color: "bg-green-500/10" },
 ];
 
 export default function VentureTasksTab({ ventureId, members }: { ventureId: string; members: Member[] }) {
@@ -82,7 +82,7 @@ export default function VentureTasksTab({ ventureId, members }: { ventureId: str
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Kanban Board</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quadro Kanban</h3>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm"><Plus className="h-3.5 w-3.5 mr-1" /> Nova Tarefa</Button></DialogTrigger>
           <DialogContent>

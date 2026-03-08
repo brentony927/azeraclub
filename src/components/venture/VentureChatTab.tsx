@@ -85,10 +85,10 @@ export default function VentureChatTab({ ventureId, venture }: { ventureId: stri
   return (
     <div className="flex flex-col h-[500px]">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Team Chat</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Chat da Equipe</h3>
         <Button size="sm" variant="outline" onClick={askAI} disabled={aiLoading}>
           {aiLoading ? <Loader2 className="animate-spin h-3.5 w-3.5 mr-1" /> : <Bot className="h-3.5 w-3.5 mr-1" />}
-          Ask AI Co-Founder
+          Perguntar ao Co-Fundador IA
         </Button>
       </div>
       <div className="flex-1 overflow-y-auto space-y-2 p-3 rounded-lg bg-muted/30 border border-border/30">
@@ -98,7 +98,7 @@ export default function VentureChatTab({ ventureId, venture }: { ventureId: stri
               msg.is_ai ? "bg-primary/10 border border-primary/20" :
               msg.user_id === user?.id ? "bg-primary text-primary-foreground" : "bg-secondary"
             }`}>
-              {msg.is_ai && <Badge variant="outline" className="text-[9px] mb-1 gap-1"><Bot className="h-2.5 w-2.5" />AI Co-Founder</Badge>}
+              {msg.is_ai && <Badge variant="outline" className="text-[9px] mb-1 gap-1"><Bot className="h-2.5 w-2.5" />Co-Fundador IA</Badge>}
               <p className="whitespace-pre-wrap">{msg.content}</p>
               <p className="text-[10px] opacity-50 mt-1">{new Date(msg.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</p>
             </div>

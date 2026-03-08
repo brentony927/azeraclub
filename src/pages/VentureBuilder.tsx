@@ -153,17 +153,17 @@ export default function VentureBuilder() {
             <p className="text-muted-foreground text-sm mt-1">Crie e desenvolva startups com inteligência artificial</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" /> Create Venture</Button></DialogTrigger>
+            <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" /> Criar Venture</Button></DialogTrigger>
             <DialogContent className="max-w-lg">
               <DialogHeader><DialogTitle>Nova Venture</DialogTitle></DialogHeader>
               <div className="space-y-3">
-                <Input placeholder="Startup Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-                <Input placeholder="Industry" value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })} />
-                <Textarea placeholder="Problem" value={form.problem} onChange={e => setForm({ ...form, problem: e.target.value })} />
-                <Textarea placeholder="Solution" value={form.solution} onChange={e => setForm({ ...form, solution: e.target.value })} />
-                <Input placeholder="Target Market" value={form.target_market} onChange={e => setForm({ ...form, target_market: e.target.value })} />
-                <Input placeholder="Business Model" value={form.business_model} onChange={e => setForm({ ...form, business_model: e.target.value })} />
-                <Input placeholder="Goal" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
+                <Input placeholder="Nome da Startup" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+                <Input placeholder="Indústria" value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })} />
+                <Textarea placeholder="Problema" value={form.problem} onChange={e => setForm({ ...form, problem: e.target.value })} />
+                <Textarea placeholder="Solução" value={form.solution} onChange={e => setForm({ ...form, solution: e.target.value })} />
+                <Input placeholder="Mercado Alvo" value={form.target_market} onChange={e => setForm({ ...form, target_market: e.target.value })} />
+                <Input placeholder="Modelo de Negócio" value={form.business_model} onChange={e => setForm({ ...form, business_model: e.target.value })} />
+                <Input placeholder="Objetivo" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
                 <Button onClick={createVenture} disabled={loading || !form.name.trim()} className="w-full">{loading ? <Loader2 className="animate-spin h-4 w-4" /> : "Criar Venture"}</Button>
               </div>
             </DialogContent>
@@ -204,19 +204,19 @@ export default function VentureBuilder() {
                   <CardTitle className="text-xl">{selected.name}</CardTitle>
                   {!selected.ai_roadmap && (
                     <Button onClick={buildWithAI} disabled={aiLoading} variant="default">
-                      {aiLoading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : <><Rocket className="h-4 w-4 mr-2" /> Build With AI</>}
+                      {aiLoading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : <><Rocket className="h-4 w-4 mr-2" /> Construir com IA</>}
                     </Button>
                   )}
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="overview">
                     <TabsList className="mb-4 flex-wrap">
-                      <TabsTrigger value="overview"><FileText className="h-3.5 w-3.5 mr-1" /> Overview</TabsTrigger>
+                      <TabsTrigger value="overview"><FileText className="h-3.5 w-3.5 mr-1" /> Visão Geral</TabsTrigger>
                       <TabsTrigger value="roadmap"><Map className="h-3.5 w-3.5 mr-1" /> Roadmap</TabsTrigger>
-                      <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" /> Tasks</TabsTrigger>
+                      <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" /> Tarefas</TabsTrigger>
                       <TabsTrigger value="chat"><MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat</TabsTrigger>
-                      <TabsTrigger value="team"><Users className="h-3.5 w-3.5 mr-1" /> Team</TabsTrigger>
-                      <TabsTrigger value="notes"><FileText className="h-3.5 w-3.5 mr-1" /> Notes</TabsTrigger>
+                      <TabsTrigger value="team"><Users className="h-3.5 w-3.5 mr-1" /> Equipe</TabsTrigger>
+                      <TabsTrigger value="notes"><FileText className="h-3.5 w-3.5 mr-1" /> Notas</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-3">
@@ -241,11 +241,11 @@ export default function VentureBuilder() {
                       <div className="flex gap-2">
                         <Input placeholder="Buscar founder..." value={inviteSearch} onChange={e => setInviteSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && searchFounders()} />
                         <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="rounded-md border border-input bg-background px-3 text-sm">
-                          <option value="co-founder">Co-founder</option>
-                          <option value="developer">Developer</option>
+                          <option value="co-founder">Co-fundador</option>
+                          <option value="developer">Desenvolvedor</option>
                           <option value="designer">Designer</option>
                           <option value="marketing">Marketing</option>
-                          <option value="investor">Investor</option>
+                          <option value="investor">Investidor</option>
                         </select>
                         <Button variant="outline" onClick={searchFounders}>Buscar</Button>
                       </div>

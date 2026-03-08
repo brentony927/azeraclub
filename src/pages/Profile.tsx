@@ -21,15 +21,15 @@ import {
 } from "@/data/founderConstants";
 
 function getFounderBadge(commitment: string | null, skills: string[] | null): string {
-  if (!commitment && (!skills || skills.length === 0)) return "Founder";
+  if (!commitment && (!skills || skills.length === 0)) return "Fundador";
   const s = (skills || []).map(x => x.toLowerCase());
-  if (s.includes("developer") || s.includes("ai")) return "Developer";
+  if (s.includes("desenvolvedor") || s.includes("ai")) return "Desenvolvedor";
   if (s.includes("designer")) return "Designer";
-  if (s.includes("marketing") || s.includes("sales")) return "Marketer";
-  if (s.includes("finance")) return "Investor";
+  if (s.includes("marketing") || s.includes("vendas")) return "Estrategista";
+  if (s.includes("finanças")) return "Investidor";
   if (commitment === "full_business") return "Builder";
-  if (commitment === "side_project") return "Co-Founder";
-  return "Founder";
+  if (commitment === "side_project") return "Co-Fundador";
+  return "Fundador";
 }
 
 export default function Profile() {
@@ -306,7 +306,7 @@ export default function Profile() {
                   <p className="text-sm text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
                 )}
                 <div className="flex items-center gap-3 text-xs text-muted-foreground justify-center sm:justify-start">
-                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{profileViews} views</span>
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{profileViews} visualizações</span>
                   <span className="flex items-center gap-1"><Rocket className="h-3 w-3" />Score: {founderScore}</span>
                 </div>
                 <Progress value={scorePercent} className="h-1.5 max-w-48" />
@@ -375,7 +375,7 @@ export default function Profile() {
           <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Rocket className="h-4 w-4 text-primary" /> Current Venture
+                <Rocket className="h-4 w-4 text-primary" /> Venture Atual
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -499,7 +499,7 @@ export default function Profile() {
         {/* Skills, Industry, Looking For, Commitment */}
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Founder Profile</CardTitle>
+            <CardTitle className="text-base">Perfil de Founder</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             {renderChips("Skills", SKILL_OPTIONS, skills, setSkills)}

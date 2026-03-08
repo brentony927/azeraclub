@@ -121,19 +121,19 @@ const businessItems: NavItem[] = [
 ];
 
 const founderItems: NavItem[] = [
-  { title: "Founder Feed", url: "/founder-feed", icon: Users },
-  { title: "Global Map", url: "/global-map", icon: Globe },
+  { title: "Feed de Founders", url: "/founder-feed", icon: Users },
+  { title: "Mapa Global", url: "/global-map", icon: Globe },
   { title: "Oportunidades", url: "/founder-opportunities", icon: Briefcase },
   { title: "Mensagens", url: "/founder-messages", icon: MessageSquare },
   { title: "Notificações", url: "/founder-notifications", icon: Bell },
 ];
 
 const platformItems: NavItem[] = [
-  { title: "Venture Builder", url: "/venture-builder", icon: Rocket },
-  { title: "Ranking Startups", url: "/startup-rankings", icon: Trophy },
-  { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
-  { title: "Trend Scanner", url: "/trend-scanner", icon: Scan },
-  { title: "Weekly Report", url: "/weekly-report", icon: FileText },
+  { title: "Construtor de Ventures", url: "/venture-builder", icon: Rocket },
+  { title: "Ranking de Startups", url: "/startup-rankings", icon: Trophy },
+  { title: "Classificação", url: "/leaderboard", icon: Trophy },
+  { title: "Scanner de Tendências", url: "/trend-scanner", icon: Scan },
+  { title: "Relatório Semanal", url: "/weekly-report", icon: FileText },
   { title: "Salvos", url: "/saved", icon: Star },
 ];
 
@@ -310,7 +310,7 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="px-3 mb-1 flex items-center gap-1.5">
               <Rocket className="h-3.5 w-3.5 founder-sidebar-icon" />
-              <span className="text-[10px] uppercase tracking-wider font-bold founder-sidebar-label">Founder Alignment</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold founder-sidebar-label">Alinhamento de Founders</span>
             </div>
           )}
           <SidebarGroupContent>
