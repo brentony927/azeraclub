@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import azeraLogo from "@/assets/azera-logo.jpg";
 
 export default function Signup() {
@@ -18,6 +19,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorState, setErrorState] = useState<"user_exists" | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const normalizedEmail = email.trim().toLowerCase();
 
@@ -226,10 +228,25 @@ export default function Signup() {
               </div>
             </div>
 
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="terms"
+                checked={acceptedTerms}
+                onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                Aceito os{" "}
+                <Link to="/terms" className="text-primary hover:underline" target="_blank">Termos de Uso</Link>
+                {" "}e a{" "}
+                <Link to="/privacy" className="text-primary hover:underline" target="_blank">Política de Privacidade</Link>
+              </label>
+            </div>
+
             <Button
               type="submit"
               className="w-full h-11 gold-gradient text-primary-foreground font-semibold hover:opacity-90"
-              disabled={loading}
+              disabled={loading || !acceptedTerms}
             >
               {loading ? "Criando conta..." : "Criar Conta"}
             </Button>
@@ -242,9 +259,12 @@ export default function Signup() {
             </Link>
           </p>
 
-          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
             <Link to="/terms" className="hover:text-primary transition-colors">Termos</Link>
             <Link to="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
+            <Link to="/community-guidelines" className="hover:text-primary transition-colors">Diretrizes</Link>
+            <Link to="/payments-policy" className="hover:text-primary transition-colors">Pagamentos</Link>
+            <Link to="/security-policy" className="hover:text-primary transition-colors">Segurança</Link>
             <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
           </div>
         </div>

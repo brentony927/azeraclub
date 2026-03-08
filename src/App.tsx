@@ -35,6 +35,9 @@ import Pricing from "./pages/Pricing";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
+import CommunityGuidelines from "./pages/CommunityGuidelines";
+import PaymentsPolicy from "./pages/PaymentsPolicy";
+import SecurityPolicy from "./pages/SecurityPolicy";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -101,6 +104,9 @@ const App = () => (
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiePolicy />} />
+            <Route path="/community-guidelines" element={<CommunityGuidelines />} />
+            <Route path="/payments-policy" element={<PaymentsPolicy />} />
+            <Route path="/security-policy" element={<SecurityPolicy />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
 

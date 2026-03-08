@@ -368,6 +368,10 @@ export default function Landing() {
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Termos</Link>
             <span className="text-muted-foreground/30">·</span>
             <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacidade</Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/community-guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Diretrizes</Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Segurança</Link>
           </div>
         </ScrollReveal>
       </section>
