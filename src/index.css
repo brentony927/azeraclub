@@ -362,7 +362,7 @@
 }
 
 /* ====== BUSINESS THEME (gold luxury) — dark mode ====== */
-.dark.business-theme {
+.dark .business-theme {
   --background: 35 8% 4%;
   --foreground: 0 0% 96%;
   --card: 35 6% 8.5%;
