@@ -66,6 +66,7 @@ export default function FounderMatch() {
       looking_for: formData.looking_for,
       commitment: formData.commitment,
       interests: formData.interests,
+      avatar_url: formData.avatar_url || null,
       is_published: true,
     });
     setSaving(false);
