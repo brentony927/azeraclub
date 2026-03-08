@@ -1,30 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Fix: Fundo verde visível no light mode + cores corretas no dark mode
+### Top 5 Priorities
 
-### Problema
-1. **Light mode**: O gradiente verde no `.animated-bg::before` usa opacidade muito baixa (0.10-0.12) — praticamente invisível
-2. **Dark mode**: Não existe override `.dark .animated-bg::before` — usa o mesmo gradiente do light mode, que fica com cores erradas no fundo escuro
-3. **Sidebar dark mode**: As classes `.dark .founder-sidebar-item` existem mas podem ter problemas de especificidade com `.pro-theme` / `.business-theme`
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-### Mudanças em `src/index.css`
+### Scores by Area
 
-**1. Light mode — `.animated-bg::before`**
-- Aumentar opacidade de 0.10-0.12 para **0.35-0.45** nos gradientes verdes
-- Usar tons mais escuros e saturados: `hsl(152 50% 15%)` em vez de `hsl(152 40% 20%)`
-- Resultado: fundo visivelmente verde escuro
-
-**2. Dark mode — adicionar `.dark .animated-bg::before`**
-- Gradientes com tons de verde escuro com opacidade moderada (0.15-0.25)
-- Cores: `hsl(152 60% 30%)`, `hsl(160 50% 25%)` — verde profundo que funciona sobre fundo preto
-- Manter animação `bgFloat`
-
-**3. Sidebar dark mode — reforçar especificidade**
-- Adicionar `.dark .sidebar-nav-item` com `color: hsl(0 0% 85%)` explícito
-- Garantir que `.dark .sidebar-nav-item-active` tenha contraste suficiente
-
-### Arquivos
-| Arquivo | Mudança |
-|---------|--------|
-| `src/index.css` | Aumentar opacidade do bg verde light, adicionar dark override, reforçar sidebar dark |
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |
