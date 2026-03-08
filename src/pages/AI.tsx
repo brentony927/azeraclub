@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock } from "lucide-react";
+import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const MEMORY_EXTRACT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Conversation = { id: string; title: string; mood: string | null; created_at: string; updated_at: string };
