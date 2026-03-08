@@ -31,6 +31,9 @@ import {
   Bell,
   BrainCircuit,
   Map,
+  Rocket,
+  MessageSquare,
+  Briefcase,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import azeraLogo from "@/assets/azera-logo.jpg";
@@ -95,6 +98,12 @@ const businessItems = [
   { title: "Alertas", url: "/opportunity-alerts", icon: Bell },
   { title: "Consultor IA", url: "/ai-advisor", icon: BrainCircuit },
   { title: "Plano de Vida", url: "/life-master-plan", icon: Map },
+];
+
+const founderItems = [
+  { title: "Founder Feed", url: "/founder-feed", icon: Users },
+  { title: "Oportunidades", url: "/founder-opportunities", icon: Briefcase },
+  { title: "Mensagens", url: "/founder-messages", icon: MessageSquare },
 ];
 
 export function AppSidebar() {
@@ -212,6 +221,13 @@ export function AppSidebar() {
           {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Business</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>{renderItems(businessItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1 flex items-center gap-1"><Rocket className="h-3 w-3" /> Founder Match</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>{renderItems(founderItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
