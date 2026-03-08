@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import azeraLogo from "@/assets/azera-logo.jpg";
 
 export default function Signup() {
