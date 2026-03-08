@@ -82,7 +82,7 @@ export default function Contact() {
                 <Textarea id="message" placeholder="Como podemos ajudar?" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
               </div>
               <Button type="submit" className="w-full moss-gradient text-primary-foreground btn-premium" disabled={sending}>
-                {sending ? "Sending..." : (<>Send Message <Send className="ml-2 h-4 w-4" /></>)}
+                {sending ? "Enviando..." : (<>Enviar Mensagem <Send className="ml-2 h-4 w-4" /></>)}
               </Button>
             </form>
           </div>
