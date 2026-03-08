@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderProfileForm from "@/components/FounderProfileForm";
 import FounderOnboarding from "@/components/FounderOnboarding";
+import FounderMatchIntro from "@/components/FounderMatchIntro";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -15,6 +17,9 @@ export default function FounderMatch() {
   const [saving, setSaving] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem("founder-intro-seen");
+  });
 
   useEffect(() => {
     if (!user) return;
@@ -34,6 +39,11 @@ export default function FounderMatch() {
         setLoading(false);
       });
   }, [user, navigate]);
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem("founder-intro-seen", "true");
+    setShowIntro(false);
+  };
 
   const handleOnboardingComplete = () => {
     if (user) localStorage.setItem(`founder-onboarding-${user.id}`, "true");
@@ -80,6 +90,8 @@ export default function FounderMatch() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
+      {showIntro && <FounderMatchIntro onComplete={handleIntroComplete} />}
+      <FounderParticlesBackground />
       {showOnboarding && <FounderOnboarding onComplete={handleOnboardingComplete} />}
       {showConfetti && (
         <div className="fixed inset-0 z-50 pointer-events-none founder-confetti" onAnimationEnd={() => setShowConfetti(false)} />

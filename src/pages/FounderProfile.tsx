@@ -10,6 +10,7 @@ import { MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck, 
 import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
 export default function FounderProfile() {
   const { id } = useParams<{ id: string }>();
@@ -82,7 +83,8 @@ export default function FounderProfile() {
   const repScore = Math.min(100, profile.reputation_score || 0);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 relative">
+      <FounderParticlesBackground />
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Voltar
       </button>

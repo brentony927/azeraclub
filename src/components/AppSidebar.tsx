@@ -197,6 +197,40 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Founder Match — TOP, golden gradient */}
+        <SidebarGroup>
+          {!collapsed && (
+            <SidebarGroupLabel className="px-3 mb-1 flex items-center gap-1.5">
+              <Rocket className="h-3.5 w-3.5 founder-sidebar-icon" />
+              <span className="text-[10px] uppercase tracking-wider font-bold founder-sidebar-label">Founder Match</span>
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {founderItems.map((navItem) => {
+                const isActive = location.pathname.startsWith(navItem.url);
+                return (
+                  <SidebarMenuItem key={navItem.title}>
+                    <SidebarMenuButton asChild className="h-11 mb-0.5">
+                      <NavLink
+                        to={navItem.url}
+                        className={`flex items-center gap-3 px-3 transition-all duration-300 ${
+                          isActive
+                            ? "founder-sidebar-item-active"
+                            : "founder-sidebar-item"
+                        }`}
+                      >
+                        <navItem.icon className={`h-4 w-4 ${isActive ? "founder-sidebar-icon-active" : "founder-sidebar-icon"}`} />
+                        {!collapsed && <span className="text-sm font-medium founder-sidebar-text">{navItem.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarGroup>
           {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Ferramentas</SidebarGroupLabel>}
           <SidebarGroupContent>
@@ -222,13 +256,6 @@ export function AppSidebar() {
           {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Business</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>{renderItems(businessItems)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1 flex items-center gap-1"><Rocket className="h-3 w-3" /> Founder Match</SidebarGroupLabel>}
-          <SidebarGroupContent>
-            <SidebarMenu>{renderItems(founderItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
