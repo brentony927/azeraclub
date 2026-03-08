@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           created_at: string | null
@@ -971,6 +995,42 @@ export type Database = {
         }
         Relationships: []
       }
+      trend_scans: {
+        Row: {
+          ai_insight: string | null
+          category: string | null
+          created_at: string
+          id: string
+          link: string | null
+          source: string | null
+          summary: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          ai_insight?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          source?: string | null
+          summary?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          ai_insight?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          source?: string | null
+          summary?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trips: {
         Row: {
           country: string | null
@@ -1032,6 +1092,118 @@ export type Database = {
           created_at?: string
           id?: string
           plan?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      venture_members: {
+        Row: {
+          id: string
+          invited_at: string
+          role: string
+          status: string
+          user_id: string
+          venture_id: string
+        }
+        Insert: {
+          id?: string
+          invited_at?: string
+          role?: string
+          status?: string
+          user_id: string
+          venture_id: string
+        }
+        Update: {
+          id?: string
+          invited_at?: string
+          role?: string
+          status?: string
+          user_id?: string
+          venture_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_members_venture_id_fkey"
+            columns: ["venture_id"]
+            isOneToOne: false
+            referencedRelation: "ventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      venture_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+          venture_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+          venture_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          venture_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_notes_venture_id_fkey"
+            columns: ["venture_id"]
+            isOneToOne: false
+            referencedRelation: "ventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ventures: {
+        Row: {
+          ai_roadmap: string | null
+          business_model: string | null
+          created_at: string
+          id: string
+          industry: string | null
+          name: string
+          problem: string | null
+          solution: string | null
+          status: string
+          target_market: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_roadmap?: string | null
+          business_model?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name: string
+          problem?: string | null
+          solution?: string | null
+          status?: string
+          target_market?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_roadmap?: string | null
+          business_model?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name?: string
+          problem?: string | null
+          solution?: string | null
+          status?: string
+          target_market?: string | null
           updated_at?: string
           user_id?: string
         }

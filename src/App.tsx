@@ -62,6 +62,13 @@ import OpportunityAlerts from "./pages/OpportunityAlerts";
 import AIAdvisor from "./pages/AIAdvisor";
 import LifeMasterPlan from "./pages/LifeMasterPlan";
 
+// Platform pages
+import VentureBuilder from "./pages/VentureBuilder";
+import FounderLeaderboard from "./pages/FounderLeaderboard";
+import TrendScanner from "./pages/TrendScanner";
+import WeeklyOpportunityReport from "./pages/WeeklyOpportunityReport";
+import SavedItems from "./pages/SavedItems";
+
 // Founder Match pages
 import FounderMatch from "./pages/FounderMatch";
 import FounderFeed from "./pages/FounderFeed";
@@ -132,6 +139,13 @@ const App = () => (
               <Route path="/opportunity-alerts" element={<OpportunityAlerts />} />
               <Route path="/ai-advisor" element={<AIAdvisor />} />
               <Route path="/life-master-plan" element={<LifeMasterPlan />} />
+
+              {/* Platform routes */}
+              <Route path="/venture-builder" element={<VentureBuilder />} />
+              <Route path="/leaderboard" element={<FounderLeaderboard />} />
+              <Route path="/trend-scanner" element={<TrendScanner />} />
+              <Route path="/weekly-report" element={<WeeklyOpportunityReport />} />
+              <Route path="/saved" element={<SavedItems />} />
 
               {/* Founder Match routes */}
               <Route path="/founder-match" element={<FounderMatch />} />
