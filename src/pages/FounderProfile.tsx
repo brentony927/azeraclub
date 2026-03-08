@@ -385,7 +385,7 @@ export default function FounderProfile() {
               <span className={`text-3xl font-bold ${getMatchColor(matchScore)}`}>{matchScore}%</span>
               {sharedInterests.length > 0 && (
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Shared Interests</p>
+                  <p className="text-xs text-muted-foreground mb-1">Interesses em Comum</p>
                   <div className="flex flex-wrap gap-1">
                     {sharedInterests.slice(0, 6).map(i => (
                       <Badge key={i} className="text-[10px] bg-primary/10 text-primary border-primary/20">{i}</Badge>
