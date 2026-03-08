@@ -269,10 +269,10 @@ export default function FounderProfile() {
       {/* === 2. SOCIAL PROOF === */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Connections", value: connectionsCount, icon: Users },
+          { label: "Conexões", value: connectionsCount, icon: Users },
           { label: "Ventures", value: venturesCount, icon: Rocket },
-          { label: "Projects", value: projectsJoined, icon: Briefcase },
-          { label: "Opportunities", value: oppsCount, icon: Lightbulb },
+          { label: "Projetos", value: projectsJoined, icon: Briefcase },
+          { label: "Oportunidades", value: oppsCount, icon: Lightbulb },
         ].map(s => (
           <Card key={s.label} className="border-border/50 bg-card/80 backdrop-blur-sm">
             <CardContent className="p-4 flex flex-col items-center gap-1">
