@@ -96,11 +96,11 @@ export default function PricingSection({
   };
 
   return (
-    <div ref={pricingRef} className="w-full max-w-5xl mx-auto space-y-10">
+    <div ref={pricingRef} className="w-full max-w-5xl mx-auto space-y-10 px-4 sm:px-0">
       {/* Header */}
       <div className="text-center space-y-4">
         <TimelineContent animationNum={0} timelineRef={pricingRef}>
-          <h2 className="text-3xl lg:text-4xl font-serif font-bold">
+          <h2 className="text-responsive-3xl font-serif font-bold">
             <VerticalCutReveal splitBy="words" staggerDuration={0.08}>
               Escolha o plano ideal para você
             </VerticalCutReveal>
@@ -108,7 +108,7 @@ export default function PricingSection({
         </TimelineContent>
 
         <TimelineContent animationNum={1} timelineRef={pricingRef}>
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <p className="text-muted-foreground max-w-lg mx-auto text-responsive-base">
             Gerencie seu estilo de vida com as ferramentas certas. Faça upgrade ou downgrade a qualquer momento.
           </p>
         </TimelineContent>
@@ -141,7 +141,7 @@ export default function PricingSection({
       )}
 
       {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
         {plans.map((plan, index) => {
           const isCurrentPlan = currentTier === plan.key;
           const isFree = plan.price === 0;
@@ -150,15 +150,15 @@ export default function PricingSection({
           const isBusiness = plan.key === "business";
 
           const cardBg = isPro
-            ? "linear-gradient(135deg, hsla(152,100%,50%,0.08), hsla(152,80%,30%,0.15), hsla(0,0%,6%,1))"
+            ? "linear-gradient(135deg, hsla(152,100%,50%,0.1), hsla(170,80%,40%,0.08), hsla(152,60%,30%,0.15), hsla(0,0%,6%,1))"
             : isBusiness
-              ? "linear-gradient(135deg, hsla(51,100%,50%,0.08), hsla(42,60%,40%,0.15), hsla(0,0%,6%,1))"
+              ? "linear-gradient(135deg, hsla(51,100%,50%,0.1), hsla(35,80%,45%,0.08), hsla(20,70%,40%,0.12), hsla(0,0%,6%,1))"
               : undefined;
 
           const checkColor = isPro
-            ? "text-[hsl(152,80%,50%)]"
+            ? "text-[hsl(152,100%,50%)]"
             : isBusiness
-              ? "text-[hsl(45,100%,60%)]"
+              ? "text-[hsl(45,100%,55%)]"
               : "text-accent";
 
           const sparklesColor = isPro ? "hsl(152,100%,50%)" : isBusiness ? "hsl(45,100%,55%)" : "hsl(152,28%,56%)";
@@ -175,19 +175,39 @@ export default function PricingSection({
               ? "gold-gradient text-primary-foreground hover:opacity-90"
               : "bg-secondary hover:bg-secondary/80 text-foreground";
 
+          const priceGlow = isPro
+            ? { textShadow: "0 0 20px hsl(152,100%,50%,0.4), 0 0 40px hsl(152,100%,50%,0.15)" }
+            : isBusiness
+              ? { textShadow: "0 0 20px hsl(51,100%,50%,0.4), 0 0 40px hsl(51,100%,50%,0.15)" }
+              : {};
+
+          const borderGradient = isPro
+            ? "linear-gradient(135deg, hsl(152,100%,50%), hsl(170,90%,50%), hsl(140,80%,45%)) 1"
+            : isBusiness
+              ? "linear-gradient(135deg, hsl(51,100%,50%), hsl(42,70%,55%), hsl(20,80%,50%)) 1"
+              : undefined;
+
           return (
             <TimelineContent key={plan.key} animationNum={index + 3} timelineRef={pricingRef}>
               <Card
                 className={cn(
                   "relative glass-card-hover flex flex-col h-full",
-                  isPro && "border-[hsl(152,100%,50%,0.3)] ring-1 ring-[hsl(152,100%,50%,0.15)]",
-                  isBusiness && "border-[hsl(45,100%,50%,0.3)] ring-1 ring-[hsl(45,100%,50%,0.15)]",
                   !isPro && !isBusiness && "border-border/50",
-                  isCurrentPlan && isPro && "ring-2 ring-[hsl(152,100%,50%,0.4)]",
-                  isCurrentPlan && isBusiness && "ring-2 ring-[hsl(45,100%,50%,0.4)]",
                   isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50"
                 )}
-                style={cardBg ? { background: cardBg } : undefined}
+                style={{
+                  ...(cardBg ? { background: cardBg } : {}),
+                  ...((isPro || isBusiness) ? {
+                    borderImage: borderGradient,
+                    borderWidth: "2px",
+                    borderStyle: "solid",
+                  } : {}),
+                  ...((isCurrentPlan && (isPro || isBusiness)) ? {
+                    boxShadow: isPro 
+                      ? "0 0 30px -5px hsl(152,100%,50%,0.3), inset 0 1px 0 hsl(152,100%,50%,0.1)" 
+                      : "0 0 30px -5px hsl(51,100%,50%,0.3), inset 0 1px 0 hsl(51,100%,50%,0.1)",
+                  } : {}),
+                }}
               >
                 {plan.popular && !isCurrentPlan && (
                   <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
@@ -205,25 +225,25 @@ export default function PricingSection({
                     <SparklesComp
                       className="absolute inset-0"
                       color={sparklesColor}
-                      size={1.2}
-                      density={100}
-                      speed={0.4}
-                      opacity={0.5}
+                      size={1.4}
+                      density={120}
+                      speed={0.5}
+                      opacity={0.6}
                     />
                   </div>
                 )}
 
-                <CardHeader className="relative z-[1] pb-2">
-                  <h3 className="font-serif font-bold text-lg">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mt-2">
+                <CardHeader className="relative z-[1] pb-2 p-4 sm:p-6 sm:pb-2">
+                  <h3 className="font-serif font-bold text-responsive-lg">{plan.name}</h3>
+                  <div className="flex items-baseline gap-1 mt-2" style={priceGlow}>
                     {isFree ? (
-                      <span className="text-3xl font-serif font-bold">Grátis</span>
+                      <span className="text-responsive-2xl font-serif font-bold">Grátis</span>
                     ) : (
                       <>
                         <span className="text-sm text-muted-foreground">£</span>
                         <NumberFlow
                           value={price}
-                          className="text-3xl font-serif font-bold"
+                          className="text-responsive-2xl font-serif font-bold"
                         />
                         <span className="text-sm text-muted-foreground">
                           {getPeriodLabel()}
@@ -236,10 +256,10 @@ export default function PricingSection({
                       <Banknote className="h-3 w-3" /> PIX
                     </Badge>
                   )}
-                  <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
+                  <p className="text-responsive-sm text-muted-foreground mt-2">{plan.description}</p>
                 </CardHeader>
 
-                <CardContent className="relative z-[1] flex-1 flex flex-col">
+                <CardContent className="relative z-[1] flex-1 flex flex-col p-4 sm:p-6 pt-0 sm:pt-0">
                   <Button
                     className={cn(
                       "w-full h-11 font-semibold mb-6",
@@ -265,7 +285,7 @@ export default function PricingSection({
                     </p>
                     <ul className="space-y-2">
                       {plan.includes.slice(1).map((feature, fi) => (
-                        <li key={fi} className="flex items-start gap-2 text-sm">
+                        <li key={fi} className="flex items-start gap-2 text-responsive-sm">
                           <Check className={cn("h-4 w-4 shrink-0 mt-0.5", checkColor)} />
                           <span>{feature}</span>
                         </li>

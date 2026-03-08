@@ -119,6 +119,16 @@
 }
 
 @layer components {
+  /* ====== Responsive text utilities ====== */
+  .text-responsive-xs { font-size: clamp(0.65rem, 0.6rem + 0.25vw, 0.75rem); }
+  .text-responsive-sm { font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.875rem); }
+  .text-responsive-base { font-size: clamp(0.875rem, 0.8rem + 0.4vw, 1rem); }
+  .text-responsive-lg { font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem); }
+  .text-responsive-xl { font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); }
+  .text-responsive-2xl { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
+  .text-responsive-3xl { font-size: clamp(1.875rem, 1.4rem + 2vw, 3rem); }
+  .text-responsive-4xl { font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem); }
+
   /* ====== Glassmorphism cards ====== */
   .glass-card {
     @apply bg-card/40 backdrop-blur-2xl border border-border/30 rounded-[16px];
@@ -160,7 +170,7 @@
   .gold-text { @apply moss-text; }
 
   .stat-card {
-    @apply glass-card-hover p-6 relative overflow-hidden;
+    @apply glass-card-hover p-4 sm:p-5 lg:p-6 relative overflow-hidden;
   }
 
   .stat-card::before {
@@ -265,17 +275,21 @@
 
 /* ====== PRO THEME (green neon) — light mode ====== */
 .pro-theme {
+  --background: 152 15% 97%;
+  --card: 152 12% 98%;
+  --card-foreground: 0 0% 4%;
   --primary: 152 100% 33%;
   --primary-foreground: 0 0% 100%;
   --accent: 152 40% 92%;
   --accent-foreground: 152 60% 25%;
   --ring: 152 100% 50%;
-  --border: 152 15% 80%;
+  --border: 152 20% 78%;
+  --sidebar-background: 152 12% 96%;
   --sidebar-primary: 152 100% 33%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 152 30% 93%;
   --sidebar-accent-foreground: 152 60% 25%;
-  --sidebar-border: 152 15% 85%;
+  --sidebar-border: 152 18% 82%;
   --sidebar-ring: 152 100% 50%;
   --gold: 152 100% 50%;
   --gold-light: 152 80% 60%;
@@ -284,30 +298,30 @@
 
 /* ====== PRO THEME (green neon) — dark mode ====== */
 .dark.pro-theme {
-  --background: 0 0% 5.5%;
+  --background: 152 8% 5%;
   --foreground: 0 0% 96%;
-  --card: 0 0% 8%;
+  --card: 152 6% 8%;
   --card-foreground: 0 0% 96%;
-  --popover: 0 0% 8%;
+  --popover: 152 6% 8%;
   --popover-foreground: 0 0% 96%;
   --primary: 152 100% 50%;
   --primary-foreground: 0 0% 4%;
-  --secondary: 152 10% 12%;
+  --secondary: 152 12% 12%;
   --secondary-foreground: 0 0% 96%;
-  --muted: 152 8% 14%;
+  --muted: 152 10% 14%;
   --muted-foreground: 0 0% 55%;
   --accent: 152 100% 50%;
   --accent-foreground: 0 0% 4%;
-  --border: 152 20% 18%;
-  --input: 0 0% 12%;
+  --border: 152 25% 18%;
+  --input: 152 8% 12%;
   --ring: 152 100% 50%;
-  --sidebar-background: 0 0% 3%;
+  --sidebar-background: 152 6% 3%;
   --sidebar-foreground: 0 0% 96%;
   --sidebar-primary: 152 100% 50%;
   --sidebar-primary-foreground: 0 0% 4%;
-  --sidebar-accent: 152 15% 12%;
+  --sidebar-accent: 152 18% 12%;
   --sidebar-accent-foreground: 152 100% 50%;
-  --sidebar-border: 152 15% 14%;
+  --sidebar-border: 152 18% 14%;
   --sidebar-ring: 152 100% 50%;
   --gold: 152 100% 50%;
   --gold-light: 152 80% 60%;
@@ -316,46 +330,50 @@
 
 /* ====== BUSINESS THEME (gold luxury) — light mode ====== */
 .business-theme {
+  --background: 42 18% 97%;
+  --card: 42 15% 98%;
+  --card-foreground: 0 0% 4%;
   --primary: 42 50% 46%;
   --primary-foreground: 0 0% 100%;
   --accent: 42 40% 92%;
   --accent-foreground: 42 50% 30%;
   --ring: 42 50% 56%;
-  --border: 42 15% 82%;
+  --border: 42 22% 78%;
+  --sidebar-background: 42 15% 96%;
   --sidebar-primary: 42 50% 46%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 42 30% 93%;
   --sidebar-accent-foreground: 42 50% 30%;
-  --sidebar-border: 42 15% 85%;
+  --sidebar-border: 42 18% 82%;
   --sidebar-ring: 42 50% 56%;
 }
 
 /* ====== BUSINESS THEME (gold luxury) — dark mode ====== */
 .dark.business-theme {
-  --background: 0 0% 4%;
+  --background: 35 8% 4%;
   --foreground: 0 0% 96%;
-  --card: 0 0% 8.5%;
+  --card: 35 6% 8.5%;
   --card-foreground: 0 0% 96%;
-  --popover: 0 0% 8.5%;
+  --popover: 35 6% 8.5%;
   --popover-foreground: 0 0% 96%;
   --primary: 51 100% 50%;
   --primary-foreground: 0 0% 4%;
-  --secondary: 42 10% 10%;
+  --secondary: 42 12% 10%;
   --secondary-foreground: 0 0% 96%;
-  --muted: 42 8% 12%;
+  --muted: 42 10% 12%;
   --muted-foreground: 0 0% 55%;
   --accent: 51 100% 50%;
   --accent-foreground: 0 0% 4%;
-  --border: 42 20% 18%;
-  --input: 0 0% 12%;
+  --border: 42 25% 18%;
+  --input: 42 8% 12%;
   --ring: 51 100% 50%;
-  --sidebar-background: 0 0% 3%;
+  --sidebar-background: 35 6% 3%;
   --sidebar-foreground: 0 0% 96%;
   --sidebar-primary: 51 100% 50%;
   --sidebar-primary-foreground: 0 0% 4%;
-  --sidebar-accent: 42 15% 12%;
+  --sidebar-accent: 42 18% 12%;
   --sidebar-accent-foreground: 51 100% 50%;
-  --sidebar-border: 42 15% 14%;
+  --sidebar-border: 42 18% 14%;
   --sidebar-ring: 51 100% 50%;
 }
 
@@ -375,13 +393,29 @@
 }
 
 @keyframes eliteParticleFloat {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-  50%  { transform: translateY(-20px) scale(1.3); opacity: 0.8; }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50%  { transform: translateY(-24px) scale(1.5); opacity: 1; }
 }
 
 @keyframes eliteShimmer {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes shimmerBadge {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* ── Shared orb base ── */
@@ -395,68 +429,82 @@
 
 /* ── PRO Orbs (green neon) — INTENSIFIED ── */
 .pro-orb-1 {
-  width: 600px; height: 600px;
+  width: 700px; height: 700px;
   top: -10%; left: -5%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.22) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.35) 0%, hsl(170 100% 45% / 0.15) 40%, transparent 70%);
   animation-duration: 20s;
 }
 .pro-orb-2 {
-  width: 500px; height: 500px;
+  width: 550px; height: 550px;
   top: 50%; right: -5%;
-  background: radial-gradient(circle, hsl(152 80% 60% / 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(170 100% 45% / 0.28) 0%, hsl(152 80% 60% / 0.12) 40%, transparent 70%);
   animation-duration: 16s;
   animation-delay: -5s;
 }
 .pro-orb-3 {
-  width: 450px; height: 450px;
+  width: 500px; height: 500px;
   bottom: 10%; left: 30%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(140 90% 45% / 0.22) 0%, hsl(152 100% 50% / 0.08) 40%, transparent 70%);
   animation-duration: 22s;
   animation-delay: -10s;
 }
 .pro-orb-4 {
-  width: 380px; height: 380px;
+  width: 420px; height: 420px;
   top: 20%; right: 30%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.25) 0%, hsl(180 80% 50% / 0.1) 40%, transparent 70%);
   animation-duration: 25s;
   animation-delay: -7s;
+}
+.pro-orb-5 {
+  width: 350px; height: 350px;
+  bottom: 30%; right: 10%;
+  background: radial-gradient(circle, hsl(180 90% 50% / 0.2) 0%, hsl(152 100% 50% / 0.08) 40%, transparent 70%);
+  animation-duration: 28s;
+  animation-delay: -12s;
 }
 
 /* ── BUSINESS Orbs (gold luxury) — INTENSIFIED ── */
 .business-orb-1 {
-  width: 600px; height: 600px;
+  width: 700px; height: 700px;
   top: -10%; left: -5%;
-  background: radial-gradient(circle, hsl(51 100% 50% / 0.20) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.32) 0%, hsl(35 100% 45% / 0.15) 40%, transparent 70%);
   animation-duration: 20s;
 }
 .business-orb-2 {
-  width: 500px; height: 500px;
+  width: 550px; height: 550px;
   top: 50%; right: -5%;
-  background: radial-gradient(circle, hsl(42 60% 70% / 0.16) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(35 100% 50% / 0.25) 0%, hsl(20 80% 50% / 0.12) 40%, transparent 70%);
   animation-duration: 16s;
   animation-delay: -5s;
 }
 .business-orb-3 {
-  width: 450px; height: 450px;
+  width: 500px; height: 500px;
   bottom: 10%; left: 30%;
-  background: radial-gradient(circle, hsl(51 100% 50% / 0.10) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(42 80% 55% / 0.2) 0%, hsl(51 100% 50% / 0.08) 40%, transparent 70%);
   animation-duration: 22s;
   animation-delay: -10s;
 }
 .business-orb-4 {
-  width: 380px; height: 380px;
+  width: 420px; height: 420px;
   top: 20%; right: 30%;
-  background: radial-gradient(circle, hsl(51 100% 50% / 0.14) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.22) 0%, hsl(30 70% 50% / 0.1) 40%, transparent 70%);
   animation-duration: 25s;
   animation-delay: -7s;
+}
+.business-orb-5 {
+  width: 350px; height: 350px;
+  bottom: 30%; right: 10%;
+  background: radial-gradient(circle, hsl(20 90% 55% / 0.18) 0%, hsl(42 70% 55% / 0.08) 40%, transparent 70%);
+  animation-duration: 28s;
+  animation-delay: -12s;
 }
 
 /* ── PRO Particles (green) — INTENSIFIED ── */
 .pro-particle {
   position: absolute;
   border-radius: 50%;
-  background: hsl(152 100% 50% / 0.8);
-  box-shadow: 0 0 6px hsl(152 100% 50% / 0.5);
+  background: hsl(152 100% 50% / 0.9);
+  box-shadow: 0 0 10px hsl(152 100% 50% / 0.6), 0 0 20px hsl(170 100% 50% / 0.3);
   animation: eliteParticleFloat 5s ease-in-out infinite;
   will-change: transform, opacity;
 }
@@ -465,80 +513,132 @@
 .business-particle {
   position: absolute;
   border-radius: 50%;
-  background: hsl(51 100% 50% / 0.8);
-  box-shadow: 0 0 6px hsl(51 100% 50% / 0.5);
+  background: hsl(51 100% 50% / 0.9);
+  box-shadow: 0 0 10px hsl(51 100% 50% / 0.6), 0 0 20px hsl(35 100% 50% / 0.3);
   animation: eliteParticleFloat 5s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
-/* ── PRO gradients ── */
+/* ── PRO gradients — 3-color ── */
 .pro-theme .moss-gradient,
 .pro-theme .gold-gradient {
-  background: linear-gradient(135deg, hsl(152, 100%, 50%), hsl(152, 80%, 60%)) !important;
+  background: linear-gradient(135deg, hsl(152, 100%, 45%), hsl(152, 100%, 50%), hsl(170, 90%, 50%)) !important;
 }
 .pro-theme .moss-text,
 .pro-theme .gold-text {
-  background: linear-gradient(135deg, hsl(152, 100%, 50%), hsl(152, 80%, 65%)) !important;
+  background: linear-gradient(135deg, hsl(152, 100%, 45%), hsl(152, 100%, 55%), hsl(170, 90%, 50%)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
 }
 
-/* ── BUSINESS gradients ── */
+/* ── BUSINESS gradients — 3-color ── */
 .business-theme .moss-gradient,
 .business-theme .gold-gradient {
-  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 60%, 70%)) !important;
+  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 70%, 55%), hsl(20, 80%, 50%)) !important;
 }
 .business-theme .moss-text,
 .business-theme .gold-text {
-  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 60%, 75%)) !important;
+  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 70%, 60%), hsl(20, 80%, 55%)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
 }
 
+/* ── PRO: Heading gradient text ── */
+.pro-theme h1,
+.pro-theme h2,
+.pro-theme h3 {
+  background: linear-gradient(135deg, hsl(152, 100%, 50%), hsl(170, 80%, 55%), hsl(152, 80%, 65%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── BUSINESS: Heading gradient text ── */
+.business-theme h1,
+.business-theme h2,
+.business-theme h3 {
+  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 70%, 55%), hsl(35, 80%, 50%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ── PRO animated background override ── */
-.dark.pro-theme .animated-bg::before {
+.pro-theme .animated-bg::before {
   background:
     radial-gradient(ellipse 600px 600px at 20% 50%, hsl(152 100% 50% / 0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(152 100% 50% / 0.04) 0%, transparent 70%),
-    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(152 100% 50% / 0.05) 0%, transparent 70%) !important;
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(170 100% 45% / 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(140 90% 50% / 0.05) 0%, transparent 70%) !important;
+}
+.dark.pro-theme .animated-bg::before {
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(152 100% 50% / 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(170 100% 45% / 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(140 90% 50% / 0.08) 0%, transparent 70%) !important;
 }
 
 /* ── BUSINESS animated background override ── */
+.business-theme .animated-bg::before {
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(51 100% 50% / 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(35 100% 45% / 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(42 80% 55% / 0.05) 0%, transparent 70%) !important;
+}
 .dark.business-theme .animated-bg::before {
   background:
-    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(51 100% 50% / 0.05) 0%, transparent 70%),
-    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(51 100% 50% / 0.03) 0%, transparent 70%),
-    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(51 100% 50% / 0.04) 0%, transparent 70%) !important;
+    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(51 100% 50% / 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(35 100% 45% / 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(42 80% 55% / 0.07) 0%, transparent 70%) !important;
 }
 
 /* ── Glass cards (shared for both premium themes) ── */
 .pro-theme .glass-card,
 .business-theme .glass-card {
-  backdrop-filter: blur(40px) saturate(1.4);
-  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  backdrop-filter: blur(40px) saturate(1.5);
+  -webkit-backdrop-filter: blur(40px) saturate(1.5);
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
 }
+.pro-theme .glass-card::after,
+.business-theme .glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  border-radius: 50%;
+}
+.pro-theme .glass-card::after {
+  background: linear-gradient(90deg, transparent, hsl(152 100% 50% / 0.5), hsl(170 80% 50% / 0.3), transparent);
+  box-shadow: 0 0 12px hsl(152 100% 50% / 0.2);
+}
+.business-theme .glass-card::after {
+  background: linear-gradient(90deg, transparent, hsl(51 100% 50% / 0.5), hsl(35 80% 50% / 0.3), transparent);
+  box-shadow: 0 0 12px hsl(51 100% 50% / 0.2);
+}
+
 .pro-theme .glass-card {
-  border-color: hsl(152 40% 50% / 0.25) !important;
-  box-shadow: 0 8px 32px -8px hsl(152 100% 50% / 0.08), inset 0 1px 0 0 hsl(152 100% 50% / 0.06) !important;
+  border-color: hsl(152 40% 50% / 0.3) !important;
+  box-shadow: 0 8px 32px -8px hsl(152 100% 50% / 0.12), inset 0 1px 0 0 hsl(152 100% 50% / 0.08) !important;
 }
 .business-theme .glass-card {
-  border-color: hsl(42 30% 70% / 0.3) !important;
-  box-shadow: 0 8px 32px -8px hsl(51 100% 50% / 0.08), inset 0 1px 0 0 hsl(51 100% 50% / 0.06) !important;
+  border-color: hsl(42 40% 60% / 0.35) !important;
+  box-shadow: 0 8px 32px -8px hsl(51 100% 50% / 0.12), inset 0 1px 0 0 hsl(51 100% 50% / 0.08) !important;
 }
-.dark.pro-theme .glass-card { border-color: hsl(152 20% 18% / 0.5) !important; }
-.dark.business-theme .glass-card { border-color: hsl(42 20% 18% / 0.5) !important; }
+.dark.pro-theme .glass-card { border-color: hsl(152 25% 20% / 0.6) !important; }
+.dark.business-theme .glass-card { border-color: hsl(42 25% 20% / 0.6) !important; }
 
 .pro-theme .glass-card-hover:hover {
-  border-color: hsl(152 100% 50% / 0.3) !important;
-  box-shadow: 0 24px 64px -16px hsl(152 100% 50% / 0.18), inset 0 1px 0 0 hsl(152 100% 50% / 0.1) !important;
+  border-color: hsl(152 100% 50% / 0.4) !important;
+  box-shadow: 0 24px 64px -16px hsl(152 100% 50% / 0.22), inset 0 1px 0 0 hsl(152 100% 50% / 0.12) !important;
   transform: translateY(-8px) scale(1.01);
 }
 .business-theme .glass-card-hover:hover {
-  border-color: hsl(51 100% 50% / 0.3) !important;
-  box-shadow: 0 24px 64px -16px hsl(51 100% 50% / 0.18), inset 0 1px 0 0 hsl(51 100% 50% / 0.1) !important;
+  border-color: hsl(51 100% 50% / 0.4) !important;
+  box-shadow: 0 24px 64px -16px hsl(51 100% 50% / 0.22), inset 0 1px 0 0 hsl(51 100% 50% / 0.12) !important;
   transform: translateY(-8px) scale(1.01);
 }
 
@@ -558,15 +658,31 @@
 }
 .pro-theme button:hover, .pro-theme [role="button"]:hover, .pro-theme .btn-premium:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 24px -4px hsl(152 100% 50% / 0.25) !important;
+  box-shadow: 0 8px 30px -4px hsl(152 100% 50% / 0.35) !important;
 }
 .business-theme button:hover, .business-theme [role="button"]:hover, .business-theme .btn-premium:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 24px -4px hsl(51 100% 50% / 0.25) !important;
+  box-shadow: 0 8px 30px -4px hsl(51 100% 50% / 0.35) !important;
 }
 .pro-theme button:active, .pro-theme [role="button"]:active, .pro-theme .btn-premium:active,
 .business-theme button:active, .business-theme [role="button"]:active, .business-theme .btn-premium:active {
   transform: translateY(0) scale(0.98) !important;
+}
+
+/* ── PRO: Primary button animated gradient ── */
+.pro-theme .moss-gradient,
+.pro-theme button[class*="moss-gradient"],
+.pro-theme button.gold-gradient {
+  background-size: 200% 200% !important;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ── BUSINESS: Primary button animated gradient ── */
+.business-theme .gold-gradient,
+.business-theme button[class*="gold-gradient"],
+.business-theme button.moss-gradient {
+  background-size: 200% 200% !important;
+  animation: gradientShift 4s ease infinite;
 }
 
 /* ── Header ── */
@@ -575,18 +691,18 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
   background: hsl(0 0% 100% / 0.7);
 }
-.pro-theme .elite-header { border-bottom: 1px solid hsl(152 40% 50% / 0.25); }
-.business-theme .elite-header { border-bottom: 1px solid hsl(42 30% 70% / 0.3); }
-.dark.pro-theme .elite-header { border-bottom-color: hsl(152 20% 18% / 0.4); background: hsl(0 0% 5.5% / 0.7); }
-.dark.business-theme .elite-header { border-bottom-color: hsl(42 20% 18% / 0.4); background: hsl(0 0% 4% / 0.7); }
+.pro-theme .elite-header { border-bottom: 1px solid hsl(152 40% 50% / 0.3); }
+.business-theme .elite-header { border-bottom: 1px solid hsl(42 40% 60% / 0.35); }
+.dark.pro-theme .elite-header { border-bottom-color: hsl(152 25% 20% / 0.5); background: hsl(152 6% 5% / 0.7); }
+.dark.business-theme .elite-header { border-bottom-color: hsl(42 25% 20% / 0.5); background: hsl(35 6% 4% / 0.7); }
 
 /* ── Scrollbar ── */
-.dark.pro-theme ::-webkit-scrollbar-track { background: hsl(0, 0%, 5.5%) !important; }
-.dark.pro-theme ::-webkit-scrollbar-thumb { background: hsl(152, 20%, 18%) !important; box-shadow: inset 0 0 4px hsl(152 100% 50% / 0.15); }
-.dark.pro-theme ::-webkit-scrollbar-thumb:hover { background: hsl(152, 35%, 30%) !important; box-shadow: 0 0 8px hsl(152 100% 50% / 0.3); }
-.dark.business-theme ::-webkit-scrollbar-track { background: hsl(0, 0%, 4%) !important; }
-.dark.business-theme ::-webkit-scrollbar-thumb { background: hsl(42, 20%, 18%) !important; box-shadow: inset 0 0 4px hsl(51 100% 50% / 0.15); }
-.dark.business-theme ::-webkit-scrollbar-thumb:hover { background: hsl(42, 35%, 30%) !important; box-shadow: 0 0 8px hsl(51 100% 50% / 0.3); }
+.dark.pro-theme ::-webkit-scrollbar-track { background: hsl(152, 6%, 5%) !important; }
+.dark.pro-theme ::-webkit-scrollbar-thumb { background: hsl(152, 25%, 18%) !important; box-shadow: inset 0 0 4px hsl(152 100% 50% / 0.2); }
+.dark.pro-theme ::-webkit-scrollbar-thumb:hover { background: hsl(152, 40%, 30%) !important; box-shadow: 0 0 8px hsl(152 100% 50% / 0.4); }
+.dark.business-theme ::-webkit-scrollbar-track { background: hsl(35, 6%, 4%) !important; }
+.dark.business-theme ::-webkit-scrollbar-thumb { background: hsl(42, 25%, 18%) !important; box-shadow: inset 0 0 4px hsl(51 100% 50% / 0.2); }
+.dark.business-theme ::-webkit-scrollbar-thumb:hover { background: hsl(42, 40%, 30%) !important; box-shadow: 0 0 8px hsl(51 100% 50% / 0.4); }
 
 /* ── Back button ── */
 .pro-back-btn { color: hsl(152 100% 50%); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -694,7 +810,7 @@
 .pro-theme select:focus,
 .pro-theme [data-state="open"] {
   border-color: hsl(152 100% 50% / 0.5) !important;
-  box-shadow: 0 0 0 2px hsl(152 100% 50% / 0.15), 0 0 14px hsl(152 100% 50% / 0.2) !important;
+  box-shadow: 0 0 0 3px hsl(152 100% 50% / 0.2), 0 0 20px hsl(152 100% 50% / 0.25) !important;
 }
 
 /* ── BUSINESS: Inputs focus glow ── */
@@ -703,109 +819,129 @@
 .business-theme select:focus,
 .business-theme [data-state="open"] {
   border-color: hsl(51 100% 50% / 0.5) !important;
-  box-shadow: 0 0 0 2px hsl(51 100% 50% / 0.15), 0 0 16px hsl(51 100% 50% / 0.2) !important;
+  box-shadow: 0 0 0 3px hsl(51 100% 50% / 0.2), 0 0 20px hsl(51 100% 50% / 0.25) !important;
 }
 
 /* ── PRO: Progress bars ── */
 .pro-theme [role="progressbar"] > div,
 .pro-theme .bg-primary {
-  background: linear-gradient(90deg, hsl(152 100% 40%), hsl(152 100% 50%), hsl(152 80% 60%)) !important;
-  box-shadow: 0 0 8px hsl(152 100% 50% / 0.4);
+  background: linear-gradient(90deg, hsl(152 100% 40%), hsl(152 100% 50%), hsl(170 90% 50%)) !important;
+  box-shadow: 0 0 12px hsl(152 100% 50% / 0.5);
 }
 
 /* ── BUSINESS: Progress bars ── */
 .business-theme [role="progressbar"] > div,
 .business-theme .bg-primary {
-  background: linear-gradient(90deg, hsl(42 50% 46%), hsl(51 100% 50%), hsl(42 60% 70%)) !important;
-  box-shadow: 0 0 8px hsl(51 100% 50% / 0.4);
+  background: linear-gradient(90deg, hsl(42 50% 46%), hsl(51 100% 50%), hsl(35 80% 50%)) !important;
+  box-shadow: 0 0 12px hsl(51 100% 50% / 0.5);
 }
 
 /* ── PRO: Stat card top border ── */
 .pro-theme .stat-card::before {
-  background: linear-gradient(90deg, transparent, hsl(152 100% 50% / 0.7), transparent) !important;
-  height: 2px !important;
+  background: linear-gradient(90deg, transparent, hsl(152 100% 50% / 0.8), hsl(170 90% 50% / 0.5), transparent) !important;
+  height: 3px !important;
+  box-shadow: 0 0 10px hsl(152 100% 50% / 0.3);
 }
 
 /* ── BUSINESS: Stat card top border ── */
 .business-theme .stat-card::before {
-  background: linear-gradient(90deg, transparent, hsl(51 100% 50% / 0.7), transparent) !important;
-  height: 2px !important;
+  background: linear-gradient(90deg, transparent, hsl(51 100% 50% / 0.8), hsl(35 80% 50% / 0.5), transparent) !important;
+  height: 3px !important;
+  box-shadow: 0 0 10px hsl(51 100% 50% / 0.3);
 }
 
 /* ── PRO: Sidebar section labels ── */
 .pro-theme [data-sidebar="group-label"] {
-  color: hsl(152 100% 50% / 0.7) !important;
+  color: hsl(152 100% 50% / 0.8) !important;
 }
 
 /* ── BUSINESS: Sidebar section labels ── */
 .business-theme [data-sidebar="group-label"] {
-  color: hsl(51 100% 50% / 0.7) !important;
+  color: hsl(51 100% 50% / 0.8) !important;
 }
 
 /* ── PRO: Active sidebar item override ── */
 .pro-theme [data-sidebar="menu-button"] .bg-primary\/10 {
-  background: hsl(152 100% 50% / 0.12) !important;
+  background: hsl(152 100% 50% / 0.15) !important;
 }
 
 /* ── BUSINESS: Active sidebar item override ── */
 .business-theme [data-sidebar="menu-button"] .bg-primary\/10 {
-  background: hsl(51 100% 50% / 0.12) !important;
+  background: hsl(51 100% 50% / 0.15) !important;
 }
 
 /* ── PRO: Sidebar border tint ── */
 .dark.pro-theme [data-sidebar="sidebar"] {
-  border-color: hsl(152 20% 18% / 0.6) !important;
+  border-color: hsl(152 25% 20% / 0.7) !important;
 }
 .dark.pro-theme [data-sidebar="header"],
 .dark.pro-theme [data-sidebar="footer"] {
-  border-color: hsl(152 20% 18% / 0.4) !important;
+  border-color: hsl(152 25% 20% / 0.5) !important;
+}
+.pro-theme [data-sidebar="sidebar"] {
+  background: hsl(152 12% 96%) !important;
 }
 
 /* ── BUSINESS: Sidebar border tint ── */
 .dark.business-theme [data-sidebar="sidebar"] {
-  border-color: hsl(42 20% 18% / 0.6) !important;
+  border-color: hsl(42 25% 20% / 0.7) !important;
 }
 .dark.business-theme [data-sidebar="header"],
 .dark.business-theme [data-sidebar="footer"] {
-  border-color: hsl(42 20% 18% / 0.4) !important;
+  border-color: hsl(42 25% 20% / 0.5) !important;
+}
+.business-theme [data-sidebar="sidebar"] {
+  background: hsl(42 15% 96%) !important;
+}
+
+/* ── Dark mode sidebar background ── */
+.dark.pro-theme [data-sidebar="sidebar"] {
+  background: hsl(152 6% 3%) !important;
+}
+.dark.business-theme [data-sidebar="sidebar"] {
+  background: hsl(35 6% 3%) !important;
 }
 
 /* ── PRO: Avatar ring glow ── */
 .pro-theme .avatar-ring {
-  border: 2px solid hsl(152 100% 50% / 0.5);
-  box-shadow: 0 0 12px hsl(152 100% 50% / 0.3);
+  border: 2px solid hsl(152 100% 50% / 0.6);
+  box-shadow: 0 0 16px hsl(152 100% 50% / 0.4);
 }
 
 /* ── BUSINESS: Avatar ring glow ── */
 .business-theme .avatar-ring {
-  border: 2px solid hsl(51 100% 50% / 0.5);
-  box-shadow: 0 0 12px hsl(51 100% 50% / 0.3);
+  border: 2px solid hsl(51 100% 50% / 0.6);
+  box-shadow: 0 0 16px hsl(51 100% 50% / 0.4);
 }
 
-/* ── PRO: Badges ── */
+/* ── PRO: Badges with shimmer ── */
 .pro-theme .badge-plan {
-  background: linear-gradient(135deg, hsl(152 100% 50%), hsl(152 80% 60%)) !important;
+  background: linear-gradient(135deg, hsl(152 100% 45%), hsl(152 100% 50%), hsl(170 90% 50%)) !important;
+  background-size: 200% 100%;
+  animation: shimmerBadge 3s linear infinite;
   color: hsl(0 0% 4%) !important;
-  box-shadow: 0 0 10px hsl(152 100% 50% / 0.3);
+  box-shadow: 0 0 14px hsl(152 100% 50% / 0.4);
 }
 
-/* ── BUSINESS: Badges ── */
+/* ── BUSINESS: Badges with shimmer ── */
 .business-theme .badge-plan {
-  background: linear-gradient(135deg, hsl(51 100% 50%), hsl(42 60% 70%)) !important;
+  background: linear-gradient(135deg, hsl(51 100% 50%), hsl(42 70% 55%), hsl(20 80% 50%)) !important;
+  background-size: 200% 100%;
+  animation: shimmerBadge 3s linear infinite;
   color: hsl(0 0% 4%) !important;
-  box-shadow: 0 0 10px hsl(51 100% 50% / 0.3);
+  box-shadow: 0 0 14px hsl(51 100% 50% / 0.4);
 }
 
 /* ── PRO: Separator tinting ── */
 .pro-theme hr,
 .pro-theme [data-orientation="horizontal"] {
-  border-color: hsl(152 30% 25% / 0.3);
+  border-color: hsl(152 35% 30% / 0.35);
 }
 
 /* ── BUSINESS: Separator tinting ── */
 .business-theme hr,
 .business-theme [data-orientation="horizontal"] {
-  border-color: hsl(42 30% 25% / 0.3);
+  border-color: hsl(42 35% 30% / 0.35);
 }
 
 /* ── PRO: Text accent for icons ── */
@@ -822,20 +958,42 @@
 .pro-theme [data-state="active"][role="tab"] {
   border-color: hsl(152 100% 50%) !important;
   color: hsl(152 100% 50%) !important;
+  text-shadow: 0 0 8px hsl(152 100% 50% / 0.3);
 }
 
 /* ── BUSINESS: Tabs active indicator ── */
 .business-theme [data-state="active"][role="tab"] {
   border-color: hsl(51 100% 50%) !important;
   color: hsl(51 100% 50%) !important;
+  text-shadow: 0 0 8px hsl(51 100% 50% / 0.3);
 }
 
 /* ── PRO: Switch checked ── */
 .pro-theme [data-state="checked"][role="switch"] {
-  background: hsl(152 100% 50%) !important;
+  background: linear-gradient(135deg, hsl(152 100% 45%), hsl(170 90% 50%)) !important;
+  box-shadow: 0 0 10px hsl(152 100% 50% / 0.4);
 }
 
 /* ── BUSINESS: Switch checked ── */
 .business-theme [data-state="checked"][role="switch"] {
-  background: hsl(51 100% 50%) !important;
+  background: linear-gradient(135deg, hsl(51 100% 50%), hsl(35 80% 50%)) !important;
+  box-shadow: 0 0 10px hsl(51 100% 50% / 0.4);
+}
+
+/* ── PRO: Links ── */
+.pro-theme a:not([class]) {
+  color: hsl(152 100% 50%);
+}
+.pro-theme a:not([class]):hover {
+  color: hsl(170 90% 50%);
+  text-shadow: 0 0 6px hsl(152 100% 50% / 0.3);
+}
+
+/* ── BUSINESS: Links ── */
+.business-theme a:not([class]) {
+  color: hsl(51 100% 50%);
+}
+.business-theme a:not([class]):hover {
+  color: hsl(35 80% 55%);
+  text-shadow: 0 0 6px hsl(51 100% 50% / 0.3);
 }
