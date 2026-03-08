@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock } from "lucide-react";
+import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const MEMORY_EXTRACT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Conversation = { id: string; title: string; mood: string | null; created_at: string; updated_at: string };
@@ -93,6 +95,8 @@ export default function AI() {
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [dailyCount, setDailyCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [memories, setMemories] = useState<{ id: string; content: string; category: string; created_at: string }[]>([]);
+  const [showMemories, setShowMemories] = useState(false);
 
   const isBasicPlan = !canAccess("pro");
   const remainingMessages = DAILY_LIMIT_BASIC - dailyCount;
@@ -124,6 +128,39 @@ export default function AI() {
   }, [user]);
 
   useEffect(() => { loadConversations(); }, [loadConversations]);
+
+  // Load memories
+  const loadMemories = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("ai_memories")
+      .select("id, content, category, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (data) setMemories(data as any);
+  }, [user]);
+
+  useEffect(() => { loadMemories(); }, [loadMemories]);
+
+  const deleteMemory = async (id: string) => {
+    await supabase.from("ai_memories").delete().eq("id", id);
+    setMemories((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const triggerMemoryExtraction = async (conv: Msg[], convId: string | null) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) return;
+      await fetch(MEMORY_EXTRACT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ extractMemories: true, conversation: conv, conversationId: convId }),
+      });
+      loadMemories();
+    } catch (e) { console.error("Memory extraction failed:", e); }
+  };
 
   const loadConversation = async (convId: string) => {
     setActiveConvId(convId);
@@ -198,6 +235,8 @@ export default function AI() {
           if (convId && assistantSoFar) {
             await supabase.from("chat_messages").insert({ user_id: user!.id, content: assistantSoFar, role: "assistant", conversation_id: convId });
             await supabase.from("ai_conversations").update({ updated_at: new Date().toISOString() }).eq("id", convId);
+            // Fire-and-forget memory extraction
+            triggerMemoryExtraction([...messages, userMsg, { role: "assistant", content: assistantSoFar }], convId);
           }
         },
       });
@@ -261,6 +300,52 @@ export default function AI() {
                   </button>
                 </div>
               ))}
+            </div>
+
+            {/* Memories section */}
+            <div className="border-t border-border/30 p-3">
+              <button
+                onClick={() => setShowMemories(!showMemories)}
+                className="flex items-center justify-between w-full text-[12px] font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Brain className="h-3.5 w-3.5" />
+                  Memórias
+                  {memories.length > 0 && (
+                    <span className="text-[10px] bg-primary/15 text-primary px-1.5 py-0.5 rounded-full">{memories.length}</span>
+                  )}
+                </span>
+              </button>
+              <AnimatePresence>
+                {showMemories && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-2 space-y-1 max-h-[200px] overflow-y-auto">
+                      {memories.length === 0 && (
+                        <p className="text-[10px] text-muted-foreground/60 text-center py-2">A IA ainda não aprendeu fatos sobre você.</p>
+                      )}
+                      {memories.map((mem) => (
+                        <div key={mem.id} className="group flex items-start gap-1.5 p-1.5 rounded-lg hover:bg-secondary/50 transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] text-foreground/80 leading-tight">{mem.content}</p>
+                            <p className="text-[9px] text-muted-foreground/50 mt-0.5">{mem.category}</p>
+                          </div>
+                          <button
+                            onClick={() => deleteMemory(mem.id)}
+                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.aside>
         )}

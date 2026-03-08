@@ -33,7 +33,8 @@ Você tem acesso aos dados reais do usuário no app AZERA. Use essas informaçõ
 - Comente sobre progresso de hábitos e desafios quando fizer sentido
 - Opine sobre ideias e projetos quando perguntada
 - NÃO repita todo o contexto de volta — use-o naturalmente como conhecimento de fundo
-- Se o usuário perguntar "o que você sabe sobre mim", resuma as informações de forma amigável`;
+- Se o usuário perguntar "o que você sabe sobre mim", resuma as informações de forma amigável
+- Você também tem MEMÓRIAS de conversas anteriores — use-as naturalmente para demonstrar continuidade e personalização`;
 
 const PRODUCT_MAP: Record<string, string> = {
   prod_U62xpa0u9xDiJO: "pro",
@@ -122,7 +123,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
 
   const lines: string[] = ["\n\n--- CONTEXTO DO USUÁRIO ---"];
 
-  // Profile
   const p = profileRes.data;
   if (p) {
     const parts = [p.display_name || "Sem nome"];
@@ -136,7 +136,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
 
   lines.push(`PLANO: ${plan}`);
 
-  // Objectives
   const objs = objectivesRes.data;
   if (objs?.length) {
     lines.push("\nOBJETIVOS ATIVOS:");
@@ -145,7 +144,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Tasks
   const tasks = tasksRes.data;
   if (tasks?.length) {
     lines.push("\nTAREFAS PENDENTES:");
@@ -154,7 +152,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Habits
   const habits = habitsRes.data;
   if (habits?.length) {
     lines.push("\nHÁBITOS ATIVOS:");
@@ -163,7 +160,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Challenges
   const challenges = challengesRes.data;
   if (challenges?.length) {
     lines.push("\nDESAFIOS ATIVOS:");
@@ -172,7 +168,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Ideas
   const ideas = ideasRes.data;
   if (ideas?.length) {
     lines.push("\nIDEIAS:");
@@ -181,7 +176,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Projects
   const projects = projectsRes.data;
   if (projects?.length) {
     lines.push("\nPROJETOS:");
@@ -190,7 +184,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Trips
   const trips = tripsRes.data;
   if (trips?.length) {
     lines.push("\nVIAGENS:");
@@ -199,7 +192,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Health
   const health = healthRes.data;
   if (health?.length) {
     lines.push("\nCONSULTAS DE SAÚDE:");
@@ -208,7 +200,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Social events
   const social = socialRes.data;
   if (social?.length) {
     lines.push("\nEVENTOS SOCIAIS:");
@@ -217,7 +208,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Properties
   const props = propertiesRes.data;
   if (props?.length) {
     lines.push("\nPROPRIEDADES:");
@@ -226,7 +216,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Journal (last entries mood summary)
   const journal = journalRes.data;
   if (journal?.length) {
     lines.push("\nÚLTIMAS ENTRADAS DO DIÁRIO:");
@@ -236,7 +225,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Founder Profile
   const fp = founderProfileRes.data;
   if (fp) {
     lines.push("\nPERFIL FOUNDER:");
@@ -247,11 +235,9 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     lines.push(`Compromisso: ${fp.commitment || "N/A"}`);
   }
 
-  // Connections count
   const connCount = connectionsRes.count ?? 0;
   if (connCount > 0) lines.push(`\nCONEXÕES FOUNDER: ${connCount} conexões aceitas`);
 
-  // Opportunities
   const opps = opportunitiesRes.data;
   if (opps?.length) {
     lines.push("\nOPORTUNIDADES PUBLICADAS:");
@@ -260,7 +246,6 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
     });
   }
 
-  // Notifications
   const notifs = notificationsRes.data;
   if (notifs?.length) {
     lines.push(`\nNOTIFICAÇÕES NÃO LIDAS: ${notifs.length}`);
@@ -269,6 +254,115 @@ async function getUserContext(userId: string, plan: string): Promise<string> {
   lines.push("--- FIM DO CONTEXTO ---");
 
   return lines.join("\n");
+}
+
+async function getUserMemories(userId: string): Promise<string> {
+  const sc = createServiceClient();
+  const { data } = await sc
+    .from("ai_memories")
+    .select("content, category, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  if (!data || data.length === 0) return "";
+
+  const lines: string[] = ["\n\n--- MEMÓRIAS DA IA (fatos aprendidos em conversas anteriores) ---"];
+  data.forEach((m: any, i: number) => {
+    lines.push(`${i + 1}. [${m.category || "fato"}] ${m.content}`);
+  });
+  lines.push("--- FIM DAS MEMÓRIAS ---");
+  lines.push("Use essas memórias naturalmente nas suas respostas. Não liste todas — apenas use quando relevante.");
+
+  return lines.join("\n");
+}
+
+async function extractAndSaveMemories(userId: string, conversation: any[], conversationId: string | null): Promise<{ saved: number }> {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return { saved: 0 };
+
+  // Get last 6 messages for extraction
+  const recentMsgs = conversation.slice(-6);
+  const conversationText = recentMsgs.map((m: any) => `${m.role}: ${m.content}`).join("\n");
+
+  const extractionPrompt = `Analise a conversa abaixo e extraia FATOS IMPORTANTES sobre o usuário que devem ser lembrados em futuras conversas.
+
+Exemplos de fatos úteis:
+- Preferências pessoais ("prefere acordar às 5h", "gosta de café sem açúcar")
+- Informações profissionais ("trabalha com IA", "startup é no setor de saúde")
+- Decisões tomadas ("decidiu focar em marketing digital")
+- Metas pessoais ("quer ler 50 livros este ano")
+- Fatos sobre a vida ("tem 2 filhos", "mora em São Paulo")
+
+NÃO extraia:
+- Informações genéricas ou óbvias
+- Perguntas que o usuário fez sem revelar algo sobre si
+- Conteúdo que a IA gerou (foque no que o USUÁRIO disse)
+
+Responda APENAS com um JSON array. Se não houver fatos relevantes, retorne [].
+Formato: [{"content": "fato aqui", "category": "preferencia|fato|decisao|meta"}]
+
+CONVERSA:
+${conversationText}`;
+
+  try {
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [{ role: "user", content: extractionPrompt }],
+        stream: false,
+      }),
+    });
+
+    if (!resp.ok) return { saved: 0 };
+
+    const data = await resp.json();
+    const raw = data.choices?.[0]?.message?.content || "";
+    
+    // Extract JSON from response (handle markdown code blocks)
+    const jsonMatch = raw.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) return { saved: 0 };
+
+    const facts = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(facts) || facts.length === 0) return { saved: 0 };
+
+    const sc = createServiceClient();
+    
+    // Check for duplicates by comparing content
+    const { data: existing } = await sc
+      .from("ai_memories")
+      .select("content")
+      .eq("user_id", userId);
+    
+    const existingContents = new Set((existing || []).map((e: any) => e.content.toLowerCase().trim()));
+    
+    const newFacts = facts.filter((f: any) => 
+      f.content && 
+      typeof f.content === "string" && 
+      f.content.length > 5 && 
+      !existingContents.has(f.content.toLowerCase().trim())
+    );
+
+    if (newFacts.length === 0) return { saved: 0 };
+
+    const rows = newFacts.slice(0, 5).map((f: any) => ({
+      user_id: userId,
+      content: f.content.slice(0, 500),
+      category: ["preferencia", "fato", "decisao", "meta"].includes(f.category) ? f.category : "fato",
+      source_conversation_id: conversationId || null,
+    }));
+
+    await sc.from("ai_memories").insert(rows);
+    return { saved: rows.length };
+  } catch (e) {
+    console.error("Memory extraction error:", e);
+    return { saved: 0 };
+  }
 }
 
 async function fetchNewsArticles(query: string, pageSize = 6): Promise<string> {
@@ -320,7 +414,16 @@ serve(async (req) => {
 
     const userId = claimsData.claims.sub as string;
     const userEmail = claimsData.claims.email as string;
-    const { messages, requireTier, newsContext, newsQuery, includeContext } = await req.json();
+    const body = await req.json();
+    const { messages, requireTier, newsContext, newsQuery, includeContext, extractMemories, conversation, conversationId } = body;
+
+    // --- MEMORY EXTRACTION ENDPOINT ---
+    if (extractMemories && conversation) {
+      const result = await extractAndSaveMemories(userId, conversation, conversationId || null);
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // --- SUBSCRIPTION CHECK ---
     const plan = await getUserPlan(userId, userEmail);
@@ -360,6 +463,16 @@ serve(async (req) => {
       }
     }
 
+    // --- USER MEMORIES ---
+    let memoriesInjection = "";
+    if (includeContext) {
+      try {
+        memoriesInjection = await getUserMemories(userId);
+      } catch (e) {
+        console.error("Error fetching user memories:", e);
+      }
+    }
+
     // --- NEWS CONTEXT (optional) ---
     let newsInjection = "";
     if (newsContext && newsQuery) {
@@ -370,7 +483,7 @@ serve(async (req) => {
     }
 
     // --- BUILD MESSAGES ---
-    const contextSuffix = (includeContext ? CONTEXT_INSTRUCTIONS : "") + contextInjection + newsInjection;
+    const contextSuffix = (includeContext ? CONTEXT_INSTRUCTIONS : "") + contextInjection + memoriesInjection + newsInjection;
 
     const systemContent = messages[0]?.role === "system"
       ? messages[0].content + contextSuffix
