@@ -19,9 +19,9 @@ type Task = {
 type Member = { user_id: string; role: string };
 
 const COLUMNS = [
-  { key: "todo", label: "To Do", color: "bg-muted" },
-  { key: "in_progress", label: "In Progress", color: "bg-primary/10" },
-  { key: "done", label: "Done", color: "bg-green-500/10" },
+  { key: "todo", label: "A Fazer", color: "bg-muted" },
+  { key: "in_progress", label: "Em Progresso", color: "bg-primary/10" },
+  { key: "done", label: "Concluído", color: "bg-green-500/10" },
 ];
 
 export default function VentureTasksTab({ ventureId, members }: { ventureId: string; members: Member[] }) {
