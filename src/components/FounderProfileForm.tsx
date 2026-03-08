@@ -88,7 +88,24 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
       setUploading(false);
     }
 
-    onSubmit({ ...form, avatar_url });
+    // Geocode city/country
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+    if (form.city && form.country) {
+      try {
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.city + ", " + form.country)}&limit=1`,
+          { headers: { "User-Agent": "AzeraClub/1.0" } }
+        );
+        const geoData = await geoRes.json();
+        if (geoData.length > 0) {
+          latitude = parseFloat(geoData[0].lat);
+          longitude = parseFloat(geoData[0].lon);
+        }
+      } catch {}
+    }
+
+    onSubmit({ ...form, avatar_url, ...(latitude != null && longitude != null ? { latitude, longitude } : {}) } as any);
   };
 
   const renderMultiSelect = (label: string, field: "skills" | "industry" | "looking_for", options: string[]) => (
