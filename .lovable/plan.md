@@ -1,24 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Fix Global Founder Map — react-leaflet version mismatch
+### Top 5 Priorities
 
-### Root Cause
-`react-leaflet` v5 requires React 19, but this project uses React 18.3.1. This causes a runtime crash ("render2 is not a function").
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-### Fix
-1. **Downgrade `react-leaflet` to v4.2.1** and add `@react-leaflet/core@2.1.0` in `package.json`
-   - `react-leaflet`: `^5.0.0` → `4.2.1`
-   - Add `@react-leaflet/core`: `2.1.0`
-   - Keep `leaflet` and `@types/leaflet` as-is (v1.x compatible)
+### Scores by Area
 
-2. **Add `react-leaflet` to Vite dedupe** in `vite.config.ts` to prevent duplicate React instances:
-   - Add `"react-leaflet"` to the existing `resolve.dedupe` array
-
-### Files
-| File | Change |
-|------|--------|
-| `package.json` | Downgrade react-leaflet, add @react-leaflet/core |
-| `vite.config.ts` | Add react-leaflet to dedupe |
-
-No code changes needed in `GlobalFounderMap.tsx` — the v4 API is identical for `MapContainer`, `TileLayer`, `Marker`, `Popup`, and `useMap`.
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |
