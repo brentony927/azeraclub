@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { Map, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -32,7 +32,19 @@ export default function LifeMasterPlan() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a life strategist. Create a comprehensive long-term life plan connecting 1-year, 5-year, and 10-year goals. Include: phased strategy, milestones, key decisions, risk mitigation, and quarterly checkpoints. Write in Portuguese (BR). Use markdown. Be thorough.` },
+            { role: "system", content: `You are a life strategist. Create a comprehensive long-term life plan connecting 1-year, 5-year, and 10-year goals.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada horizonte temporal (1 Ano, 5 Anos, 10 Anos) e seções transversais
+- Use ### para marcos e decisões-chave
+- Use **negrito** para prazos, marcos e decisões importantes
+- Use > blockquote para reflexões estratégicas e alertas
+- Use tabela para cronograma de marcos (Marco | Prazo | Prioridade | Status)
+- Use --- entre horizontes temporais
+- Inclua seção de checkpoints trimestrais
+- No final, adicione "📚 Fontes e Referências" com metodologias de planejamento de vida
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Metas 1 ano: ${oneYear || "Não definida"}. Metas 5 anos: ${fiveYear || "Não definida"}. Metas 10 anos: ${tenYear || "Não definida"}. Crie meu Master Plan.` },
           ],
         }),
@@ -84,11 +96,7 @@ export default function LifeMasterPlan() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

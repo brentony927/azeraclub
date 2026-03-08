@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { PiggyBank, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,7 +31,18 @@ export default function InvestmentRadar() {
           requireTier: "business",
           newsContext: true, newsQuery: `investment opportunities ${sector}`,
           messages: [
-            { role: "system", content: `You are an elite investment analyst. Scan current opportunities in the ${sector} sector. For each opportunity provide: name, risk level (low/medium/high), potential return, time horizon, and brief analysis. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are an elite investment analyst. Scan current opportunities in the ${sector} sector.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada oportunidade de investimento
+- Use **negrito** para nomes, valores e métricas
+- Use > blockquote para alertas de risco e insights estratégicos
+- Use tabela comparativa com colunas: Oportunidade | Risco | Retorno Potencial | Horizonte | Recomendação
+- Use --- entre cada oportunidade
+- Use *itálico* para termos técnicos financeiros
+- No final, adicione "📚 Fontes e Referências" com fontes de dados de mercado consultadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Analise oportunidades de investimento em ${sector}.` },
           ],
         }),
@@ -75,11 +86,7 @@ export default function InvestmentRadar() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

@@ -3,14 +3,12 @@ import { motion } from "framer-motion";
 import FeatureLock from "@/components/FeatureLock";
 import { TrendingUp, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
-
 const TOPICS = ["Negócios & Startups", "Tecnologia & IA", "Investimentos", "Marketing Digital", "Produtividade"];
-
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
@@ -20,8 +18,7 @@ export default function TrendsRadar() {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchTrends = async () => {
-    setIsLoading(true);
-    setResult(null);
+    setIsLoading(true); setResult(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
@@ -35,7 +32,19 @@ export default function TrendsRadar() {
           newsContext: true,
           newsQuery: topic,
           messages: [
-            { role: "system", content: `Você é um jornalista especializado e analista de tendências. Escreva um artigo editorial sobre as tendências mais relevantes em "${topic}". Use estilo jornalístico profissional: título impactante, subtítulos claros, parágrafos longos e bem fundamentados, análise aprofundada. Evite listas com bullet points — prefira parágrafos narrativos com subtítulos (##). Inclua contexto, impacto e como o leitor pode se posicionar. Formate em markdown. Escreva entre 500-800 palavras.` },
+            { role: "system", content: `Você é um jornalista especializado e analista de tendências. Escreva um artigo editorial sobre as tendências mais relevantes em "${topic}".
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título impactante
+- Use ## para cada tendência principal
+- Use **negrito** para nomes de empresas, tecnologias e dados
+- Use > blockquote para insights estratégicos e previsões
+- Use tabela resumo no final (Tendência | Impacto | Oportunidade | Horizonte)
+- Use --- entre cada tendência
+- Prefira parágrafos narrativos longos, não listas excessivas
+- Inclua contexto, análise de impacto e posicionamento estratégico
+- No final, adicione "📚 Fontes e Referências" com fontes de dados e relatórios consultados
+- Escreva entre 600-900 palavras em Português (BR) elegante e profissional` },
             { role: "user", content: `Escreva um artigo sobre as tendências mais quentes em ${topic}.` },
           ],
         }),
@@ -58,49 +67,34 @@ export default function TrendsRadar() {
           try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) { content += c; setResult(content); } } catch {}
         }
       }
-    } catch {
-      toast.error("Erro ao buscar tendências");
-    } finally {
-      setIsLoading(false);
-    }
+    } catch { toast.error("Erro ao buscar tendências"); } finally { setIsLoading(false); }
   };
 
   return (
     <FeatureLock minTier="pro" featureName="Radar de Tendências">
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
-      <motion.div variants={item}>
-        <h1 className="text-3xl font-serif font-bold">Radar de Tendências</h1>
-        <p className="text-muted-foreground text-sm mt-1">Fique atualizado com tendências de negócios e tecnologia</p>
-      </motion.div>
-
-      <motion.div variants={item} className="flex flex-wrap gap-2">
-        {TOPICS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTopic(t)}
-            className={`text-xs px-3.5 py-2 rounded-full transition-all ${topic === t ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
-          >
-            {t}
-          </button>
-        ))}
-      </motion.div>
-
-      <motion.div variants={item}>
-        <Button onClick={fetchTrends} disabled={isLoading} className="gap-2">
-          {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando...</> : <><RefreshCw className="h-4 w-4" /> Gerar Tendências</>}
-        </Button>
-      </motion.div>
-
-      {result && (
+      <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <article className="glass-card p-8 sm:p-10">
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80 prose-strong:text-foreground prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg">
-              <ReactMarkdown>{result}</ReactMarkdown>
-            </div>
-          </article>
+          <h1 className="text-3xl font-serif font-bold">Radar de Tendências</h1>
+          <p className="text-muted-foreground text-sm mt-1">Fique atualizado com tendências de negócios e tecnologia</p>
         </motion.div>
-      )}
-    </motion.div>
+        <motion.div variants={item} className="flex flex-wrap gap-2">
+          {TOPICS.map((t) => (
+            <button key={t} onClick={() => setTopic(t)} className={`text-xs px-3.5 py-2 rounded-full transition-all ${topic === t ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
+              {t}
+            </button>
+          ))}
+        </motion.div>
+        <motion.div variants={item}>
+          <Button onClick={fetchTrends} disabled={isLoading} className="gap-2">
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando...</> : <><RefreshCw className="h-4 w-4" /> Gerar Tendências</>}
+          </Button>
+        </motion.div>
+        {result && (
+          <motion.div variants={item}>
+            <AIArticleRenderer content={result} />
+          </motion.div>
+        )}
+      </motion.div>
     </FeatureLock>
   );
 }

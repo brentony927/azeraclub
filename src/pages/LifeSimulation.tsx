@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { Globe, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -30,7 +30,18 @@ export default function LifeSimulation() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a strategic life simulator. Analyze the scenario and generate 3 possible future outcomes: Best Case, Most Likely, Worst Case. For each, include timeline, financial impact, lifestyle changes, risks, and opportunities. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a strategic life simulator. Analyze the scenario and generate 3 possible future outcomes: Best Case, Most Likely, Worst Case.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada cenário (🟢 Melhor Caso, 🟡 Caso Mais Provável, 🔴 Pior Caso)
+- Use ### para sub-seções: Linha do Tempo, Impacto Financeiro, Mudanças de Estilo de Vida, Riscos, Oportunidades
+- Use **negrito** para dados e métricas
+- Use > blockquote para alertas importantes e insights decisivos
+- Use tabela comparativa dos 3 cenários (Aspecto | Melhor | Provável | Pior)
+- Use --- entre cada cenário
+- No final, adicione "📚 Fontes e Referências" com bases de análise
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Simule o futuro para este cenário: ${scenario}` },
           ],
         }),
@@ -71,11 +82,7 @@ export default function LifeSimulation() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

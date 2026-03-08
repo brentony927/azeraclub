@@ -5,7 +5,7 @@ import { DollarSign, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -32,7 +32,17 @@ export default function WealthPlanner() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a wealth management advisor. Create a comprehensive wealth growth plan with: savings strategy, investment allocation, income diversification, risk management, and milestone timeline. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a wealth management advisor. Create a comprehensive wealth growth plan.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada pilar: Estratégia de Poupança, Alocação de Investimentos, Diversificação de Renda, Gestão de Riscos, Cronograma de Marcos
+- Use **negrito** para valores, percentuais e métricas
+- Use > blockquote para alertas financeiros e dicas estratégicas
+- Use tabela para alocação de investimentos (Classe | % Alocação | Risco | Retorno Esperado)
+- Use --- entre seções
+- No final, adicione "📚 Fontes e Referências" com princípios e fontes de dados financeiros
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Renda atual: ${income || "não informada"}. Metas financeiras: ${goals}. Crie um plano de crescimento financeiro.` },
           ],
         }),
@@ -74,11 +84,7 @@ export default function WealthPlanner() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

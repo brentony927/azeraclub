@@ -5,7 +5,7 @@ import { Link, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -32,7 +32,18 @@ export default function InvestorMatch() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a startup fundraising advisor. Based on the startup profile, identify investor types, investment stages, and suggest how to approach each type. Include: investor profile, typical check size, what they look for, and pitch tips. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a startup fundraising advisor. Based on the startup profile, identify investor types, investment stages, and suggest how to approach each type.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada tipo de investidor
+- Use ### para sub-seções: Perfil, Check Size Típico, O Que Procuram, Dicas de Pitch
+- Use **negrito** para valores, nomes e termos-chave
+- Use > blockquote para dicas de pitch e insights estratégicos
+- Use tabela comparativa (Tipo | Check Size | Estágio | Compatibilidade)
+- Use --- entre cada tipo de investidor
+- No final, adicione "📚 Fontes e Referências" com fontes do ecossistema de investimento
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Startup: ${startup}. Detalhes: ${details || "Não informado"}. Encontre investidores compatíveis.` },
           ],
         }),
@@ -74,11 +85,7 @@ export default function InvestorMatch() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

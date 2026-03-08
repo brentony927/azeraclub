@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { Crosshair, Loader2, Sparkles, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,7 +32,19 @@ export default function GoalBreakdown() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a strategic goal planner. Break down the user's goal into: 1) Milestones (major checkpoints), 2) Specific tasks for each milestone, 3) Weekly targets. Use markdown. Write in Portuguese (BR). Be specific, actionable, and realistic.` },
+            { role: "system", content: `You are a strategic goal planner. Break down the user's goal into: 1) Milestones (major checkpoints), 2) Specific tasks for each milestone, 3) Weekly targets.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada marco/milestone
+- Use ### para sub-tarefas dentro de cada marco
+- Use **negrito** para termos-chave e prazos
+- Use > blockquote para dicas estratégicas e insights
+- Use tabelas para cronogramas e metas semanais
+- Use --- entre seções principais
+- Use listas ordenadas para passos sequenciais
+- No final, adicione "📚 Fontes e Referências" com metodologias utilizadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Quebre este objetivo em etapas: ${goal}` },
           ],
         }),
@@ -79,14 +91,10 @@ export default function GoalBreakdown() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
+            </div>
           </motion.div>
         )}
       </motion.div>

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import FeatureLock from "@/components/FeatureLock";
 import { Focus, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -22,7 +22,6 @@ export default function DailyFocus() {
       const token = session?.access_token;
       if (!token) { toast.error("Faça login."); return; }
 
-      // Fetch user's tasks and objectives for context
       const [{ data: tasks }, { data: objectives }] = await Promise.all([
         supabase.from("tasks").select("title,status,date").eq("status", "pending").limit(20),
         supabase.from("objectives").select("title,progress,status").eq("status", "ativo").limit(10),
@@ -36,7 +35,17 @@ export default function DailyFocus() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a productivity coach. Based on the user's current tasks and goals, identify the TOP 3 priorities for today. Explain why each is important and suggest a time-blocked schedule. Write in Portuguese (BR). Use markdown. Be concise but insightful.` },
+            { role: "system", content: `You are a productivity coach. Based on the user's current tasks and goals, identify the TOP 3 priorities for today. Explain why each is important and suggest a time-blocked schedule.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada prioridade
+- Use **negrito** para horários e termos-chave
+- Use > blockquote para insights sobre por que cada prioridade é importante
+- Use tabela para o cronograma de time-blocking
+- Use --- entre seções
+- No final, adicione "💡 Insight do Dia" com uma reflexão motivacional
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Aqui está meu contexto atual: ${context}\n\nQuais devem ser minhas 3 prioridades de hoje?` },
           ],
         }),
@@ -76,11 +85,7 @@ export default function DailyFocus() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

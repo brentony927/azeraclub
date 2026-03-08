@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import FeatureLock from "@/components/FeatureLock";
 import { BarChart3, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ReactMarkdown from "react-markdown";
+import { Card, CardContent } from "@/components/ui/card";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,7 +45,17 @@ export default function ProductivityInsights() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a productivity coach. Analyze the user's stats and give actionable advice to improve. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a productivity coach. Analyze the user's stats and give actionable advice to improve.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada área de análise (Tarefas, Objetivos, Desafios, Recomendações)
+- Use **negrito** para métricas e dados importantes
+- Use > blockquote para insights estratégicos e observações-chave
+- Use tabela para resumo das métricas (Métrica | Atual | Meta Sugerida)
+- Use --- entre seções principais
+- No final, adicione "📚 Metodologias Aplicadas" com frameworks de produtividade citados
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Minhas métricas: ${stats.completedTasks} tarefas concluídas, ${stats.pendingTasks} pendentes, ${stats.activeGoals} objetivos ativos, ${stats.completedGoals} concluídos, ${stats.activeChallenges} desafios ativos. Me dê conselhos para melhorar.` },
           ],
         }),
@@ -103,11 +113,7 @@ export default function ProductivityInsights() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { GraduationCap, Loader2, Sparkles, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,7 +34,21 @@ export default function SkillGrowth() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a skill development coach. Create a detailed weekly learning plan for the skill the user wants to develop. Structure it in weeks (Week 1, Week 2, etc.) with specific daily activities, resources, and milestones. Use markdown formatting with headers and bullet points. Write in Portuguese (BR). Be practical and actionable. Plan should cover 4-8 weeks.` },
+            { role: "system", content: `You are a skill development coach. Create a detailed weekly learning plan for the skill the user wants to develop. Structure it in weeks (Week 1, Week 2, etc.) with specific daily activities, resources, and milestones. Plan should cover 4-8 weeks.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada seção/semana com subtítulos claros
+- Use ### para sub-seções
+- Use **negrito** para termos-chave e conceitos importantes
+- Use *itálico* para nomes de ferramentas, livros ou recursos
+- Use > blockquote para dicas importantes ou insights estratégicos
+- Use tabelas para comparações, cronogramas ou métricas
+- Use --- entre seções principais
+- Use listas ordenadas (1. 2. 3.) para passos sequenciais
+- Use listas com bullet points para itens não-sequenciais
+- No final, adicione uma seção "📚 Fontes e Referências" com as fontes de onde as informações foram baseadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Crie um plano de desenvolvimento para a habilidade: ${skill}` },
           ],
         }),
@@ -81,14 +95,10 @@ export default function SkillGrowth() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
+            </div>
           </motion.div>
         )}
       </motion.div>
