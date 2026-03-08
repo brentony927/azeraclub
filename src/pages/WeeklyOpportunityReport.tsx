@@ -82,7 +82,7 @@ export default function WeeklyOpportunityReport() {
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <FileText className="h-16 w-16 text-muted-foreground/30 mb-4" />
-            <p className="text-muted-foreground">Clique em "Generate Report" para gerar seu relatório semanal personalizado</p>
+            <p className="text-muted-foreground">Clique em "Gerar Relatório" para gerar seu relatório semanal personalizado</p>
           </div>
         )}
       </div>
