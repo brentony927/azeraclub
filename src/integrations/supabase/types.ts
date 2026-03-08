@@ -222,6 +222,141 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_connections: {
+        Row: {
+          created_at: string
+          from_user_id: string
+          id: string
+          status: string
+          to_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_user_id: string
+          id?: string
+          status?: string
+          to_user_id: string
+        }
+        Update: {
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          status?: string
+          to_user_id?: string
+        }
+        Relationships: []
+      }
+      founder_messages: {
+        Row: {
+          content: string
+          created_at: string
+          from_user_id: string
+          id: string
+          read: boolean | null
+          to_user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          from_user_id: string
+          id?: string
+          read?: boolean | null
+          to_user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          read?: boolean | null
+          to_user_id?: string
+        }
+        Relationships: []
+      }
+      founder_opportunities: {
+        Row: {
+          created_at: string
+          description: string | null
+          equity_available: boolean | null
+          id: string
+          looking_for: string[] | null
+          project: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          equity_available?: boolean | null
+          id?: string
+          looking_for?: string[] | null
+          project?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          equity_available?: boolean | null
+          id?: string
+          looking_for?: string[] | null
+          project?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      founder_profiles: {
+        Row: {
+          age: number | null
+          avatar_url: string | null
+          building: string | null
+          commitment: string | null
+          country: string | null
+          created_at: string
+          id: string
+          industry: string[] | null
+          is_published: boolean | null
+          looking_for: string[] | null
+          name: string
+          skills: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          avatar_url?: string | null
+          building?: string | null
+          commitment?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          industry?: string[] | null
+          is_published?: boolean | null
+          looking_for?: string[] | null
+          name: string
+          skills?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          avatar_url?: string | null
+          building?: string | null
+          commitment?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          industry?: string[] | null
+          is_published?: boolean | null
+          looking_for?: string[] | null
+          name?: string
+          skills?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goal_plans: {
         Row: {
           breakdown: string
