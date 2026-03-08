@@ -146,31 +146,65 @@ export default function PricingSection({
           const isCurrentPlan = currentTier === plan.key;
           const isFree = plan.price === 0;
           const price = getPrice(plan);
+          const isPro = plan.key === "pro";
+          const isBusiness = plan.key === "business";
+
+          const cardBg = isPro
+            ? "linear-gradient(135deg, hsla(152,100%,50%,0.08), hsla(152,80%,30%,0.15), hsla(0,0%,6%,1))"
+            : isBusiness
+              ? "linear-gradient(135deg, hsla(51,100%,50%,0.08), hsla(42,60%,40%,0.15), hsla(0,0%,6%,1))"
+              : undefined;
+
+          const checkColor = isPro
+            ? "text-[hsl(152,80%,50%)]"
+            : isBusiness
+              ? "text-[hsl(45,100%,60%)]"
+              : "text-accent";
+
+          const sparklesColor = isPro ? "hsl(152,100%,50%)" : isBusiness ? "hsl(45,100%,55%)" : "hsl(152,28%,56%)";
+
+          const badgeGradient = isPro
+            ? "moss-gradient"
+            : isBusiness
+              ? "gold-gradient"
+              : "moss-gradient";
+
+          const btnClass = isPro
+            ? "moss-gradient text-primary-foreground hover:opacity-90"
+            : isBusiness
+              ? "gold-gradient text-primary-foreground hover:opacity-90"
+              : "bg-secondary hover:bg-secondary/80 text-foreground";
+
           return (
             <TimelineContent key={plan.key} animationNum={index + 3} timelineRef={pricingRef}>
               <Card
                 className={cn(
-                  "relative glass-card-hover flex flex-col h-full border-border/50",
-                  plan.popular && "border-primary/40 ring-1 ring-primary/20",
-                  isCurrentPlan && "ring-2 ring-primary/50"
+                  "relative glass-card-hover flex flex-col h-full",
+                  isPro && "border-[hsl(152,100%,50%,0.3)] ring-1 ring-[hsl(152,100%,50%,0.15)]",
+                  isBusiness && "border-[hsl(45,100%,50%,0.3)] ring-1 ring-[hsl(45,100%,50%,0.15)]",
+                  !isPro && !isBusiness && "border-border/50",
+                  isCurrentPlan && isPro && "ring-2 ring-[hsl(152,100%,50%,0.4)]",
+                  isCurrentPlan && isBusiness && "ring-2 ring-[hsl(45,100%,50%,0.4)]",
+                  isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50"
                 )}
+                style={cardBg ? { background: cardBg } : undefined}
               >
                 {plan.popular && !isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 moss-gradient rounded-full text-xs font-bold text-primary-foreground z-10">
+                  <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
                     Mais Popular
                   </div>
                 )}
                 {isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 moss-gradient rounded-full text-xs font-bold text-primary-foreground z-10">
+                  <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
                     Seu Plano
                   </div>
                 )}
 
-                {plan.popular && (
+                {(isPro || isBusiness) && (
                   <div className="absolute inset-0 overflow-hidden rounded-[var(--radius)]">
                     <SparklesComp
                       className="absolute inset-0"
-                      color="hsl(152, 28%, 56%)"
+                      color={sparklesColor}
                       size={1.2}
                       density={100}
                       speed={0.4}
@@ -209,9 +243,7 @@ export default function PricingSection({
                   <Button
                     className={cn(
                       "w-full h-11 font-semibold mb-6",
-                      plan.popular || isCurrentPlan
-                        ? "moss-gradient text-primary-foreground hover:opacity-90"
-                        : "bg-secondary hover:bg-secondary/80 text-foreground"
+                      isCurrentPlan || plan.popular ? (isPro ? "moss-gradient text-primary-foreground hover:opacity-90" : isBusiness ? "gold-gradient text-primary-foreground hover:opacity-90" : "moss-gradient text-primary-foreground hover:opacity-90") : btnClass
                     )}
                     disabled={isCurrentPlan || loadingPlan === plan.key}
                     onClick={() =>
@@ -234,7 +266,7 @@ export default function PricingSection({
                     <ul className="space-y-2">
                       {plan.includes.slice(1).map((feature, fi) => (
                         <li key={fi} className="flex items-start gap-2 text-sm">
-                          <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                          <Check className={cn("h-4 w-4 shrink-0 mt-0.5", checkColor)} />
                           <span>{feature}</span>
                         </li>
                       ))}
