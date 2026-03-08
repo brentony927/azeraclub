@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import FeatureLock from "@/components/FeatureLock";
+import { GraduationCap, Loader2, Sparkles, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
+const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
+const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
+
+export default function SkillGrowth() {
+  const { user } = useAuth();
+  const [skill, setSkill] = useState("");
+  const [result, setResult] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const generate = async () => {
+    if (!skill.trim()) return;
+    setIsLoading(true);
+    setResult(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) { toast.error("Faça login para usar esta funcionalidade."); return; }
+
+      const resp = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          requireTier: "pro",
+          messages: [
+            { role: "system", content: `You are a skill development coach. Create a detailed weekly learning plan for the skill the user wants to develop. Structure it in weeks (Week 1, Week 2, etc.) with specific daily activities, resources, and milestones. Use markdown formatting with headers and bullet points. Write in Portuguese (BR). Be practical and actionable. Plan should cover 4-8 weeks.` },
+            { role: "user", content: `Crie um plano de desenvolvimento para a habilidade: ${skill}` },
+          ],
+        }),
+      });
+      if (!resp.ok || !resp.body) throw new Error("AI error");
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "", content = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, idx); buf = buf.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
+          try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) { content += c; setResult(content); } } catch {}
+        }
+      }
+    } catch { toast.error("Erro ao gerar plano"); } finally { setIsLoading(false); }
+  };
+
+  const savePlan = async () => {
+    if (!user || !result) return;
+    const { error } = await (supabase.from("skill_plans" as any).insert as any)({ user_id: user.id, skill: skill.trim(), plan_content: result });
+    if (error) toast.error("Erro ao salvar"); else toast.success("Plano salvo!");
+  };
+
+  return (
+    <FeatureLock minTier="pro" featureName="Skill Growth Planner">
+      <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
+        <motion.div variants={item}>
+          <h1 className="text-3xl font-serif font-bold">Skill Growth Planner</h1>
+          <p className="text-muted-foreground text-sm mt-1">Plan Your Skill Development</p>
+        </motion.div>
+        <motion.div variants={item} className="flex gap-3">
+          <Input placeholder="What skill do you want to develop?" value={skill} onChange={(e) => setSkill(e.target.value)} className="flex-1" />
+          <Button onClick={generate} disabled={isLoading || !skill.trim()} className="gap-2">
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Learning Plan</>}
+          </Button>
+        </motion.div>
+        {result && (
+          <motion.div variants={item}>
+            <article className="glass-card p-8 sm:p-10">
+              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
+                <ReactMarkdown>{result}</ReactMarkdown>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Save Plan</Button>
+              </div>
+            </article>
+          </motion.div>
+        )}
+      </motion.div>
+    </FeatureLock>
+  );
+}

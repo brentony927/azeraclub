@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Lightbulb, Plus, Trash2 } from "lucide-react";
+import { Lightbulb, Plus, Trash2, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 interface Idea {
   id: string;
@@ -34,6 +37,8 @@ export default function IdeasVault() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("geral");
+  const [expandingId, setExpandingId] = useState<string | null>(null);
+  const [expandedContent, setExpandedContent] = useState<Record<string, string>>({});
 
   const fetchIdeas = async () => {
     if (!user) return;
@@ -59,6 +64,43 @@ export default function IdeasVault() {
   const updateStatus = async (id: string, status: string) => {
     await supabase.from("ideas").update({ status }).eq("id", id);
     fetchIdeas();
+  };
+
+  const expandWithAI = async (idea: Idea) => {
+    setExpandingId(idea.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) { toast.error("Faça login."); return; }
+      const resp = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: `You are a creative business consultant. Expand and develop the user's idea into a detailed concept with: market potential, implementation steps, resources needed, and next actions. Write in Portuguese (BR). Use markdown. Be practical.` },
+            { role: "user", content: `Expanda esta ideia: "${idea.title}". ${idea.description ? `Descrição: ${idea.description}` : ""}` },
+          ],
+        }),
+      });
+      if (!resp.ok || !resp.body) throw new Error("AI error");
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "", content = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, idx); buf = buf.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
+          try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) { content += c; setExpandedContent(prev => ({ ...prev, [idea.id]: content })); } } catch {}
+        }
+      }
+    } catch { toast.error("Erro ao expandir ideia"); } finally { setExpandingId(null); }
   };
 
   return (
@@ -117,10 +159,21 @@ export default function IdeasVault() {
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                  <Button size="sm" variant="ghost" onClick={() => expandWithAI(idea)} disabled={expandingId === idea.id} className="gap-1 text-xs h-7 px-2">
+                    {expandingId === idea.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                    {!expandingId || expandingId !== idea.id ? "AI" : ""}
+                  </Button>
                   <button onClick={() => deleteIdea(idea.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </CardContent>
+                {expandedContent[idea.id] && (
+                  <div className="px-4 pb-4 pt-0 border-t border-border/50 mt-2">
+                    <div className="prose prose-sm dark:prose-invert max-w-none mt-3">
+                      <ReactMarkdown>{expandedContent[idea.id]}</ReactMarkdown>
+                    </div>
+                  </div>
+                )}
               </Card>
             </motion.div>
           ))}
