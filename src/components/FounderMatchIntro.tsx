@@ -1,11 +1,14 @@
 import { useRef, useState, useEffect, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 
+// Extend THREE elements for r3f
+extend({ Points: THREE.Points, BufferGeometry: THREE.BufferGeometry, PointsMaterial: THREE.PointsMaterial, Mesh: THREE.Mesh, SphereGeometry: THREE.SphereGeometry, MeshBasicMaterial: THREE.MeshBasicMaterial });
+
 // Pre-computed "AZERA" letter positions on a grid
 function generateAzeraPositions(count: number): Float32Array {
-  const letters = [
+  const letters: [number, number][] = [
     // A
     [0,0],[0,1],[0,2],[0,3],[0,4],[1,4],[2,4],[3,4],[3,3],[3,2],[3,1],[3,0],[1,2],[2,2],
     // Z
@@ -30,7 +33,6 @@ function generateAzeraPositions(count: number): Float32Array {
       positions[i * 3 + 1] = letters[i][1] * scaleY + offsetY;
       positions[i * 3 + 2] = 0;
     } else {
-      // Extra particles scattered near center
       positions[i * 3] = (Math.random() - 0.5) * 10;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 6;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 2;
@@ -45,11 +47,10 @@ function Particles({ onComplete }: { onComplete: () => void }) {
   const materialRef = useRef<THREE.PointsMaterial>(null);
   const { camera } = useThree();
   const phaseRef = useRef<"gather" | "hold" | "explode" | "done">("gather");
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   const logoPositions = useMemo(() => generateAzeraPositions(count), []);
 
-  const [randomPositions] = useState(() => {
+  const randomPositions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 20;
@@ -57,9 +58,9 @@ function Particles({ onComplete }: { onComplete: () => void }) {
       pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
     }
     return pos;
-  });
+  }, []);
 
-  const [explodeVelocities] = useState(() => {
+  const explodeVelocities = useMemo(() => {
     const vel = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
@@ -69,15 +70,15 @@ function Particles({ onComplete }: { onComplete: () => void }) {
       vel[i * 3 + 2] = (Math.random() - 0.5) * speed;
     }
     return vel;
-  });
+  }, []);
 
   const progressRef = useRef({ gather: 0, opacity: 1 });
+  const explodeStartTime = useRef(0);
 
   useEffect(() => {
     const tl = gsap.timeline();
     const prog = progressRef.current;
 
-    // Phase 1: Gather (0 -> 1.8s)
     tl.to(prog, {
       gather: 1,
       duration: 1.8,
@@ -85,19 +86,16 @@ function Particles({ onComplete }: { onComplete: () => void }) {
       onStart: () => { phaseRef.current = "gather"; },
     });
 
-    // Phase 2: Hold (1.8 -> 2.3s)
     tl.to({}, {
       duration: 0.5,
       onStart: () => { phaseRef.current = "hold"; },
     });
 
-    // Phase 3: Explode (2.3 -> 3.5s)
     tl.to({}, {
       duration: 1.2,
       onStart: () => { phaseRef.current = "explode"; },
     });
 
-    // Fade out overlay
     tl.to(prog, {
       opacity: 0,
       duration: 0.5,
@@ -108,20 +106,17 @@ function Particles({ onComplete }: { onComplete: () => void }) {
       },
     }, "-=0.5");
 
-    // Camera zoom
     gsap.to(camera.position, { z: 4.5, duration: 2, ease: "power2.inOut" });
     gsap.to(camera.position, { z: 6, duration: 1.5, delay: 2.3, ease: "power2.out" });
 
-    timelineRef.current = tl;
     return () => { tl.kill(); };
   }, [camera, onComplete]);
 
-  const explodeStartTime = useRef(0);
-
   useFrame((state) => {
     if (!pointsRef.current) return;
-    const positions = pointsRef.current.geometry.attributes.position;
-    const arr = positions.array as Float32Array;
+    const geo = pointsRef.current.geometry;
+    const posAttr = geo.getAttribute("position") as THREE.BufferAttribute;
+    const arr = posAttr.array as Float32Array;
     const phase = phaseRef.current;
     const prog = progressRef.current;
 
@@ -133,7 +128,6 @@ function Particles({ onComplete }: { onComplete: () => void }) {
         arr[i3 + 2] = THREE.MathUtils.lerp(randomPositions[i3 + 2], logoPositions[i3 + 2], prog.gather);
       }
     } else if (phase === "hold") {
-      // Subtle pulse
       const pulse = Math.sin(state.clock.elapsedTime * 10) * 0.02;
       if (materialRef.current) {
         materialRef.current.size = 0.12 + pulse;
@@ -149,34 +143,37 @@ function Particles({ onComplete }: { onComplete: () => void }) {
       }
     }
 
-    positions.needsUpdate = true;
+    posAttr.needsUpdate = true;
 
     if (materialRef.current) {
       materialRef.current.opacity = prog.opacity;
     }
   });
 
+  // Create geometry imperatively
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(randomPositions), 3));
+    return geo;
+  }, [randomPositions]);
+
+  const material = useMemo(() => {
+    return new THREE.PointsMaterial({
+      size: 0.12,
+      color: new THREE.Color("#8b5cf6"),
+      transparent: true,
+      opacity: 1,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+    });
+  }, []);
+
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={new Float32Array(randomPositions)}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        ref={materialRef}
-        size={0.12}
-        color="#8b5cf6"
-        transparent
-        opacity={1}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        sizeAttenuation
-      />
-    </points>
+    <primitive
+      ref={pointsRef}
+      object={new THREE.Points(geometry, material)}
+    />
   );
 }
 
@@ -196,16 +193,15 @@ function GlowOrbs() {
     }
   });
 
+  const mat1 = useMemo(() => new THREE.MeshBasicMaterial({ color: "#6366f1", transparent: true, opacity: 0.15 }), []);
+  const mat2 = useMemo(() => new THREE.MeshBasicMaterial({ color: "#8b5cf6", transparent: true, opacity: 0.1 }), []);
+  const geo1 = useMemo(() => new THREE.SphereGeometry(0.3, 16, 16), []);
+  const geo2 = useMemo(() => new THREE.SphereGeometry(0.25, 16, 16), []);
+
   return (
     <>
-      <mesh ref={ref1}>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshBasicMaterial color="#6366f1" transparent opacity={0.15} />
-      </mesh>
-      <mesh ref={ref2}>
-        <sphereGeometry args={[0.25, 16, 16]} />
-        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.1} />
-      </mesh>
+      <mesh ref={ref1} geometry={geo1} material={mat1} />
+      <mesh ref={ref2} geometry={geo2} material={mat2} />
     </>
   );
 }

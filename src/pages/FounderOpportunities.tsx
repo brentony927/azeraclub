@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Briefcase, Plus, Loader2, DollarSign } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import FeatureLock from "@/components/FeatureLock";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
 const LOOKING_OPTIONS = ["Co-founder", "Developer", "Investor", "Marketing Partner", "Designer"];
 
