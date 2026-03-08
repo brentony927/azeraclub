@@ -56,9 +56,12 @@ export default function Layout() {
               </PageTransition>
             </AnimatePresence>
           </main>
-          <Footer />
+          <div className="hidden md:block">
+            <Footer />
+          </div>
         </div>
       </div>
+      <MobileBottomNav />
       <AzeraChatbot />
     </SidebarProvider>
   );

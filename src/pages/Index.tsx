@@ -222,7 +222,7 @@ export default function Index() {
       </motion.div>
 
       {/* AZERA Score + AI Tip row */}
-      <motion.div variants={item} className="grid sm:grid-cols-2 gap-3">
+      <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-3">
