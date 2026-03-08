@@ -1,21 +1,34 @@
 
 
-## Plano: Definir conta como Elite
+## Alternativas para Teste de Resistência do App
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+### Por que não posso criar 30 contas diretamente
 
-### O que fazer
+1. Contas precisam ser criadas via `supabase.auth.signUp()` — inserir direto na tabela `profiles` não gera sessões válidas
+2. Cada conta precisa de um email real ou confirmado para funcionar
+3. Criar contas bot em produção polui o banco de dados real
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+### O que posso fazer
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+**Opção A: Teste Manual Guiado**
+- Posso navegar pelo app com a sua conta atual (Business) usando o browser automatizado
+- Testar cada fluxo: AI, agenda, experiências, viagens, propriedades, saúde, social
+- Verificar se todas as funcionalidades Pro e Business funcionam
+- Testar responsividade em diferentes tamanhos de tela
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+**Opção B: Criar uma Página de Teste Interna**
+- Criar uma página `/admin/test` protegida que simula operações CRUD em massa
+- Testa inserções, leituras e deleções em todas as tabelas
+- Mede tempo de resposta de cada operação
+- Verifica limites de RLS e permissões
 
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+**Opção C: Testes Automatizados com Vitest**
+- Criar testes unitários e de integração para os componentes críticos
+- Testar renderização de todas as páginas
+- Verificar lógica de acesso por tier (free/pro/business)
+- Executável com um comando, sem criar contas reais
+
+### Recomendação
+
+A **Opção A** (teste manual pelo browser) é a mais rápida e prática agora. Posso testar todos os fluxos com a sua conta Business que já está logada.
 
