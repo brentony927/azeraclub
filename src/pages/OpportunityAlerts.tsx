@@ -90,23 +90,23 @@ export default function OpportunityAlerts() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Strategic Opportunity Alerts">
+    <FeatureLock minTier="business" featureName="Alertas de Oportunidades">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Opportunity Alerts</h1>
-          <p className="text-muted-foreground text-sm mt-1">Configure industries and scan for opportunities</p>
+          <h1 className="text-3xl font-serif font-bold">Alertas de Oportunidades</h1>
+          <p className="text-muted-foreground text-sm mt-1">Configure indústrias e escaneie oportunidades</p>
         </motion.div>
         <motion.div variants={item}>
           <Card>
             <CardContent className="p-4 space-y-3">
-              <p className="text-xs font-medium text-muted-foreground">Your Industries</p>
+              <p className="text-xs font-medium text-muted-foreground">As suas Indústrias</p>
               <div className="flex flex-wrap gap-2">
                 {industries.map(i => (
                   <Badge key={i} variant="secondary" className="gap-1">{i} <button onClick={() => removeIndustry(i)}><X className="h-3 w-3" /></button></Badge>
                 ))}
               </div>
               <div className="flex gap-2">
-                <Input placeholder="Add industry..." value={newIndustry} onChange={(e) => setNewIndustry(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addIndustry()} className="flex-1" />
+                <Input placeholder="Adicionar indústria..." value={newIndustry} onChange={(e) => setNewIndustry(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addIndustry()} className="flex-1" />
                 <Button size="sm" variant="outline" onClick={addIndustry}><Plus className="h-4 w-4" /></Button>
               </div>
             </CardContent>
@@ -114,7 +114,7 @@ export default function OpportunityAlerts() {
         </motion.div>
         <motion.div variants={item}>
           <Button onClick={scanNow} disabled={isLoading || industries.length === 0} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning...</> : <><Sparkles className="h-4 w-4" /> Scan Now</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Escaneando...</> : <><Sparkles className="h-4 w-4" /> Escanear Agora</>}
           </Button>
         </motion.div>
         {result && (
