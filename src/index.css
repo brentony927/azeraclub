@@ -310,7 +310,7 @@
 }
 
 /* ====== PRO THEME (green neon) — dark mode ====== */
-.dark.pro-theme {
+.dark .pro-theme {
   --background: 152 8% 5%;
   --foreground: 0 0% 96%;
   --card: 152 6% 8%;
