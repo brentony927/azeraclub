@@ -375,6 +375,15 @@ export default function Landing() {
           <p className="text-xs text-muted-foreground/60">
             Free plan available · No credit card required
           </p>
+          <div className="flex items-center justify-center gap-6 pt-4">
+            <Link to="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">FAQ</Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Contact</Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Terms</Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacy</Link>
+          </div>
         </ScrollReveal>
       </section>
 
