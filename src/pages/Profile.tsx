@@ -75,6 +75,7 @@ export default function Profile() {
   const [venturesCount, setVenturesCount] = useState(0);
   const [opportunitiesCount, setOpportunitiesCount] = useState(0);
   const [currentVenture, setCurrentVenture] = useState<any>(null);
+  const [visitCount, setVisitCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
