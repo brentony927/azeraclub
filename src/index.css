@@ -501,3 +501,22 @@
     transform: none !important;
   }
 }
+
+/* ── Confetti animation ── */
+@keyframes confettifall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.founder-confetti::before,
+.founder-confetti::after {
+  content: '🎉🎊✨🚀⭐';
+  position: fixed;
+  top: 0;
+  font-size: 2rem;
+  animation: confettifall 2s ease-out forwards;
+  pointer-events: none;
+  z-index: 100;
+}
+.founder-confetti::before { left: 20%; animation-delay: 0s; }
+.founder-confetti::after { left: 60%; animation-delay: 0.3s; }
