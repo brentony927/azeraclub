@@ -1,21 +1,55 @@
 
 
-## Plano: Definir conta como Elite
+## Memória Persistente para AZR AI
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+A IA já tem histórico de conversas e contexto do usuário (tarefas, objetivos, etc). O que falta é **memória entre conversas** — a IA lembrar de preferências, fatos pessoais e decisões mencionadas pelo usuário em conversas anteriores.
 
-### O que fazer
+---
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+### Como funciona
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+1. **Tabela `ai_memories`** — armazena fatos extraídos das conversas (ex: "Usuário prefere acordar às 5h", "Startup dele é no setor de IA")
+2. **Extração automática** — ao final de cada conversa (quando o assistant responde), a edge function analisa as últimas mensagens e extrai fatos relevantes usando tool calling
+3. **Injeção no prompt** — as memórias são carregadas junto com o contexto do usuário e injetadas no system prompt
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+---
 
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+### 1. Migração — tabela `ai_memories`
+
+Nova tabela:
+- `id` uuid PK
+- `user_id` uuid NOT NULL
+- `content` text NOT NULL (o fato/memória)
+- `category` text (preferencia, fato, decisao, meta)
+- `created_at` timestamptz
+- `source_conversation_id` uuid nullable
+
+RLS: usuário gerencia as próprias memórias.
+
+### 2. Edge function `azera-ai` — alterações
+
+- Após montar `finalMessages`, buscar memórias do usuário (`ai_memories`, limit 30, mais recentes)
+- Injetar bloco `--- MEMÓRIAS DA IA ---` no system prompt com os fatos
+- Adicionar endpoint separado: quando o body contém `{ extractMemories: true, conversation: [...] }`, usar tool calling para extrair fatos e salvar na tabela
+
+### 3. Frontend `AI.tsx` — alterações
+
+- Após a resposta do assistant ser finalizada (`onDone`), fazer uma chamada assíncrona (fire-and-forget) para extrair memórias das últimas mensagens
+- Adicionar seção "Memórias" no sidebar com botão para ver/deletar memórias salvas
+- Badge mostrando quantidade de memórias
+
+### 4. Nova página/modal de Memórias
+
+- Lista de memórias com categoria, data e botão de deletar
+- Acessível pelo sidebar do chat
+
+---
+
+### Arquivos
+
+| Ação | Arquivo |
+|------|---------|
+| Migration | Nova tabela `ai_memories` |
+| Edit | `supabase/functions/azera-ai/index.ts` — injetar memórias + endpoint de extração |
+| Edit | `src/pages/AI.tsx` — extração automática + UI de memórias no sidebar |
 
