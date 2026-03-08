@@ -5,41 +5,54 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-const COMMITMENT_LABELS: Record<string, string> = {
-  side_project: "Side Project",
-  startup_idea: "Startup Idea",
-  full_business: "Full Business",
-};
+import { COMMITMENT_LABELS } from "@/data/founderConstants";
+import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 
 export default function FounderProfile() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
+  const [myProfile, setMyProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
-    const fetch = async () => {
+    const fetchAll = async () => {
       const { data } = await supabase.from("founder_profiles").select("*").eq("id", id).single();
       if (data) {
         setProfile(data);
+
+        // Increment views
+        if (user && data.user_id !== user.id) {
+          await supabase.from("founder_profiles").update({ profile_views: (data.profile_views || 0) + 1 }).eq("id", id);
+          // Notify owner
+          await supabase.from("founder_notifications").insert({
+            user_id: data.user_id,
+            type: "profile_view",
+            title: "Alguém visualizou seu perfil",
+            related_user_id: user.id,
+          });
+        }
+
         if (user) {
-          const { data: conn } = await supabase
-            .from("founder_connections")
-            .select("status")
-            .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${data.user_id}),and(from_user_id.eq.${data.user_id},to_user_id.eq.${user.id})`)
-            .maybeSingle();
-          if (conn) setConnectionStatus(conn.status);
+          const [connRes, myRes] = await Promise.all([
+            supabase.from("founder_connections").select("status")
+              .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${data.user_id}),and(from_user_id.eq.${data.user_id},to_user_id.eq.${user.id})`)
+              .maybeSingle(),
+            supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
+          ]);
+          if (connRes.data) setConnectionStatus(connRes.data.status);
+          if (myRes.data) setMyProfile(myRes.data);
         }
       }
       setLoading(false);
     };
-    fetch();
+    fetchAll();
   }, [id, user]);
 
   const handleConnect = async () => {
@@ -51,20 +64,22 @@ export default function FounderProfile() {
     });
     if (!error) {
       setConnectionStatus("pending");
+      await supabase.from("founder_notifications").insert({
+        user_id: profile.user_id,
+        type: "connection",
+        title: `${myProfile?.name || "Alguém"} quer se conectar`,
+      });
       toast({ title: "Solicitação enviada! 🤝" });
     }
   };
 
-  if (loading) {
-    return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
-  }
-
-  if (!profile) {
-    return <div className="text-center py-16 text-muted-foreground">Perfil não encontrado.</div>;
-  }
+  if (loading) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
+  if (!profile) return <div className="text-center py-16 text-muted-foreground">Perfil não encontrado.</div>;
 
   const initials = profile.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();
   const isOwn = user?.id === profile.user_id;
+  const matchScore = myProfile && !isOwn ? calculateMatchScore(myProfile, profile) : null;
+  const repScore = Math.min(100, profile.reputation_score || 0);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -83,17 +98,43 @@ export default function FounderProfile() {
               )}
             </div>
             <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-2xl font-bold text-foreground">{profile.name}</h1>
-              {profile.country && (
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <h1 className="text-2xl font-bold text-foreground">{profile.name}</h1>
+                {profile.is_verified && (
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                )}
+              </div>
+              {(profile.country || profile.city) && (
                 <div className="flex items-center gap-1 justify-center sm:justify-start mt-1">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">{profile.country}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {[profile.city, profile.country].filter(Boolean).join(", ")}
+                  </span>
                 </div>
               )}
-              {profile.commitment && (
-                <Badge variant="outline" className="mt-2">{COMMITMENT_LABELS[profile.commitment] || profile.commitment}</Badge>
-              )}
+              <div className="flex items-center gap-2 mt-2 justify-center sm:justify-start flex-wrap">
+                {profile.commitment && (
+                  <Badge variant="outline">{COMMITMENT_LABELS[profile.commitment] || profile.commitment}</Badge>
+                )}
+                {matchScore !== null && matchScore > 0 && (
+                  <Badge className={`border ${getMatchColor(matchScore)}`}>
+                    <Sparkles className="h-3 w-3 mr-1" /> Match {matchScore}%
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground justify-center sm:justify-start">
+                <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} visualizações</span>
+              </div>
             </div>
+          </div>
+
+          {/* Reputation */}
+          <div className="mt-5">
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-xs uppercase tracking-wider text-muted-foreground">Founder Score</h3>
+              <span className="text-xs font-semibold text-foreground">{repScore}/100</span>
+            </div>
+            <Progress value={repScore} className="h-2" />
           </div>
 
           {profile.building && (
@@ -117,6 +158,17 @@ export default function FounderProfile() {
               <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Indústria</h3>
               <div className="flex flex-wrap gap-2">
                 {profile.industry.map((i: string) => <Badge key={i} variant="outline">{i}</Badge>)}
+              </div>
+            </div>
+          )}
+
+          {profile.interests?.length > 0 && (
+            <div className="mt-5">
+              <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interesses</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {profile.interests.map((i: string) => (
+                  <Badge key={i} className="text-[10px] bg-primary/10 text-primary border-primary/20">{i}</Badge>
+                ))}
               </div>
             </div>
           )}

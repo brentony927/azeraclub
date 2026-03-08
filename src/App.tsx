@@ -68,6 +68,7 @@ import FounderFeed from "./pages/FounderFeed";
 import FounderProfile from "./pages/FounderProfile";
 import FounderMessages from "./pages/FounderMessages";
 import FounderOpportunities from "./pages/FounderOpportunities";
+import FounderNotificationsPage from "./pages/FounderNotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -138,6 +139,7 @@ const App = () => (
               <Route path="/founder-profile/:id" element={<FounderProfile />} />
               <Route path="/founder-messages" element={<FounderMessages />} />
               <Route path="/founder-opportunities" element={<FounderOpportunities />} />
+              <Route path="/founder-notifications" element={<FounderNotificationsPage />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
