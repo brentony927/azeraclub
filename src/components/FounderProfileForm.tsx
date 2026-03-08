@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Rocket, Search } from "lucide-react";
+import { Camera, Pencil, Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   SKILL_OPTIONS, INDUSTRY_OPTIONS, LOOKING_FOR_OPTIONS,
   COMMITMENT_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
@@ -23,6 +24,7 @@ interface FounderFormData {
   looking_for: string[];
   commitment: string;
   interests: string[];
+  avatar_url?: string;
 }
 
 interface FounderProfileFormProps {
@@ -30,9 +32,10 @@ interface FounderProfileFormProps {
   onSubmit: (data: FounderFormData) => void;
   loading?: boolean;
   submitLabel?: string;
+  userId?: string;
 }
 
-export default function FounderProfileForm({ initialData, onSubmit, loading, submitLabel = "Publicar Perfil" }: FounderProfileFormProps) {
+export default function FounderProfileForm({ initialData, onSubmit, loading, submitLabel = "Publicar Perfil", userId }: FounderProfileFormProps) {
   const [form, setForm] = useState<FounderFormData>({
     name: initialData?.name || "",
     age: initialData?.age || null,
@@ -48,6 +51,17 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
   });
 
   const [interestSearch, setInterestSearch] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(initialData?.avatar_url || null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
 
   const toggleArrayField = (field: "skills" | "industry" | "looking_for" | "interests", value: string) => {
     setForm(prev => ({
@@ -58,9 +72,23 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    let avatar_url: string | undefined;
+
+    if (avatarFile && userId) {
+      setUploading(true);
+      const ext = avatarFile.name.split(".").pop();
+      const path = `${userId}/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("avatars").upload(path, avatarFile, { upsert: true });
+      if (!error) {
+        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+        avatar_url = urlData.publicUrl;
+      }
+      setUploading(false);
+    }
+
+    onSubmit({ ...form, avatar_url });
   };
 
   const renderMultiSelect = (label: string, field: "skills" | "industry" | "looking_for", options: string[]) => (
@@ -92,9 +120,34 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
   return (
     <Card className="border-border/50 bg-card/80 backdrop-blur-sm max-w-2xl mx-auto">
       <CardHeader className="text-center pb-2">
-        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-          <Rocket className="h-7 w-7 text-primary" />
-        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleAvatarSelect}
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="relative w-20 h-20 rounded-full mx-auto mb-3 group overflow-hidden border-2 border-dashed border-border hover:border-primary transition-colors"
+        >
+          {avatarPreview ? (
+            <>
+              <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <Pencil className="h-5 w-5 text-white" />
+              </div>
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-muted/50">
+              <Camera className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+            </div>
+          )}
+        </button>
+        <p className="text-[11px] text-muted-foreground -mt-1 mb-2">
+          {avatarPreview ? "Alterar foto" : "Adicionar Foto"}
+        </p>
         <CardTitle className="text-xl font-bold">Crie seu Perfil de Fundador</CardTitle>
         <p className="text-sm text-muted-foreground mt-1">Conecte-se com co-fundadores, parceiros e colaboradores.</p>
       </CardHeader>
@@ -190,8 +243,8 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
             </Select>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading || !form.name.trim()}>
-            {loading ? "Publicando..." : submitLabel}
+          <Button type="submit" className="w-full" disabled={loading || uploading || !form.name.trim()}>
+            {uploading ? "Enviando foto..." : loading ? "Publicando..." : submitLabel}
           </Button>
         </form>
       </CardContent>
