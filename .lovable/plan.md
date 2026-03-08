@@ -1,27 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Dashboard Visual Upgrade + Sino de Notificações
+### Top 5 Priorities
 
-### Mudanças
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-**1. `src/index.css`**
-- Alterar `.animated-bg::before` no tema claro (`:root`) para usar gradiente verde escuro em vez do quase-branco atual:
-  - `radial-gradient(ellipse ... hsl(152 40% 20% / 0.12) ...)` — tons de verde dark
-- Manter animações `bgFloat` intactas
-- Manter dark mode como está (já escuro)
-- Adicionar classe `.greeting-gradient-text` com gradiente verde→ciano animado para o texto de saudação
+### Scores by Area
 
-**2. `src/pages/Index.tsx`**
-- Trocar `moss-text` no greeting por `greeting-gradient-text` para "Boa tarde, Nome." inteiro ficar gradiente
-- Adicionar sino de notificações ao lado do texto "Hoje: X tarefas pendentes", no canto direito
-- Sino usa `DropdownMenu` com lista de notificações do `founder_notifications` (últimas 20)
-- Badge com contagem de não-lidas
-- Opções: apagar todas, apagar individual (delete da tabela)
-- Ao clicar numa notificação, marca como lida e navega
-
-### Arquivos Afetados
-| Arquivo | Mudança |
-|---------|---------|
-| `src/index.css` | Gradiente verde dark no light mode, classe greeting-gradient-text |
-| `src/pages/Index.tsx` | Greeting gradiente, sino de notificações com dropdown |
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |

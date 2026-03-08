@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { format, startOfWeek, endOfWeek } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { format, startOfWeek, endOfWeek, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface Task {
   id: string;
@@ -24,6 +34,16 @@ interface SocialEvent {
   title: string;
   date: string | null;
   location: string | null;
+}
+
+interface Notification {
+  id: string;
+  title: string;
+  body: string | null;
+  type: string;
+  read: boolean;
+  created_at: string;
+  action_url: string | null;
 }
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
@@ -58,6 +78,7 @@ export default function Index() {
   const [todayTasks, setTodayTasks] = useState<Task[]>([]);
   const [weekTasks, setWeekTasks] = useState<Task[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<SocialEvent[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [aiTip] = useState(() => AI_TIPS[Math.floor(Math.random() * AI_TIPS.length)]);
   const [insight] = useState(() => DAILY_INSIGHTS[Math.floor(Math.random() * DAILY_INSIGHTS.length)]);
 
@@ -85,6 +106,10 @@ export default function Index() {
     supabase.from("social_events").select("*").eq("user_id", user.id)
       .gte("date", today).order("date", { ascending: true }).limit(3)
       .then(({ data }) => { if (data) setUpcomingEvents(data as SocialEvent[]); });
+
+    supabase.from("founder_notifications").select("*").eq("user_id", user.id)
+      .order("created_at", { ascending: false }).limit(20)
+      .then(({ data }) => { if (data) setNotifications(data as Notification[]); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -95,30 +120,109 @@ export default function Index() {
     setWeekTasks((prev) => prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)));
   };
 
+  const deleteNotification = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await supabase.from("founder_notifications").delete().eq("id", id);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    toast.success("Notificação removida");
+  };
+
+  const deleteAllNotifications = async () => {
+    if (!user) return;
+    await supabase.from("founder_notifications").delete().eq("user_id", user.id);
+    setNotifications([]);
+    toast.success("Todas as notificações removidas");
+  };
+
+  const handleNotificationClick = async (n: Notification) => {
+    if (!n.read) {
+      await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
+      setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+    }
+    if (n.action_url) navigate(n.action_url);
+  };
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
   const pendingCount = todayTasks.filter((t) => t.status === "pending").length;
   const doneCount = todayTasks.filter((t) => t.status === "done").length;
 
-  // AZERA Score calculation
   const weekDone = weekTasks.filter((t) => t.status === "done").length;
   const weekTotal = weekTasks.length;
   const score = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-8">
-      {/* Greeting */}
+      {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
-        <h1 className="text-3xl lg:text-4xl font-serif font-bold">
-          {getGreeting()}, <span className="moss-text">{displayName.split(" ")[0]}</span>.
+        <h1 className="text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
+          {getGreeting()}, {displayName.split(" ")[0]}.
         </h1>
-        <p className="text-muted-foreground text-sm">
-          📅 Hoje: {pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}
-          {doneCount > 0 && ` · ${doneCount} concluída${doneCount > 1 ? "s" : ""}`}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground text-sm">
+            📅 Hoje: {pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}
+            {doneCount > 0 && ` · ${doneCount} concluída${doneCount > 1 ? "s" : ""}`}
+          </p>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-destructive text-destructive-foreground">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto">
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-sm font-semibold">Notificações</span>
+                {notifications.length > 0 && (
+                  <button onClick={deleteAllNotifications} className="text-xs text-destructive hover:underline">
+                    Apagar todas
+                  </button>
+                )}
+              </div>
+              <DropdownMenuSeparator />
+              {notifications.length === 0 ? (
+                <div className="px-3 py-6 text-center text-sm text-muted-foreground">
+                  Nenhuma notificação
+                </div>
+              ) : (
+                notifications.map((n) => (
+                  <DropdownMenuItem
+                    key={n.id}
+                    className="flex items-start gap-3 px-3 py-2.5 cursor-pointer"
+                    onClick={() => handleNotificationClick(n)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-accent shrink-0" />}
+                        <p className={`text-sm truncate ${!n.read ? "font-semibold" : "text-muted-foreground"}`}>
+                          {n.title}
+                        </p>
+                      </div>
+                      {n.body && <p className="text-xs text-muted-foreground truncate mt-0.5">{n.body}</p>}
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: ptBR })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => deleteNotification(n.id, e)}
+                      className="shrink-0 p-1 text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </DropdownMenuItem>
+                ))
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </motion.div>
 
       {/* AZERA Score + AI Tip row */}
       <motion.div variants={item} className="grid sm:grid-cols-2 gap-3">
-        {/* AZERA Score */}
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-3">
@@ -136,7 +240,6 @@ export default function Index() {
           </CardContent>
         </Card>
 
-        {/* AI Tip */}
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5 flex flex-col justify-between h-full">
             <div>

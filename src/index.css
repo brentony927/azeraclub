@@ -226,9 +226,9 @@
     position: absolute;
     inset: -50%;
     background: 
-      radial-gradient(ellipse 600px 600px at 20% 50%, hsl(var(--primary) / 0.03) 0%, transparent 70%),
-      radial-gradient(ellipse 800px 400px at 80% 20%, hsl(var(--primary) / 0.02) 0%, transparent 70%),
-      radial-gradient(ellipse 400px 800px at 50% 80%, hsl(var(--primary) / 0.03) 0%, transparent 70%);
+      radial-gradient(ellipse 600px 600px at 20% 50%, hsl(152 40% 20% / 0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 800px 400px at 80% 20%, hsl(160 35% 18% / 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 800px at 50% 80%, hsl(145 45% 22% / 0.11) 0%, transparent 70%);
     animation: bgFloat 20s ease-in-out infinite;
     z-index: 0;
     pointer-events: none;
@@ -1172,4 +1172,27 @@
   .azera-brand-text { animation: none; }
   .sidebar-nav-item { transition: none; }
   .sidebar-nav-item:hover { transform: none; }
+}
+
+/* ── Greeting gradient text ── */
+.greeting-gradient-text {
+  background: linear-gradient(135deg, hsl(152 60% 40%), hsl(180 70% 45%), hsl(152 60% 40%));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: greetingShimmer 3s ease-in-out infinite;
+}
+
+.dark .greeting-gradient-text {
+  background: linear-gradient(135deg, hsl(152 80% 55%), hsl(180 90% 60%), hsl(152 80% 55%));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes greetingShimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
 }
