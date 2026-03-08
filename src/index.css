@@ -562,13 +562,19 @@
 
 .founder-sidebar-item {
   color: hsl(42, 50%, 65%);
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.12), hsla(42, 60%, 70%, 0.08));
+  border: 1px solid hsla(42, 80%, 55%, 0.12);
+  border-radius: 8px;
 }
 .founder-sidebar-item:hover {
-  background: hsla(42, 80%, 55%, 0.1);
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.25), hsla(42, 60%, 70%, 0.15));
+  border-color: hsla(42, 80%, 55%, 0.3);
+  box-shadow: 0 0 10px hsla(42, 80%, 55%, 0.12);
 }
 
 .founder-sidebar-item-active {
-  background: linear-gradient(90deg, hsla(42, 80%, 55%, 0.15), hsla(42, 60%, 70%, 0.08));
-  border: 1px solid hsla(42, 80%, 55%, 0.25);
-  box-shadow: 0 0 12px hsla(42, 80%, 55%, 0.15);
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.3), hsla(42, 60%, 70%, 0.18));
+  border: 1px solid hsla(42, 80%, 55%, 0.35);
+  border-radius: 8px;
+  box-shadow: 0 0 16px hsla(42, 80%, 55%, 0.2);
 }
