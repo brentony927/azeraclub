@@ -70,7 +70,7 @@ import WeeklyOpportunityReport from "./pages/WeeklyOpportunityReport";
 import SavedItems from "./pages/SavedItems";
 import StartupRankings from "./pages/StartupRankings";
 
-// Founder Match pages
+// Founder Alignment pages
 import FounderMatch from "./pages/FounderMatch";
 import FounderFeed from "./pages/FounderFeed";
 import FounderProfile from "./pages/FounderProfile";
@@ -149,7 +149,7 @@ const App = () => (
               <Route path="/saved" element={<SavedItems />} />
               <Route path="/startup-rankings" element={<StartupRankings />} />
 
-              {/* Founder Match routes */}
+              {/* Founder Alignment routes */}
               <Route path="/founder-match" element={<FounderMatch />} />
               <Route path="/founder-feed" element={<FounderFeed />} />
               <Route path="/founder-profile/:id" element={<FounderProfile />} />
