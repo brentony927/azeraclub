@@ -113,6 +113,7 @@ const founderItems = [
 
 const platformItems = [
   { title: "Venture Builder", url: "/venture-builder", icon: Rocket },
+  { title: "Ranking Startups", url: "/startup-rankings", icon: Trophy },
   { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
   { title: "Trend Scanner", url: "/trend-scanner", icon: Scan },
   { title: "Weekly Report", url: "/weekly-report", icon: FileText },

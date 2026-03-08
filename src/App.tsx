@@ -68,6 +68,7 @@ import FounderLeaderboard from "./pages/FounderLeaderboard";
 import TrendScanner from "./pages/TrendScanner";
 import WeeklyOpportunityReport from "./pages/WeeklyOpportunityReport";
 import SavedItems from "./pages/SavedItems";
+import StartupRankings from "./pages/StartupRankings";
 
 // Founder Match pages
 import FounderMatch from "./pages/FounderMatch";
@@ -146,6 +147,7 @@ const App = () => (
               <Route path="/trend-scanner" element={<TrendScanner />} />
               <Route path="/weekly-report" element={<WeeklyOpportunityReport />} />
               <Route path="/saved" element={<SavedItems />} />
+              <Route path="/startup-rankings" element={<StartupRankings />} />
 
               {/* Founder Match routes */}
               <Route path="/founder-match" element={<FounderMatch />} />
