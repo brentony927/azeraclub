@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import PricingSection, { type PricingPlan } from "@/components/ui/pricing-section";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Copy, QrCode } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const tiers = {
   basic: { price_id: "price_free", product_id: "prod_free" },
@@ -15,6 +18,12 @@ const tiers = {
 };
 
 const PIX_KEY = "043.869.512-70";
+
+const PLAN_LABELS: Record<string, string> = {
+  pro: "Pro",
+  business: "Business",
+  elite: "Business",
+};
 
 const plans: PricingPlan[] = [
   {
@@ -92,6 +101,7 @@ const plans: PricingPlan[] = [
 
 export default function Pricing() {
   const { user } = useAuth();
+  const { plan: currentPlan, subscriptionEnd, refresh } = useSubscription();
   const navigate = useNavigate();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [currentProductId, setCurrentProductId] = useState<string | null>(null);
@@ -99,10 +109,18 @@ export default function Pricing() {
   const [pixPlanName, setPixPlanName] = useState("");
   const [pixPrice, setPixPrice] = useState(0);
 
+  // Manage dialog state
+  const [manageOpen, setManageOpen] = useState(false);
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [isManualPlan, setIsManualPlan] = useState(false);
+
   useEffect(() => {
     if (user) {
       supabase.functions.invoke("check-subscription").then(({ data }) => {
         if (data?.subscribed) setCurrentProductId(data.product_id);
+        // Detect manual plan
+        setIsManualPlan(!!data?.manual_plan);
       });
     }
   }, [user]);
@@ -111,7 +129,6 @@ export default function Pricing() {
     if (!user) { navigate("/signup"); return; }
     if (planKey === "basic") { toast.success("Você já está no plano Basic gratuito!"); return; }
 
-    // Weekly plans → PIX dialog
     if (period === "weekly") {
       const plan = plans.find(p => p.key === planKey);
       if (plan) {
@@ -136,12 +153,43 @@ export default function Pricing() {
     window.open(data.url, "_blank");
   };
 
-  const handleManage = async () => {
-    const { data, error } = await supabase.functions.invoke("customer-portal");
-    if (error) { toast.error("Erro ao abrir portal de assinatura."); return; }
-    if (data?.error === "no_stripe_customer") { toast.info(data.message || "Seu plano foi ativado manualmente."); return; }
-    if (!data?.url) { toast.error("Erro ao abrir portal de assinatura."); return; }
-    window.open(data.url, "_blank");
+  const handleManage = () => {
+    setManageOpen(true);
+  };
+
+  const handleCancelSubscription = async () => {
+    setCancelling(true);
+    try {
+      if (isManualPlan) {
+        const { error } = await supabase.functions.invoke("cancel-subscription");
+        if (error) throw error;
+      } else {
+        // Stripe: open portal for cancellation
+        const { data, error } = await supabase.functions.invoke("customer-portal");
+        if (error) throw error;
+        if (data?.error === "no_stripe_customer") {
+          // Fallback: try manual cancel
+          const { error: cancelErr } = await supabase.functions.invoke("cancel-subscription");
+          if (cancelErr) throw cancelErr;
+        } else if (data?.url) {
+          window.open(data.url, "_blank");
+          setCancelConfirmOpen(false);
+          setManageOpen(false);
+          setCancelling(false);
+          return;
+        }
+      }
+      // Manual cancel success
+      await refresh();
+      setCurrentProductId(null);
+      toast.success("Assinatura cancelada com sucesso.");
+      setCancelConfirmOpen(false);
+      setManageOpen(false);
+    } catch (err: any) {
+      toast.error("Erro ao cancelar assinatura. Tente novamente.");
+    } finally {
+      setCancelling(false);
+    }
   };
 
   const getCurrentTierName = () => {
@@ -156,6 +204,8 @@ export default function Pricing() {
     navigator.clipboard.writeText(PIX_KEY);
     toast.success("Chave PIX copiada!");
   };
+
+  const planLabel = PLAN_LABELS[currentPlan] || currentPlan;
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-16">
@@ -219,6 +269,77 @@ export default function Pricing() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Manage Subscription Dialog */}
+      <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl">Gerenciar Assinatura</DialogTitle>
+            <DialogDescription>
+              Veja os detalhes do seu plano atual e gerencie sua assinatura.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-5 pt-2">
+            {/* Plan info */}
+            <div className="rounded-xl border border-border/50 bg-secondary/30 p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Plano {planLabel}</p>
+                  <p className="text-xs text-muted-foreground">Status: <span className="text-green-500 font-medium">Ativo</span></p>
+                </div>
+              </div>
+              {subscriptionEnd && (
+                <div className="flex items-center gap-3">
+                  <CalendarClock className="h-5 w-5 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">
+                    Renovação: {new Date(subscriptionEnd).toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Cancel section */}
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  Ao cancelar, você perderá acesso às funcionalidades premium ao final do período atual.
+                </p>
+              </div>
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={() => setCancelConfirmOpen(true)}
+              >
+                Cancelar Minha Assinatura
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Cancel Confirmation */}
+      <AlertDialog open={cancelConfirmOpen} onOpenChange={setCancelConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ao confirmar, sua assinatura do plano {planLabel} será cancelada. Você perderá acesso às funcionalidades premium.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={cancelling}>Voltar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelSubscription}
+              disabled={cancelling}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {cancelling ? "Cancelando..." : "Sim, cancelar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
