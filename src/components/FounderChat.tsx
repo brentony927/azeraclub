@@ -52,12 +52,14 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
 
     const channel = supabase
       .channel(`chat-${[user.id, otherUserId].sort().join("-")}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "founder_messages" }, (payload) => {
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "founder_messages",
+        filter: `to_user_id=eq.${user.id}`,
+      }, (payload) => {
         const msg = payload.new as Message;
-        if (
-          (msg.from_user_id === user.id && msg.to_user_id === otherUserId) ||
-          (msg.from_user_id === otherUserId && msg.to_user_id === user.id)
-        ) {
+        if (msg.from_user_id === otherUserId) {
           setMessages(prev => [...prev, msg]);
         }
       })
@@ -86,6 +88,9 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border/50">
         <h3 className="font-semibold text-foreground">{otherUserName}</h3>
+      </div>
+      <div className="px-4 py-2 bg-muted/30 border-b border-border/30">
+        <p className="text-[10px] text-muted-foreground">⚠️ Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map(msg => {

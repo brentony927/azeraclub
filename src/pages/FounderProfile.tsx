@@ -16,6 +16,7 @@ import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import BookmarkButton from "@/components/BookmarkButton";
+import ReportUserDialog from "@/components/ReportUserDialog";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
@@ -64,10 +65,21 @@ export default function FounderProfile() {
       if (!prof) { setLoading(false); return; }
       setProfile(prof);
 
-      // increment views
+      // increment views (dedup: 1 per visitor per 24h)
       if (user && prof.user_id !== user.id) {
-        await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", id);
-        await supabase.from("founder_notifications").insert({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil", related_user_id: user.id });
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { data: recentView } = await supabase.from("founder_notifications")
+          .select("id")
+          .eq("user_id", prof.user_id)
+          .eq("type", "profile_view")
+          .eq("related_user_id", user.id)
+          .gte("created_at", oneDayAgo)
+          .limit(1)
+          .maybeSingle();
+        if (!recentView) {
+          await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", id);
+          await supabase.from("founder_notifications").insert({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil", related_user_id: user.id });
+        }
       }
 
       // parallel fetches
@@ -398,16 +410,26 @@ export default function FounderProfile() {
                   {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
                 </Button>
               )}
-              <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
-                <MessageCircle className="h-4 w-4 mr-2" /> Message
-              </Button>
+              {connectionStatus === "accepted" && (
+                <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
+                  <MessageCircle className="h-4 w-4 mr-2" /> Message
+                </Button>
+              )}
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
                 <Send className="h-4 w-4 mr-2" /> Invite to Venture
               </Button>
               <BookmarkButton itemId={profile.id} itemType="founder" />
+              <ReportUserDialog reportedUserId={profile.user_id} reportedUserName={profile.name} />
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Legal disclaimer */}
+      {!isOwn && (
+        <p className="text-[10px] text-muted-foreground text-center px-4">
+          ⚠️ A AZERA não verifica identidades nem garante a veracidade das informações dos perfis. Interaja com cautela.
+        </p>
       )}
     </div>
   );

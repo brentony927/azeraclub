@@ -142,6 +142,11 @@ export default function FounderOpportunities() {
         )}
       </div>
 
+      {/* Legal disclaimer */}
+      <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
+        <p className="text-[10px] text-muted-foreground">⚠️ As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
+      </div>
+
       {opps.length === 0 ? (
         <div className="text-center py-16">
           <Briefcase className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
