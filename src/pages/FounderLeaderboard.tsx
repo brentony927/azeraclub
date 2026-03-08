@@ -10,7 +10,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 type LeaderEntry = {
   id: string; user_id: string; name: string; avatar_url: string | null;
   reputation_score: number | null; skills: string[] | null; is_verified: boolean | null;
-  country: string | null; building: string | null;
+  country: string | null; building: string | null; username: string | null;
 };
 
 const MEDALS = ["🥇", "🥈", "🥉"];
