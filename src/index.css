@@ -520,3 +520,55 @@
 }
 .founder-confetti::before { left: 20%; animation-delay: 0s; }
 .founder-confetti::after { left: 60%; animation-delay: 0.3s; }
+
+/* Founder Match Sidebar — Golden Gradient */
+@keyframes founderIconColorLoop {
+  0% { color: hsl(42, 80%, 60%); }
+  25% { color: hsl(280, 70%, 65%); }
+  50% { color: hsl(210, 80%, 60%); }
+  75% { color: hsl(42, 90%, 55%); }
+  100% { color: hsl(42, 80%, 60%); }
+}
+
+@keyframes founderRocketBounce {
+  0%, 100% { transform: translateY(0) rotate(-25deg); }
+  50% { transform: translateY(-3px) rotate(-35deg); }
+}
+
+.founder-sidebar-label {
+  background: linear-gradient(135deg, hsl(42, 80%, 55%), hsl(42, 60%, 70%), hsl(42, 80%, 55%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px hsla(42, 80%, 55%, 0.4));
+}
+
+.founder-sidebar-icon {
+  animation: founderIconColorLoop 3s ease-in-out infinite, founderRocketBounce 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px hsla(42, 80%, 55%, 0.5));
+}
+
+.founder-sidebar-icon-active {
+  color: hsl(42, 80%, 55%);
+  filter: drop-shadow(0 0 6px hsla(42, 80%, 55%, 0.6));
+}
+
+.founder-sidebar-text {
+  background: linear-gradient(90deg, hsl(42, 70%, 60%), hsl(42, 50%, 75%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.founder-sidebar-item {
+  color: hsl(42, 50%, 65%);
+}
+.founder-sidebar-item:hover {
+  background: hsla(42, 80%, 55%, 0.1);
+}
+
+.founder-sidebar-item-active {
+  background: linear-gradient(90deg, hsla(42, 80%, 55%, 0.15), hsla(42, 60%, 70%, 0.08));
+  border: 1px solid hsla(42, 80%, 55%, 0.25);
+  box-shadow: 0 0 12px hsla(42, 80%, 55%, 0.15);
+}
