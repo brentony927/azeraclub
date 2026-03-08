@@ -9,12 +9,12 @@ import { toast } from "sonner";
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 const CATEGORIES = [
-  { id: "negocios", label: "💼 Negócios", prompt: "Pesquise e resuma as 5 notícias mais relevantes de hoje sobre negócios, empreendedorismo e economia no Brasil e no mundo. Use como referência o tipo de conteúdo publicado pelo G1 Economia. Para cada notícia: título, resumo de 2-3 linhas, e um insight acionável para empreendedores." },
-  { id: "networking", label: "🤝 Networking", prompt: "Pesquise e resuma as 5 notícias e tendências mais relevantes de hoje sobre networking, eventos corporativos, conferências e conexões profissionais. Inclua dicas práticas de como usar cada tendência para construir relacionamentos valiosos." },
-  { id: "tecnologia", label: "🖥️ Tecnologia", prompt: "Pesquise e resuma as 5 notícias mais relevantes de hoje sobre tecnologia, startups, inteligência artificial e inovação. Use como referência o tipo de conteúdo do G1 Tecnologia. Para cada notícia: título, resumo e impacto prático." },
-  { id: "mentalidade", label: "🧠 Mentalidade", prompt: "Pesquise e crie um conteúdo com as 5 lições mais relevantes de hoje sobre mentalidade de alta performance, psicologia do sucesso e crescimento pessoal. Baseie-se em notícias recentes, estudos e tendências atuais." },
-  { id: "produtividade", label: "⚡ Produtividade", prompt: "Pesquise e resuma as 5 tendências e notícias mais relevantes de hoje sobre produtividade, gestão de tempo, trabalho remoto e métodos de trabalho. Inclua técnicas práticas que o leitor pode aplicar imediatamente." },
-  { id: "financas", label: "💰 Finanças", prompt: "Pesquise e resuma as 5 notícias mais relevantes de hoje sobre finanças pessoais, investimentos, mercado financeiro e criptomoedas no Brasil e no mundo. Use como referência o tipo de conteúdo do G1 Economia. Para cada: título, resumo e recomendação prática." },
+  { id: "negocios", label: "💼 Negócios", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje no mundo dos negócios, empreendedorismo e economia. Use estilo jornalístico com parágrafos narrativos, subtítulos claros e análise aprofundada. Inclua contexto e insights estratégicos para empreendedores. Escreva entre 600-900 palavras." },
+  { id: "networking", label: "🤝 Networking", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em networking, eventos corporativos e conexões profissionais. Use estilo jornalístico com parágrafos narrativos e análise aprofundada. Inclua dicas práticas integradas naturalmente no texto. Escreva entre 600-900 palavras." },
+  { id: "tecnologia", label: "🖥️ Tecnologia", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em tecnologia, startups e inteligência artificial. Use estilo jornalístico com parágrafos narrativos, subtítulos claros e impacto prático. Escreva entre 600-900 palavras." },
+  { id: "mentalidade", label: "🧠 Mentalidade", prompt: "Escreva um artigo editorial sobre lições de mentalidade de alta performance, psicologia do sucesso e crescimento pessoal baseado em tendências e notícias atuais. Use estilo jornalístico narrativo. Escreva entre 600-900 palavras." },
+  { id: "produtividade", label: "⚡ Produtividade", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em produtividade, gestão de tempo e métodos de trabalho. Use estilo jornalístico com parágrafos narrativos e técnicas práticas. Escreva entre 600-900 palavras." },
+  { id: "financas", label: "💰 Finanças", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em finanças pessoais, investimentos e mercado financeiro. Use estilo jornalístico com parágrafos narrativos, análise e recomendações. Escreva entre 600-900 palavras." },
 ];
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
@@ -41,7 +41,7 @@ export default function KnowledgeLibrary() {
           newsContext: true,
           newsQuery: cat.label.split(" ").slice(1).join(" "),
           messages: [
-            { role: "system", content: `Você é um curador de notícias de alto nível e analista estratégico. Hoje é ${today}. Crie conteúdo baseado nas notícias e tendências MAIS RECENTES e RELEVANTES do dia. Formate com markdown: headers, bullets, bold. Use emojis para destacar. Mantenha em 600-900 palavras. Inclua uma seção "🎯 Insight do Dia" no final com uma reflexão estratégica.` },
+            { role: "system", content: `Você é um jornalista e curador editorial de alto nível. Hoje é ${today}. Escreva um artigo editorial baseado nas notícias e tendências mais recentes. Use estilo jornalístico profissional: título impactante, subtítulos (##) claros, parágrafos longos e bem escritos, análise aprofundada. Evite listas com bullet points — prefira texto narrativo. Inclua uma seção final "🎯 Insight do Dia" com uma reflexão estratégica. Formate em markdown. Escreva entre 600-900 palavras.` },
             { role: "user", content: cat.prompt },
           ],
         }),
@@ -77,7 +77,7 @@ export default function KnowledgeLibrary() {
         <h1 className="text-3xl font-serif font-bold">Biblioteca de Conhecimento</h1>
         <p className="text-muted-foreground text-sm mt-1 flex items-center gap-2">
           <Newspaper className="h-4 w-4" />
-          Notícias diárias mais relevantes sobre cada tema
+          Artigos editoriais diários sobre cada tema
         </p>
       </motion.div>
 
@@ -92,7 +92,7 @@ export default function KnowledgeLibrary() {
               <span className="text-2xl">{cat.label.split(" ")[0]}</span>
               <div className="flex-1">
                 <p className="text-sm font-medium">{cat.label.split(" ").slice(1).join(" ")}</p>
-                <p className="text-xs text-muted-foreground">Notícias do dia + insights</p>
+                <p className="text-xs text-muted-foreground">Artigo editorial do dia</p>
               </div>
               <Play className="h-4 w-4 text-muted-foreground" />
             </CardContent>
@@ -103,19 +103,17 @@ export default function KnowledgeLibrary() {
       {isLoading && (
         <motion.div variants={item} className="flex flex-col items-center justify-center py-12 gap-2">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          <p className="text-xs text-muted-foreground">Buscando notícias mais recentes...</p>
+          <p className="text-xs text-muted-foreground">Preparando artigo editorial...</p>
         </motion.div>
       )}
 
       {content && (
         <motion.div variants={item}>
-          <Card>
-            <CardContent className="p-6">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown>{content}</ReactMarkdown>
-              </div>
-            </CardContent>
-          </Card>
+          <article className="glass-card p-8 sm:p-10">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80 prose-strong:text-foreground prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg">
+              <ReactMarkdown>{content}</ReactMarkdown>
+            </div>
+          </article>
         </motion.div>
       )}
     </motion.div>

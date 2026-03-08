@@ -21,13 +21,13 @@ export default function TermsOfService() {
           </div>
 
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Welcome to AZERA ELITE, a premium lifestyle management platform designed to help users organise luxury experiences, travel, properties, networking events, and personal wellness in one intelligent environment.
+            Welcome to AZERA CLUB, a premium lifestyle management platform designed to help users organise luxury experiences, travel, properties, networking events, and personal wellness in one intelligent environment.
           </p>
-          <p className="text-sm text-muted-foreground">By accessing or using the AZERA ELITE platform, you agree to comply with these Terms of Service.</p>
+          <p className="text-sm text-muted-foreground">By accessing or using the AZERA CLUB platform, you agree to comply with these Terms of Service.</p>
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">1. Platform Usage</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA ELITE provides digital tools that allow users to manage lifestyle activities such as travel planning, event discovery, property portfolios, and wellness schedules.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB provides digital tools that allow users to manage lifestyle activities such as travel planning, event discovery, property portfolios, and wellness schedules.</p>
             <p className="text-sm text-muted-foreground">Users agree not to:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
               <li>Misuse or exploit the platform</li>
@@ -49,17 +49,17 @@ export default function TermsOfService() {
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">4. Data Ownership</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Users retain ownership of their personal data. AZERA ELITE processes data solely to provide services and platform functionality.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">Users retain ownership of their personal data. AZERA CLUB processes data solely to provide services and platform functionality.</p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">5. Platform Availability</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA ELITE aims to maintain continuous service availability but may occasionally perform maintenance or upgrades.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB aims to maintain continuous service availability but may occasionally perform maintenance or upgrades.</p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">6. Limitation of Liability</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA ELITE is not responsible for losses caused by third-party services such as travel providers, event organisers, or hospitality partners.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB is not responsible for losses caused by third-party services such as travel providers, event organisers, or hospitality partners.</p>
           </section>
 
           <section className="space-y-3">

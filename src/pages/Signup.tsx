@@ -92,7 +92,7 @@ export default function Signup() {
         <div className="glass-card p-8 space-y-6">
           <div className="text-center space-y-2">
             <img src={azeraLogo} alt="AZERA" className="w-12 h-12 rounded-xl object-contain mx-auto" />
-            <h1 className="text-2xl font-serif font-bold gold-text">AZERA ELITE</h1>
+            <h1 className="text-2xl font-serif font-bold gold-text">AZERA CLUB</h1>
             <p className="text-sm text-muted-foreground">Crie sua conta exclusiva</p>
           </div>
 

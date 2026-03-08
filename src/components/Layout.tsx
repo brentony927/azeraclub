@@ -12,7 +12,7 @@ import PageTransition from "@/components/PageTransition";
 
 export default function Layout() {
   const { plan } = useSubscription();
-  const isPremium = plan === "pro" || plan === "elite";
+  const isPremium = plan === "pro" || plan === "business";
   const location = useLocation();
   const navigate = useNavigate();
   const showBack = location.pathname !== "/dashboard";

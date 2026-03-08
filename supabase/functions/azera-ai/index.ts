@@ -26,10 +26,10 @@ IDIOMA: Responda sempre em português do Brasil, a menos que o usuário escreva 
 
 const PRODUCT_MAP: Record<string, string> = {
   prod_U62xpa0u9xDiJO: "pro",
-  prod_U62xPut1mfd9CG: "elite",
+  prod_U62xPut1mfd9CG: "business",
 };
 
-const TIER_ORDER = ["free", "basic", "pro", "elite"];
+const TIER_ORDER = ["free", "basic", "pro", "business"];
 
 const DAILY_LIMIT_FREE = 20;
 

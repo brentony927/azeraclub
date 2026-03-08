@@ -116,18 +116,18 @@ export function AppSidebar() {
           <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
           {!collapsed && (
             <div>
-              <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA ELITE</h2>
+              <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA CLUB</h2>
               <div className="flex items-center gap-2">
                 <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
                 {plan !== "free" && (
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider"
                     style={{
-                      background: plan === "elite"
+                      background: plan === "business"
                         ? "linear-gradient(135deg, hsl(42,50%,56%), hsl(42,60%,70%))"
                         : plan === "pro"
                           ? "hsl(210,40%,50%)"
                           : "hsl(var(--muted))",
-                      color: plan === "elite" || plan === "pro" ? "hsl(0,0%,4%)" : "hsl(var(--foreground))",
+                      color: plan === "business" || plan === "pro" ? "hsl(0,0%,4%)" : "hsl(var(--foreground))",
                     }}
                   >
                     {plan.toUpperCase()}

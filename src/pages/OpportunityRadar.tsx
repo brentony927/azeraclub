@@ -40,8 +40,8 @@ export default function OpportunityRadar() {
           newsContext: true,
           newsQuery: `${area} ${city}`,
           messages: [
-            { role: "system", content: `Você é um radar de oportunidades. Gere 5-8 oportunidades REALISTAS e ACIONÁVEIS para alguém na área de ${area} na cidade de ${city}. Inclua: eventos de negócios, conferências, meetups, oportunidades de investimento, editais, startups buscando sócios. Formate cada oportunidade com título, descrição curta, tipo e dica de ação. Use markdown.` },
-            { role: "user", content: `Mostre oportunidades em ${area} para ${city}.` },
+            { role: "system", content: `Você é um jornalista de negócios e analista de oportunidades. Escreva um artigo editorial sobre oportunidades na área de ${area} na cidade de ${city}. Use estilo jornalístico: título principal em negrito, subtítulos claros, parágrafos longos e bem escritos, sem bullet points excessivos. Inclua contexto, análise e recomendações práticas. Formate em markdown com headers (##), parágrafos espaçados e negrito para destaques. Escreva entre 500-800 palavras.` },
+            { role: "user", content: `Escreva um artigo sobre oportunidades em ${area} para ${city}.` },
           ],
         }),
       });
@@ -105,13 +105,11 @@ export default function OpportunityRadar() {
 
       {result && (
         <motion.div variants={item}>
-          <Card>
-            <CardContent className="p-5">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </CardContent>
-          </Card>
+          <article className="glass-card p-8 sm:p-10">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80 prose-strong:text-foreground prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg">
+              <ReactMarkdown>{result}</ReactMarkdown>
+            </div>
+          </article>
         </motion.div>
       )}
     </motion.div>

@@ -13,7 +13,7 @@ const logStep = (step: string, details?: any) => {
 
 const PLAN_PRODUCT_MAP: Record<string, string> = {
   pro: "prod_U62xpa0u9xDiJO",
-  elite: "prod_U62xPut1mfd9CG",
+  business: "prod_U62xPut1mfd9CG",
 };
 
 serve(async (req) => {
@@ -46,13 +46,15 @@ serve(async (req) => {
       .maybeSingle();
 
     if (manualPlan && manualPlan.plan && manualPlan.plan !== "free") {
-      logStep("Manual plan found", { plan: manualPlan.plan });
-      const fakeProductId = PLAN_PRODUCT_MAP[manualPlan.plan] || null;
+      // Map legacy "elite" to "business"
+      const planName = manualPlan.plan === "elite" ? "business" : manualPlan.plan;
+      logStep("Manual plan found", { plan: planName });
+      const fakeProductId = PLAN_PRODUCT_MAP[planName] || null;
       return new Response(JSON.stringify({
         subscribed: true,
         product_id: fakeProductId,
         subscription_end: null,
-        manual_plan: manualPlan.plan,
+        manual_plan: planName,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

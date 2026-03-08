@@ -20,7 +20,7 @@ const PLAN_FEATURES: Record<string, string[]> = {
     "Weekly Intelligence Report",
     "Modo foco",
   ],
-  elite: [
+  business: [
     "Strategic AI ilimitada (CEO Mode)",
     "Tema dourado premium",
     "Radar de networking privado",
@@ -36,7 +36,6 @@ export default function UpgradeCelebration() {
   const navigate = useNavigate();
   const features = PLAN_FEATURES[plan] || [];
 
-  // Auto-dismiss after 8 seconds
   useEffect(() => {
     if (!showUpgradeCelebration) return;
     const timer = setTimeout(dismissCelebration, 8000);

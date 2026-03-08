@@ -6,7 +6,7 @@ const TIER_LABELS: Record<PlanTier, string> = {
   free: "Free",
   basic: "Basic",
   pro: "Pro",
-  elite: "Elite",
+  business: "Business",
 };
 
 interface FeatureLockProps {

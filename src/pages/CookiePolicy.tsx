@@ -19,7 +19,7 @@ export default function CookiePolicy() {
             <h1 className="text-3xl font-serif font-bold gold-text">Cookie Policy</h1>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">AZERA ELITE uses cookies and similar technologies to enhance the user experience.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB uses cookies and similar technologies to enhance the user experience.</p>
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">How We Use Cookies</h2>

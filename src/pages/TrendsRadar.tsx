@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import FeatureLock from "@/components/FeatureLock";
 import { TrendingUp, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,8 +35,8 @@ export default function TrendsRadar() {
           newsContext: true,
           newsQuery: topic,
           messages: [
-            { role: "system", content: `Você é um analista de tendências. Liste 5-7 tendências atuais e relevantes sobre "${topic}". Para cada tendência: nome, por que importa, como aproveitar. Seja específico e acionável. Use markdown.` },
-            { role: "user", content: `Quais são as tendências mais quentes em ${topic}?` },
+            { role: "system", content: `Você é um jornalista especializado e analista de tendências. Escreva um artigo editorial sobre as tendências mais relevantes em "${topic}". Use estilo jornalístico profissional: título impactante, subtítulos claros, parágrafos longos e bem fundamentados, análise aprofundada. Evite listas com bullet points — prefira parágrafos narrativos com subtítulos (##). Inclua contexto, impacto e como o leitor pode se posicionar. Formate em markdown. Escreva entre 500-800 palavras.` },
+            { role: "user", content: `Escreva um artigo sobre as tendências mais quentes em ${topic}.` },
           ],
         }),
       });
@@ -94,13 +93,11 @@ export default function TrendsRadar() {
 
       {result && (
         <motion.div variants={item}>
-          <Card>
-            <CardContent className="p-5">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </CardContent>
-          </Card>
+          <article className="glass-card p-8 sm:p-10">
+            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80 prose-strong:text-foreground prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg">
+              <ReactMarkdown>{result}</ReactMarkdown>
+            </div>
+          </article>
         </motion.div>
       )}
     </motion.div>
