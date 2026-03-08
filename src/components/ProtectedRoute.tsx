@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { LoadingBreadcrumb } from "@/components/ui/animated-loading-svg-text-shimmer";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -7,7 +8,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 rounded-lg gold-gradient animate-pulse" />
+        <LoadingBreadcrumb />
       </div>
     );
   }
