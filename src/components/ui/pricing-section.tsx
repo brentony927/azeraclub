@@ -35,8 +35,8 @@ type Period = "weekly" | "monthly" | "yearly";
 
 const PricingSwitch = ({ onSwitch, selected }: { onSwitch: (value: Period) => void; selected: Period }) => {
   const periods: { key: Period; label: string; disabled?: boolean }[] = [
-    { key: "weekly", label: "Semanal" },
-    { key: "monthly", label: "Mensal", disabled: true },
+    { key: "weekly", label: "Semanal", disabled: true },
+    { key: "monthly", label: "Mensal" },
     { key: "yearly", label: "Anual" },
   ];
 
