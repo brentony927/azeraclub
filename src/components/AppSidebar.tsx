@@ -116,7 +116,7 @@ export function AppSidebar() {
           <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
           {!collapsed && (
             <div>
-              <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA ELITE</h2>
+              <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA CLUB</h2>
               <div className="flex items-center gap-2">
                 <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
                 {plan !== "free" && (

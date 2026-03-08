@@ -19,7 +19,7 @@ export default function Networking() {
           <span className="moss-text">NETWORKING AZR</span>
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto text-sm">
-          Conecte-se com membros do ecossistema Azera Elite.
+          Conecte-se com membros do ecossistema Azera Club.
         </p>
 
         {/* Member avatars */}

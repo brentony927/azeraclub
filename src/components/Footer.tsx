@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-5">
           <div className="flex items-center gap-3">
             <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded-lg object-contain" />
-            <span className="font-serif font-bold text-lg moss-text tracking-wider">AZERA ELITE</span>
+            <span className="font-serif font-bold text-lg moss-text tracking-wider">AZERA CLUB</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             {footerLinks.map((link) => (
@@ -24,7 +24,7 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-          <p className="text-xs text-muted-foreground text-center">© 2026 Azera Elite. Todos os direitos reservados.</p>
+          <p className="text-xs text-muted-foreground text-center">© 2026 Azera Club. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
