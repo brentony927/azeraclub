@@ -6,6 +6,8 @@ import FounderCard from "@/components/FounderCard";
 import FounderCardSkeleton from "@/components/FounderCardSkeleton";
 import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
+import FounderMatchIntro from "@/components/FounderMatchIntro";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -53,6 +55,14 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem("founder-intro-seen");
+  });
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem("founder-intro-seen", "true");
+    setShowIntro(false);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -89,7 +99,6 @@ export default function FounderFeed() {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       setConnections(prev => ({ ...prev, [targetUserId]: "pending" }));
-      // Send notification
       await supabase.from("founder_notifications").insert({
         user_id: targetUserId,
         type: "connection",
@@ -127,13 +136,11 @@ export default function FounderFeed() {
     return true;
   });
 
-  // Calculate match scores
   const withScores = filtered.map(p => ({
     ...p,
     matchScore: myProfile ? calculateMatchScore(myProfile, p) : 0,
   }));
 
-  // Sort: highlighted first, then by match score
   withScores.sort((a, b) => b.matchScore - a.matchScore);
 
   const renderChipFilter = (label: string, options: string[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>) => (
@@ -156,149 +163,151 @@ export default function FounderFeed() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-6 w-6" /> Founder Feed
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            <NumberFlow value={profiles.length} /> fundadores na AZERA CLUB
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <FounderNotifications />
-          <Button
-            variant={showFilters ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Filter className="h-4 w-4 mr-1" /> Filtros
-          </Button>
-        </div>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 py-8 relative">
+      {showIntro && <FounderMatchIntro onComplete={handleIntroComplete} />}
+      <FounderParticlesBackground />
 
-      {/* Search */}
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Buscar fundadores..."
-          className="pl-10"
-        />
-      </div>
-
-      {/* Advanced Filters */}
-      {showFilters && (
-        <div className="bg-card/80 border border-border/50 rounded-xl p-5 mb-6 space-y-4 animate-fade-in">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-foreground">Filtros Avançados</h3>
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
-                <X className="h-3 w-3 mr-1" /> Limpar
-              </Button>
-            )}
-          </div>
-
-          {/* Region */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <Label className="text-xs text-muted-foreground">Continente</Label>
-              <Select value={continentFilter} onValueChange={setContinentFilter}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
-                  {CONTINENT_OPTIONS.map(c => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">País</Label>
-              <Input value={countryFilter} onChange={e => setCountryFilter(e.target.value)} placeholder="Ex: Brasil" className="h-8 text-xs" />
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
-              <Slider
-                value={ageRange}
-                onValueChange={v => setAgeRange(v as [number, number])}
-                min={18}
-                max={65}
-                step={1}
-                className="mt-2"
-              />
-            </div>
-          </div>
-
-          {renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter)}
-          {renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter)}
-
-          {/* Interests */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Interesses</p>
-            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
-              {BUSINESS_INTERESTS.slice(0, 20).map(i => (
-                <button
-                  key={i}
-                  onClick={() => toggleFilter(interestFilter, setInterestFilter, i)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${
-                    interestFilter.includes(i) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {i}
-                </button>
-              ))}
-              {BUSINESS_INTERESTS.length > 20 && !interestFilter.length && (
-                <span className="text-[10px] text-muted-foreground self-center">+{BUSINESS_INTERESTS.length - 20} mais</span>
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <Users className="h-6 w-6" /> Founder Feed
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              <NumberFlow value={profiles.length} /> fundadores na AZERA CLUB
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <FounderNotifications />
+            <Button
+              variant={showFilters ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Filter className="h-4 w-4 mr-1" /> Filtros
+            </Button>
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Buscar fundadores..."
+            className="pl-10"
+          />
+        </div>
+
+        {/* Advanced Filters */}
+        {showFilters && (
+          <div className="bg-card/80 border border-border/50 rounded-xl p-5 mb-6 space-y-4 animate-fade-in">
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-semibold text-foreground">Filtros Avançados</h3>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
+                  <X className="h-3 w-3 mr-1" /> Limpar
+                </Button>
               )}
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <Label className="text-xs text-muted-foreground">Continente</Label>
+                <Select value={continentFilter} onValueChange={setContinentFilter}>
+                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todos</SelectItem>
+                    {CONTINENT_OPTIONS.map(c => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">País</Label>
+                <Input value={countryFilter} onChange={e => setCountryFilter(e.target.value)} placeholder="Ex: Brasil" className="h-8 text-xs" />
+              </div>
+              <div>
+                <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
+                <Slider
+                  value={ageRange}
+                  onValueChange={v => setAgeRange(v as [number, number])}
+                  min={18}
+                  max={65}
+                  step={1}
+                  className="mt-2"
+                />
+              </div>
+            </div>
+
+            {renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter)}
+            {renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter)}
+
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Interesses</p>
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                {BUSINESS_INTERESTS.slice(0, 20).map(i => (
+                  <button
+                    key={i}
+                    onClick={() => toggleFilter(interestFilter, setInterestFilter, i)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${
+                      interestFilter.includes(i) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {i}
+                  </button>
+                ))}
+                {BUSINESS_INTERESTS.length > 20 && !interestFilter.length && (
+                  <span className="text-[10px] text-muted-foreground self-center">+{BUSINESS_INTERESTS.length - 20} mais</span>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <FounderCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : withScores.length === 0 ? (
-        <div className="text-center py-16">
-          <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {withScores.map(p => (
-            <FounderCard
-              key={p.id}
-              id={p.id}
-              userId={p.user_id}
-              name={p.name}
-              avatarUrl={p.avatar_url}
-              skills={p.skills || []}
-              lookingFor={p.looking_for || []}
-              country={p.country}
-              building={p.building}
-              commitment={p.commitment}
-              onConnect={handleConnect}
-              isConnected={connections[p.user_id] === "accepted"}
-              isPending={connections[p.user_id] === "pending"}
-              matchScore={p.matchScore}
-            />
-          ))}
-        </div>
-      )}
+        {/* Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <FounderCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : withScores.length === 0 ? (
+          <div className="text-center py-16">
+            <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {withScores.map(p => (
+              <FounderCard
+                key={p.id}
+                id={p.id}
+                userId={p.user_id}
+                name={p.name}
+                avatarUrl={p.avatar_url}
+                skills={p.skills || []}
+                lookingFor={p.looking_for || []}
+                country={p.country}
+                building={p.building}
+                commitment={p.commitment}
+                onConnect={handleConnect}
+                isConnected={connections[p.user_id] === "accepted"}
+                isPending={connections[p.user_id] === "pending"}
+                matchScore={p.matchScore}
+              />
+            ))}
+          </div>
+        )}
 
-      {/* Activity Feed sidebar on large screens */}
-      {!loading && withScores.length > 0 && (
-        <div className="mt-8 p-4 bg-card/60 border border-border/50 rounded-xl">
-          <FounderActivityFeed />
-        </div>
-      )}
+        {!loading && withScores.length > 0 && (
+          <div className="mt-8 p-4 bg-card/60 border border-border/50 rounded-xl">
+            <FounderActivityFeed />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

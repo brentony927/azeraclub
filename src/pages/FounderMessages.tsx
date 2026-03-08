@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import FounderChat from "@/components/FounderChat";
 import { Card } from "@/components/ui/card";
 import { MessageCircle, Loader2 } from "lucide-react";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
 interface Conversation {
   userId: string;
@@ -89,7 +90,8 @@ export default function FounderMessages() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 relative">
+      <FounderParticlesBackground />
       <h1 className="text-2xl font-bold text-foreground flex items-center gap-2 mb-6">
         <MessageCircle className="h-6 w-6" /> Mensagens
       </h1>

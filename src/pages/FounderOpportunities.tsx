@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Briefcase, Plus, Loader2, DollarSign } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import FeatureLock from "@/components/FeatureLock";
+import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
 const LOOKING_OPTIONS = ["Co-founder", "Developer", "Investor", "Marketing Partner", "Designer"];
 
@@ -77,7 +78,8 @@ export default function FounderOpportunities() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 relative">
+      <FounderParticlesBackground />
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
