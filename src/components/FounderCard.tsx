@@ -62,6 +62,15 @@ export default function FounderCard({
         )}
       </div>
 
+      {/* Business Founder badge */}
+      {isHighlighted && (
+        <div className="absolute top-2 left-2">
+          <Badge className="bg-gradient-to-r from-[hsl(45,100%,50%)] to-[hsl(35,100%,45%)] text-[hsl(0,0%,4%)] text-[9px] font-bold border-0">
+            BUSINESS FOUNDER
+          </Badge>
+        </div>
+      )}
+
       {matchScore !== undefined && matchScore > 0 && (
         <div className="absolute top-2 left-2">
           <Badge className={`text-[10px] font-bold border ${getMatchColor(matchScore)}`}>
