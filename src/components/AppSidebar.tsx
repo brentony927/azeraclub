@@ -128,6 +128,8 @@ export function AppSidebar() {
   const { user, signOut } = useAuth();
   const { plan } = useSubscription();
 
+  const isPremium = plan === "pro" || plan === "business";
+
   const displayName =
     user?.user_metadata?.full_name ||
     user?.user_metadata?.name ||
