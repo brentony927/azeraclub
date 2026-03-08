@@ -53,7 +53,7 @@ async function streamChat({ messages, systemPrompt, onDelta, onDone }: { message
   const resp = await fetch(CHAT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ messages: [...systemMsg, ...messages] }),
+    body: JSON.stringify({ messages: [...systemMsg, ...messages], includeContext: true }),
   });
   if (!resp.ok) { const d = await resp.json().catch(() => ({})); throw new Error(d.error || `Erro ${resp.status}`); }
   if (!resp.body) throw new Error("Sem corpo de resposta");
