@@ -128,9 +128,35 @@ export default function FounderProfile() {
     const { error } = await supabase.from("founder_connections").insert({ from_user_id: user.id, to_user_id: profile.user_id, status: "pending" });
     if (!error) {
       setConnectionStatus("pending");
-      await supabase.from("founder_notifications").insert({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar` });
+      await supabase.from("founder_notifications").insert({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar`, related_user_id: user.id });
       toast({ title: "Solicitação enviada! 🤝" });
     }
+  };
+
+  const handleAcceptConnection = async () => {
+    if (!user || !profile) return;
+    const { error } = await supabase.from("founder_connections").update({ status: "accepted" })
+      .eq("from_user_id", profile.user_id).eq("to_user_id", user.id).eq("status", "pending");
+    if (!error) {
+      setConnectionStatus("accepted");
+      setIsIncomingPending(false);
+      await supabase.from("founder_notifications").insert({
+        user_id: profile.user_id,
+        type: "connection",
+        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        related_user_id: user.id,
+      });
+      toast({ title: "Conexão aceita! 🤝" });
+    }
+  };
+
+  const handleRejectConnection = async () => {
+    if (!user || !profile) return;
+    await supabase.from("founder_connections").delete()
+      .eq("from_user_id", profile.user_id).eq("to_user_id", user.id).eq("status", "pending");
+    setConnectionStatus(null);
+    setIsIncomingPending(false);
+    toast({ title: "Conexão recusada" });
   };
 
   if (loading) return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
