@@ -38,6 +38,7 @@ interface FounderProfile {
   continent: string | null;
   reputation_score: number | null;
   is_verified: boolean | null;
+  username: string | null;
 }
 
 export default function FounderFeed() {
