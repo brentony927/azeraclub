@@ -27,7 +27,7 @@ interface FounderCardProps {
 
 export default function FounderCard({
   id, userId, name, avatarUrl, skills, lookingFor, country, building,
-  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore,
+  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username,
 }: FounderCardProps) {
   const navigate = useNavigate();
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
