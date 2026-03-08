@@ -359,7 +359,7 @@ export default function FounderProfile() {
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
                 <Send className="h-4 w-4 mr-2" /> Invite to Venture
               </Button>
-              <BookmarkButton itemId={profile.id} itemType="founder_profile" />
+              <BookmarkButton itemId={profile.id} itemType="founder" />
             </div>
           </CardContent>
         </Card>
