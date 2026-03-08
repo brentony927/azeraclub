@@ -1,20 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Corrigir Sidebar Clara no Tema Escuro
+### Top 5 Priorities
 
-### Problema
-Os seletores CSS `.dark.pro-theme` e `.dark.business-theme` exigem ambas as classes no **mesmo elemento**. Porém:
-- `.dark` é aplicado no `<html>` pelo next-themes
-- `.pro-theme`/`.business-theme` é aplicado num `<div>` descendente no Layout.tsx
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-Resultado: as variáveis de dark mode para PRO/BUSINESS nunca são aplicadas — o sidebar (e tudo mais) usa as variáveis de light mode do PRO/BUSINESS mesmo no tema escuro.
+### Scores by Area
 
-### Solução
-Alterar os seletores CSS de `.dark.pro-theme` para `.dark .pro-theme` (com espaço — descendente) em `src/index.css`. Isso faz com que as variáveis sejam aplicadas quando `.pro-theme` é filho de `.dark`.
-
-### Arquivo: `src/index.css`
-- Linha 313: `.dark.pro-theme` → `.dark .pro-theme`
-- Linha 365: `.dark.business-theme` → `.dark .business-theme`
-
-Apenas 2 seletores CSS precisam ser alterados.
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |
