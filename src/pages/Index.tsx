@@ -154,7 +154,7 @@ export default function Index() {
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
-        <h1 className="text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
           {getGreeting()}, {displayName.split(" ")[0]}.
         </h1>
         <div className="flex items-center justify-between">
