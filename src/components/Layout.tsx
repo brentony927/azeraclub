@@ -13,14 +13,16 @@ import PageTransition from "@/components/PageTransition";
 export default function Layout() {
   const { plan } = useSubscription();
   const isPremium = plan === "pro" || plan === "business";
+  const themeClass = plan === "business" ? "business-theme" : plan === "pro" ? "pro-theme" : "";
+  const backBtnClass = plan === "business" ? "business-back-btn" : plan === "pro" ? "pro-back-btn" : "text-muted-foreground hover:text-foreground hover:bg-accent";
   const location = useLocation();
   const navigate = useNavigate();
   const showBack = location.pathname !== "/dashboard";
 
   return (
     <SidebarProvider>
-      <div className={`min-h-screen flex w-full animated-bg ${isPremium ? "elite-theme" : ""}`}>
-        {isPremium && <EliteBackground />}
+      <div className={`min-h-screen flex w-full animated-bg ${themeClass}`}>
+        {isPremium && <EliteBackground plan={plan} />}
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header
@@ -35,9 +37,7 @@ export default function Layout() {
                 <button
                   onClick={() => navigate(-1)}
                   className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md transition-colors ${
-                    isPremium
-                      ? "elite-back-btn"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    isPremium ? backBtnClass : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                   aria-label="Voltar"
                 >
