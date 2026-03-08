@@ -163,6 +163,7 @@ const App = () => (
               <Route path="/founder-messages" element={<FounderMessages />} />
               <Route path="/founder-opportunities" element={<FounderOpportunities />} />
               <Route path="/founder-notifications" element={<FounderNotificationsPage />} />
+              <Route path="/global-map" element={<GlobalFounderMap />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
