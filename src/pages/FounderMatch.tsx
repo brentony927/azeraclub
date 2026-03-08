@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderProfileForm from "@/components/FounderProfileForm";
+import FounderOnboarding from "@/components/FounderOnboarding";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -12,9 +13,14 @@ export default function FounderMatch() {
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     if (!user) return;
+    const seen = localStorage.getItem(`founder-onboarding-${user.id}`);
+    if (!seen) setShowOnboarding(true);
+
     supabase
       .from("founder_profiles")
       .select("id")
@@ -29,6 +35,11 @@ export default function FounderMatch() {
       });
   }, [user, navigate]);
 
+  const handleOnboardingComplete = () => {
+    if (user) localStorage.setItem(`founder-onboarding-${user.id}`, "true");
+    setShowOnboarding(false);
+  };
+
   const handleSubmit = async (formData: any) => {
     if (!user) return;
     setSaving(true);
@@ -37,19 +48,23 @@ export default function FounderMatch() {
       name: formData.name,
       age: formData.age,
       country: formData.country,
+      city: formData.city,
+      continent: formData.continent,
       skills: formData.skills,
       industry: formData.industry,
       building: formData.building,
       looking_for: formData.looking_for,
       commitment: formData.commitment,
+      interests: formData.interests,
       is_published: true,
     });
     setSaving(false);
     if (error) {
       toast({ title: "Erro ao criar perfil", description: error.message, variant: "destructive" });
     } else {
+      setShowConfetti(true);
       toast({ title: "Perfil publicado! 🚀" });
-      navigate("/founder-feed");
+      setTimeout(() => navigate("/founder-feed"), 2000);
     }
   };
 
@@ -64,7 +79,11 @@ export default function FounderMatch() {
   if (hasProfile) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 relative">
+      {showOnboarding && <FounderOnboarding onComplete={handleOnboardingComplete} />}
+      {showConfetti && (
+        <div className="fixed inset-0 z-50 pointer-events-none founder-confetti" onAnimationEnd={() => setShowConfetti(false)} />
+      )}
       <FounderProfileForm onSubmit={handleSubmit} loading={saving} />
     </div>
   );

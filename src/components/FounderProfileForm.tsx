@@ -3,29 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Rocket } from "lucide-react";
-
-const SKILL_OPTIONS = ["Developer", "Marketing", "AI", "Sales", "Designer", "Product", "Finance", "Operations"];
-const INDUSTRY_OPTIONS = ["SaaS", "AI", "E-commerce", "Fintech", "Education", "Health", "Web3", "Agency"];
-const LOOKING_FOR_OPTIONS = ["Co-founder", "Developer", "Investor", "Marketing Partner", "Designer"];
-const COMMITMENT_OPTIONS = [
-  { value: "side_project", label: "Side Project" },
-  { value: "startup_idea", label: "Startup Idea" },
-  { value: "full_business", label: "Full Business" },
-];
+import { Rocket, Search } from "lucide-react";
+import {
+  SKILL_OPTIONS, INDUSTRY_OPTIONS, LOOKING_FOR_OPTIONS,
+  COMMITMENT_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
+} from "@/data/founderConstants";
 
 interface FounderFormData {
   name: string;
   age: number | null;
   country: string;
+  city: string;
+  continent: string;
   skills: string[];
   industry: string[];
   building: string;
   looking_for: string[];
   commitment: string;
+  interests: string[];
 }
 
 interface FounderProfileFormProps {
@@ -40,14 +37,19 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
     name: initialData?.name || "",
     age: initialData?.age || null,
     country: initialData?.country || "",
+    city: initialData?.city || "",
+    continent: initialData?.continent || "",
     skills: initialData?.skills || [],
     industry: initialData?.industry || [],
     building: initialData?.building || "",
     looking_for: initialData?.looking_for || [],
     commitment: initialData?.commitment || "startup_idea",
+    interests: initialData?.interests || [],
   });
 
-  const toggleArrayField = (field: "skills" | "industry" | "looking_for", value: string) => {
+  const [interestSearch, setInterestSearch] = useState("");
+
+  const toggleArrayField = (field: "skills" | "industry" | "looking_for" | "interests", value: string) => {
     setForm(prev => ({
       ...prev,
       [field]: prev[field].includes(value)
@@ -83,6 +85,10 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
     </div>
   );
 
+  const filteredInterests = interestSearch
+    ? BUSINESS_INTERESTS.filter(i => i.toLowerCase().includes(interestSearch.toLowerCase()))
+    : BUSINESS_INTERESTS;
+
   return (
     <Card className="border-border/50 bg-card/80 backdrop-blur-sm max-w-2xl mx-auto">
       <CardHeader className="text-center pb-2">
@@ -105,9 +111,26 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>País</Label>
-            <Input value={form.country} onChange={e => setForm(p => ({ ...p, country: e.target.value }))} placeholder="Brasil" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label>País</Label>
+              <Input value={form.country} onChange={e => setForm(p => ({ ...p, country: e.target.value }))} placeholder="Brasil" />
+            </div>
+            <div className="space-y-2">
+              <Label>Cidade</Label>
+              <Input value={form.city} onChange={e => setForm(p => ({ ...p, city: e.target.value }))} placeholder="São Paulo" />
+            </div>
+            <div className="space-y-2">
+              <Label>Continente</Label>
+              <Select value={form.continent} onValueChange={v => setForm(p => ({ ...p, continent: v }))}>
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  {CONTINENT_OPTIONS.map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {renderMultiSelect("Skills", "skills", SKILL_OPTIONS)}
@@ -124,6 +147,36 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
           </div>
 
           {renderMultiSelect("Procurando", "looking_for", LOOKING_FOR_OPTIONS)}
+
+          {/* Interests */}
+          <div className="space-y-2">
+            <Label className="text-sm text-foreground">Interesses ({form.interests.length} selecionados)</Label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                value={interestSearch}
+                onChange={e => setInterestSearch(e.target.value)}
+                placeholder="Buscar interesses..."
+                className="pl-9 h-8 text-xs"
+              />
+            </div>
+            <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1">
+              {filteredInterests.map(interest => (
+                <button
+                  key={interest}
+                  type="button"
+                  onClick={() => toggleArrayField("interests", interest)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                    form.interests.includes(interest)
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {interest}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div className="space-y-2">
             <Label>Nível de Comprometimento</Label>

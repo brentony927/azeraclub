@@ -1,8 +1,10 @@
-import { MapPin, Eye, UserPlus } from "lucide-react";
+import { useState, useRef } from "react";
+import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { getMatchColor } from "@/lib/founderMatch";
 
 interface FounderCardProps {
   id: string;
@@ -18,38 +20,54 @@ interface FounderCardProps {
   onConnect?: (userId: string) => void;
   isConnected?: boolean;
   isPending?: boolean;
+  matchScore?: number;
 }
 
 export default function FounderCard({
-  id,
-  userId,
-  name,
-  avatarUrl,
-  skills,
-  lookingFor,
-  country,
-  building,
-  commitment,
-  isHighlighted,
-  onConnect,
-  isConnected,
-  isPending,
+  id, userId, name, avatarUrl, skills, lookingFor, country, building,
+  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore,
 }: FounderCardProps) {
   const navigate = useNavigate();
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [magnet, setMagnet] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    setMagnet({ x: (e.clientX - cx) * 0.02, y: (e.clientY - cy) * 0.02 });
+  };
+
+  const handleMouseLeave = () => setMagnet({ x: 0, y: 0 });
 
   return (
-    <Card className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
-      isHighlighted
-        ? "border-[hsl(42,50%,56%)]/40 bg-gradient-to-br from-[hsl(42,50%,56%)]/5 to-transparent shadow-[0_0_20px_hsl(42,50%,56%,0.1)]"
-        : "border-border/50 bg-card/80 backdrop-blur-sm"
-    }`}>
+    <Card
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${
+        isHighlighted
+          ? "border-[hsl(42,50%,56%)]/40 bg-gradient-to-br from-[hsl(42,50%,56%)]/5 to-transparent shadow-[0_0_20px_hsl(42,50%,56%,0.1)]"
+          : "border-border/50 bg-card/80 backdrop-blur-sm"
+      }`}
+    >
       {isHighlighted && (
         <div className="absolute top-2 right-2">
           <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold">⭐ DESTAQUE</Badge>
         </div>
       )}
-      <CardContent className="p-5">
+
+      {matchScore !== undefined && matchScore > 0 && (
+        <div className="absolute top-2 left-2">
+          <Badge className={`text-[10px] font-bold border ${getMatchColor(matchScore)}`}>
+            <Sparkles className="h-3 w-3 mr-0.5" /> Match {matchScore}%
+          </Badge>
+        </div>
+      )}
+
+      <CardContent className="p-5 pt-8">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
             {avatarUrl ? (
@@ -60,9 +78,7 @@ export default function FounderCard({
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-foreground truncate">{name}</h3>
-            {building && (
-              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{building}</p>
-            )}
+            {building && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{building}</p>}
             {country && (
               <div className="flex items-center gap-1 mt-1">
                 <MapPin className="h-3 w-3 text-muted-foreground" />
@@ -98,14 +114,16 @@ export default function FounderCard({
           <Button
             size="sm"
             variant="outline"
-            className="flex-1 text-xs"
+            className="flex-1 text-xs transition-transform duration-200"
+            style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             onClick={() => navigate(`/founder-profile/${id}`)}
           >
             <Eye className="h-3 w-3 mr-1" /> Ver Perfil
           </Button>
           <Button
             size="sm"
-            className="flex-1 text-xs"
+            className="flex-1 text-xs transition-transform duration-200"
+            style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             disabled={isConnected || isPending}
             onClick={() => onConnect?.(userId)}
           >

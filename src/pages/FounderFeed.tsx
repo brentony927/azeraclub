@@ -3,13 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import FounderCard from "@/components/FounderCard";
+import FounderCardSkeleton from "@/components/FounderCardSkeleton";
+import FounderNotifications from "@/components/FounderNotifications";
+import FounderActivityFeed from "@/components/FounderActivityFeed";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Search, Users, Filter, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-const SKILL_FILTERS = ["Developer", "Marketing", "AI", "Sales", "Designer", "Product"];
-const LOOKING_FILTERS = ["Co-founder", "Developer", "Investor", "Marketing Partner", "Designer"];
+import { calculateMatchScore } from "@/lib/founderMatch";
+import {
+  SKILL_OPTIONS, LOOKING_FOR_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
+} from "@/data/founderConstants";
+import NumberFlow from "@number-flow/react";
 
 interface FounderProfile {
   id: string;
@@ -22,27 +30,41 @@ interface FounderProfile {
   building: string | null;
   commitment: string | null;
   industry: string[];
+  interests: string[];
+  age: number | null;
+  city: string | null;
+  continent: string | null;
+  reputation_score: number | null;
+  is_verified: boolean | null;
 }
 
 export default function FounderFeed() {
   const { user } = useAuth();
   const { plan } = useSubscription();
   const [profiles, setProfiles] = useState<FounderProfile[]>([]);
+  const [myProfile, setMyProfile] = useState<FounderProfile | null>(null);
   const [connections, setConnections] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [skillFilter, setSkillFilter] = useState<string[]>([]);
   const [lookingFilter, setLookingFilter] = useState<string[]>([]);
+  const [continentFilter, setContinentFilter] = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
+  const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
+  const [interestFilter, setInterestFilter] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      const [profilesRes, connectionsRes] = await Promise.all([
+      const [profilesRes, connectionsRes, myRes] = await Promise.all([
         supabase.from("founder_profiles").select("*").eq("is_published", true).neq("user_id", user.id),
         supabase.from("founder_connections").select("*").or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
+        supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
       ]);
 
-      if (profilesRes.data) setProfiles(profilesRes.data);
+      if (profilesRes.data) setProfiles(profilesRes.data as FounderProfile[]);
+      if (myRes.data) setMyProfile(myRes.data as FounderProfile);
       if (connectionsRes.data) {
         const map: Record<string, string> = {};
         connectionsRes.data.forEach(c => {
@@ -67,6 +89,13 @@ export default function FounderFeed() {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       setConnections(prev => ({ ...prev, [targetUserId]: "pending" }));
+      // Send notification
+      await supabase.from("founder_notifications").insert({
+        user_id: targetUserId,
+        type: "connection",
+        title: `${myProfile?.name || "Alguém"} quer se conectar com você`,
+        body: myProfile?.building || null,
+      });
       toast({ title: "Solicitação enviada! 🤝" });
     }
   };
@@ -75,31 +104,78 @@ export default function FounderFeed() {
     setArr(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]);
   };
 
+  const clearFilters = () => {
+    setSkillFilter([]);
+    setLookingFilter([]);
+    setContinentFilter("");
+    setCountryFilter("");
+    setAgeRange([18, 65]);
+    setInterestFilter([]);
+    setSearch("");
+  };
+
+  const hasActiveFilters = skillFilter.length > 0 || lookingFilter.length > 0 || continentFilter || countryFilter || interestFilter.length > 0 || ageRange[0] !== 18 || ageRange[1] !== 65;
+
   let filtered = profiles.filter(p => {
     if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.building?.toLowerCase().includes(search.toLowerCase())) return false;
-    if (skillFilter.length && !skillFilter.some(s => p.skills.includes(s))) return false;
-    if (lookingFilter.length && !lookingFilter.some(l => p.looking_for.includes(l))) return false;
+    if (skillFilter.length && !skillFilter.some(s => p.skills?.includes(s))) return false;
+    if (lookingFilter.length && !lookingFilter.some(l => p.looking_for?.includes(l))) return false;
+    if (continentFilter && p.continent !== continentFilter) return false;
+    if (countryFilter && !p.country?.toLowerCase().includes(countryFilter.toLowerCase())) return false;
+    if (p.age !== null && (p.age < ageRange[0] || p.age > ageRange[1])) return false;
+    if (interestFilter.length && !interestFilter.some(i => p.interests?.includes(i))) return false;
     return true;
   });
 
-  // Business users first (check user_plans would need join — simplified: just sort by name for now)
-  // In a real scenario we'd join with user_plans
+  // Calculate match scores
+  const withScores = filtered.map(p => ({
+    ...p,
+    matchScore: myProfile ? calculateMatchScore(myProfile, p) : 0,
+  }));
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+  // Sort: highlighted first, then by match score
+  withScores.sort((a, b) => b.matchScore - a.matchScore);
+
+  const renderChipFilter = (label: string, options: string[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>) => (
+    <div>
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">{label}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(s => (
+          <button
+            key={s}
+            onClick={() => toggleFilter(selected, setSelected, s)}
+            className={`px-3 py-1 rounded-full text-xs transition-all ${
+              selected.includes(s) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {s}
+          </button>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Users className="h-6 w-6" /> Founder Feed
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">Encontre parceiros, co-fundadores e colaboradores.</p>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <Users className="h-6 w-6" /> Founder Feed
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            <NumberFlow value={profiles.length} /> fundadores na AZERA CLUB
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <FounderNotifications />
+          <Button
+            variant={showFilters ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="h-4 w-4 mr-1" /> Filtros
+          </Button>
+        </div>
       </div>
 
       {/* Search */}
@@ -113,67 +189,114 @@ export default function FounderFeed() {
         />
       </div>
 
-      {/* Filters */}
-      <div className="space-y-3 mb-6">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Skills</p>
-          <div className="flex flex-wrap gap-1.5">
-            {SKILL_FILTERS.map(s => (
-              <button
-                key={s}
-                onClick={() => toggleFilter(skillFilter, setSkillFilter, s)}
-                className={`px-3 py-1 rounded-full text-xs transition-all ${
-                  skillFilter.includes(s) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+      {/* Advanced Filters */}
+      {showFilters && (
+        <div className="bg-card/80 border border-border/50 rounded-xl p-5 mb-6 space-y-4 animate-fade-in">
+          <div className="flex justify-between items-center">
+            <h3 className="text-sm font-semibold text-foreground">Filtros Avançados</h3>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
+                <X className="h-3 w-3 mr-1" /> Limpar
+              </Button>
+            )}
+          </div>
+
+          {/* Region */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <Label className="text-xs text-muted-foreground">Continente</Label>
+              <Select value={continentFilter} onValueChange={setContinentFilter}>
+                <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Todos</SelectItem>
+                  {CONTINENT_OPTIONS.map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">País</Label>
+              <Input value={countryFilter} onChange={e => setCountryFilter(e.target.value)} placeholder="Ex: Brasil" className="h-8 text-xs" />
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
+              <Slider
+                value={ageRange}
+                onValueChange={v => setAgeRange(v as [number, number])}
+                min={18}
+                max={65}
+                step={1}
+                className="mt-2"
+              />
+            </div>
+          </div>
+
+          {renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter)}
+          {renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter)}
+
+          {/* Interests */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Interesses</p>
+            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+              {BUSINESS_INTERESTS.slice(0, 20).map(i => (
+                <button
+                  key={i}
+                  onClick={() => toggleFilter(interestFilter, setInterestFilter, i)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${
+                    interestFilter.includes(i) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {i}
+                </button>
+              ))}
+              {BUSINESS_INTERESTS.length > 20 && !interestFilter.length && (
+                <span className="text-[10px] text-muted-foreground self-center">+{BUSINESS_INTERESTS.length - 20} mais</span>
+              )}
+            </div>
           </div>
         </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Procurando</p>
-          <div className="flex flex-wrap gap-1.5">
-            {LOOKING_FILTERS.map(l => (
-              <button
-                key={l}
-                onClick={() => toggleFilter(lookingFilter, setLookingFilter, l)}
-                className={`px-3 py-1 rounded-full text-xs transition-all ${
-                  lookingFilter.includes(l) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Grid */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <FounderCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : withScores.length === 0 ? (
         <div className="text-center py-16">
           <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(p => (
+          {withScores.map(p => (
             <FounderCard
               key={p.id}
               id={p.id}
               userId={p.user_id}
               name={p.name}
               avatarUrl={p.avatar_url}
-              skills={p.skills}
-              lookingFor={p.looking_for}
+              skills={p.skills || []}
+              lookingFor={p.looking_for || []}
               country={p.country}
               building={p.building}
               commitment={p.commitment}
               onConnect={handleConnect}
               isConnected={connections[p.user_id] === "accepted"}
               isPending={connections[p.user_id] === "pending"}
+              matchScore={p.matchScore}
             />
           ))}
+        </div>
+      )}
+
+      {/* Activity Feed sidebar on large screens */}
+      {!loading && withScores.length > 0 && (
+        <div className="mt-8 p-4 bg-card/60 border border-border/50 rounded-xl">
+          <FounderActivityFeed />
         </div>
       )}
     </div>
