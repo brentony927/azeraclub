@@ -19,6 +19,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorState, setErrorState] = useState<"user_exists" | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const normalizedEmail = email.trim().toLowerCase();
 
