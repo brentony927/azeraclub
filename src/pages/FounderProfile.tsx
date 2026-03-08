@@ -22,12 +22,12 @@ import ReportUserDialog from "@/components/ReportUserDialog";
 function getFounderBadge(profile: any): string {
   const skills: string[] = profile.skills || [];
   const c = profile.commitment;
-  if (c === "full_business") return "Founder";
-  if (c === "startup_idea") return "Co-Founder";
-  if (skills.some((s: string) => /develop|dev|code/i.test(s))) return "Developer";
+  if (c === "full_business") return "Fundador";
+  if (c === "startup_idea") return "Co-Fundador";
+  if (skills.some((s: string) => /develop|dev|code/i.test(s))) return "Desenvolvedor";
   if (skills.some((s: string) => /design/i.test(s))) return "Designer";
-  if (skills.some((s: string) => /market/i.test(s))) return "Marketer";
-  if (skills.some((s: string) => /financ|invest/i.test(s))) return "Investor";
+  if (skills.some((s: string) => /market/i.test(s))) return "Estrategista";
+  if (skills.some((s: string) => /financ|invest/i.test(s))) return "Investidor";
   return "Builder";
 }
 
