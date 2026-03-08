@@ -73,14 +73,21 @@ export default function FounderProfile() {
       // parallel fetches
       const uid = prof.user_id;
       const [connRes, myRes, venturesRes, oppsRes, membersRes] = await Promise.all([
-        user ? supabase.from("founder_connections").select("status").or(`and(from_user_id.eq.${user.id},to_user_id.eq.${uid}),and(from_user_id.eq.${uid},to_user_id.eq.${user.id})`).maybeSingle() : Promise.resolve({ data: null }),
+        user ? supabase.from("founder_connections").select("status, from_user_id, to_user_id").or(`and(from_user_id.eq.${user.id},to_user_id.eq.${uid}),and(from_user_id.eq.${uid},to_user_id.eq.${user.id})`).maybeSingle() : Promise.resolve({ data: null }),
         user ? supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle() : Promise.resolve({ data: null }),
         supabase.from("ventures").select("*").eq("user_id", uid).order("created_at", { ascending: false }),
         supabase.from("founder_opportunities").select("id").eq("user_id", uid),
         supabase.from("venture_members").select("id").eq("user_id", uid),
       ]);
 
-      if (connRes.data) setConnectionStatus((connRes.data as any).status);
+      if (connRes.data) {
+        const conn = connRes.data as any;
+        setConnectionStatus(conn.status);
+        // Check if current user is the recipient of a pending request
+        if (conn.status === "pending" && conn.to_user_id === user?.id) {
+          setIsIncomingPending(true);
+        }
+      }
       if (myRes.data) setMyProfile(myRes.data);
 
       // connections count (accepted)
