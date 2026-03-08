@@ -442,7 +442,7 @@ export default function FounderProfile() {
               )}
               {connectionStatus === "accepted" && (
                 <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
-                  <MessageCircle className="h-4 w-4 mr-2" /> Message
+                  <MessageCircle className="h-4 w-4 mr-2" /> Mensagem
                 </Button>
               )}
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
