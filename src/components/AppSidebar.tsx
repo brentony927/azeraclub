@@ -129,11 +129,11 @@ const founderItems: NavItem[] = [
 ];
 
 const platformItems: NavItem[] = [
-  { title: "Venture Builder", url: "/venture-builder", icon: Rocket },
-  { title: "Ranking Startups", url: "/startup-rankings", icon: Trophy },
-  { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
-  { title: "Trend Scanner", url: "/trend-scanner", icon: Scan },
-  { title: "Weekly Report", url: "/weekly-report", icon: FileText },
+  { title: "Construtor de Ventures", url: "/venture-builder", icon: Rocket },
+  { title: "Ranking de Startups", url: "/startup-rankings", icon: Trophy },
+  { title: "Classificação", url: "/leaderboard", icon: Trophy },
+  { title: "Scanner de Tendências", url: "/trend-scanner", icon: Scan },
+  { title: "Relatório Semanal", url: "/weekly-report", icon: FileText },
   { title: "Salvos", url: "/saved", icon: Star },
 ];
 
