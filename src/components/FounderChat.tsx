@@ -52,12 +52,14 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
 
     const channel = supabase
       .channel(`chat-${[user.id, otherUserId].sort().join("-")}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "founder_messages" }, (payload) => {
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "founder_messages",
+        filter: `to_user_id=eq.${user.id}`,
+      }, (payload) => {
         const msg = payload.new as Message;
-        if (
-          (msg.from_user_id === user.id && msg.to_user_id === otherUserId) ||
-          (msg.from_user_id === otherUserId && msg.to_user_id === user.id)
-        ) {
+        if (msg.from_user_id === otherUserId) {
           setMessages(prev => [...prev, msg]);
         }
       })
