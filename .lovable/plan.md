@@ -1,38 +1,29 @@
-## AZERA CLUB — Strategic Investment Analysis
 
-**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-### Top 5 Priorities
+## Add Avatar Upload to Founder Profile Form
 
-| # | Action | Impact |
-|---|--------|--------|
-| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
-| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
-| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
-| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
-| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
+Add a clickable avatar upload area at the top of the founder profile creation form, replacing the static rocket icon. The photo uploads to the existing `avatars` storage bucket and the URL is passed with the form data.
 
-### Scores by Area
+### Changes
 
-| Area | Score |
-|------|-------|
-| Product Clarity | 4/10 |
-| User Onboarding | 3/10 |
-| Core Value Proposition | 5/10 |
-| User Engagement | 5/10 |
-| Retention Mechanisms | 3/10 |
-| Network Effect Potential | 6/10 |
-| Feature Usefulness | 4/10 |
-| UX/UI Quality | 6/10 |
-| Monetization Model | 5/10 |
-| Premium Plan Value | 4/10 |
-| Competitive Positioning | 4/10 |
-| Scalability | 5/10 |
-| Trust & Safety | 4/10 |
-| Market Fit | 5/10 |
-| Psychological Triggers | 6/10 |
-| Viral Growth | 3/10 |
-| Community Health | 3/10 |
-| Abandonment Risk | 7/10 (HIGH) |
-| Differentiation | 5/10 |
-| Long-term Defensibility | 3/10 |
+**`src/components/FounderProfileForm.tsx`**
+- Add `avatarFile` state and `avatarPreview` state
+- Replace the rocket icon in the card header with a clickable circular avatar area (camera icon overlay, shows preview when selected)
+- Add `avatar_url` to the `FounderFormData` interface
+- Accept a `userId` prop to construct the storage path
+- On form submit, upload the file to `avatars/{userId}/{timestamp}` and include the public URL in the form data
+
+**`src/pages/FounderMatch.tsx`**
+- Pass `userId={user.id}` to FounderProfileForm
+- Save the returned `avatar_url` to `founder_profiles` on insert
+
+### UI Design
+- Circular avatar area (80x80) centered at the top where the rocket icon currently is
+- Default state: camera icon with "Adicionar Foto" text below
+- After selection: shows image preview with a subtle edit overlay on hover
+- Matches the dark theme aesthetic of the form
+
+### Storage
+- Uses the existing `avatars` bucket (already public with RLS policies)
+- Path: `avatars/{userId}/{timestamp}.{ext}`
+
