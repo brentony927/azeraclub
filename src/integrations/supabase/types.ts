@@ -743,6 +743,30 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_visits: {
+        Row: {
+          id: string
+          profile_user_id: string
+          visit_date: string
+          visited_at: string
+          visitor_user_id: string
+        }
+        Insert: {
+          id?: string
+          profile_user_id: string
+          visit_date?: string
+          visited_at?: string
+          visitor_user_id: string
+        }
+        Update: {
+          id?: string
+          profile_user_id?: string
+          visit_date?: string
+          visited_at?: string
+          visitor_user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: number | null
@@ -1359,6 +1383,27 @@ export type Database = {
           total_score?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_message_limits: {
+        Row: {
+          id: string
+          message_count: number
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          id?: string
+          message_count?: number
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          id?: string
+          message_count?: number
+          user_id?: string
+          week_start?: string
         }
         Relationships: []
       }

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb } from "lucide-react";
+import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,8 @@ function getFounderBadge(commitment: string | null, skills: string[] | null): st
 
 export default function Profile() {
   const { user } = useAuth();
+  const { canAccess } = useSubscription();
+  const isPro = canAccess("pro");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +75,7 @@ export default function Profile() {
   const [venturesCount, setVenturesCount] = useState(0);
   const [opportunitiesCount, setOpportunitiesCount] = useState(0);
   const [currentVenture, setCurrentVenture] = useState<any>(null);
+  const [visitCount, setVisitCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -121,6 +125,13 @@ export default function Profile() {
     setVenturesCount(ventRes.data?.length || 0);
     if (ventRes.data && ventRes.data.length > 0) setCurrentVenture(ventRes.data[0]);
     setOpportunitiesCount(oppRes.count || 0);
+
+    // Fetch profile visit count
+    const { count: vc } = await supabase.from("profile_visits" as any)
+      .select("id", { count: "exact", head: true })
+      .eq("profile_user_id", user!.id);
+    setVisitCount(vc || 0);
+
     setLoading(false);
   };
 
@@ -284,20 +295,60 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Social Proof */}
-            <div className="grid grid-cols-3 gap-3 mt-5">
-              {[
-                { icon: Users, label: "Conexões", value: connectionsCount },
-                { icon: Briefcase, label: "Ventures", value: venturesCount },
-                { icon: Lightbulb, label: "Oportunidades", value: opportunitiesCount },
-              ].map(s => (
-                <div key={s.label} className="flex flex-col items-center p-3 rounded-lg bg-secondary/50">
-                  <s.icon className="h-4 w-4 text-primary mb-1" />
-                  <span className="text-lg font-bold text-foreground">{s.value}</span>
-                  <span className="text-[10px] text-muted-foreground">{s.label}</span>
+            {/* Profile Visits Trigger */}
+            <div className="mt-5 rounded-lg border border-border/50 p-4 bg-secondary/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">{visitCount} pessoas visitaram seu perfil</span>
                 </div>
-              ))}
+                {!isPro && (
+                  <button onClick={() => navigate("/planos")} className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+                    <Lock className="h-3 w-3" /> Ver quem
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Social Proof / Analytics */}
+            {isPro ? (
+              <div className="grid grid-cols-3 gap-3 mt-5">
+                {[
+                  { icon: Users, label: "Conexões", value: connectionsCount },
+                  { icon: Briefcase, label: "Ventures", value: venturesCount },
+                  { icon: Lightbulb, label: "Oportunidades", value: opportunitiesCount },
+                ].map(s => (
+                  <div key={s.label} className="flex flex-col items-center p-3 rounded-lg bg-secondary/50">
+                    <s.icon className="h-4 w-4 text-primary mb-1" />
+                    <span className="text-lg font-bold text-foreground">{s.value}</span>
+                    <span className="text-[10px] text-muted-foreground">{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="relative mt-5">
+                <div className="pointer-events-none opacity-30 blur-[2px] select-none grid grid-cols-3 gap-3">
+                  {[
+                    { icon: Users, label: "Conexões", value: connectionsCount },
+                    { icon: Briefcase, label: "Ventures", value: venturesCount },
+                    { icon: Lightbulb, label: "Oportunidades", value: opportunitiesCount },
+                  ].map(s => (
+                    <div key={s.label} className="flex flex-col items-center p-3 rounded-lg bg-secondary/50">
+                      <s.icon className="h-4 w-4 text-primary mb-1" />
+                      <span className="text-lg font-bold text-foreground">{s.value}</span>
+                      <span className="text-[10px] text-muted-foreground">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm rounded-lg">
+                  <Lock className="h-4 w-4 text-muted-foreground mb-1" />
+                  <p className="text-xs text-muted-foreground">Upgrade para ver insights</p>
+                  <button onClick={() => navigate("/planos")} className="text-xs text-primary font-semibold mt-1 hover:underline">
+                    Fazer Upgrade
+                  </button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

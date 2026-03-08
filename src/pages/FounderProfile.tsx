@@ -65,18 +65,24 @@ export default function FounderProfile() {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       let prof: any = null;
       if (!isUuid) {
-        const { data } = await supabase.from("founder_profiles").select("*").eq("username" as any, id).maybeSingle();
+        const { data } = await supabase.from("founder_profiles").select("*").eq("username", id as any).maybeSingle();
         prof = data;
       }
       if (!prof) {
-        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id).maybeSingle();
+        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id as any).maybeSingle();
         prof = data;
       }
       if (!prof) { setLoading(false); return; }
       setProfile(prof);
 
-      // increment views (dedup: 1 per visitor per 24h)
+      // Record visit in profile_visits + increment views (dedup: 1 per visitor per day)
       if (user && prof.user_id !== user.id) {
+        // Insert visit (unique per day via DB constraint, ignore conflict)
+        await supabase.from("profile_visits" as any).insert({
+          profile_user_id: prof.user_id,
+          visitor_user_id: user.id,
+        }).then(() => {});
+
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { data: recentView } = await supabase.from("founder_notifications")
           .select("id")
@@ -87,7 +93,7 @@ export default function FounderProfile() {
           .limit(1)
           .maybeSingle();
         if (!recentView) {
-          await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", id);
+          await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", prof.id);
           await supabase.from("founder_notifications").insert({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil", related_user_id: user.id });
         }
       }

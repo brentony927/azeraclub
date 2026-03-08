@@ -8,18 +8,20 @@ import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
 import FounderMatchIntro from "@/components/FounderMatchIntro";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import UpgradeTrigger from "@/components/UpgradeTrigger";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Search, Users, Filter, X } from "lucide-react";
+import { Search, Users, Filter, X, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { calculateMatchScore } from "@/lib/founderMatch";
 import {
   SKILL_OPTIONS, LOOKING_FOR_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
 } from "@/data/founderConstants";
 import NumberFlow from "@number-flow/react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface FounderProfile {
   id: string;
@@ -43,7 +45,9 @@ interface FounderProfile {
 
 export default function FounderFeed() {
   const { user } = useAuth();
-  const { plan } = useSubscription();
+  const { plan, canAccess } = useSubscription();
+  const isPro = canAccess("pro");
+  const isBusiness = canAccess("business");
   const [profiles, setProfiles] = useState<FounderProfile[]>([]);
   const [myProfile, setMyProfile] = useState<FounderProfile | null>(null);
   const [connections, setConnections] = useState<Record<string, string>>({});
@@ -59,6 +63,9 @@ export default function FounderFeed() {
   const [showIntro, setShowIntro] = useState(() => {
     return !sessionStorage.getItem("founder-intro-seen");
   });
+
+  // Founder plan user plans for Business priority
+  const [userPlans, setUserPlans] = useState<Record<string, string>>({});
 
   const handleIntroComplete = () => {
     sessionStorage.setItem("founder-intro-seen", "true");
@@ -129,6 +136,13 @@ export default function FounderFeed() {
 
   let filtered = profiles.filter(p => {
     if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.building?.toLowerCase().includes(search.toLowerCase()) && !p.username?.toLowerCase().includes(search.toLowerCase())) return false;
+    // Founder: only city + interests filters work
+    if (!isPro) {
+      if (countryFilter && !p.country?.toLowerCase().includes(countryFilter.toLowerCase())) return false;
+      if (interestFilter.length && !interestFilter.some(i => p.interests?.includes(i))) return false;
+      return true;
+    }
+    // PRO+ filters
     if (skillFilter.length && !skillFilter.some(s => p.skills?.includes(s))) return false;
     if (lookingFilter.length && !lookingFilter.some(l => p.looking_for?.includes(l))) return false;
     if (continentFilter && p.continent !== continentFilter) return false;
@@ -144,6 +158,12 @@ export default function FounderFeed() {
   }));
 
   withScores.sort((a, b) => b.matchScore - a.matchScore);
+
+  // For Founder: cap at 5
+  const FOUNDER_LIMIT = 5;
+  const totalResults = withScores.length;
+  const displayResults = isPro ? withScores : withScores.slice(0, FOUNDER_LIMIT);
+  const hiddenCount = isPro ? 0 : Math.max(0, totalResults - FOUNDER_LIMIT);
 
   const renderChipFilter = (label: string, options: string[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>) => (
     <div>
@@ -162,6 +182,22 @@ export default function FounderFeed() {
         ))}
       </div>
     </div>
+  );
+
+  const renderLockedFilter = (label: string) => (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="opacity-50 cursor-not-allowed">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
+            {label} <Lock className="h-3 w-3" />
+          </p>
+          <div className="h-8 rounded-lg bg-secondary/50 flex items-center justify-center">
+            <span className="text-[10px] text-muted-foreground">PRO</span>
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>Disponível no plano Pro</TooltipContent>
+    </Tooltip>
   );
 
   return (
@@ -214,38 +250,43 @@ export default function FounderFeed() {
               )}
             </div>
 
+            {/* Founder: only country + interests. PRO+: all */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <Label className="text-xs text-muted-foreground">Continente</Label>
-                <Select value={continentFilter} onValueChange={setContinentFilter}>
-                  <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Todos</SelectItem>
-                    {CONTINENT_OPTIONS.map(c => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {isPro ? (
+                <div>
+                  <Label className="text-xs text-muted-foreground">Continente</Label>
+                  <Select value={continentFilter} onValueChange={setContinentFilter}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Todos</SelectItem>
+                      {CONTINENT_OPTIONS.map(c => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : renderLockedFilter("Continente")}
               <div>
                 <Label className="text-xs text-muted-foreground">País</Label>
                 <Input value={countryFilter} onChange={e => setCountryFilter(e.target.value)} placeholder="Ex: Brasil" className="h-8 text-xs" />
               </div>
-              <div>
-                <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
-                <Slider
-                  value={ageRange}
-                  onValueChange={v => setAgeRange(v as [number, number])}
-                  min={18}
-                  max={65}
-                  step={1}
-                  className="mt-2"
-                />
-              </div>
+              {isPro ? (
+                <div>
+                  <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
+                  <Slider
+                    value={ageRange}
+                    onValueChange={v => setAgeRange(v as [number, number])}
+                    min={18}
+                    max={65}
+                    step={1}
+                    className="mt-2"
+                  />
+                </div>
+              ) : renderLockedFilter("Faixa Etária")}
             </div>
 
-            {renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter)}
-            {renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter)}
+            {isPro ? renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter) : renderLockedFilter("Skills")}
+            {isPro ? renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter) : renderLockedFilter("Procurando")}
 
             <div>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Interesses</p>
@@ -276,36 +317,49 @@ export default function FounderFeed() {
               <FounderCardSkeleton key={i} />
             ))}
           </div>
-        ) : withScores.length === 0 ? (
+        ) : displayResults.length === 0 ? (
           <div className="text-center py-16">
             <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
             <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {withScores.map(p => (
-              <FounderCard
-                key={p.id}
-                id={p.id}
-                userId={p.user_id}
-                name={p.name}
-                avatarUrl={p.avatar_url}
-                skills={p.skills || []}
-                lookingFor={p.looking_for || []}
-                country={p.country}
-                building={p.building}
-                commitment={p.commitment}
-                onConnect={handleConnect}
-                isConnected={connections[p.user_id] === "accepted"}
-                isPending={connections[p.user_id] === "pending"}
-                matchScore={p.matchScore}
-                username={p.username}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {displayResults.map(p => (
+                <FounderCard
+                  key={p.id}
+                  id={p.id}
+                  userId={p.user_id}
+                  name={p.name}
+                  avatarUrl={p.avatar_url}
+                  skills={p.skills || []}
+                  lookingFor={p.looking_for || []}
+                  country={p.country}
+                  building={p.building}
+                  commitment={p.commitment}
+                  onConnect={handleConnect}
+                  isConnected={connections[p.user_id] === "accepted"}
+                  isPending={connections[p.user_id] === "pending"}
+                  matchScore={p.matchScore}
+                  username={p.username}
+                />
+              ))}
+            </div>
+
+            {/* Founder radar limit upgrade trigger */}
+            {hiddenCount > 0 && (
+              <div className="mt-6">
+                <UpgradeTrigger
+                  stat={`+${hiddenCount}`}
+                  message={`mais ${hiddenCount} founders combinam com os teus interesses. Desbloqueie o radar completo com PRO.`}
+                  targetPlan="pro"
+                />
+              </div>
+            )}
+          </>
         )}
 
-        {!loading && withScores.length > 0 && (
+        {!loading && displayResults.length > 0 && (
           <div className="mt-8 p-4 bg-card/60 border border-border/50 rounded-xl">
             <FounderActivityFeed />
           </div>
