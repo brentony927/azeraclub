@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import AzeraChatbot from "@/components/AzeraChatbot";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Footer from "@/components/Footer";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -48,16 +49,19 @@ export default function Layout() {
             </div>
             <ThemeToggle />
           </header>
-          <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 relative z-10">
+          <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <AnimatePresence mode="wait">
               <PageTransition key={location.pathname}>
                 <Outlet />
               </PageTransition>
             </AnimatePresence>
           </main>
-          <Footer />
+          <div className="hidden md:block">
+            <Footer />
+          </div>
         </div>
       </div>
+      <MobileBottomNav />
       <AzeraChatbot />
     </SidebarProvider>
   );

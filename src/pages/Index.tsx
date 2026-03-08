@@ -151,10 +151,10 @@ export default function Index() {
   const score = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-8">
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
-        <h1 className="text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
           {getGreeting()}, {displayName.split(" ")[0]}.
         </h1>
         <div className="flex items-center justify-between">
@@ -222,7 +222,7 @@ export default function Index() {
       </motion.div>
 
       {/* AZERA Score + AI Tip row */}
-      <motion.div variants={item} className="grid sm:grid-cols-2 gap-3">
+      <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5">
             <div className="flex items-center gap-3 mb-3">
