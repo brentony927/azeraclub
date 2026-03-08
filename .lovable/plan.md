@@ -1,21 +1,19 @@
 
 
-## Plano: Definir conta como Elite
+## Fundo Dourado Gradiente nos Itens do Founder Match
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+Atualizar os estilos CSS dos itens do Founder Match na sidebar para que todos tenham um fundo com gradiente dourado visível (não apenas o item ativo).
 
-### O que fazer
+### Alterações
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+**Arquivo: `src/index.css`** (linhas 563-574)
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+Atualizar as classes:
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+- **`.founder-sidebar-item`**: Adicionar `background` com gradiente dourado sutil (transparência ~10-15%) para que todos os itens tenham fundo dourado mesmo quando inativos
+- **`.founder-sidebar-item:hover`**: Intensificar o gradiente dourado no hover (~20-25%)  
+- **`.founder-sidebar-item-active`**: Manter o gradiente mais forte que já existe, mas aumentar a opacidade para ~25-30% com brilho mais pronunciado
+- Adicionar `border-radius: 8px` e `border` dourada sutil em todos os estados
 
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+Resultado visual: todos os itens do Founder Match terão um fundo dourado gradiente permanente, ficando mais intenso no hover e no estado ativo.
 
