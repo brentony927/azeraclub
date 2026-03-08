@@ -204,7 +204,7 @@ export default function VentureBuilder() {
                   <CardTitle className="text-xl">{selected.name}</CardTitle>
                   {!selected.ai_roadmap && (
                     <Button onClick={buildWithAI} disabled={aiLoading} variant="default">
-                      {aiLoading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : <><Rocket className="h-4 w-4 mr-2" /> Build With AI</>}
+                      {aiLoading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : <><Rocket className="h-4 w-4 mr-2" /> Construir com IA</>}
                     </Button>
                   )}
                 </CardHeader>
