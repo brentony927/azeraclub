@@ -1244,3 +1244,67 @@
   0%, 100% { background-position: 0% center; }
   50% { background-position: 100% center; }
 }
+
+/* ===== Sidebar Collapsible Groups ===== */
+
+.sidebar-collapsible-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.sidebar-collapsible-trigger:hover {
+  background: hsl(var(--accent) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+/* Glow when collapsed */
+@keyframes sidebarGroupGlow {
+  0%, 100% { box-shadow: 0 0 6px 0 hsla(var(--muted-foreground) / 0.15); border-color: hsla(var(--muted-foreground) / 0.15); }
+  50% { box-shadow: 0 0 14px 0 hsla(var(--muted-foreground) / 0.25); border-color: hsla(var(--muted-foreground) / 0.25); }
+}
+
+.sidebar-group-label-collapsed {
+  animation: sidebarGroupGlow 2.5s ease-in-out infinite;
+  background: hsl(var(--accent) / 0.25);
+}
+
+/* PRO theme glow */
+@keyframes sidebarGroupGlowPro {
+  0%, 100% { box-shadow: 0 0 8px 0 hsla(152, 60%, 45%, 0.2); border-color: hsla(152, 60%, 45%, 0.2); }
+  50% { box-shadow: 0 0 18px 0 hsla(152, 60%, 45%, 0.35); border-color: hsla(152, 60%, 45%, 0.35); }
+}
+
+.pro-theme .sidebar-group-label-collapsed {
+  animation: sidebarGroupGlowPro 2.5s ease-in-out infinite;
+  background: hsla(152, 60%, 45%, 0.08);
+}
+
+/* BUSINESS theme glow */
+@keyframes sidebarGroupGlowBusiness {
+  0%, 100% { box-shadow: 0 0 8px 0 hsla(42, 80%, 55%, 0.2); border-color: hsla(42, 80%, 55%, 0.2); }
+  50% { box-shadow: 0 0 18px 0 hsla(42, 80%, 55%, 0.35); border-color: hsla(42, 80%, 55%, 0.35); }
+}
+
+.business-theme .sidebar-group-label-collapsed {
+  animation: sidebarGroupGlowBusiness 2.5s ease-in-out infinite;
+  background: hsla(42, 80%, 55%, 0.08);
+}
+
+/* Dark mode stronger glow */
+.dark .sidebar-group-label-collapsed {
+  background: hsl(var(--accent) / 0.15);
+}
+.dark .pro-theme .sidebar-group-label-collapsed {
+  background: hsla(152, 60%, 45%, 0.12);
+}
+.dark .business-theme .sidebar-group-label-collapsed {
+  background: hsla(42, 80%, 55%, 0.12);
+}
