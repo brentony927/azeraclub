@@ -446,7 +446,7 @@ export default function FounderProfile() {
                 </Button>
               )}
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
-                <Send className="h-4 w-4 mr-2" /> Invite to Venture
+                <Send className="h-4 w-4 mr-2" /> Convidar para Venture
               </Button>
               <BookmarkButton itemId={profile.id} itemType="founder" />
               <ReportUserDialog reportedUserId={profile.user_id} reportedUserName={profile.name} />
