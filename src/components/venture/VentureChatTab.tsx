@@ -85,10 +85,10 @@ export default function VentureChatTab({ ventureId, venture }: { ventureId: stri
   return (
     <div className="flex flex-col h-[500px]">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Team Chat</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Chat da Equipe</h3>
         <Button size="sm" variant="outline" onClick={askAI} disabled={aiLoading}>
           {aiLoading ? <Loader2 className="animate-spin h-3.5 w-3.5 mr-1" /> : <Bot className="h-3.5 w-3.5 mr-1" />}
-          Ask AI Co-Founder
+          Perguntar ao Co-Fundador IA
         </Button>
       </div>
       <div className="flex-1 overflow-y-auto space-y-2 p-3 rounded-lg bg-muted/30 border border-border/30">
