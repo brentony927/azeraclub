@@ -151,7 +151,7 @@ export default function Index() {
   const score = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-8">
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
         <h1 className="text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
