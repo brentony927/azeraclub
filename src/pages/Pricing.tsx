@@ -286,7 +286,7 @@ export default function Pricing() {
                 <ShieldCheck className="h-5 w-5 text-primary" />
                 <div>
                   <p className="text-sm font-semibold text-foreground">Plano {planLabel}</p>
-                  <p className="text-xs text-muted-foreground">Status: <span className="text-green-500 font-medium">Ativo</span></p>
+                  <p className="text-xs text-muted-foreground">Status: <span className="text-primary font-medium">Ativo</span></p>
                 </div>
               </div>
               {subscriptionEnd && (
