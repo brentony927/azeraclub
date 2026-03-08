@@ -332,7 +332,7 @@ export default function FounderProfile() {
       {profile.skills?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Skills</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Habilidades</h3>
             <div className="flex flex-wrap gap-2">
               {profile.skills.map((s: string) => <Badge key={s} variant="secondary">{s}</Badge>)}
             </div>
