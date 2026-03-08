@@ -1,0 +1,1 @@
+ALTER TABLE public.founder_notifications ADD COLUMN IF NOT EXISTS action_url text;

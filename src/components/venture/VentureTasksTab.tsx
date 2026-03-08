@@ -56,6 +56,21 @@ export default function VentureTasksTab({ ventureId, members }: { ventureId: str
 
   const moveTask = async (taskId: string, newStatus: string) => {
     await supabase.from("venture_tasks").update({ status: newStatus }).eq("id", taskId);
+    // Notify venture members about task update
+    if (user) {
+      const task = tasks.find(t => t.id === taskId);
+      for (const m of members) {
+        if (m.user_id !== user.id) {
+          await supabase.from("founder_notifications").insert({
+            user_id: m.user_id,
+            type: "venture_activity",
+            title: `Tarefa "${task?.title || ""}" movida para ${newStatus}`,
+            action_url: "/venture-builder",
+            related_user_id: user.id,
+          });
+        }
+      }
+    }
     fetchTasks();
   };
 

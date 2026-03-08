@@ -120,8 +120,17 @@ export default function VentureBuilder() {
   };
 
   const inviteMember = async (userId: string) => {
-    if (!selected) return;
+    if (!selected || !user) return;
     await supabase.from("venture_members").insert({ venture_id: selected.id, user_id: userId, role: inviteRole });
+    // Send team_invitation notification
+    await supabase.from("founder_notifications").insert({
+      user_id: userId,
+      type: "team_invitation",
+      title: `Você foi convidado para a equipe "${selected.name}"`,
+      body: `Função: ${inviteRole}`,
+      action_url: "/venture-builder",
+      related_user_id: user.id,
+    });
     toast.success("Convite enviado!");
     supabase.from("venture_members").select("*").eq("venture_id", selected.id).then(({ data }) => setMembers((data as VentureMember[]) || []));
     setFoundProfiles([]);
