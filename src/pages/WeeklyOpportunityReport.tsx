@@ -67,8 +67,8 @@ export default function WeeklyOpportunityReport() {
           <div className="flex gap-2">
             {report && (
               <>
-                <Button variant="outline" onClick={download}><Download className="h-4 w-4 mr-2" /> Download PDF</Button>
-                <Button variant="outline" onClick={share}><Share2 className="h-4 w-4 mr-2" /> Share</Button>
+                <Button variant="outline" onClick={download}><Download className="h-4 w-4 mr-2" /> Baixar PDF</Button>
+                <Button variant="outline" onClick={share}><Share2 className="h-4 w-4 mr-2" /> Compartilhar</Button>
               </>
             )}
             <Button onClick={generate} disabled={loading}>
