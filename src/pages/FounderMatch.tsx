@@ -66,6 +66,7 @@ export default function FounderMatch() {
       looking_for: formData.looking_for,
       commitment: formData.commitment,
       interests: formData.interests,
+      avatar_url: formData.avatar_url || null,
       is_published: true,
     });
     setSaving(false);
@@ -96,7 +97,7 @@ export default function FounderMatch() {
       {showConfetti && (
         <div className="fixed inset-0 z-50 pointer-events-none founder-confetti" onAnimationEnd={() => setShowConfetti(false)} />
       )}
-      <FounderProfileForm onSubmit={handleSubmit} loading={saving} />
+      <FounderProfileForm onSubmit={handleSubmit} loading={saving} userId={user?.id} />
     </div>
   );
 }
