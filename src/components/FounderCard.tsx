@@ -71,7 +71,7 @@ export default function FounderCard({
         </div>
       )}
 
-      {matchScore !== undefined && matchScore > 0 && (
+      {matchScore !== undefined && matchScore > 0 && !isHighlighted && (
         <div className="absolute top-2 left-2">
           <Badge className={`text-[10px] font-bold border ${getMatchColor(matchScore)}`}>
             <Sparkles className="h-3 w-3 mr-0.5" /> Match {matchScore}%
