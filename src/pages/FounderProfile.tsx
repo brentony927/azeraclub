@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
   MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck,
-  Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send,
+  Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send, Check, X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
