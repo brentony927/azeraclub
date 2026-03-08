@@ -34,6 +34,10 @@ import {
   Rocket,
   MessageSquare,
   Briefcase,
+  Trophy,
+  FileText,
+  Star,
+  Scan,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import azeraLogo from "@/assets/azera-logo.jpg";
@@ -105,6 +109,14 @@ const founderItems = [
   { title: "Oportunidades", url: "/founder-opportunities", icon: Briefcase },
   { title: "Mensagens", url: "/founder-messages", icon: MessageSquare },
   { title: "Notificações", url: "/founder-notifications", icon: Bell },
+];
+
+const platformItems = [
+  { title: "Venture Builder", url: "/venture-builder", icon: Rocket },
+  { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
+  { title: "Trend Scanner", url: "/trend-scanner", icon: Scan },
+  { title: "Weekly Report", url: "/weekly-report", icon: FileText },
+  { title: "Salvos", url: "/saved", icon: Star },
 ];
 
 export function AppSidebar() {
@@ -256,6 +268,13 @@ export function AppSidebar() {
           {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Business</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>{renderItems(businessItems)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3 mb-1">Plataforma</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <SidebarMenu>{renderItems(platformItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
