@@ -14,7 +14,7 @@ const tiers = {
   business: { price_id: "price_1T7qrVFn0fMTE8T5G08ePJ2r", product_id: "prod_U62xPut1mfd9CG" },
 };
 
-const PIX_KEY = "SUA_CHAVE_PIX_AQUI";
+const PIX_KEY = "043.869.512-70";
 
 const plans: PricingPlan[] = [
   {
