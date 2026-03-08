@@ -235,6 +235,8 @@ export default function AI() {
           if (convId && assistantSoFar) {
             await supabase.from("chat_messages").insert({ user_id: user!.id, content: assistantSoFar, role: "assistant", conversation_id: convId });
             await supabase.from("ai_conversations").update({ updated_at: new Date().toISOString() }).eq("id", convId);
+            // Fire-and-forget memory extraction
+            triggerMemoryExtraction([...messages, userMsg, { role: "assistant", content: assistantSoFar }], convId);
           }
         },
       });
