@@ -1,39 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Caixa de Sugestões — Página dedicada + destaque no Dashboard
+### Top 5 Priorities
 
-### Resumo
-Criar uma página `/sugestoes` onde utilizadores autenticados podem submeter sugestões de melhoria para o site e ver sugestões anteriores (próprias). As sugestões ficam salvas na base de dados. No dashboard, adicionar um card em destaque com CTA para a página.
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-### Mudanças
+### Scores by Area
 
-**1. Migração SQL — tabela `suggestions`**
-- Colunas: `id` (uuid PK), `user_id` (uuid not null), `title` (text not null), `description` (text), `category` (text default 'geral'), `status` (text default 'pendente'), `created_at` (timestamptz default now())
-- RLS: utilizadores gerem as próprias sugestões (ALL where user_id = auth.uid())
-
-**2. Nova página `src/pages/Suggestions.tsx`**
-- Formulário: título (obrigatório), descrição, categoria (select: UI/UX, Funcionalidade, Performance, Outro)
-- Lista das sugestões do utilizador com badge de status
-- Animações framer-motion consistentes com o resto da app
-- Toast de sucesso/erro
-
-**3. `src/pages/Index.tsx` — Card em destaque no dashboard**
-- Adicionar um card visualmente destacado (gradiente, ícone Lightbulb) entre as secções existentes
-- Texto: "Tem uma ideia para melhorar o Azera? Deixe sua sugestão!"
-- Botão que navega para `/sugestoes`
-
-**4. `src/App.tsx` — Rota protegida**
-- Adicionar `<Route path="/sugestoes" element={<Suggestions />} />`
-
-**5. `src/components/AppSidebar.tsx` — Link na sidebar**
-- Adicionar item "Sugestões" com ícone `MessageSquarePlus` no grupo principal
-
-### Arquivos
-| Arquivo | Mudança |
-|---------|---------|
-| migração SQL | Criar tabela `suggestions` com RLS |
-| `src/pages/Suggestions.tsx` | Nova página (formulário + lista) |
-| `src/pages/Index.tsx` | Card destacado com CTA |
-| `src/App.tsx` | Nova rota `/sugestoes` |
-| `src/components/AppSidebar.tsx` | Link na sidebar |
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |

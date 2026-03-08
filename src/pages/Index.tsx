@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2 } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -252,6 +252,24 @@ export default function Index() {
             <button onClick={() => navigate("/ia")} className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-3 self-start">
               Conversar →
             </button>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Suggestions CTA */}
+      <motion.div variants={item}>
+        <Card className="border-accent/40 bg-gradient-to-r from-accent/10 to-primary/10 cursor-pointer hover:from-accent/15 hover:to-primary/15 transition-all" onClick={() => navigate("/sugestoes")}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-10 w-10 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
+              <Lightbulb className="h-5 w-5 text-accent" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">Tem uma ideia para melhorar o Azera?</p>
+              <p className="text-xs text-muted-foreground">Deixe sua sugestão e ajude a construir a plataforma!</p>
+            </div>
+            <Button size="sm" variant="outline" className="shrink-0 border-accent/30 text-accent hover:bg-accent/10">
+              Sugerir
+            </Button>
           </CardContent>
         </Card>
       </motion.div>
