@@ -104,6 +104,7 @@ const founderItems = [
   { title: "Founder Feed", url: "/founder-feed", icon: Users },
   { title: "Oportunidades", url: "/founder-opportunities", icon: Briefcase },
   { title: "Mensagens", url: "/founder-messages", icon: MessageSquare },
+  { title: "Notificações", url: "/founder-notifications", icon: Bell },
 ];
 
 export function AppSidebar() {
