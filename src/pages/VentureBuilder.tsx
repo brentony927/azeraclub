@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Rocket, Users, FileText, Map, Loader2, Trash2 } from "lucide-react";
+import { Plus, Rocket, Users, FileText, Map, Loader2, Trash2, MessageSquare, CheckSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -12,17 +12,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import FeatureLock from "@/components/FeatureLock";
-import AIArticleRenderer from "@/components/AIArticleRenderer";
 import BookmarkButton from "@/components/BookmarkButton";
+import VentureTasksTab from "@/components/venture/VentureTasksTab";
+import VentureChatTab from "@/components/venture/VentureChatTab";
+import VentureRoadmapTab from "@/components/venture/VentureRoadmapTab";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 type Venture = {
   id: string; name: string; industry: string | null; problem: string | null; solution: string | null;
   target_market: string | null; business_model: string | null; ai_roadmap: string | null;
-  status: string; created_at: string;
+  status: string; created_at: string; goal: string | null; total_score: number;
 };
-
 type VentureMember = { id: string; venture_id: string; user_id: string; role: string; status: string; invited_at: string };
 type VentureNote = { id: string; venture_id: string; user_id: string; content: string; created_at: string };
 
@@ -36,7 +37,7 @@ export default function VentureBuilder() {
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [noteText, setNoteText] = useState("");
-  const [form, setForm] = useState({ name: "", industry: "", problem: "", solution: "", target_market: "", business_model: "" });
+  const [form, setForm] = useState({ name: "", industry: "", problem: "", solution: "", target_market: "", business_model: "", goal: "" });
   const [inviteSearch, setInviteSearch] = useState("");
   const [inviteRole, setInviteRole] = useState("co-founder");
   const [foundProfiles, setFoundProfiles] = useState<any[]>([]);
@@ -62,7 +63,7 @@ export default function VentureBuilder() {
     if (error) { toast.error("Erro ao criar venture"); } else {
       toast.success("Venture criada!");
       setOpen(false);
-      setForm({ name: "", industry: "", problem: "", solution: "", target_market: "", business_model: "" });
+      setForm({ name: "", industry: "", problem: "", solution: "", target_market: "", business_model: "", goal: "" });
       fetchVentures();
       setSelected(data as Venture);
     }
@@ -80,9 +81,8 @@ export default function VentureBuilder() {
         body: JSON.stringify({
           messages: [
             { role: "system", content: "Você é um consultor de startups. Gere um roadmap detalhado, primeiras ações e riscos para a venture descrita." },
-            { role: "user", content: `Startup: ${selected.name}\nIndústria: ${selected.industry}\nProblema: ${selected.problem}\nSolução: ${selected.solution}\nMercado-alvo: ${selected.target_market}\nModelo de Negócio: ${selected.business_model}\n\nGere:\n1. Roadmap do projeto (fases)\n2. Primeiras 5 ações prioritárias\n3. Possíveis riscos e mitigações` }
+            { role: "user", content: `Startup: ${selected.name}\nIndústria: ${selected.industry}\nProblema: ${selected.problem}\nSolução: ${selected.solution}\nMercado-alvo: ${selected.target_market}\nModelo de Negócio: ${selected.business_model}\nObjetivo: ${selected.goal}\n\nGere:\n1. Roadmap do projeto (fases com meses)\n2. Primeiras 5 ações prioritárias\n3. Possíveis riscos e mitigações` }
           ],
-          includeContext: true,
         }),
       });
       let roadmap = "";
@@ -154,6 +154,7 @@ export default function VentureBuilder() {
                 <Textarea placeholder="Solution" value={form.solution} onChange={e => setForm({ ...form, solution: e.target.value })} />
                 <Input placeholder="Target Market" value={form.target_market} onChange={e => setForm({ ...form, target_market: e.target.value })} />
                 <Input placeholder="Business Model" value={form.business_model} onChange={e => setForm({ ...form, business_model: e.target.value })} />
+                <Input placeholder="Goal" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
                 <Button onClick={createVenture} disabled={loading || !form.name.trim()} className="w-full">{loading ? <Loader2 className="animate-spin h-4 w-4" /> : "Criar Venture"}</Button>
               </div>
             </DialogContent>
@@ -200,31 +201,41 @@ export default function VentureBuilder() {
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="overview">
-                    <TabsList className="mb-4">
+                    <TabsList className="mb-4 flex-wrap">
                       <TabsTrigger value="overview"><FileText className="h-3.5 w-3.5 mr-1" /> Overview</TabsTrigger>
                       <TabsTrigger value="roadmap"><Map className="h-3.5 w-3.5 mr-1" /> Roadmap</TabsTrigger>
+                      <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" /> Tasks</TabsTrigger>
+                      <TabsTrigger value="chat"><MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat</TabsTrigger>
                       <TabsTrigger value="team"><Users className="h-3.5 w-3.5 mr-1" /> Team</TabsTrigger>
                       <TabsTrigger value="notes"><FileText className="h-3.5 w-3.5 mr-1" /> Notes</TabsTrigger>
                     </TabsList>
+
                     <TabsContent value="overview" className="space-y-3">
-                      {[{ l: "Indústria", v: selected.industry }, { l: "Problema", v: selected.problem }, { l: "Solução", v: selected.solution }, { l: "Mercado", v: selected.target_market }, { l: "Modelo", v: selected.business_model }].map(i => i.v && (
+                      {[{ l: "Indústria", v: selected.industry }, { l: "Problema", v: selected.problem }, { l: "Solução", v: selected.solution }, { l: "Mercado", v: selected.target_market }, { l: "Modelo", v: selected.business_model }, { l: "Objetivo", v: selected.goal }].map(i => i.v && (
                         <div key={i.l}><p className="text-xs text-muted-foreground font-semibold uppercase">{i.l}</p><p className="text-sm text-foreground">{i.v}</p></div>
                       ))}
                     </TabsContent>
+
                     <TabsContent value="roadmap">
-                      {selected.ai_roadmap ? <AIArticleRenderer content={selected.ai_roadmap} /> : (
-                        <div className="text-center py-12">
-                          <p className="text-muted-foreground mb-4">Nenhum roadmap gerado. Clique em "Build With AI" para começar.</p>
-                          <Button onClick={buildWithAI} disabled={aiLoading}>{aiLoading ? <Loader2 className="animate-spin" /> : "Build With AI"}</Button>
-                        </div>
-                      )}
+                      <VentureRoadmapTab roadmap={selected.ai_roadmap} onBuildWithAI={buildWithAI} aiLoading={aiLoading} />
                     </TabsContent>
+
+                    <TabsContent value="tasks">
+                      <VentureTasksTab ventureId={selected.id} members={members.map(m => ({ user_id: m.user_id, role: m.role }))} />
+                    </TabsContent>
+
+                    <TabsContent value="chat">
+                      <VentureChatTab ventureId={selected.id} venture={{ name: selected.name, industry: selected.industry, problem: selected.problem, solution: selected.solution, goal: selected.goal }} />
+                    </TabsContent>
+
                     <TabsContent value="team" className="space-y-4">
                       <div className="flex gap-2">
                         <Input placeholder="Buscar founder..." value={inviteSearch} onChange={e => setInviteSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && searchFounders()} />
                         <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="rounded-md border border-input bg-background px-3 text-sm">
                           <option value="co-founder">Co-founder</option>
                           <option value="developer">Developer</option>
+                          <option value="designer">Designer</option>
+                          <option value="marketing">Marketing</option>
                           <option value="investor">Investor</option>
                         </select>
                         <Button variant="outline" onClick={searchFounders}>Buscar</Button>
@@ -243,6 +254,7 @@ export default function VentureBuilder() {
                         </div>
                       ))}
                     </TabsContent>
+
                     <TabsContent value="notes" className="space-y-3">
                       <div className="flex gap-2">
                         <Textarea placeholder="Adicionar nota..." value={noteText} onChange={e => setNoteText(e.target.value)} className="min-h-[60px]" />
