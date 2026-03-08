@@ -1,20 +1,21 @@
 
 
-## Inverter suspensao: reativar Mensal, suspender Semanal
+## Plano: Definir conta como Elite
 
-### Alteracao
+Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
 
-**`src/components/ui/pricing-section.tsx`**, linha 37-41: Mover o `disabled: true` do "Mensal" para o "Semanal".
+### O que fazer
 
-```typescript
-const periods = [
-  { key: "weekly", label: "Semanal", disabled: true },
-  { key: "monthly", label: "Mensal" },
-  { key: "yearly", label: "Anual" },
-];
+Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+
+```sql
+INSERT INTO public.user_plans (user_id, plan)
+VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
 ```
 
-Tambem mudar o `selected` default de `"monthly"` para garantir que o estado inicial funcione (verificar se o useState ja esta em "monthly" -- se sim, esta correto).
+Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
 
-Uma unica alteracao em um unico arquivo.
+### Resultado
+- A conta terá acesso Elite em todo o app
+- Nenhum arquivo de código precisa ser alterado
 
