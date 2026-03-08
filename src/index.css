@@ -1179,13 +1179,20 @@
 }
 
 /* Dark mode refinements */
+.dark .sidebar-nav-item {
+  color: hsl(0 0% 75%);
+}
+
 .dark .sidebar-nav-item:hover {
-  background: hsl(var(--secondary) / 0.4);
+  color: hsl(0 0% 95%);
+  background: hsl(var(--secondary) / 0.5);
 }
 
 .dark .sidebar-nav-item-active {
-  background: hsl(var(--primary) / 0.12);
-  box-shadow: 0 0 16px hsl(var(--primary) / 0.1);
+  color: hsl(0 0% 95%);
+  background: hsl(var(--primary) / 0.18);
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.15);
+  border-left-color: hsl(var(--primary));
 }
 
 /* PRO theme sidebar items */
