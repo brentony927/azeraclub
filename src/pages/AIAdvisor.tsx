@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { BrainCircuit, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -30,7 +30,19 @@ export default function AIAdvisor() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a world-class strategic advisor with expertise in business, investments, leadership, and life planning. Provide deep, nuanced analysis with frameworks, pros/cons, and actionable next steps. Write in Portuguese (BR). Use markdown. Be thorough but clear.` },
+            { role: "system", content: `You are a world-class strategic advisor with expertise in business, investments, leadership, and life planning. Provide deep, nuanced analysis with frameworks, pros/cons, and actionable next steps.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada seção de análise
+- Use ### para sub-pontos e frameworks
+- Use **negrito** para termos-chave e recomendações
+- Use > blockquote para insights estratégicos e citações relevantes
+- Use tabela para prós/contras ou comparações
+- Use --- entre seções principais
+- Use listas ordenadas para passos de ação
+- No final, adicione "📚 Fontes e Referências" com frameworks e metodologias citadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: question },
           ],
         }),
@@ -71,11 +83,7 @@ export default function AIAdvisor() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

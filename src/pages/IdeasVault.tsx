@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
@@ -77,7 +77,16 @@ export default function IdeasVault() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           messages: [
-            { role: "system", content: `You are a creative business consultant. Expand and develop the user's idea into a detailed concept with: market potential, implementation steps, resources needed, and next actions. Write in Portuguese (BR). Use markdown. Be practical.` },
+            { role: "system", content: `You are a creative business consultant. Expand and develop the user's idea into a detailed concept.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use ## para cada seção: Potencial de Mercado, Passos de Implementação, Recursos Necessários, Próximas Ações
+- Use **negrito** para termos-chave
+- Use > blockquote para insights estratégicos
+- Use tabela quando aplicável
+- Use --- entre seções
+- No final, adicione "📚 Fontes" com referências
+- Escreva em Português (BR) elegante` },
             { role: "user", content: `Expanda esta ideia: "${idea.title}". ${idea.description ? `Descrição: ${idea.description}` : ""}` },
           ],
         }),
@@ -168,10 +177,8 @@ export default function IdeasVault() {
                   </button>
                 </CardContent>
                 {expandedContent[idea.id] && (
-                  <div className="px-4 pb-4 pt-0 border-t border-border/50 mt-2">
-                    <div className="prose prose-sm dark:prose-invert max-w-none mt-3">
-                      <ReactMarkdown>{expandedContent[idea.id]}</ReactMarkdown>
-                    </div>
+                  <div className="px-4 pb-4 pt-0 mt-2">
+                    <AIArticleRenderer content={expandedContent[idea.id]} />
                   </div>
                 )}
               </Card>

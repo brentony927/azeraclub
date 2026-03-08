@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import FeatureLock from "@/components/FeatureLock";
 import { CalendarCheck, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -41,7 +41,18 @@ export default function WeeklyReview() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a performance coach. Create a weekly review report with: Goals Achieved, Productivity Score (1-10), Key Wins, Areas for Improvement, and Recommendations for next week. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a performance coach. Create a weekly review report.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal (ex: "Revisão Semanal — Relatório de Desempenho")
+- Use ## para cada seção: Metas Alcançadas, Pontuação de Produtividade, Vitórias da Semana, Áreas de Melhoria, Recomendações
+- Use **negrito** para métricas e dados importantes
+- Use > blockquote para insights e reflexões estratégicas
+- Use tabela para o resumo de produtividade (Métrica | Valor | Status)
+- Use --- entre seções principais
+- Inclua uma pontuação de 1-10 em destaque
+- No final, adicione "📚 Metodologia" explicando como a análise foi feita
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Faça minha revisão semanal. Dados: ${context}` },
           ],
         }),
@@ -81,11 +92,7 @@ export default function WeeklyReview() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

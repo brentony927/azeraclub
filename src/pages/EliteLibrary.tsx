@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { BookMarked, Loader2, Sparkles, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,7 +38,18 @@ export default function EliteLibrary() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are an elite business educator. Write a deep, insightful article about ${cat.prompt}. Include frameworks, case studies, and actionable takeaways. Write in Portuguese (BR). Use markdown. 600-1000 words.` },
+            { role: "system", content: `You are an elite business educator. Write a deep, insightful article about ${cat.prompt}. Include frameworks, case studies, and actionable takeaways. 600-1000 words.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada seção temática
+- Use ### para frameworks e estudos de caso
+- Use **negrito** para conceitos-chave e nomes
+- Use > blockquote para lições-chave e takeaways
+- Use tabela quando aplicável (Framework | Aplicação | Impacto)
+- Use --- entre seções
+- No final, adicione "📚 Fontes e Referências" com livros, artigos e autores citados
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Escreva um artigo aprofundado sobre ${cat.prompt}.` },
           ],
         }),
@@ -91,14 +102,10 @@ export default function EliteLibrary() {
         {isLoading && <motion.div variants={item} className="text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" /></motion.div>}
         {content && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{content}</ReactMarkdown>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={saveInsight} className="gap-2"><Save className="h-4 w-4" /> Salvar Insight</Button>
-              </div>
-            </article>
+            <AIArticleRenderer content={content} />
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={saveInsight} className="gap-2"><Save className="h-4 w-4" /> Salvar Insight</Button>
+            </div>
           </motion.div>
         )}
       </motion.div>

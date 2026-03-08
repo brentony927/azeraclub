@@ -4,7 +4,7 @@ import FeatureLock from "@/components/FeatureLock";
 import { PenTool, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -30,7 +30,17 @@ export default function ContentStrategy() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a content strategist. Generate 10 creative content ideas for the described audience. For each idea include: title, format (video/post/article/carousel), brief description, and hook line. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a content strategist. Generate 10 creative content ideas for the described audience. For each idea include: title, format (video/post/article/carousel), brief description, and hook line.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada ideia de conteúdo (numerada)
+- Use **negrito** para títulos das ideias e formatos
+- Use > blockquote para as hook lines de cada ideia
+- Use tabela resumo no final com todas as 10 ideias (Título | Formato | Objetivo)
+- Use --- entre cada ideia
+- No final, adicione "📚 Fontes e Referências" com tendências de conteúdo consultadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Gere 10 ideias de conteúdo para: ${audience}` },
           ],
         }),
@@ -71,11 +81,7 @@ export default function ContentStrategy() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

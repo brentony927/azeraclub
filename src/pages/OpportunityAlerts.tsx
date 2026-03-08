@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
@@ -63,7 +63,18 @@ export default function OpportunityAlerts() {
           requireTier: "business",
           newsContext: true, newsQuery: industries.join(", "),
           messages: [
-            { role: "system", content: `You are an opportunity scanner. Based on current news and the user's industries of interest, identify 5 strategic opportunities. For each: title, industry, opportunity type, urgency, and brief analysis. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are an opportunity scanner. Based on current news and the user's industries of interest, identify 5 strategic opportunities.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada oportunidade identificada
+- Use ### para sub-seções: Indústria, Tipo, Urgência, Análise
+- Use **negrito** para nomes, urgência e métricas
+- Use > blockquote para alertas de urgência e recomendações de ação
+- Use tabela resumo (Oportunidade | Indústria | Tipo | Urgência | Ação Recomendada)
+- Use --- entre cada oportunidade
+- No final, adicione "📚 Fontes e Referências" com fontes de notícias consultadas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Escaneie oportunidades para: ${industries.join(", ")}` },
           ],
         }),
@@ -119,11 +130,7 @@ export default function OpportunityAlerts() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

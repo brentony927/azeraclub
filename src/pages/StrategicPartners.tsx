@@ -5,7 +5,7 @@ import { Users, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -33,7 +33,18 @@ export default function StrategicPartners() {
         body: JSON.stringify({
           requireTier: "business",
           messages: [
-            { role: "system", content: `You are a strategic business advisor. Based on the industry and business stage, suggest potential strategic partner profiles. For each, include: type of partner, what they bring, partnership model, and how to approach. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a strategic business advisor. Based on the industry and business stage, suggest potential strategic partner profiles.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título principal
+- Use ## para cada perfil de parceiro estratégico
+- Use ### para sub-seções: O Que Trazem, Modelo de Parceria, Como Abordar
+- Use **negrito** para tipos de parceiros e termos-chave
+- Use > blockquote para dicas de abordagem e insights estratégicos
+- Use tabela resumo (Tipo de Parceiro | Valor Agregado | Modelo | Prioridade)
+- Use --- entre cada perfil de parceiro
+- No final, adicione "📚 Fontes e Referências" com metodologias de parcerias estratégicas
+- Escreva em Português (BR) elegante e profissional` },
             { role: "user", content: `Indústria: ${industry}. Estágio: ${stage}. Encontre parceiros estratégicos.` },
           ],
         }),
@@ -78,11 +89,7 @@ export default function StrategicPartners() {
         </motion.div>
         {result && (
           <motion.div variants={item}>
-            <article className="glass-card p-8 sm:p-10">
-              <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80">
-                <ReactMarkdown>{result}</ReactMarkdown>
-              </div>
-            </article>
+            <AIArticleRenderer content={result} />
           </motion.div>
         )}
       </motion.div>

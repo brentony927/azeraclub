@@ -3,18 +3,18 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Play, Newspaper } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 const CATEGORIES = [
-  { id: "negocios", label: "💼 Negócios", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje no mundo dos negócios, empreendedorismo e economia. Use estilo jornalístico com parágrafos narrativos, subtítulos claros e análise aprofundada. Inclua contexto e insights estratégicos para empreendedores. Escreva entre 600-900 palavras." },
-  { id: "networking", label: "🤝 Networking", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em networking, eventos corporativos e conexões profissionais. Use estilo jornalístico com parágrafos narrativos e análise aprofundada. Inclua dicas práticas integradas naturalmente no texto. Escreva entre 600-900 palavras." },
-  { id: "tecnologia", label: "🖥️ Tecnologia", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em tecnologia, startups e inteligência artificial. Use estilo jornalístico com parágrafos narrativos, subtítulos claros e impacto prático. Escreva entre 600-900 palavras." },
-  { id: "mentalidade", label: "🧠 Mentalidade", prompt: "Escreva um artigo editorial sobre lições de mentalidade de alta performance, psicologia do sucesso e crescimento pessoal baseado em tendências e notícias atuais. Use estilo jornalístico narrativo. Escreva entre 600-900 palavras." },
-  { id: "produtividade", label: "⚡ Produtividade", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em produtividade, gestão de tempo e métodos de trabalho. Use estilo jornalístico com parágrafos narrativos e técnicas práticas. Escreva entre 600-900 palavras." },
-  { id: "financas", label: "💰 Finanças", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em finanças pessoais, investimentos e mercado financeiro. Use estilo jornalístico com parágrafos narrativos, análise e recomendações. Escreva entre 600-900 palavras." },
+  { id: "negocios", label: "💼 Negócios", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje no mundo dos negócios, empreendedorismo e economia." },
+  { id: "networking", label: "🤝 Networking", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em networking, eventos corporativos e conexões profissionais." },
+  { id: "tecnologia", label: "🖥️ Tecnologia", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em tecnologia, startups e inteligência artificial." },
+  { id: "mentalidade", label: "🧠 Mentalidade", prompt: "Escreva um artigo editorial sobre lições de mentalidade de alta performance, psicologia do sucesso e crescimento pessoal baseado em tendências atuais." },
+  { id: "produtividade", label: "⚡ Produtividade", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em produtividade, gestão de tempo e métodos de trabalho." },
+  { id: "financas", label: "💰 Finanças", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em finanças pessoais, investimentos e mercado financeiro." },
 ];
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
@@ -41,7 +41,18 @@ export default function KnowledgeLibrary() {
           newsContext: true,
           newsQuery: cat.label.split(" ").slice(1).join(" "),
           messages: [
-            { role: "system", content: `Você é um jornalista e curador editorial de alto nível. Hoje é ${today}. Escreva um artigo editorial baseado nas notícias e tendências mais recentes. Use estilo jornalístico profissional: título impactante, subtítulos (##) claros, parágrafos longos e bem escritos, análise aprofundada. Evite listas com bullet points — prefira texto narrativo. Inclua uma seção final "🎯 Insight do Dia" com uma reflexão estratégica. Formate em markdown. Escreva entre 600-900 palavras.` },
+            { role: "system", content: `Você é um jornalista e curador editorial de alto nível. Hoje é ${today}.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use # para título impactante do artigo
+- Use ## para cada seção temática
+- Use **negrito** para dados, nomes e destaques
+- Use > blockquote para insights estratégicos e reflexões
+- Prefira parágrafos narrativos longos, não listas excessivas
+- Inclua uma seção final "🎯 Insight do Dia" com reflexão estratégica em blockquote
+- Use --- entre seções
+- No final, adicione "📚 Fontes e Referências" com fontes de notícias consultadas
+- Escreva entre 600-900 palavras em Português (BR) elegante e profissional` },
             { role: "user", content: cat.prompt },
           ],
         }),
@@ -64,11 +75,7 @@ export default function KnowledgeLibrary() {
           try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) { result += c; setContent(result); } } catch {}
         }
       }
-    } catch {
-      toast.error("Erro ao carregar conteúdo");
-    } finally {
-      setIsLoading(false);
-    }
+    } catch { toast.error("Erro ao carregar conteúdo"); } finally { setIsLoading(false); }
   };
 
   return (
@@ -109,11 +116,7 @@ export default function KnowledgeLibrary() {
 
       {content && (
         <motion.div variants={item}>
-          <article className="glass-card p-8 sm:p-10">
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-headings:font-bold prose-p:leading-relaxed prose-p:text-foreground/80 prose-strong:text-foreground prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg">
-              <ReactMarkdown>{content}</ReactMarkdown>
-            </div>
-          </article>
+          <AIArticleRenderer content={content} />
         </motion.div>
       )}
     </motion.div>

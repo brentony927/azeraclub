@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import ReactMarkdown from "react-markdown";
+import AIArticleRenderer from "@/components/AIArticleRenderer";
 import { toast } from "sonner";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
@@ -56,7 +56,17 @@ export default function ProjectOrganizer() {
         body: JSON.stringify({
           requireTier: "pro",
           messages: [
-            { role: "system", content: `You are a project management expert. Organize this project into phases, tasks, and timeline. Write in Portuguese (BR). Use markdown.` },
+            { role: "system", content: `You are a project management expert. Organize this project into phases, tasks, and timeline.
+
+FORMATTING RULES (OBRIGATÓRIO):
+- Use ## para cada fase do projeto
+- Use ### para tarefas dentro de cada fase
+- Use **negrito** para prazos e entregas
+- Use > blockquote para dicas de gestão
+- Use tabela para cronograma (Fase | Duração | Entregas | Status)
+- Use --- entre fases
+- No final, adicione "📚 Metodologia" com frameworks utilizados
+- Escreva em Português (BR) elegante` },
             { role: "user", content: `Organize o projeto: "${p.name}". Descrição: ${p.description || "Sem descrição"}` },
           ],
         }),
@@ -133,8 +143,8 @@ export default function ProjectOrganizer() {
                       </div>
                     </div>
                     {p.ai_structure && (
-                      <div className="mt-3 pt-3 border-t border-border/50 prose prose-sm dark:prose-invert max-w-none">
-                        <ReactMarkdown>{p.ai_structure}</ReactMarkdown>
+                      <div className="mt-3 pt-3">
+                        <AIArticleRenderer content={p.ai_structure} />
                       </div>
                     )}
                   </CardContent>
