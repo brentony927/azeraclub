@@ -121,8 +121,8 @@ const businessItems: NavItem[] = [
 ];
 
 const founderItems: NavItem[] = [
-  { title: "Founder Feed", url: "/founder-feed", icon: Users },
-  { title: "Global Map", url: "/global-map", icon: Globe },
+  { title: "Feed de Founders", url: "/founder-feed", icon: Users },
+  { title: "Mapa Global", url: "/global-map", icon: Globe },
   { title: "Oportunidades", url: "/founder-opportunities", icon: Briefcase },
   { title: "Mensagens", url: "/founder-messages", icon: MessageSquare },
   { title: "Notificações", url: "/founder-notifications", icon: Bell },
