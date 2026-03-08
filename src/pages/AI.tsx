@@ -95,6 +95,8 @@ export default function AI() {
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [dailyCount, setDailyCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [memories, setMemories] = useState<{ id: string; content: string; category: string; created_at: string }[]>([]);
+  const [showMemories, setShowMemories] = useState(false);
 
   const isBasicPlan = !canAccess("pro");
   const remainingMessages = DAILY_LIMIT_BASIC - dailyCount;
