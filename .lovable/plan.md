@@ -1,38 +1,61 @@
-## AZERA CLUB — Strategic Investment Analysis
 
-**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-### Top 5 Priorities
+## Global Founder Map — Mapa Interativo de Founders
 
-| # | Action | Impact |
-|---|--------|--------|
-| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
-| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
-| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
-| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
-| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
+### Resumo
+Nova pagina `/global-map` dentro do Founder Alignment com mapa interativo mostrando founders pelo mundo, pins coloridos por plano, cards de perfil ao clicar, filtros avancados e geolocalizacao.
 
-### Scores by Area
+### 1. Database Migration
+Adicionar `latitude` e `longitude` na tabela `founder_profiles`:
+```sql
+ALTER TABLE public.founder_profiles
+  ADD COLUMN latitude double precision DEFAULT NULL,
+  ADD COLUMN longitude double precision DEFAULT NULL;
+```
 
-| Area | Score |
-|------|-------|
-| Product Clarity | 4/10 |
-| User Onboarding | 3/10 |
-| Core Value Proposition | 5/10 |
-| User Engagement | 5/10 |
-| Retention Mechanisms | 3/10 |
-| Network Effect Potential | 6/10 |
-| Feature Usefulness | 4/10 |
-| UX/UI Quality | 6/10 |
-| Monetization Model | 5/10 |
-| Premium Plan Value | 4/10 |
-| Competitive Positioning | 4/10 |
-| Scalability | 5/10 |
-| Trust & Safety | 4/10 |
-| Market Fit | 5/10 |
-| Psychological Triggers | 6/10 |
-| Viral Growth | 3/10 |
-| Community Health | 3/10 |
-| Abandonment Risk | 7/10 (HIGH) |
-| Differentiation | 5/10 |
-| Long-term Defensibility | 3/10 |
+### 2. Nova Pagina: `src/pages/GlobalFounderMap.tsx`
+- Mapa interativo usando **Leaflet** (react-leaflet) — gratuito, sem API key, visual dark mode excelente com tiles CartoDB Dark Matter
+- Carrega todos os `founder_profiles` publicados que tenham lat/lng
+- Cluster de pins com contagem por regiao (zoom out: "Brazil — 84 founders", zoom in: pins individuais)
+- Pins coloridos: branco (Founder), verde (PRO), dourado (BUSINESS)
+- Ao clicar pin: popup card com nome, avatar, industry, score, looking_for, botoes View Profile/Connect/Message
+- Hover rapido mostra mini-preview
+- Contador animado no topo: "X Founders · Y Countries"
+- Botao "Find founders near me" usa `navigator.geolocation`
+- Filtros na sidebar esquerda (industry, skills, interests, stage, looking_for, score, age) — filtros avancados gated por plano
+- BUSINESS founders aparecem primeiro e com pin dourado maior
+- Animacoes: pin drop, smooth zoom, skeleton loading, glow nos pins
+
+### 3. Dependencias
+- `leaflet` + `react-leaflet` + `@types/leaflet` (biblioteca de mapas gratuita)
+- `leaflet.markercluster` para clustering de pins
+
+### 4. Rota e Sidebar
+- Adicionar rota `/global-map` no `App.tsx` dentro das rotas protegidas (Founder Alignment)
+- Adicionar item "Global Map" com icone `Globe` no `founderItems` do `AppSidebar.tsx`
+
+### 5. Geocoding no Perfil
+- Quando founder salva perfil com city/country, usar API gratuita (Nominatim/OpenStreetMap) para obter lat/lng automaticamente
+- Atualizar `FounderProfileForm.tsx` e `Profile.tsx` para geocodar ao salvar
+
+### 6. Gating por Plano
+| Feature | Founder | PRO | BUSINESS |
+|---------|---------|-----|----------|
+| Ver mapa | ✅ | ✅ | ✅ |
+| Clicar perfis | ✅ | ✅ | ✅ |
+| Conectar | ✅ | ✅ | ✅ |
+| Filtros avancados | ❌ | ✅ | ✅ |
+| Pin dourado/prioridade | ❌ | ❌ | ✅ |
+| Find near me | ❌ | ✅ | ✅ |
+
+### Arquivos Afetados
+| Arquivo | Mudanca |
+|---------|---------|
+| DB Migration | Add latitude, longitude to founder_profiles |
+| `src/pages/GlobalFounderMap.tsx` | Nova pagina completa |
+| `src/App.tsx` | Nova rota /global-map |
+| `src/components/AppSidebar.tsx` | Novo item no founderItems |
+| `src/components/FounderProfileForm.tsx` | Geocoding ao salvar |
+| `src/pages/Profile.tsx` | Geocoding ao salvar |
+| `package.json` | leaflet, react-leaflet, leaflet.markercluster |
+
