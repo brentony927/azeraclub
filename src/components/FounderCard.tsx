@@ -54,6 +54,9 @@ export default function FounderCard({
           ? "border-[hsl(42,50%,56%)]/40 bg-gradient-to-br from-[hsl(42,50%,56%)]/5 to-transparent shadow-[0_0_20px_hsl(42,50%,56%,0.1)]"
           : "border-border/50 bg-card/80 backdrop-blur-sm"
       }`}
+      style={isHighlighted ? {
+        borderImage: "linear-gradient(135deg, hsla(51,100%,50%,0.4), hsla(35,80%,50%,0.3), hsla(20,70%,50%,0.2)) 1",
+      } : undefined}
     >
       <div className="absolute top-2 right-2 flex items-center gap-1.5">
         <BookmarkButton itemType="founder" itemId={id} size={14} />
@@ -62,10 +65,17 @@ export default function FounderCard({
         )}
       </div>
 
-      {/* Business Founder badge */}
+      {/* Business Founder badge with shimmer */}
       {isHighlighted && (
         <div className="absolute top-2 left-2">
-          <Badge className="bg-gradient-to-r from-[hsl(45,100%,50%)] to-[hsl(35,100%,45%)] text-[hsl(0,0%,4%)] text-[9px] font-bold border-0">
+          <Badge 
+            className="text-[hsl(0,0%,4%)] text-[9px] font-bold border-0"
+            style={{
+              background: "linear-gradient(135deg, hsl(51,100%,50%), hsl(42,70%,55%), hsl(35,80%,50%))",
+              backgroundSize: "200% 100%",
+              animation: "shimmerBadge 3s linear infinite",
+            }}
+          >
             BUSINESS FOUNDER
           </Badge>
         </div>
@@ -79,9 +89,13 @@ export default function FounderCard({
         </div>
       )}
 
-      <CardContent className="p-5 pt-8">
+      <CardContent className="p-4 sm:p-5 pt-8">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
+          <div 
+            className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${
+              isHighlighted ? "ring-2 ring-[hsl(51,100%,50%)]/50 shadow-[0_0_14px_hsl(51,100%,50%,0.3)]" : "bg-secondary"
+            }`}
+          >
             {avatarUrl ? (
               <img src={avatarUrl} alt={name} className="w-12 h-12 rounded-full object-cover" />
             ) : (

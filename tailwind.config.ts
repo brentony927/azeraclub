@@ -17,6 +17,16 @@ export default {
         sans: ["ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "'Helvetica Neue'", "Arial", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
+      fontSize: {
+        "responsive-xs": "clamp(0.65rem, 0.6rem + 0.25vw, 0.75rem)",
+        "responsive-sm": "clamp(0.75rem, 0.7rem + 0.3vw, 0.875rem)",
+        "responsive-base": "clamp(0.875rem, 0.8rem + 0.4vw, 1rem)",
+        "responsive-lg": "clamp(1rem, 0.9rem + 0.5vw, 1.25rem)",
+        "responsive-xl": "clamp(1.25rem, 1rem + 1vw, 1.75rem)",
+        "responsive-2xl": "clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem)",
+        "responsive-3xl": "clamp(1.875rem, 1.4rem + 2vw, 3rem)",
+        "responsive-4xl": "clamp(2.25rem, 1.6rem + 3vw, 3.75rem)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
