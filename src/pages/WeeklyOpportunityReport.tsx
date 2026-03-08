@@ -61,7 +61,7 @@ export default function WeeklyOpportunityReport() {
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2"><FileText className="h-7 w-7 text-primary" /> Weekly Report</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2"><FileText className="h-7 w-7 text-primary" /> Relatório Semanal</h1>
             <p className="text-muted-foreground text-sm mt-1">Relatório semanal de oportunidades gerado por IA</p>
           </div>
           <div className="flex gap-2">
