@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   Bell, UserPlus, MessageCircle, Eye, Briefcase, Sparkles,
   Lightbulb, Rocket, TrendingUp, Users, FileText, Trophy, BarChart3,
+  Check, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;
@@ -64,6 +66,7 @@ export default function FounderNotifications() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -95,6 +98,45 @@ export default function FounderNotifications() {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
+  const resolveProfileNavigation = async (userId: string) => {
+    const { data } = await supabase.from("founder_profiles").select("id").eq("user_id", userId).maybeSingle();
+    if (data) navigate(`/founder-profile/${data.id}`);
+  };
+
+  const handleAcceptConnection = async (n: Notification, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user || !n.related_user_id) return;
+    setActionLoading(n.id);
+    const { error } = await supabase.from("founder_connections").update({ status: "accepted" })
+      .eq("from_user_id", n.related_user_id).eq("to_user_id", user.id).eq("status", "pending");
+    if (!error) {
+      await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
+      setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+      // notify the sender
+      const { data: myProfile } = await supabase.from("founder_profiles").select("name").eq("user_id", user.id).maybeSingle();
+      await supabase.from("founder_notifications").insert({
+        user_id: n.related_user_id,
+        type: "connection",
+        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        related_user_id: user.id,
+      });
+      toast({ title: "Conexão aceita! 🤝" });
+    }
+    setActionLoading(null);
+  };
+
+  const handleRejectConnection = async (n: Notification, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user || !n.related_user_id) return;
+    setActionLoading(n.id);
+    await supabase.from("founder_connections").delete()
+      .eq("from_user_id", n.related_user_id).eq("to_user_id", user.id).eq("status", "pending");
+    await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
+    setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+    toast({ title: "Conexão recusada" });
+    setActionLoading(null);
+  };
+
   const handleClick = async (n: Notification) => {
     if (!n.read) {
       await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
@@ -104,8 +146,8 @@ export default function FounderNotifications() {
 
     if (n.action_url) {
       navigate(n.action_url);
-    } else if (n.type === "profile_view" && n.related_user_id) {
-      navigate(`/founder-profile/${n.related_user_id}`);
+    } else if ((n.type === "profile_view" || n.type === "connection") && n.related_user_id) {
+      await resolveProfileNavigation(n.related_user_id);
     } else {
       const route = TYPE_ROUTES[n.type];
       if (route) navigate(route);
@@ -117,6 +159,9 @@ export default function FounderNotifications() {
     await supabase.from("founder_notifications").update({ read: true }).eq("user_id", user.id).eq("read", false);
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
+
+  // Check if a connection notification is still pending (unread + type connection + has related_user_id)
+  const isConnectionPending = (n: Notification) => n.type === "connection" && !n.read && n.related_user_id && n.title.includes("conectar");
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -144,26 +189,49 @@ export default function FounderNotifications() {
         ) : (
           notifications.map(n => {
             const Icon = TYPE_ICONS[n.type] || Bell;
+            const showActions = isConnectionPending(n);
             return (
-              <button
-                key={n.id}
-                onClick={() => handleClick(n)}
-                className={`w-full flex items-start gap-3 p-3 text-left transition-colors hover:bg-secondary/50 ${
-                  !n.read ? "bg-primary/5" : ""
-                }`}
-              >
-                <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${!n.read ? "font-medium text-foreground" : "text-muted-foreground"}`}>
-                    {n.title}
-                  </p>
-                  {n.body && <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{n.body}</p>}
-                  <p className="text-[10px] text-muted-foreground/60 mt-1">
-                    {format(new Date(n.created_at), "dd/MM HH:mm")}
-                  </p>
-                </div>
-                {!n.read && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />}
-              </button>
+              <div key={n.id}>
+                <button
+                  onClick={() => handleClick(n)}
+                  className={`w-full flex items-start gap-3 p-3 text-left transition-colors hover:bg-secondary/50 ${
+                    !n.read ? "bg-primary/5" : ""
+                  }`}
+                >
+                  <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm ${!n.read ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                      {n.title}
+                    </p>
+                    {n.body && <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{n.body}</p>}
+                    <p className="text-[10px] text-muted-foreground/60 mt-1">
+                      {format(new Date(n.created_at), "dd/MM HH:mm")}
+                    </p>
+                  </div>
+                  {!n.read && !showActions && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />}
+                </button>
+                {showActions && (
+                  <div className="flex gap-2 px-3 pb-3 pl-10">
+                    <Button
+                      size="sm"
+                      className="flex-1 h-7 text-xs"
+                      disabled={actionLoading === n.id}
+                      onClick={(e) => handleAcceptConnection(n, e)}
+                    >
+                      <Check className="h-3 w-3 mr-1" /> Aceitar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-7 text-xs"
+                      disabled={actionLoading === n.id}
+                      onClick={(e) => handleRejectConnection(n, e)}
+                    >
+                      <X className="h-3 w-3 mr-1" /> Recusar
+                    </Button>
+                  </div>
+                )}
+              </div>
             );
           })
         )}
