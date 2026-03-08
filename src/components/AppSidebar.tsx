@@ -74,27 +74,27 @@ const radarItems = [
 ];
 
 const proItems = [
-  { title: "Skill Growth", url: "/skill-growth", icon: GraduationCap },
-  { title: "Goal Planner", url: "/goal-planner", icon: Crosshair },
-  { title: "Daily Focus", url: "/daily-focus", icon: Focus },
-  { title: "Content Strategy", url: "/content-strategy", icon: PenTool },
+  { title: "Crescimento", url: "/skill-growth", icon: GraduationCap },
+  { title: "Plano de Metas", url: "/goal-planner", icon: Crosshair },
+  { title: "Foco Diário", url: "/daily-focus", icon: Focus },
+  { title: "Estratégia de Conteúdo", url: "/content-strategy", icon: PenTool },
   { title: "Produtividade", url: "/productivity", icon: BarChart3 },
-  { title: "Habits", url: "/habits", icon: Repeat },
-  { title: "Projects", url: "/projects", icon: FolderKanban },
-  { title: "Weekly Review", url: "/weekly-review", icon: CalendarCheck },
+  { title: "Hábitos", url: "/habits", icon: Repeat },
+  { title: "Projetos", url: "/projects", icon: FolderKanban },
+  { title: "Revisão Semanal", url: "/weekly-review", icon: CalendarCheck },
 ];
 
 const businessItems = [
-  { title: "Investments", url: "/investments", icon: PiggyBank },
-  { title: "Life Simulation", url: "/life-simulation", icon: Globe },
-  { title: "Wealth Strategy", url: "/wealth-strategy", icon: DollarSign },
-  { title: "Elite Events", url: "/elite-events", icon: Crown },
-  { title: "Partners", url: "/strategic-partners", icon: Users },
-  { title: "Investor Match", url: "/investor-match", icon: Link },
-  { title: "Elite Library", url: "/elite-library", icon: BookMarked },
-  { title: "Alerts", url: "/opportunity-alerts", icon: Bell },
-  { title: "AI Advisor", url: "/ai-advisor", icon: BrainCircuit },
-  { title: "Life Master Plan", url: "/life-master-plan", icon: Map },
+  { title: "Investimentos", url: "/investments", icon: PiggyBank },
+  { title: "Simulação de Vida", url: "/life-simulation", icon: Globe },
+  { title: "Estratégia Financeira", url: "/wealth-strategy", icon: DollarSign },
+  { title: "Eventos Exclusivos", url: "/elite-events", icon: Crown },
+  { title: "Parceiros", url: "/strategic-partners", icon: Users },
+  { title: "Match de Investidores", url: "/investor-match", icon: Link },
+  { title: "Biblioteca Elite", url: "/elite-library", icon: BookMarked },
+  { title: "Alertas", url: "/opportunity-alerts", icon: Bell },
+  { title: "Consultor IA", url: "/ai-advisor", icon: BrainCircuit },
+  { title: "Plano de Vida", url: "/life-master-plan", icon: Map },
 ];
 
 export function AppSidebar() {
