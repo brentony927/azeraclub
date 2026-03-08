@@ -72,6 +72,7 @@ import TrendScanner from "./pages/TrendScanner";
 import WeeklyOpportunityReport from "./pages/WeeklyOpportunityReport";
 import SavedItems from "./pages/SavedItems";
 import StartupRankings from "./pages/StartupRankings";
+import Suggestions from "./pages/Suggestions";
 
 // Founder Alignment pages
 import FounderMatch from "./pages/FounderMatch";
