@@ -66,6 +66,43 @@ export default function IdeasVault() {
     fetchIdeas();
   };
 
+  const expandWithAI = async (idea: Idea) => {
+    setExpandingId(idea.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) { toast.error("Faça login."); return; }
+      const resp = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: `You are a creative business consultant. Expand and develop the user's idea into a detailed concept with: market potential, implementation steps, resources needed, and next actions. Write in Portuguese (BR). Use markdown. Be practical.` },
+            { role: "user", content: `Expanda esta ideia: "${idea.title}". ${idea.description ? `Descrição: ${idea.description}` : ""}` },
+          ],
+        }),
+      });
+      if (!resp.ok || !resp.body) throw new Error("AI error");
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "", content = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, idx); buf = buf.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
+          try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) { content += c; setExpandedContent(prev => ({ ...prev, [idea.id]: content })); } } catch {}
+        }
+      }
+    } catch { toast.error("Erro ao expandir ideia"); } finally { setExpandingId(null); }
+  };
+
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
       <motion.div variants={item} className="flex items-center justify-between">
