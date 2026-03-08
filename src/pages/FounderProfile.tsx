@@ -306,7 +306,7 @@ export default function FounderProfile() {
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                 {currentVenture.industry && <Badge variant="outline">{currentVenture.industry}</Badge>}
                 <Badge variant="secondary">{stageLabel[currentVenture.status] || currentVenture.status}</Badge>
-                <Badge variant="outline">Team: {currentVentureTeamSize}</Badge>
+                <Badge variant="outline">Equipe: {currentVentureTeamSize}</Badge>
               </div>
               {currentVenture.problem && <p className="text-xs text-muted-foreground mt-1">{currentVenture.problem}</p>}
             </div>
