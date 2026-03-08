@@ -11,58 +11,58 @@ export default function PrivacyPolicy() {
         className="max-w-3xl mx-auto space-y-8"
       >
         <Link to="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
 
         <div className="glass-card p-8 space-y-6">
           <div className="space-y-2">
-            <h1 className="text-3xl font-serif font-bold gold-text">Privacy Policy</h1>
-            <p className="text-sm text-muted-foreground">Last Updated: March 2026</p>
+            <h1 className="text-3xl font-serif font-bold gold-text">Política de Privacidade</h1>
+            <p className="text-sm text-muted-foreground">Última atualização: Março 2026</p>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB respects the privacy of its users and is committed to protecting personal information.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">A AZERA CLUB respeita a privacidade dos seus utilizadores e está empenhada em proteger as informações pessoais.</p>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">Information We Collect</h2>
-            <p className="text-sm text-muted-foreground">We may collect:</p>
+            <h2 className="text-lg font-serif font-semibold">Informações que Recolhemos</h2>
+            <p className="text-sm text-muted-foreground">Podemos recolher:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Name and email address</li>
-              <li>Lifestyle preferences</li>
-              <li>Travel information</li>
-              <li>Property portfolio details</li>
-              <li>Calendar and event data</li>
+              <li>Nome e endereço de e-mail</li>
+              <li>Preferências de estilo de vida</li>
+              <li>Informações de viagens</li>
+              <li>Detalhes do portfólio de imóveis</li>
+              <li>Dados de calendário e eventos</li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">How We Use Information</h2>
-            <p className="text-sm text-muted-foreground">Data is used to:</p>
+            <h2 className="text-lg font-serif font-semibold">Como Utilizamos as Informações</h2>
+            <p className="text-sm text-muted-foreground">Os dados são utilizados para:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Personalise the user experience</li>
-              <li>Provide platform features</li>
-              <li>Generate lifestyle recommendations</li>
-              <li>Improve system performance</li>
+              <li>Personalizar a experiência do utilizador</li>
+              <li>Disponibilizar funcionalidades da plataforma</li>
+              <li>Gerar recomendações de estilo de vida</li>
+              <li>Melhorar o desempenho do sistema</li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">Data Protection</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">We apply industry-standard security practices to safeguard user data from unauthorised access.</p>
+            <h2 className="text-lg font-serif font-semibold">Proteção de Dados</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Aplicamos práticas de segurança de nível empresarial para proteger os dados dos utilizadores contra acessos não autorizados.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">Third-Party Services</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Some platform features may involve third-party services such as travel bookings or event providers. AZERA CLUB is not responsible for the privacy policies of these external providers.</p>
+            <h2 className="text-lg font-serif font-semibold">Serviços de Terceiros</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Algumas funcionalidades da plataforma podem envolver serviços de terceiros, como reservas de viagens ou fornecedores de eventos. A AZERA CLUB não é responsável pelas políticas de privacidade desses fornecedores externos.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">User Control</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Users can update, export, or delete their personal data within their account settings.</p>
+            <h2 className="text-lg font-serif font-semibold">Controlo do Utilizador</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Os utilizadores podem atualizar, exportar ou eliminar os seus dados pessoais nas definições da conta.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">Contact</h2>
-            <p className="text-sm text-muted-foreground">Privacy inquiries can be sent to: <a href="mailto:privacy@azeraclub.com" className="text-primary hover:underline">privacy@azeraclub.com</a></p>
+            <h2 className="text-lg font-serif font-semibold">Contacto</h2>
+            <p className="text-sm text-muted-foreground">Questões sobre privacidade podem ser enviadas para: <a href="mailto:privacy@azeraclub.com" className="text-primary hover:underline">privacy@azeraclub.com</a></p>
           </section>
         </div>
       </motion.div>

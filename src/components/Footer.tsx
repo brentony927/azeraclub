@@ -4,7 +4,7 @@ import azeraLogo from "@/assets/azera-logo.jpg";
 const footerLinks = [
   { label: "Início", href: "/" },
   { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contacto", href: "/contact" },
   { label: "Networking", href: "/networking" },
   { label: "Perfil", href: "/profile" },
 ];

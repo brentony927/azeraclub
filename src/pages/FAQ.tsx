@@ -5,36 +5,36 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const faqs = [
   {
-    question: "What is AZERA CLUB?",
-    answer: "AZERA CLUB is a platform that combines artificial intelligence, networking and opportunity discovery in one place. It helps ambitious individuals organize, optimize and grow every area of their life."
+    question: "O que é a AZERA CLUB?",
+    answer: "A AZERA CLUB é uma plataforma que combina inteligência artificial, networking e descoberta de oportunidades num único lugar. Ajuda pessoas ambiciosas a organizar, otimizar e fazer crescer todas as áreas da sua vida."
   },
   {
-    question: "Is there a free plan?",
-    answer: "Yes, AZERA CLUB offers a Basic plan with essential features including AI assistant, agenda, journal, objectives tracking and more — completely free, no credit card required."
+    question: "Existe um plano gratuito?",
+    answer: "Sim, a AZERA CLUB oferece um plano Basic com funcionalidades essenciais, incluindo assistente de IA, agenda, diário, acompanhamento de objetivos e muito mais — totalmente gratuito, sem necessidade de cartão de crédito."
   },
   {
-    question: "What does the AI do?",
-    answer: "Our AI helps you with strategic planning, goal breakdown, content strategy, skill development, habit building, productivity insights and much more. It acts as your personal strategic advisor."
+    question: "O que faz a Inteligência Artificial?",
+    answer: "A nossa IA ajuda com planeamento estratégico, decomposição de metas, estratégia de conteúdo, desenvolvimento de competências, construção de hábitos, insights de produtividade e muito mais. Funciona como o seu consultor estratégico pessoal."
   },
   {
-    question: "What are the differences between plans?",
-    answer: "The Basic plan includes core features. The PRO plan adds advanced tools like Skill Growth, Goal Planner, Daily Focus, Content Strategy, Productivity Insights and more. The BUSINESS plan unlocks everything including Investment Radar, Life Simulation, Wealth Strategy, Elite Events and AI Advisor."
+    question: "Quais são as diferenças entre os planos?",
+    answer: "O plano Basic inclui as funcionalidades essenciais. O plano PRO adiciona ferramentas avançadas como Crescimento de Competências, Plano de Metas, Foco Diário, Estratégia de Conteúdo, Insights de Produtividade e muito mais. O plano BUSINESS desbloqueia tudo, incluindo Radar de Investimentos, Simulação de Vida, Estratégia Financeira, Eventos Exclusivos e Consultor de IA."
   },
   {
-    question: "Is my data secure?",
-    answer: "Absolutely. We apply industry-standard security practices to safeguard your data. All information is encrypted and stored securely. You can update, export or delete your personal data at any time within your account settings."
+    question: "Os meus dados estão seguros?",
+    answer: "Absolutamente. Aplicamos práticas de segurança de nível empresarial para proteger os seus dados. Todas as informações são encriptadas e armazenadas de forma segura. Pode atualizar, exportar ou eliminar os seus dados pessoais a qualquer momento nas definições da conta."
   },
   {
-    question: "Can I cancel my subscription?",
-    answer: "Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period. No long-term contracts or hidden fees."
+    question: "Posso cancelar a minha subscrição?",
+    answer: "Sim, pode cancelar a sua subscrição a qualquer momento. O seu acesso continua até ao final do período de faturação atual. Sem contratos de longa duração nem taxas ocultas."
   },
   {
-    question: "How does the networking feature work?",
-    answer: "AZERA CLUB connects you with like-minded ambitious individuals through curated networking opportunities, elite events and strategic partner matching — all powered by AI."
+    question: "Como funciona o networking?",
+    answer: "A AZERA CLUB conecta-o com pessoas ambiciosas através de oportunidades de networking curadas, eventos exclusivos e matching de parceiros estratégicos — tudo potenciado por IA."
   },
   {
-    question: "Is AZERA CLUB available in multiple languages?",
-    answer: "Currently, AZERA CLUB is available in English and Portuguese, with more languages planned for the future."
+    question: "A AZERA CLUB está disponível em vários idiomas?",
+    answer: "Atualmente, a AZERA CLUB está disponível em Português e Inglês, com mais idiomas planeados para o futuro."
   },
 ];
 
@@ -47,7 +47,7 @@ export default function FAQ() {
         className="max-w-3xl mx-auto space-y-8"
       >
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
 
         <div className="glass-card p-8 space-y-8">
@@ -56,8 +56,8 @@ export default function FAQ() {
               <HelpCircle className="h-6 w-6 text-primary" />
             </div>
             <div className="space-y-1">
-              <h1 className="text-3xl font-serif font-bold gold-text">Frequently Asked Questions</h1>
-              <p className="text-sm text-muted-foreground">Everything you need to know about AZERA CLUB.</p>
+              <h1 className="text-3xl font-serif font-bold gold-text">Perguntas Frequentes</h1>
+              <p className="text-sm text-muted-foreground">Tudo o que precisa de saber sobre a AZERA CLUB.</p>
             </div>
           </div>
 
@@ -76,9 +76,9 @@ export default function FAQ() {
 
           <div className="text-center pt-4 border-t border-border/30">
             <p className="text-sm text-muted-foreground">
-              Still have questions?{" "}
+              Ainda tem dúvidas?{" "}
               <Link to="/contact" className="text-primary hover:underline font-medium">
-                Contact us
+                Fale connosco
               </Link>
             </p>
           </div>
