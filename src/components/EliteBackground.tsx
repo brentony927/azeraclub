@@ -1,17 +1,24 @@
-export default function EliteBackground() {
+import { PlanTier } from "@/contexts/SubscriptionContext";
+
+interface EliteBackgroundProps {
+  plan: PlanTier;
+}
+
+export default function EliteBackground({ plan }: EliteBackgroundProps) {
+  const orbClass = plan === "pro" ? "pro-orb" : "business-orb";
+  const particleClass = plan === "pro" ? "pro-particle" : "business-particle";
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      {/* Animated gradient orbs */}
-      <div className="elite-orb elite-orb-1" />
-      <div className="elite-orb elite-orb-2" />
-      <div className="elite-orb elite-orb-3" />
-      <div className="elite-orb elite-orb-4" />
+      <div className={`elite-orb ${orbClass}-1`} />
+      <div className={`elite-orb ${orbClass}-2`} />
+      <div className={`elite-orb ${orbClass}-3`} />
+      <div className={`elite-orb ${orbClass}-4`} />
 
-      {/* Floating gold particles */}
       {Array.from({ length: 12 }).map((_, i) => (
         <div
           key={i}
-          className="elite-particle"
+          className={particleClass}
           style={{
             left: `${8 + (i * 7.5) % 85}%`,
             top: `${10 + ((i * 13) % 80)}%`,

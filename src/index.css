@@ -263,8 +263,59 @@
   --gold-glow: 42 50% 56%;
 }
 
-/* ====== ELITE THEME (light mode) ====== */
-.elite-theme {
+/* ====== PRO THEME (green neon) — light mode ====== */
+.pro-theme {
+  --primary: 152 100% 33%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 152 40% 92%;
+  --accent-foreground: 152 60% 25%;
+  --ring: 152 100% 50%;
+  --border: 152 15% 80%;
+  --sidebar-primary: 152 100% 33%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 152 30% 93%;
+  --sidebar-accent-foreground: 152 60% 25%;
+  --sidebar-border: 152 15% 85%;
+  --sidebar-ring: 152 100% 50%;
+  --gold: 152 100% 50%;
+  --gold-light: 152 80% 60%;
+  --gold-glow: 152 100% 50%;
+}
+
+/* ====== PRO THEME (green neon) — dark mode ====== */
+.dark.pro-theme {
+  --background: 0 0% 5.5%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 152 100% 50%;
+  --primary-foreground: 0 0% 4%;
+  --secondary: 152 10% 12%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 152 8% 14%;
+  --muted-foreground: 0 0% 55%;
+  --accent: 152 100% 50%;
+  --accent-foreground: 0 0% 4%;
+  --border: 152 20% 18%;
+  --input: 0 0% 12%;
+  --ring: 152 100% 50%;
+  --sidebar-background: 0 0% 3%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-primary: 152 100% 50%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 152 15% 12%;
+  --sidebar-accent-foreground: 152 100% 50%;
+  --sidebar-border: 152 15% 14%;
+  --sidebar-ring: 152 100% 50%;
+  --gold: 152 100% 50%;
+  --gold-light: 152 80% 60%;
+  --gold-glow: 152 100% 50%;
+}
+
+/* ====== BUSINESS THEME (gold luxury) — light mode ====== */
+.business-theme {
   --primary: 42 50% 46%;
   --primary-foreground: 0 0% 100%;
   --accent: 42 40% 92%;
@@ -279,36 +330,36 @@
   --sidebar-ring: 42 50% 56%;
 }
 
-/* ====== ELITE THEME (dark mode) ====== */
-.dark.elite-theme {
+/* ====== BUSINESS THEME (gold luxury) — dark mode ====== */
+.dark.business-theme {
   --background: 0 0% 4%;
   --foreground: 0 0% 96%;
-  --card: 0 0% 6%;
+  --card: 0 0% 8.5%;
   --card-foreground: 0 0% 96%;
-  --popover: 0 0% 6%;
+  --popover: 0 0% 8.5%;
   --popover-foreground: 0 0% 96%;
-  --primary: 42 50% 56%;
+  --primary: 51 100% 50%;
   --primary-foreground: 0 0% 4%;
-  --secondary: 0 0% 10%;
+  --secondary: 42 10% 10%;
   --secondary-foreground: 0 0% 96%;
-  --muted: 0 0% 12%;
+  --muted: 42 8% 12%;
   --muted-foreground: 0 0% 55%;
-  --accent: 42 50% 56%;
+  --accent: 51 100% 50%;
   --accent-foreground: 0 0% 4%;
   --border: 42 20% 18%;
   --input: 0 0% 12%;
-  --ring: 42 50% 56%;
+  --ring: 51 100% 50%;
   --sidebar-background: 0 0% 3%;
   --sidebar-foreground: 0 0% 96%;
-  --sidebar-primary: 42 50% 56%;
+  --sidebar-primary: 51 100% 50%;
   --sidebar-primary-foreground: 0 0% 4%;
   --sidebar-accent: 42 15% 12%;
-  --sidebar-accent-foreground: 42 50% 56%;
+  --sidebar-accent-foreground: 51 100% 50%;
   --sidebar-border: 42 15% 14%;
-  --sidebar-ring: 42 50% 56%;
+  --sidebar-ring: 51 100% 50%;
 }
 
-/* ── Elite animated gradient background ── */
+/* ── Animated gradient orbs keyframes ── */
 @keyframes eliteGradientOrbit {
   0%   { transform: translate(0, 0) scale(1); opacity: 0.5; }
   25%  { transform: translate(30%, -20%) scale(1.15); opacity: 0.7; }
@@ -333,7 +384,7 @@
   100% { background-position: 200% 0; }
 }
 
-/* ── Orbs ── */
+/* ── Shared orb base ── */
 .elite-orb {
   position: absolute;
   border-radius: 50%;
@@ -341,163 +392,217 @@
   animation: eliteGradientOrbit 18s ease-in-out infinite;
   will-change: transform, opacity;
 }
-.elite-orb-1 {
+
+/* ── PRO Orbs (green neon) ── */
+.pro-orb-1 {
   width: 500px; height: 500px;
   top: -10%; left: -5%;
-  background: radial-gradient(circle, hsl(42 50% 56% / 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.14) 0%, transparent 70%);
   animation-duration: 20s;
 }
-.elite-orb-2 {
+.pro-orb-2 {
+  width: 400px; height: 400px;
+  top: 50%; right: -5%;
+  background: radial-gradient(circle, hsl(152 80% 60% / 0.12) 0%, transparent 70%);
+  animation-duration: 16s;
+  animation-delay: -5s;
+}
+.pro-orb-3 {
+  width: 350px; height: 350px;
+  bottom: 10%; left: 30%;
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.06) 0%, transparent 70%);
+  animation-duration: 22s;
+  animation-delay: -10s;
+}
+.pro-orb-4 {
+  width: 300px; height: 300px;
+  top: 20%; right: 30%;
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.08) 0%, transparent 70%);
+  animation-duration: 25s;
+  animation-delay: -7s;
+}
+
+/* ── BUSINESS Orbs (gold luxury) ── */
+.business-orb-1 {
+  width: 500px; height: 500px;
+  top: -10%; left: -5%;
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.12) 0%, transparent 70%);
+  animation-duration: 20s;
+}
+.business-orb-2 {
   width: 400px; height: 400px;
   top: 50%; right: -5%;
   background: radial-gradient(circle, hsl(42 60% 70% / 0.1) 0%, transparent 70%);
   animation-duration: 16s;
   animation-delay: -5s;
 }
-.elite-orb-3 {
+.business-orb-3 {
   width: 350px; height: 350px;
   bottom: 10%; left: 30%;
   background: radial-gradient(circle, hsl(0 0% 100% / 0.04) 0%, transparent 70%);
   animation-duration: 22s;
   animation-delay: -10s;
 }
-.elite-orb-4 {
+.business-orb-4 {
   width: 300px; height: 300px;
   top: 20%; right: 30%;
-  background: radial-gradient(circle, hsl(42 50% 56% / 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.08) 0%, transparent 70%);
   animation-duration: 25s;
   animation-delay: -7s;
 }
 
-/* ── Particles ── */
-.elite-particle {
+/* ── PRO Particles (green) ── */
+.pro-particle {
   position: absolute;
   border-radius: 50%;
-  background: hsl(42 50% 56% / 0.6);
+  background: hsl(152 100% 50% / 0.6);
   animation: eliteParticleFloat 5s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
-/* ── Elite gradients ── */
-.elite-theme .moss-gradient,
-.elite-theme .gold-gradient {
-  background: linear-gradient(135deg, hsl(42, 50%, 56%), hsl(42, 60%, 70%)) !important;
+/* ── BUSINESS Particles (gold) ── */
+.business-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: hsl(51 100% 50% / 0.6);
+  animation: eliteParticleFloat 5s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
-.elite-theme .moss-text,
-.elite-theme .gold-text {
-  background: linear-gradient(135deg, hsl(42, 50%, 56%), hsl(42, 60%, 75%)) !important;
+/* ── PRO gradients ── */
+.pro-theme .moss-gradient,
+.pro-theme .gold-gradient {
+  background: linear-gradient(135deg, hsl(152, 100%, 50%), hsl(152, 80%, 60%)) !important;
+}
+.pro-theme .moss-text,
+.pro-theme .gold-text {
+  background: linear-gradient(135deg, hsl(152, 100%, 50%), hsl(152, 80%, 65%)) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
 }
 
-/* ── Elite animated background override ── */
-.dark.elite-theme .animated-bg::before {
-  background:
-    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(42 50% 56% / 0.05) 0%, transparent 70%),
-    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(42 50% 56% / 0.03) 0%, transparent 70%),
-    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(42 50% 56% / 0.04) 0%, transparent 70%) !important;
+/* ── BUSINESS gradients ── */
+.business-theme .moss-gradient,
+.business-theme .gold-gradient {
+  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 60%, 70%)) !important;
+}
+.business-theme .moss-text,
+.business-theme .gold-text {
+  background: linear-gradient(135deg, hsl(51, 100%, 50%), hsl(42, 60%, 75%)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
-/* ── Elite glass cards ── */
-.elite-theme .glass-card {
+/* ── PRO animated background override ── */
+.dark.pro-theme .animated-bg::before {
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(152 100% 50% / 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(152 100% 50% / 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(152 100% 50% / 0.05) 0%, transparent 70%) !important;
+}
+
+/* ── BUSINESS animated background override ── */
+.dark.business-theme .animated-bg::before {
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 50%, hsl(51 100% 50% / 0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 400px at 80% 20%, hsl(51 100% 50% / 0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 800px at 50% 80%, hsl(51 100% 50% / 0.04) 0%, transparent 70%) !important;
+}
+
+/* ── Glass cards (shared for both premium themes) ── */
+.pro-theme .glass-card,
+.business-theme .glass-card {
   backdrop-filter: blur(40px) saturate(1.4);
   -webkit-backdrop-filter: blur(40px) saturate(1.4);
-  border-color: hsl(42 30% 70% / 0.3) !important;
-  box-shadow:
-    0 8px 32px -8px hsl(42 50% 56% / 0.08),
-    inset 0 1px 0 0 hsl(42 50% 56% / 0.06) !important;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.dark.elite-theme .glass-card {
-  border-color: hsl(42 20% 18% / 0.5) !important;
+.pro-theme .glass-card {
+  border-color: hsl(152 40% 50% / 0.25) !important;
+  box-shadow: 0 8px 32px -8px hsl(152 100% 50% / 0.08), inset 0 1px 0 0 hsl(152 100% 50% / 0.06) !important;
 }
+.business-theme .glass-card {
+  border-color: hsl(42 30% 70% / 0.3) !important;
+  box-shadow: 0 8px 32px -8px hsl(51 100% 50% / 0.08), inset 0 1px 0 0 hsl(51 100% 50% / 0.06) !important;
+}
+.dark.pro-theme .glass-card { border-color: hsl(152 20% 18% / 0.5) !important; }
+.dark.business-theme .glass-card { border-color: hsl(42 20% 18% / 0.5) !important; }
 
-.elite-theme .glass-card-hover:hover {
-  border-color: hsl(42 50% 56% / 0.3) !important;
-  box-shadow:
-    0 24px 64px -16px hsl(42 50% 56% / 0.18),
-    inset 0 1px 0 0 hsl(42 50% 56% / 0.1) !important;
+.pro-theme .glass-card-hover:hover {
+  border-color: hsl(152 100% 50% / 0.3) !important;
+  box-shadow: 0 24px 64px -16px hsl(152 100% 50% / 0.18), inset 0 1px 0 0 hsl(152 100% 50% / 0.1) !important;
+  transform: translateY(-8px) scale(1.01);
+}
+.business-theme .glass-card-hover:hover {
+  border-color: hsl(51 100% 50% / 0.3) !important;
+  box-shadow: 0 24px 64px -16px hsl(51 100% 50% / 0.18), inset 0 1px 0 0 hsl(51 100% 50% / 0.1) !important;
   transform: translateY(-8px) scale(1.01);
 }
 
-/* ── Elite floating cards animation ── */
-.elite-theme .stat-card {
+/* ── Floating cards animation ── */
+.pro-theme .stat-card,
+.business-theme .stat-card {
   animation: eliteFloat 6s ease-in-out infinite;
 }
-.elite-theme .stat-card:nth-child(2) { animation-delay: -1.5s; }
-.elite-theme .stat-card:nth-child(3) { animation-delay: -3s; }
-.elite-theme .stat-card:nth-child(4) { animation-delay: -4.5s; }
+.pro-theme .stat-card:nth-child(2), .business-theme .stat-card:nth-child(2) { animation-delay: -1.5s; }
+.pro-theme .stat-card:nth-child(3), .business-theme .stat-card:nth-child(3) { animation-delay: -3s; }
+.pro-theme .stat-card:nth-child(4), .business-theme .stat-card:nth-child(4) { animation-delay: -4.5s; }
 
-/* ── Elite button parallax ── */
-.elite-theme button,
-.elite-theme [role="button"],
-.elite-theme .btn-premium,
-.elite-theme a[class*="btn"],
-.elite-theme a[class*="Button"] {
+/* ── Button parallax ── */
+.pro-theme button, .pro-theme [role="button"], .pro-theme .btn-premium, .pro-theme a[class*="btn"], .pro-theme a[class*="Button"],
+.business-theme button, .business-theme [role="button"], .business-theme .btn-premium, .business-theme a[class*="btn"], .business-theme a[class*="Button"] {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
-
-.elite-theme button:hover,
-.elite-theme [role="button"]:hover,
-.elite-theme .btn-premium:hover {
+.pro-theme button:hover, .pro-theme [role="button"]:hover, .pro-theme .btn-premium:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 24px -4px hsl(42 50% 56% / 0.25) !important;
+  box-shadow: 0 8px 24px -4px hsl(152 100% 50% / 0.25) !important;
 }
-
-.elite-theme button:active,
-.elite-theme [role="button"]:active,
-.elite-theme .btn-premium:active {
+.business-theme button:hover, .business-theme [role="button"]:hover, .business-theme .btn-premium:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px -4px hsl(51 100% 50% / 0.25) !important;
+}
+.pro-theme button:active, .pro-theme [role="button"]:active, .pro-theme .btn-premium:active,
+.business-theme button:active, .business-theme [role="button"]:active, .business-theme .btn-premium:active {
   transform: translateY(0) scale(0.98) !important;
 }
 
-/* ── Elite header ── */
-.elite-theme .elite-header {
+/* ── Header ── */
+.pro-theme .elite-header, .business-theme .elite-header {
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border-bottom: 1px solid hsl(42 30% 70% / 0.3);
   background: hsl(0 0% 100% / 0.7);
 }
-.dark.elite-theme .elite-header {
-  border-bottom-color: hsl(42 20% 18% / 0.4);
-  background: hsl(0 0% 4% / 0.7);
-}
+.pro-theme .elite-header { border-bottom: 1px solid hsl(152 40% 50% / 0.25); }
+.business-theme .elite-header { border-bottom: 1px solid hsl(42 30% 70% / 0.3); }
+.dark.pro-theme .elite-header { border-bottom-color: hsl(152 20% 18% / 0.4); background: hsl(0 0% 5.5% / 0.7); }
+.dark.business-theme .elite-header { border-bottom-color: hsl(42 20% 18% / 0.4); background: hsl(0 0% 4% / 0.7); }
 
-/* ── Elite scrollbar ── */
-.dark.elite-theme ::-webkit-scrollbar-track {
-  background: hsl(0, 0%, 4%) !important;
-}
-.dark.elite-theme ::-webkit-scrollbar-thumb {
-  background: hsl(42, 20%, 18%) !important;
-  box-shadow: inset 0 0 4px hsl(42 50% 56% / 0.15);
-}
-.dark.elite-theme ::-webkit-scrollbar-thumb:hover {
-  background: hsl(42, 35%, 30%) !important;
-  box-shadow: 0 0 8px hsl(42 50% 56% / 0.3);
-}
+/* ── Scrollbar ── */
+.dark.pro-theme ::-webkit-scrollbar-track { background: hsl(0, 0%, 5.5%) !important; }
+.dark.pro-theme ::-webkit-scrollbar-thumb { background: hsl(152, 20%, 18%) !important; box-shadow: inset 0 0 4px hsl(152 100% 50% / 0.15); }
+.dark.pro-theme ::-webkit-scrollbar-thumb:hover { background: hsl(152, 35%, 30%) !important; box-shadow: 0 0 8px hsl(152 100% 50% / 0.3); }
+.dark.business-theme ::-webkit-scrollbar-track { background: hsl(0, 0%, 4%) !important; }
+.dark.business-theme ::-webkit-scrollbar-thumb { background: hsl(42, 20%, 18%) !important; box-shadow: inset 0 0 4px hsl(51 100% 50% / 0.15); }
+.dark.business-theme ::-webkit-scrollbar-thumb:hover { background: hsl(42, 35%, 30%) !important; box-shadow: 0 0 8px hsl(51 100% 50% / 0.3); }
 
-/* ── Elite back button ── */
-.elite-back-btn {
-  color: hsl(42 50% 56%);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.elite-back-btn:hover {
-  color: hsl(42 60% 70%);
-  transform: translateX(-3px) scale(1.08);
-  text-shadow: 0 0 12px hsl(42 50% 56% / 0.4);
-}
+/* ── Back button ── */
+.pro-back-btn { color: hsl(152 100% 50%); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.pro-back-btn:hover { color: hsl(152 80% 60%); transform: translateX(-3px) scale(1.08); text-shadow: 0 0 12px hsl(152 100% 50% / 0.4); }
+.business-back-btn { color: hsl(51 100% 50%); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.business-back-btn:hover { color: hsl(42 60% 70%); transform: translateX(-3px) scale(1.08); text-shadow: 0 0 12px hsl(51 100% 50% / 0.4); }
 
 /* ── Reduce motion ── */
 @media (prefers-reduced-motion: reduce) {
   .elite-orb,
-  .elite-particle,
-  .elite-theme .stat-card {
+  .pro-particle,
+  .business-particle,
+  .pro-theme .stat-card,
+  .business-theme .stat-card {
     animation: none !important;
   }
-  .elite-theme button:hover,
-  .elite-theme [role="button"]:hover,
-  .elite-theme .glass-card-hover:hover {
+  .pro-theme button:hover, .pro-theme [role="button"]:hover, .pro-theme .glass-card-hover:hover,
+  .business-theme button:hover, .business-theme [role="button"]:hover, .business-theme .glass-card-hover:hover {
     transform: none !important;
   }
 }
