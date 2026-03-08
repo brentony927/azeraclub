@@ -37,6 +37,8 @@ export default function IdeasVault() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("geral");
+  const [expandingId, setExpandingId] = useState<string | null>(null);
+  const [expandedContent, setExpandedContent] = useState<Record<string, string>>({});
 
   const fetchIdeas = async () => {
     if (!user) return;
