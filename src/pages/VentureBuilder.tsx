@@ -211,12 +211,12 @@ export default function VentureBuilder() {
                 <CardContent>
                   <Tabs defaultValue="overview">
                     <TabsList className="mb-4 flex-wrap">
-                      <TabsTrigger value="overview"><FileText className="h-3.5 w-3.5 mr-1" /> Overview</TabsTrigger>
+                      <TabsTrigger value="overview"><FileText className="h-3.5 w-3.5 mr-1" /> Visão Geral</TabsTrigger>
                       <TabsTrigger value="roadmap"><Map className="h-3.5 w-3.5 mr-1" /> Roadmap</TabsTrigger>
-                      <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" /> Tasks</TabsTrigger>
+                      <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" /> Tarefas</TabsTrigger>
                       <TabsTrigger value="chat"><MessageSquare className="h-3.5 w-3.5 mr-1" /> Chat</TabsTrigger>
-                      <TabsTrigger value="team"><Users className="h-3.5 w-3.5 mr-1" /> Team</TabsTrigger>
-                      <TabsTrigger value="notes"><FileText className="h-3.5 w-3.5 mr-1" /> Notes</TabsTrigger>
+                      <TabsTrigger value="team"><Users className="h-3.5 w-3.5 mr-1" /> Equipe</TabsTrigger>
+                      <TabsTrigger value="notes"><FileText className="h-3.5 w-3.5 mr-1" /> Notas</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-3">
