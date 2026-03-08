@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export interface PricingPlan {
   key: string;
@@ -15,6 +16,7 @@ export interface PricingPlan {
   description: string;
   price: number;
   yearlyPrice: number;
+  weeklyPrice?: number;
   buttonText: string;
   buttonVariant: "outline" | "default";
   popular?: boolean;
@@ -23,55 +25,43 @@ export interface PricingPlan {
 
 interface PricingSectionProps {
   plans: PricingPlan[];
-  onSubscribe: (planKey: string) => void;
+  onSubscribe: (planKey: string, period?: string) => void;
   loadingPlan: string | null;
   currentTier: string | null;
   onManage: () => void;
 }
 
-const PricingSwitch = ({ onSwitch }: { onSwitch: (value: string) => void }) => {
-  const [selected, setSelected] = useState("0");
+type Period = "weekly" | "monthly" | "yearly";
 
-  const handleSwitch = (value: string) => {
-    setSelected(value);
-    onSwitch(value);
-  };
+const PricingSwitch = ({ onSwitch, selected }: { onSwitch: (value: Period) => void; selected: Period }) => {
+  const periods: { key: Period; label: string }[] = [
+    { key: "weekly", label: "Semanal" },
+    { key: "monthly", label: "Mensal" },
+    { key: "yearly", label: "Anual" },
+  ];
 
   return (
     <div className="flex items-center justify-center">
       <div className="relative flex items-center rounded-full bg-secondary/60 backdrop-blur p-1">
-        <button
-          onClick={() => handleSwitch("0")}
-          className={cn(
-            "relative z-10 w-fit h-10 rounded-full px-6 py-2 font-medium transition-colors text-sm",
-            selected === "0" ? "text-primary-foreground" : "text-muted-foreground"
-          )}
-        >
-          {selected === "0" && (
-            <motion.div
-              layoutId="pricing-switch"
-              className="absolute inset-0 rounded-full moss-gradient"
-              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-            />
-          )}
-          <span className="relative z-10">Mensal</span>
-        </button>
-        <button
-          onClick={() => handleSwitch("1")}
-          className={cn(
-            "relative z-10 w-fit h-10 rounded-full px-6 py-2 font-medium transition-colors text-sm",
-            selected === "1" ? "text-primary-foreground" : "text-muted-foreground"
-          )}
-        >
-          {selected === "1" && (
-            <motion.div
-              layoutId="pricing-switch"
-              className="absolute inset-0 rounded-full moss-gradient"
-              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-            />
-          )}
-          <span className="relative z-10">Anual</span>
-        </button>
+        {periods.map((p) => (
+          <button
+            key={p.key}
+            onClick={() => onSwitch(p.key)}
+            className={cn(
+              "relative z-10 w-fit h-10 rounded-full px-5 py-2 font-medium transition-colors text-sm",
+              selected === p.key ? "text-primary-foreground" : "text-muted-foreground"
+            )}
+          >
+            {selected === p.key && (
+              <motion.div
+                layoutId="pricing-switch"
+                className="absolute inset-0 rounded-full moss-gradient"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <span className="relative z-10">{p.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -84,11 +74,24 @@ export default function PricingSection({
   currentTier,
   onManage,
 }: PricingSectionProps) {
-  const [isYearly, setIsYearly] = useState(false);
+  const [period, setPeriod] = useState<Period>("monthly");
   const pricingRef = useRef<HTMLDivElement>(null);
 
-  const togglePricingPeriod = (value: string) =>
-    setIsYearly(Number.parseInt(value) === 1);
+  const isWeekly = period === "weekly";
+  const isYearly = period === "yearly";
+
+  const getPrice = (plan: PricingPlan) => {
+    if (plan.price === 0) return 0;
+    if (isWeekly) return plan.weeklyPrice || 0;
+    if (isYearly) return plan.yearlyPrice;
+    return plan.price;
+  };
+
+  const getPeriodLabel = () => {
+    if (isWeekly) return "/semana";
+    if (isYearly) return "/ano";
+    return "/mês";
+  };
 
   return (
     <div ref={pricingRef} className="w-full max-w-5xl mx-auto space-y-10">
@@ -109,7 +112,19 @@ export default function PricingSection({
         </TimelineContent>
 
         <TimelineContent animationNum={2} timelineRef={pricingRef}>
-          <PricingSwitch onSwitch={togglePricingPeriod} />
+          <PricingSwitch onSwitch={setPeriod} selected={period} />
+          {isWeekly && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-center gap-2 mt-3"
+            >
+              <Badge variant="outline" className="gap-1.5 text-xs border-accent/30 text-accent">
+                <Banknote className="h-3 w-3" />
+                Pagamento via PIX
+              </Badge>
+            </motion.div>
+          )}
         </TimelineContent>
       </div>
 
@@ -128,6 +143,7 @@ export default function PricingSection({
         {plans.map((plan, index) => {
           const isCurrentPlan = currentTier === plan.key;
           const isFree = plan.price === 0;
+          const price = getPrice(plan);
           return (
             <TimelineContent key={plan.key} animationNum={index + 3} timelineRef={pricingRef}>
               <Card
@@ -148,7 +164,6 @@ export default function PricingSection({
                   </div>
                 )}
 
-                {/* Sparkles on popular */}
                 {plan.popular && (
                   <div className="absolute inset-0 overflow-hidden rounded-[var(--radius)]">
                     <SparklesComp
@@ -169,17 +184,22 @@ export default function PricingSection({
                       <span className="text-3xl font-serif font-bold">Grátis</span>
                     ) : (
                       <>
-                        <span className="text-sm text-muted-foreground">€</span>
+                        <span className="text-sm text-muted-foreground">R$</span>
                         <NumberFlow
-                          value={isYearly ? plan.yearlyPrice : plan.price}
+                          value={price}
                           className="text-3xl font-serif font-bold"
                         />
                         <span className="text-sm text-muted-foreground">
-                          /{isYearly ? "ano" : "mês"}
+                          {getPeriodLabel()}
                         </span>
                       </>
                     )}
                   </div>
+                  {isWeekly && !isFree && (
+                    <Badge variant="outline" className="w-fit mt-2 text-[10px] gap-1 border-accent/30 text-accent">
+                      <Banknote className="h-3 w-3" /> PIX
+                    </Badge>
+                  )}
                   <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
                 </CardHeader>
 
@@ -193,14 +213,16 @@ export default function PricingSection({
                     )}
                     disabled={isCurrentPlan || loadingPlan === plan.key}
                     onClick={() =>
-                      isCurrentPlan ? onManage() : onSubscribe(plan.key)
+                      isCurrentPlan ? onManage() : onSubscribe(plan.key, period)
                     }
                   >
                     {isCurrentPlan
                       ? "Plano Atual"
                       : loadingPlan === plan.key
                         ? "Processando..."
-                        : plan.buttonText}
+                        : isWeekly && !isFree
+                          ? `Pagar via PIX`
+                          : plan.buttonText}
                   </Button>
 
                   <div className="space-y-3 flex-1">
