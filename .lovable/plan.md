@@ -1,21 +1,38 @@
+## AZERA CLUB — Strategic Investment Analysis
 
+**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-## Plano: Definir conta como Elite
+### Top 5 Priorities
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+| # | Action | Impact |
+|---|--------|--------|
+| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
+| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
+| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
+| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
+| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
 
-### O que fazer
+### Scores by Area
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
-
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
-
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
-
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
-
+| Area | Score |
+|------|-------|
+| Product Clarity | 4/10 |
+| User Onboarding | 3/10 |
+| Core Value Proposition | 5/10 |
+| User Engagement | 5/10 |
+| Retention Mechanisms | 3/10 |
+| Network Effect Potential | 6/10 |
+| Feature Usefulness | 4/10 |
+| UX/UI Quality | 6/10 |
+| Monetization Model | 5/10 |
+| Premium Plan Value | 4/10 |
+| Competitive Positioning | 4/10 |
+| Scalability | 5/10 |
+| Trust & Safety | 4/10 |
+| Market Fit | 5/10 |
+| Psychological Triggers | 6/10 |
+| Viral Growth | 3/10 |
+| Community Health | 3/10 |
+| Abandonment Risk | 7/10 (HIGH) |
+| Differentiation | 5/10 |
+| Long-term Defensibility | 3/10 |
