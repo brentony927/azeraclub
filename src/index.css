@@ -997,3 +997,22 @@
   color: hsl(35 80% 55%);
   text-shadow: 0 0 6px hsl(51 100% 50% / 0.3);
 }
+
+/* ── Leaflet Map Popup Override ── */
+.leaflet-popup-content-wrapper {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3) !important;
+}
+.leaflet-popup-tip {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+.leaflet-popup-close-button {
+  color: hsl(var(--muted-foreground)) !important;
+}
+.custom-founder-pin div:hover {
+  transform: scale(1.4) !important;
+}

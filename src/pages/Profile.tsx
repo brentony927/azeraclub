@@ -174,6 +174,23 @@ export default function Profile() {
       } as any).eq("user_id", user.id);
       if (profileError) throw profileError;
 
+      // Geocode city/country
+      let latitude: number | null = null;
+      let longitude: number | null = null;
+      if (city && country) {
+        try {
+          const geoRes = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city + ", " + country)}&limit=1`,
+            { headers: { "User-Agent": "AzeraClub/1.0" } }
+          );
+          const geoData = await geoRes.json();
+          if (geoData.length > 0) {
+            latitude = parseFloat(geoData[0].lat);
+            longitude = parseFloat(geoData[0].lon);
+          }
+        } catch {}
+      }
+
       // Upsert founder_profiles
       const founderData: any = {
         user_id: user.id,
@@ -191,6 +208,7 @@ export default function Profile() {
         avatar_url: avatarUrl,
         is_published: true,
         username: username || null,
+        ...(latitude != null && longitude != null ? { latitude, longitude } : {}),
       };
 
       if (hasFounderProfile) {

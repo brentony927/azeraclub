@@ -80,6 +80,7 @@ import FounderProfile from "./pages/FounderProfile";
 import FounderMessages from "./pages/FounderMessages";
 import FounderOpportunities from "./pages/FounderOpportunities";
 import FounderNotificationsPage from "./pages/FounderNotificationsPage";
+import GlobalFounderMap from "./pages/GlobalFounderMap";
 
 const queryClient = new QueryClient();
 
@@ -162,6 +163,7 @@ const App = () => (
               <Route path="/founder-messages" element={<FounderMessages />} />
               <Route path="/founder-opportunities" element={<FounderOpportunities />} />
               <Route path="/founder-notifications" element={<FounderNotificationsPage />} />
+              <Route path="/global-map" element={<GlobalFounderMap />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
