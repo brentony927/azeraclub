@@ -57,16 +57,16 @@ export default function LifeSimulation() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Strategic Life Simulation">
+    <FeatureLock minTier="business" featureName="Simulação de Vida Estratégica">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Life Simulation</h1>
-          <p className="text-muted-foreground text-sm mt-1">Simulate future scenarios with AI</p>
+          <h1 className="text-3xl font-serif font-bold">Simulação de Vida</h1>
+          <p className="text-muted-foreground text-sm mt-1">Simule cenários futuros com IA</p>
         </motion.div>
         <motion.div variants={item} className="space-y-3">
-          <Textarea placeholder='Describe a scenario (e.g. "What if I move to another country?")' value={scenario} onChange={(e) => setScenario(e.target.value)} rows={3} />
+          <Textarea placeholder='Descreva um cenário (ex: "E se eu me mudar para outro país?")' value={scenario} onChange={(e) => setScenario(e.target.value)} rows={3} />
           <Button onClick={simulate} disabled={isLoading || !scenario.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Simulating...</> : <><Sparkles className="h-4 w-4" /> Simulate Future</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Simulando...</> : <><Sparkles className="h-4 w-4" /> Simular Futuro</>}
           </Button>
         </motion.div>
         {result && (

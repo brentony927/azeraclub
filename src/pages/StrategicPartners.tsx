@@ -60,20 +60,20 @@ export default function StrategicPartners() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Strategic Partner Finder">
+    <FeatureLock minTier="business" featureName="Descoberta de Parceiros Estratégicos">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Strategic Partners</h1>
-          <p className="text-muted-foreground text-sm mt-1">Find ideal strategic partners for your business</p>
+          <h1 className="text-3xl font-serif font-bold">Parceiros Estratégicos</h1>
+          <p className="text-muted-foreground text-sm mt-1">Encontre parceiros estratégicos ideais para o seu negócio</p>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
-          <Input placeholder="Your industry" value={industry} onChange={(e) => setIndustry(e.target.value)} className="flex-1" />
+          <Input placeholder="A sua indústria" value={industry} onChange={(e) => setIndustry(e.target.value)} className="flex-1" />
           <Select value={stage} onValueChange={setStage}>
             <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
             <SelectContent>{STAGES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
           </Select>
           <Button onClick={find} disabled={isLoading || !industry.trim()} className="gap-2">
-            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} Find Partners
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} Encontrar Parceiros
           </Button>
         </motion.div>
         {result && (

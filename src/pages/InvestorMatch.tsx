@@ -59,17 +59,17 @@ export default function InvestorMatch() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Investor Match">
+    <FeatureLock minTier="business" featureName="Match de Investidores">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Investor Match</h1>
-          <p className="text-muted-foreground text-sm mt-1">Find compatible investors for your startup</p>
+          <h1 className="text-3xl font-serif font-bold">Match de Investidores</h1>
+          <p className="text-muted-foreground text-sm mt-1">Encontre investidores compatíveis para a sua startup</p>
         </motion.div>
         <motion.div variants={item} className="space-y-3">
-          <Input placeholder="Startup name / sector" value={startup} onChange={(e) => setStartup(e.target.value)} />
-          <Textarea placeholder="Describe your startup (stage, revenue, product...)" value={details} onChange={(e) => setDetails(e.target.value)} rows={3} />
+          <Input placeholder="Nome / setor da startup" value={startup} onChange={(e) => setStartup(e.target.value)} />
+          <Textarea placeholder="Descreva a sua startup (estágio, receita, produto...)" value={details} onChange={(e) => setDetails(e.target.value)} rows={3} />
           <Button onClick={find} disabled={isLoading || !startup.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Matching...</> : <><Sparkles className="h-4 w-4" /> Find Investors</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Buscando...</> : <><Sparkles className="h-4 w-4" /> Encontrar Investidores</>}
           </Button>
         </motion.div>
         {result && (

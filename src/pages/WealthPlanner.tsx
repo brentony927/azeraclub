@@ -59,17 +59,17 @@ export default function WealthPlanner() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Personal Wealth Planner">
+    <FeatureLock minTier="business" featureName="Planeador de Riqueza Pessoal">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Wealth Strategy</h1>
-          <p className="text-muted-foreground text-sm mt-1">Create your personal wealth growth plan</p>
+          <h1 className="text-3xl font-serif font-bold">Estratégia Financeira</h1>
+          <p className="text-muted-foreground text-sm mt-1">Crie o seu plano pessoal de crescimento financeiro</p>
         </motion.div>
         <motion.div variants={item} className="space-y-3">
-          <Input placeholder="Current monthly income (optional)" value={income} onChange={(e) => setIncome(e.target.value)} />
-          <Textarea placeholder="Describe your financial goals..." value={goals} onChange={(e) => setGoals(e.target.value)} rows={3} />
+          <Input placeholder="Rendimento mensal atual (opcional)" value={income} onChange={(e) => setIncome(e.target.value)} />
+          <Textarea placeholder="Descreva os seus objetivos financeiros..." value={goals} onChange={(e) => setGoals(e.target.value)} rows={3} />
           <Button onClick={generate} disabled={isLoading || !goals.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Wealth Plan</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Gerando...</> : <><Sparkles className="h-4 w-4" /> Gerar Plano Financeiro</>}
           </Button>
         </motion.div>
         {result && (

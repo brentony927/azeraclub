@@ -65,16 +65,16 @@ export default function GoalBreakdown() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Goal Breakdown System">
+    <FeatureLock minTier="pro" featureName="Sistema de Decomposição de Metas">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Goal Breakdown System</h1>
-          <p className="text-muted-foreground text-sm mt-1">Break your goals into actionable steps</p>
+          <h1 className="text-3xl font-serif font-bold">Decomposição de Metas</h1>
+          <p className="text-muted-foreground text-sm mt-1">Decomponha os seus objetivos em passos acionáveis</p>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
-          <Input placeholder="What's your goal? (e.g. Reach $10k monthly revenue)" value={goal} onChange={(e) => setGoal(e.target.value)} className="flex-1" />
+          <Input placeholder="Qual é a sua meta? (ex: Alcançar R$50k de receita mensal)" value={goal} onChange={(e) => setGoal(e.target.value)} className="flex-1" />
           <Button onClick={generate} disabled={isLoading || !goal.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Breaking down...</> : <><Sparkles className="h-4 w-4" /> Break Down Goal</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Decompondo...</> : <><Sparkles className="h-4 w-4" /> Decompor Meta</>}
           </Button>
         </motion.div>
         {result && (
@@ -84,7 +84,7 @@ export default function GoalBreakdown() {
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
               <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Save Plan</Button>
+                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
               </div>
             </article>
           </motion.div>
