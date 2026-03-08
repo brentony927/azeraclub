@@ -65,11 +65,11 @@ export default function FounderProfile() {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       let prof: any = null;
       if (!isUuid) {
-        const { data } = await supabase.from("founder_profiles").select("*").eq("username" as any, id).maybeSingle();
+        const { data } = await supabase.from("founder_profiles").select("*").eq("username", id as any).maybeSingle();
         prof = data;
       }
       if (!prof) {
-        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id).maybeSingle();
+        const { data } = await supabase.from("founder_profiles").select("*").eq("id", id as any).maybeSingle();
         prof = data;
       }
       if (!prof) { setLoading(false); return; }
