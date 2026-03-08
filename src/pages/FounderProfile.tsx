@@ -251,7 +251,7 @@ export default function FounderProfile() {
                 <Badge variant="outline" className="text-xs">{COMMITMENT_LABELS[profile.commitment] || profile.commitment}</Badge>
               )}
               <div className="flex items-center gap-3 text-xs text-muted-foreground justify-center sm:justify-start">
-                <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} views</span>
+                <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} visualizações</span>
               </div>
               {/* Founder Score */}
               <div className="pt-2">
