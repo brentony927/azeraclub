@@ -157,13 +157,13 @@ export default function VentureBuilder() {
             <DialogContent className="max-w-lg">
               <DialogHeader><DialogTitle>Nova Venture</DialogTitle></DialogHeader>
               <div className="space-y-3">
-                <Input placeholder="Startup Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-                <Input placeholder="Industry" value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })} />
-                <Textarea placeholder="Problem" value={form.problem} onChange={e => setForm({ ...form, problem: e.target.value })} />
-                <Textarea placeholder="Solution" value={form.solution} onChange={e => setForm({ ...form, solution: e.target.value })} />
-                <Input placeholder="Target Market" value={form.target_market} onChange={e => setForm({ ...form, target_market: e.target.value })} />
-                <Input placeholder="Business Model" value={form.business_model} onChange={e => setForm({ ...form, business_model: e.target.value })} />
-                <Input placeholder="Goal" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
+                <Input placeholder="Nome da Startup" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+                <Input placeholder="Indústria" value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })} />
+                <Textarea placeholder="Problema" value={form.problem} onChange={e => setForm({ ...form, problem: e.target.value })} />
+                <Textarea placeholder="Solução" value={form.solution} onChange={e => setForm({ ...form, solution: e.target.value })} />
+                <Input placeholder="Mercado Alvo" value={form.target_market} onChange={e => setForm({ ...form, target_market: e.target.value })} />
+                <Input placeholder="Modelo de Negócio" value={form.business_model} onChange={e => setForm({ ...form, business_model: e.target.value })} />
+                <Input placeholder="Objetivo" value={form.goal} onChange={e => setForm({ ...form, goal: e.target.value })} />
                 <Button onClick={createVenture} disabled={loading || !form.name.trim()} className="w-full">{loading ? <Loader2 className="animate-spin h-4 w-4" /> : "Criar Venture"}</Button>
               </div>
             </DialogContent>
