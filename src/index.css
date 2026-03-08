@@ -393,78 +393,80 @@
   will-change: transform, opacity;
 }
 
-/* ── PRO Orbs (green neon) ── */
+/* ── PRO Orbs (green neon) — INTENSIFIED ── */
 .pro-orb-1 {
-  width: 500px; height: 500px;
+  width: 600px; height: 600px;
   top: -10%; left: -5%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.14) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.22) 0%, transparent 70%);
   animation-duration: 20s;
 }
 .pro-orb-2 {
-  width: 400px; height: 400px;
+  width: 500px; height: 500px;
   top: 50%; right: -5%;
-  background: radial-gradient(circle, hsl(152 80% 60% / 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 80% 60% / 0.18) 0%, transparent 70%);
   animation-duration: 16s;
   animation-delay: -5s;
 }
 .pro-orb-3 {
-  width: 350px; height: 350px;
+  width: 450px; height: 450px;
   bottom: 10%; left: 30%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.12) 0%, transparent 70%);
   animation-duration: 22s;
   animation-delay: -10s;
 }
 .pro-orb-4 {
-  width: 300px; height: 300px;
+  width: 380px; height: 380px;
   top: 20%; right: 30%;
-  background: radial-gradient(circle, hsl(152 100% 50% / 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(152 100% 50% / 0.15) 0%, transparent 70%);
   animation-duration: 25s;
   animation-delay: -7s;
 }
 
-/* ── BUSINESS Orbs (gold luxury) ── */
+/* ── BUSINESS Orbs (gold luxury) — INTENSIFIED ── */
 .business-orb-1 {
-  width: 500px; height: 500px;
+  width: 600px; height: 600px;
   top: -10%; left: -5%;
-  background: radial-gradient(circle, hsl(51 100% 50% / 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.20) 0%, transparent 70%);
   animation-duration: 20s;
 }
 .business-orb-2 {
-  width: 400px; height: 400px;
+  width: 500px; height: 500px;
   top: 50%; right: -5%;
-  background: radial-gradient(circle, hsl(42 60% 70% / 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(42 60% 70% / 0.16) 0%, transparent 70%);
   animation-duration: 16s;
   animation-delay: -5s;
 }
 .business-orb-3 {
-  width: 350px; height: 350px;
+  width: 450px; height: 450px;
   bottom: 10%; left: 30%;
-  background: radial-gradient(circle, hsl(0 0% 100% / 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.10) 0%, transparent 70%);
   animation-duration: 22s;
   animation-delay: -10s;
 }
 .business-orb-4 {
-  width: 300px; height: 300px;
+  width: 380px; height: 380px;
   top: 20%; right: 30%;
-  background: radial-gradient(circle, hsl(51 100% 50% / 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, hsl(51 100% 50% / 0.14) 0%, transparent 70%);
   animation-duration: 25s;
   animation-delay: -7s;
 }
 
-/* ── PRO Particles (green) ── */
+/* ── PRO Particles (green) — INTENSIFIED ── */
 .pro-particle {
   position: absolute;
   border-radius: 50%;
-  background: hsl(152 100% 50% / 0.6);
+  background: hsl(152 100% 50% / 0.8);
+  box-shadow: 0 0 6px hsl(152 100% 50% / 0.5);
   animation: eliteParticleFloat 5s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
-/* ── BUSINESS Particles (gold) ── */
+/* ── BUSINESS Particles (gold) — INTENSIFIED ── */
 .business-particle {
   position: absolute;
   border-radius: 50%;
-  background: hsl(51 100% 50% / 0.6);
+  background: hsl(51 100% 50% / 0.8);
+  box-shadow: 0 0 6px hsl(51 100% 50% / 0.5);
   animation: eliteParticleFloat 5s ease-in-out infinite;
   will-change: transform, opacity;
 }
@@ -682,4 +684,158 @@
   border: 1px solid hsla(42, 80%, 55%, 0.35);
   border-radius: 8px;
   box-shadow: 0 0 16px hsla(42, 80%, 55%, 0.2);
+}
+
+/* ====== INTENSIFIED THEME OVERRIDES ====== */
+
+/* ── PRO: Inputs focus glow ── */
+.pro-theme input:focus,
+.pro-theme textarea:focus,
+.pro-theme select:focus,
+.pro-theme [data-state="open"] {
+  border-color: hsl(152 100% 50% / 0.5) !important;
+  box-shadow: 0 0 0 2px hsl(152 100% 50% / 0.15), 0 0 14px hsl(152 100% 50% / 0.2) !important;
+}
+
+/* ── BUSINESS: Inputs focus glow ── */
+.business-theme input:focus,
+.business-theme textarea:focus,
+.business-theme select:focus,
+.business-theme [data-state="open"] {
+  border-color: hsl(51 100% 50% / 0.5) !important;
+  box-shadow: 0 0 0 2px hsl(51 100% 50% / 0.15), 0 0 16px hsl(51 100% 50% / 0.2) !important;
+}
+
+/* ── PRO: Progress bars ── */
+.pro-theme [role="progressbar"] > div,
+.pro-theme .bg-primary {
+  background: linear-gradient(90deg, hsl(152 100% 40%), hsl(152 100% 50%), hsl(152 80% 60%)) !important;
+  box-shadow: 0 0 8px hsl(152 100% 50% / 0.4);
+}
+
+/* ── BUSINESS: Progress bars ── */
+.business-theme [role="progressbar"] > div,
+.business-theme .bg-primary {
+  background: linear-gradient(90deg, hsl(42 50% 46%), hsl(51 100% 50%), hsl(42 60% 70%)) !important;
+  box-shadow: 0 0 8px hsl(51 100% 50% / 0.4);
+}
+
+/* ── PRO: Stat card top border ── */
+.pro-theme .stat-card::before {
+  background: linear-gradient(90deg, transparent, hsl(152 100% 50% / 0.7), transparent) !important;
+  height: 2px !important;
+}
+
+/* ── BUSINESS: Stat card top border ── */
+.business-theme .stat-card::before {
+  background: linear-gradient(90deg, transparent, hsl(51 100% 50% / 0.7), transparent) !important;
+  height: 2px !important;
+}
+
+/* ── PRO: Sidebar section labels ── */
+.pro-theme [data-sidebar="group-label"] {
+  color: hsl(152 100% 50% / 0.7) !important;
+}
+
+/* ── BUSINESS: Sidebar section labels ── */
+.business-theme [data-sidebar="group-label"] {
+  color: hsl(51 100% 50% / 0.7) !important;
+}
+
+/* ── PRO: Active sidebar item override ── */
+.pro-theme [data-sidebar="menu-button"] .bg-primary\/10 {
+  background: hsl(152 100% 50% / 0.12) !important;
+}
+
+/* ── BUSINESS: Active sidebar item override ── */
+.business-theme [data-sidebar="menu-button"] .bg-primary\/10 {
+  background: hsl(51 100% 50% / 0.12) !important;
+}
+
+/* ── PRO: Sidebar border tint ── */
+.dark.pro-theme [data-sidebar="sidebar"] {
+  border-color: hsl(152 20% 18% / 0.6) !important;
+}
+.dark.pro-theme [data-sidebar="header"],
+.dark.pro-theme [data-sidebar="footer"] {
+  border-color: hsl(152 20% 18% / 0.4) !important;
+}
+
+/* ── BUSINESS: Sidebar border tint ── */
+.dark.business-theme [data-sidebar="sidebar"] {
+  border-color: hsl(42 20% 18% / 0.6) !important;
+}
+.dark.business-theme [data-sidebar="header"],
+.dark.business-theme [data-sidebar="footer"] {
+  border-color: hsl(42 20% 18% / 0.4) !important;
+}
+
+/* ── PRO: Avatar ring glow ── */
+.pro-theme .avatar-ring {
+  border: 2px solid hsl(152 100% 50% / 0.5);
+  box-shadow: 0 0 12px hsl(152 100% 50% / 0.3);
+}
+
+/* ── BUSINESS: Avatar ring glow ── */
+.business-theme .avatar-ring {
+  border: 2px solid hsl(51 100% 50% / 0.5);
+  box-shadow: 0 0 12px hsl(51 100% 50% / 0.3);
+}
+
+/* ── PRO: Badges ── */
+.pro-theme .badge-plan {
+  background: linear-gradient(135deg, hsl(152 100% 50%), hsl(152 80% 60%)) !important;
+  color: hsl(0 0% 4%) !important;
+  box-shadow: 0 0 10px hsl(152 100% 50% / 0.3);
+}
+
+/* ── BUSINESS: Badges ── */
+.business-theme .badge-plan {
+  background: linear-gradient(135deg, hsl(51 100% 50%), hsl(42 60% 70%)) !important;
+  color: hsl(0 0% 4%) !important;
+  box-shadow: 0 0 10px hsl(51 100% 50% / 0.3);
+}
+
+/* ── PRO: Separator tinting ── */
+.pro-theme hr,
+.pro-theme [data-orientation="horizontal"] {
+  border-color: hsl(152 30% 25% / 0.3);
+}
+
+/* ── BUSINESS: Separator tinting ── */
+.business-theme hr,
+.business-theme [data-orientation="horizontal"] {
+  border-color: hsl(42 30% 25% / 0.3);
+}
+
+/* ── PRO: Text accent for icons ── */
+.pro-theme .text-primary {
+  color: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Text accent for icons ── */
+.business-theme .text-primary {
+  color: hsl(51 100% 50%) !important;
+}
+
+/* ── PRO: Tabs active indicator ── */
+.pro-theme [data-state="active"][role="tab"] {
+  border-color: hsl(152 100% 50%) !important;
+  color: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Tabs active indicator ── */
+.business-theme [data-state="active"][role="tab"] {
+  border-color: hsl(51 100% 50%) !important;
+  color: hsl(51 100% 50%) !important;
+}
+
+/* ── PRO: Switch checked ── */
+.pro-theme [data-state="checked"][role="switch"] {
+  background: hsl(152 100% 50%) !important;
+}
+
+/* ── BUSINESS: Switch checked ── */
+.business-theme [data-state="checked"][role="switch"] {
+  background: hsl(51 100% 50%) !important;
 }

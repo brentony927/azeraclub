@@ -15,17 +15,17 @@ export default function EliteBackground({ plan }: EliteBackgroundProps) {
       <div className={`elite-orb ${orbClass}-3`} />
       <div className={`elite-orb ${orbClass}-4`} />
 
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 24 }).map((_, i) => (
         <div
           key={i}
           className={particleClass}
           style={{
-            left: `${8 + (i * 7.5) % 85}%`,
-            top: `${10 + ((i * 13) % 80)}%`,
-            animationDelay: `${i * 0.7}s`,
-            animationDuration: `${4 + (i % 4) * 1.5}s`,
-            width: `${2 + (i % 3)}px`,
-            height: `${2 + (i % 3)}px`,
+            left: `${5 + (i * 4.1) % 90}%`,
+            top: `${5 + ((i * 11) % 88)}%`,
+            animationDelay: `${i * 0.5}s`,
+            animationDuration: `${3.5 + (i % 5) * 1.2}s`,
+            width: `${3 + (i % 4)}px`,
+            height: `${3 + (i % 4)}px`,
           }}
         />
       ))}
