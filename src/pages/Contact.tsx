@@ -17,7 +17,7 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
-      toast({ title: "Please fill in all fields", variant: "destructive" });
+      toast({ title: "Por favor, preencha todos os campos", variant: "destructive" });
       return;
     }
     setSending(true);
