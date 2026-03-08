@@ -62,6 +62,13 @@ import OpportunityAlerts from "./pages/OpportunityAlerts";
 import AIAdvisor from "./pages/AIAdvisor";
 import LifeMasterPlan from "./pages/LifeMasterPlan";
 
+// Founder Match pages
+import FounderMatch from "./pages/FounderMatch";
+import FounderFeed from "./pages/FounderFeed";
+import FounderProfile from "./pages/FounderProfile";
+import FounderMessages from "./pages/FounderMessages";
+import FounderOpportunities from "./pages/FounderOpportunities";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -124,6 +131,13 @@ const App = () => (
               <Route path="/opportunity-alerts" element={<OpportunityAlerts />} />
               <Route path="/ai-advisor" element={<AIAdvisor />} />
               <Route path="/life-master-plan" element={<LifeMasterPlan />} />
+
+              {/* Founder Match routes */}
+              <Route path="/founder-match" element={<FounderMatch />} />
+              <Route path="/founder-feed" element={<FounderFeed />} />
+              <Route path="/founder-profile/:id" element={<FounderProfile />} />
+              <Route path="/founder-messages" element={<FounderMessages />} />
+              <Route path="/founder-opportunities" element={<FounderOpportunities />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
