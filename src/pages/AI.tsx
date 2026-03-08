@@ -301,6 +301,52 @@ export default function AI() {
                 </div>
               ))}
             </div>
+
+            {/* Memories section */}
+            <div className="border-t border-border/30 p-3">
+              <button
+                onClick={() => setShowMemories(!showMemories)}
+                className="flex items-center justify-between w-full text-[12px] font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Brain className="h-3.5 w-3.5" />
+                  Memórias
+                  {memories.length > 0 && (
+                    <span className="text-[10px] bg-primary/15 text-primary px-1.5 py-0.5 rounded-full">{memories.length}</span>
+                  )}
+                </span>
+              </button>
+              <AnimatePresence>
+                {showMemories && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-2 space-y-1 max-h-[200px] overflow-y-auto">
+                      {memories.length === 0 && (
+                        <p className="text-[10px] text-muted-foreground/60 text-center py-2">A IA ainda não aprendeu fatos sobre você.</p>
+                      )}
+                      {memories.map((mem) => (
+                        <div key={mem.id} className="group flex items-start gap-1.5 p-1.5 rounded-lg hover:bg-secondary/50 transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] text-foreground/80 leading-tight">{mem.content}</p>
+                            <p className="text-[9px] text-muted-foreground/50 mt-0.5">{mem.category}</p>
+                          </div>
+                          <button
+                            onClick={() => deleteMemory(mem.id)}
+                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.aside>
         )}
       </AnimatePresence>
