@@ -22,7 +22,7 @@ export default function FounderLeaderboard() {
   useEffect(() => {
     supabase
       .from("founder_profiles")
-      .select("id, user_id, name, avatar_url, reputation_score, skills, is_verified, country, building")
+      .select("id, user_id, name, avatar_url, reputation_score, skills, is_verified, country, building, username")
       .eq("is_published", true)
       .order("reputation_score", { ascending: false })
       .limit(50)
