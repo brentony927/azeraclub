@@ -273,6 +273,39 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          read: boolean
+          related_user_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read?: boolean
+          related_user_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read?: boolean
+          related_user_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       founder_opportunities: {
         Row: {
           created_at: string
@@ -311,14 +344,20 @@ export type Database = {
           age: number | null
           avatar_url: string | null
           building: string | null
+          city: string | null
           commitment: string | null
+          continent: string | null
           country: string | null
           created_at: string
           id: string
           industry: string[] | null
+          interests: string[] | null
           is_published: boolean | null
+          is_verified: boolean | null
           looking_for: string[] | null
           name: string
+          profile_views: number | null
+          reputation_score: number | null
           skills: string[] | null
           updated_at: string
           user_id: string
@@ -327,14 +366,20 @@ export type Database = {
           age?: number | null
           avatar_url?: string | null
           building?: string | null
+          city?: string | null
           commitment?: string | null
+          continent?: string | null
           country?: string | null
           created_at?: string
           id?: string
           industry?: string[] | null
+          interests?: string[] | null
           is_published?: boolean | null
+          is_verified?: boolean | null
           looking_for?: string[] | null
           name: string
+          profile_views?: number | null
+          reputation_score?: number | null
           skills?: string[] | null
           updated_at?: string
           user_id: string
@@ -343,14 +388,20 @@ export type Database = {
           age?: number | null
           avatar_url?: string | null
           building?: string | null
+          city?: string | null
           commitment?: string | null
+          continent?: string | null
           country?: string | null
           created_at?: string
           id?: string
           industry?: string[] | null
+          interests?: string[] | null
           is_published?: boolean | null
+          is_verified?: boolean | null
           looking_for?: string[] | null
           name?: string
+          profile_views?: number | null
+          reputation_score?: number | null
           skills?: string[] | null
           updated_at?: string
           user_id?: string
