@@ -437,7 +437,7 @@ export default function FounderProfile() {
               ) : (
                 <Button onClick={handleConnect} disabled={!!connectionStatus}>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
+                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Conectar"}
                 </Button>
               )}
               {connectionStatus === "accepted" && (
