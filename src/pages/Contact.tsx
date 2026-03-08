@@ -78,8 +78,8 @@ export default function Contact() {
                 <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="How can we help?" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
+                <Label htmlFor="message">Mensagem</Label>
+                <Textarea id="message" placeholder="Como podemos ajudar?" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} />
               </div>
               <Button type="submit" className="w-full moss-gradient text-primary-foreground btn-premium" disabled={sending}>
                 {sending ? "Sending..." : (<>Send Message <Send className="ml-2 h-4 w-4" /></>)}
