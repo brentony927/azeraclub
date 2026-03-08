@@ -159,6 +159,10 @@ export default function IdeasVault() {
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                  <Button size="sm" variant="ghost" onClick={() => expandWithAI(idea)} disabled={expandingId === idea.id} className="gap-1 text-xs h-7 px-2">
+                    {expandingId === idea.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                    {!expandingId || expandingId !== idea.id ? "AI" : ""}
+                  </Button>
                   <button onClick={() => deleteIdea(idea.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
