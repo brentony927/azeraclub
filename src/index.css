@@ -1173,3 +1173,26 @@
   .sidebar-nav-item { transition: none; }
   .sidebar-nav-item:hover { transform: none; }
 }
+
+/* ── Greeting gradient text ── */
+.greeting-gradient-text {
+  background: linear-gradient(135deg, hsl(152 60% 40%), hsl(180 70% 45%), hsl(152 60% 40%));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: greetingShimmer 3s ease-in-out infinite;
+}
+
+.dark .greeting-gradient-text {
+  background: linear-gradient(135deg, hsl(152 80% 55%), hsl(180 90% 60%), hsl(152 80% 55%));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes greetingShimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
