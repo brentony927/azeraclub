@@ -153,7 +153,7 @@ export default function VentureBuilder() {
             <p className="text-muted-foreground text-sm mt-1">Crie e desenvolva startups com inteligência artificial</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" /> Create Venture</Button></DialogTrigger>
+            <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" /> Criar Venture</Button></DialogTrigger>
             <DialogContent className="max-w-lg">
               <DialogHeader><DialogTitle>Nova Venture</DialogTitle></DialogHeader>
               <div className="space-y-3">
