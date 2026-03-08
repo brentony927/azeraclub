@@ -228,10 +228,25 @@ export default function Signup() {
               </div>
             </div>
 
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="terms"
+                checked={acceptedTerms}
+                onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+                className="mt-0.5"
+              />
+              <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                Aceito os{" "}
+                <Link to="/terms" className="text-primary hover:underline" target="_blank">Termos de Uso</Link>
+                {" "}e a{" "}
+                <Link to="/privacy" className="text-primary hover:underline" target="_blank">Política de Privacidade</Link>
+              </label>
+            </div>
+
             <Button
               type="submit"
               className="w-full h-11 gold-gradient text-primary-foreground font-semibold hover:opacity-90"
-              disabled={loading}
+              disabled={loading || !acceptedTerms}
             >
               {loading ? "Criando conta..." : "Criar Conta"}
             </Button>
