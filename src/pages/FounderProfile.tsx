@@ -16,6 +16,7 @@ import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import BookmarkButton from "@/components/BookmarkButton";
+import ReportUserDialog from "@/components/ReportUserDialog";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
