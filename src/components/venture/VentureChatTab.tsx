@@ -42,6 +42,8 @@ export default function VentureChatTab({ ventureId, venture }: { ventureId: stri
     setText("");
   };
 
+  // Note: venture_activity notifications for chat are handled by the generate-notifications edge function to avoid spam
+
   const askAI = async () => {
     if (!user) return;
     setAiLoading(true);
