@@ -375,7 +375,7 @@ export default function Profile() {
           <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Rocket className="h-4 w-4 text-primary" /> Current Venture
+                <Rocket className="h-4 w-4 text-primary" /> Venture Atual
               </CardTitle>
             </CardHeader>
             <CardContent>
