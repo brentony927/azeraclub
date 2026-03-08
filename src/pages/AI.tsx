@@ -23,7 +23,7 @@ const MOODS = [
   { id: "focado", label: "Focado", emoji: "💡" },
   { id: "triste", label: "Triste", emoji: "😔" },
   { id: "motivado", label: "Motivado", emoji: "🔥" },
-  { id: "ceo", label: "CEO Mode", emoji: "👔", minTier: "elite" as const },
+  { id: "ceo", label: "CEO Mode", emoji: "👔", minTier: "business" as const },
 ];
 
 const SUGGESTIONS = [
@@ -369,7 +369,7 @@ export default function AI() {
                     <button
                       key={mood.id}
                       onClick={() => {
-                        if (locked) { toast.error(`${mood.label} disponível no plano ${mood.minTier === "elite" ? "Elite" : "Pro"} ou superior.`, { action: { label: "Ver Planos", onClick: () => navigate("/planos") } }); return; }
+                        if (locked) { toast.error(`${mood.label} disponível no plano ${mood.minTier === "business" ? "Business" : "Pro"} ou superior.`, { action: { label: "Ver Planos", onClick: () => navigate("/planos") } }); return; }
                         setActiveMood(activeMood === mood.id ? null : mood.id);
                       }}
                       className={`text-[12px] px-3 py-1.5 rounded-full transition-all flex items-center gap-1 ${
@@ -460,7 +460,7 @@ export default function AI() {
                       <button
                         key={mood.id}
                         onClick={() => {
-                          if (locked) { toast.error(`${mood.label} disponível no plano ${mood.minTier === "elite" ? "Elite" : "Pro"} ou superior.`); return; }
+                          if (locked) { toast.error(`${mood.label} disponível no plano ${mood.minTier === "business" ? "Business" : "Pro"} ou superior.`); return; }
                           setActiveMood(activeMood === mood.id ? null : mood.id);
                         }}
                         className={`text-[11px] px-2.5 py-1 rounded-full transition-all flex items-center gap-1 ${
