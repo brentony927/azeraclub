@@ -125,6 +125,13 @@ export default function Profile() {
     setVenturesCount(ventRes.data?.length || 0);
     if (ventRes.data && ventRes.data.length > 0) setCurrentVenture(ventRes.data[0]);
     setOpportunitiesCount(oppRes.count || 0);
+
+    // Fetch profile visit count
+    const { count: vc } = await supabase.from("profile_visits" as any)
+      .select("id", { count: "exact", head: true })
+      .eq("profile_user_id", user!.id);
+    setVisitCount(vc || 0);
+
     setLoading(false);
   };
 
