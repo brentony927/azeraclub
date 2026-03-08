@@ -11,6 +11,7 @@ import { usePublicLogo } from "@/hooks/useAzeraLogo";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+  const azeraLogo = usePublicLogo();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -50,6 +50,7 @@ const opportunities = [
 ];
 
 export default function Landing() {
+  const azeraLogo = usePublicLogo();
   const scrollToHowItWorks = () => {
     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
   };

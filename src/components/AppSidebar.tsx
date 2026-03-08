@@ -252,6 +252,7 @@ export function AppSidebar() {
     await signOut();
     navigate("/login");
   };
+  const azeraLogo = useAzeraLogo();
 
   const renderItems = (items: NavItem[]) =>
     items.map((navItem) => {

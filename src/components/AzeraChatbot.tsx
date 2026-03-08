@@ -97,6 +97,7 @@ export default function AzeraChatbot() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const isMobile = useIsMobile();
+  const azeraLogo = useAzeraLogo();
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
