@@ -58,7 +58,9 @@ export default function Profile() {
   const [commitment, setCommitment] = useState("startup_idea");
   const [interests, setInterests] = useState<string[]>([]);
   const [interestSearch, setInterestSearch] = useState("");
-
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [checkingUsername, setCheckingUsername] = useState(false);
   // read-only stats
   const [founderScore, setFounderScore] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
