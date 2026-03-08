@@ -298,7 +298,7 @@ export default function FounderProfile() {
       <Card className="border-primary/20 bg-card/80 backdrop-blur-sm">
         <CardContent className="p-6">
           <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-            <Rocket className="h-3.5 w-3.5" /> Current Venture
+            <Rocket className="h-3.5 w-3.5" /> Venture Atual
           </h3>
           {currentVenture ? (
             <div className="space-y-2">
