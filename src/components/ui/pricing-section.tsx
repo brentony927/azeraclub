@@ -220,7 +220,7 @@ export default function PricingSection({
                       <span className="text-3xl font-serif font-bold">Grátis</span>
                     ) : (
                       <>
-                        <span className="text-sm text-muted-foreground">R$</span>
+                        <span className="text-sm text-muted-foreground">£</span>
                         <NumberFlow
                           value={price}
                           className="text-3xl font-serif font-bold"

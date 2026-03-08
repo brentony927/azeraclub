@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 
 const tiers = {
   basic: { price_id: "price_free", product_id: "prod_free" },
-  pro: { price_id: "price_1T7qrGFn0fMTE8T5jvCLKBT8", product_id: "prod_U62xpa0u9xDiJO" },
-  business: { price_id: "price_1T7qrVFn0fMTE8T5G08ePJ2r", product_id: "prod_U62xPut1mfd9CG" },
+  pro: { price_id: "price_1T8ivaFn0fMTE8T5rWOyh9YX", product_id: "prod_U6wptLNnilCLi5" },
+  business: { price_id: "price_1T8ix7Fn0fMTE8T5F7LjGHB5", product_id: "prod_U6wq54yOsZU99H" },
 };
 
 const PIX_KEY = "043.869.512-70";
