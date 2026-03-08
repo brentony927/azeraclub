@@ -1,34 +1,84 @@
 
 
-## Alternativas para Teste de Resistência do App
+## AZERA Founder Match — Sistema Completo
 
-### Por que não posso criar 30 contas diretamente
+Este e um sistema social completo com 6 modulos. Dado o tamanho, vou dividir em **3 fases de implementacao** para evitar erros e manter qualidade. Este plano cobre a **Fase 1** (fundacao) que ja entrega valor.
 
-1. Contas precisam ser criadas via `supabase.auth.signUp()` — inserir direto na tabela `profiles` não gera sessões válidas
-2. Cada conta precisa de um email real ou confirmado para funcionar
-3. Criar contas bot em produção polui o banco de dados real
+---
 
-### O que posso fazer
+### Fase 1 — Fundacao (este plano)
 
-**Opção A: Teste Manual Guiado**
-- Posso navegar pelo app com a sua conta atual (Business) usando o browser automatizado
-- Testar cada fluxo: AI, agenda, experiências, viagens, propriedades, saúde, social
-- Verificar se todas as funcionalidades Pro e Business funcionam
-- Testar responsividade em diferentes tamanhos de tela
+**Novas tabelas no banco de dados (4 tabelas):**
 
-**Opção B: Criar uma Página de Teste Interna**
-- Criar uma página `/admin/test` protegida que simula operações CRUD em massa
-- Testa inserções, leituras e deleções em todas as tabelas
-- Mede tempo de resposta de cada operação
-- Verifica limites de RLS e permissões
+1. **`founder_profiles`** — perfil de fundador
+   - `id`, `user_id`, `name`, `age`, `country`, `skills` (text[]), `industry` (text[]), `building` (text), `looking_for` (text[]), `commitment` (text), `avatar_url`, `is_published` (bool), `created_at`, `updated_at`
+   - RLS: SELECT para todos autenticados, INSERT/UPDATE/DELETE apenas owner
 
-**Opção C: Testes Automatizados com Vitest**
-- Criar testes unitários e de integração para os componentes críticos
-- Testar renderização de todas as páginas
-- Verificar lógica de acesso por tier (free/pro/business)
-- Executável com um comando, sem criar contas reais
+2. **`founder_connections`** — conexoes entre fundadores
+   - `id`, `from_user_id`, `to_user_id`, `status` (pending/accepted/rejected), `created_at`
+   - RLS: SELECT/INSERT/UPDATE para participantes
 
-### Recomendação
+3. **`founder_messages`** — mensagens diretas
+   - `id`, `from_user_id`, `to_user_id`, `content`, `read` (bool), `created_at`
+   - RLS: SELECT/INSERT para participantes
+   - Realtime habilitado
 
-A **Opção A** (teste manual pelo browser) é a mais rápida e prática agora. Posso testar todos os fluxos com a sua conta Business que já está logada.
+4. **`founder_opportunities`** — posts de oportunidades
+   - `id`, `user_id`, `title`, `description`, `project`, `equity_available` (bool), `looking_for` (text[]), `created_at`
+   - RLS: SELECT para todos autenticados, INSERT/UPDATE/DELETE apenas owner
+
+**Novas paginas (5 paginas):**
+
+1. **`/founder-match`** — Hub principal
+   - Se usuario nao tem perfil: tela "Crie seu Perfil de Fundador" com formulario completo (name, age, country, skills multi-select, industry multi-select, building textarea, looking_for multi-select, commitment select)
+   - Se ja tem perfil: redireciona para o feed
+
+2. **`/founder-feed`** — Feed de Fundadores
+   - Cards com foto, nome, skills (badges), looking_for, country
+   - Botoes "Ver Perfil" e "Conectar"
+   - Filtros no topo: Skills, Industry, Country, Looking For, Commitment
+   - Business users aparecem com destaque dourado e primeiro no feed (ordenacao por tier)
+
+3. **`/founder-profile/:id`** — Perfil completo de fundador
+   - Foto, nome, country, skills, industry, building, looking_for, commitment
+   - Botoes: Conectar, Enviar Mensagem, Salvar Perfil
+
+4. **`/founder-messages`** — Sistema de mensagens
+   - Lista de conversas a esquerda, chat a direita
+   - Realtime via Supabase channels
+   - Limite Basic: 1000 msgs/dia; Pro/Business: ilimitado
+
+5. **`/founder-opportunities`** — Feed de oportunidades
+   - Cards com titulo, projeto, looking_for, equity badge
+   - Botao "Publicar Oportunidade" (Pro+ apenas)
+   - Dialog de criacao com campos: title, description, project, equity, looking_for
+
+**Atualizacoes no sidebar:**
+
+Nova secao "Founder Match" no `AppSidebar.tsx`:
+- Founder Feed (`/founder-feed`)
+- Buscar Fundadores (filtros no feed)
+- Oportunidades (`/founder-opportunities`)
+- Mensagens (`/founder-messages`)
+
+**Sistema de planos (FeatureLock):**
+- **Basic**: criar perfil, ver perfis, 1000 msgs/dia
+- **Pro**: msgs ilimitadas, filtros avancados, postar oportunidades
+- **Business**: destaque dourado no feed, aparecer primeiro, analytics de perfil
+
+**Componentes novos:**
+- `FounderCard.tsx` — card reutilizavel para feed
+- `FounderProfileForm.tsx` — formulario de criacao/edicao
+- `FounderChat.tsx` — componente de chat com realtime
+
+**Rotas novas no `App.tsx`** (dentro do ProtectedLayout):
+```
+/founder-match
+/founder-feed
+/founder-profile/:id
+/founder-messages
+/founder-opportunities
+```
+
+**Estimativa**: ~15 arquivos novos/editados. Interface dark/glass consistente com o resto do app. Todo texto em portugues elegante, exceto termos de marca (Founder Match).
 
