@@ -1,21 +1,24 @@
 
 
-## Plano: Definir conta como Elite
+## Add FAQ and Contact Pages
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+Two new public pages with prominent links in the Landing page and Footer.
 
-### O que fazer
+### 1. `src/pages/FAQ.tsx`
+- Styled like TermsOfService/PrivacyPolicy (animated `motion.div`, back link to `/`)
+- Uses Radix `Accordion` component (already installed) for expandable Q&A
+- Questions covering: What is AZERA, free plan, AI features, data privacy, plan differences, cancellation, etc.
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+### 2. `src/pages/Contact.tsx`
+- Same page shell as FAQ (motion animation, back link)
+- Contact form: Name, Email, Message fields (using existing Input, Textarea, Button, Label)
+- Display `support@azeraclub.com` prominently
+- Form shows success toast on submit (no backend needed initially — just `mailto:` or toast confirmation)
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+### 3. Routing — `src/App.tsx`
+- Add 2 public routes: `/faq` and `/contact`
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
-
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+### 4. Navigation Updates
+- **`src/components/Footer.tsx`**: Add "FAQ" and "Contact" links
+- **`src/pages/Landing.tsx`**: Add FAQ and Contact links in the final CTA section or as a visible nav row before the footer
 
