@@ -402,7 +402,7 @@ export default function FounderProfile() {
       {activity.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Activity</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Atividade</h3>
             <div className="space-y-2.5">
               {activity.map((a, i) => (
                 <div key={i} className="flex items-start gap-2">
