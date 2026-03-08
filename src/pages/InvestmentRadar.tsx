@@ -58,11 +58,11 @@ export default function InvestmentRadar() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Investment Opportunities">
+    <FeatureLock minTier="business" featureName="Oportunidades de Investimento">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Investment Radar</h1>
-          <p className="text-muted-foreground text-sm mt-1">Scan investment opportunities with AI analysis</p>
+          <h1 className="text-3xl font-serif font-bold">Radar de Investimentos</h1>
+          <p className="text-muted-foreground text-sm mt-1">Escaneie oportunidades de investimento com análise de IA</p>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
           <Select value={sector} onValueChange={setSector}>
@@ -70,7 +70,7 @@ export default function InvestmentRadar() {
             <SelectContent>{SECTORS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
           </Select>
           <Button onClick={scan} disabled={isLoading} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning...</> : <><Sparkles className="h-4 w-4" /> Scan Opportunities</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Escaneando...</> : <><Sparkles className="h-4 w-4" /> Escanear Oportunidades</>}
           </Button>
         </motion.div>
         {result && (

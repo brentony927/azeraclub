@@ -52,28 +52,28 @@ export default function HabitBuilder() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Habit Builder">
+    <FeatureLock minTier="pro" featureName="Construtor de Hábitos">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item} className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-bold">Habit Builder</h1>
-            <p className="text-muted-foreground text-sm mt-1">Build and track daily habits</p>
+            <h1 className="text-3xl font-serif font-bold">Construtor de Hábitos</h1>
+            <p className="text-muted-foreground text-sm mt-1">Construa e acompanhe hábitos diários</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild><Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Create Habit</Button></DialogTrigger>
+            <DialogTrigger asChild><Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Criar Hábito</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>New Habit</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>Novo Hábito</DialogTitle></DialogHeader>
               <div className="space-y-4 mt-2">
-                <Input placeholder="Habit name (e.g. Morning planning routine)" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Input placeholder="Nome do hábito (ex: Rotina matinal de planeamento)" value={title} onChange={(e) => setTitle(e.target.value)} />
                 <Select value={frequency} onValueChange={setFrequency}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="3x/week">3x/week</SelectItem>
+                    <SelectItem value="daily">Diário</SelectItem>
+                    <SelectItem value="weekly">Semanal</SelectItem>
+                    <SelectItem value="3x/week">3x/semana</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button onClick={add} className="w-full">Start Habit</Button>
+                <Button onClick={add} className="w-full">Iniciar Hábito</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -83,8 +83,8 @@ export default function HabitBuilder() {
           <motion.div variants={item}>
             <Card className="p-12 text-center">
               <Repeat className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">No habits yet.</p>
-              <p className="text-muted-foreground text-xs mt-1">Create your first habit to start tracking.</p>
+              <p className="text-muted-foreground text-sm">Nenhum hábito ainda.</p>
+              <p className="text-muted-foreground text-xs mt-1">Crie o seu primeiro hábito para começar a acompanhar.</p>
             </Card>
           </motion.div>
         ) : (

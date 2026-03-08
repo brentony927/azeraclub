@@ -57,16 +57,16 @@ export default function ContentStrategy() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Content Idea Generator">
+    <FeatureLock minTier="pro" featureName="Gerador de Ideias de Conteúdo">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Content Strategy</h1>
-          <p className="text-muted-foreground text-sm mt-1">Generate content ideas for your audience</p>
+          <h1 className="text-3xl font-serif font-bold">Estratégia de Conteúdo</h1>
+          <p className="text-muted-foreground text-sm mt-1">Gere ideias de conteúdo para o seu público</p>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
-          <Input placeholder="Describe your audience (e.g. entrepreneurship audience)" value={audience} onChange={(e) => setAudience(e.target.value)} className="flex-1" />
+          <Input placeholder="Descreva o seu público (ex: público de empreendedorismo)" value={audience} onChange={(e) => setAudience(e.target.value)} className="flex-1" />
           <Button onClick={generate} disabled={isLoading || !audience.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Ideas</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Gerando...</> : <><Sparkles className="h-4 w-4" /> Gerar Ideias</>}
           </Button>
         </motion.div>
         {result && (

@@ -11,11 +11,11 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 const CATEGORIES = [
-  { id: "business", label: "Business Strategy", prompt: "estratégia de negócios avançada" },
-  { id: "investing", label: "Investing", prompt: "estratégias avançadas de investimento" },
-  { id: "leadership", label: "Leadership", prompt: "liderança e gestão de alto nível" },
-  { id: "innovation", label: "Innovation", prompt: "inovação e disrupção de mercado" },
-  { id: "wealth", label: "Wealth Building", prompt: "construção de riqueza e patrimônio" },
+  { id: "business", label: "Estratégia de Negócios", prompt: "estratégia de negócios avançada" },
+  { id: "investing", label: "Investimentos", prompt: "estratégias avançadas de investimento" },
+  { id: "leadership", label: "Liderança", prompt: "liderança e gestão de alto nível" },
+  { id: "innovation", label: "Inovação", prompt: "inovação e disrupção de mercado" },
+  { id: "wealth", label: "Construção de Riqueza", prompt: "construção de riqueza e patrimônio" },
 ];
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
@@ -72,11 +72,11 @@ export default function EliteLibrary() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Elite Knowledge Library">
+    <FeatureLock minTier="business" featureName="Biblioteca de Conhecimento Elite">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Elite Library</h1>
-          <p className="text-muted-foreground text-sm mt-1">Deep knowledge for elite minds</p>
+          <h1 className="text-3xl font-serif font-bold">Biblioteca Elite</h1>
+          <p className="text-muted-foreground text-sm mt-1">Conhecimento aprofundado para mentes de elite</p>
         </motion.div>
         <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {CATEGORIES.map(cat => (
@@ -96,7 +96,7 @@ export default function EliteLibrary() {
                 <ReactMarkdown>{content}</ReactMarkdown>
               </div>
               <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={saveInsight} className="gap-2"><Save className="h-4 w-4" /> Save Insight</Button>
+                <Button variant="outline" onClick={saveInsight} className="gap-2"><Save className="h-4 w-4" /> Salvar Insight</Button>
               </div>
             </article>
           </motion.div>

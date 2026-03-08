@@ -67,16 +67,16 @@ export default function SkillGrowth() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Skill Growth Planner">
+    <FeatureLock minTier="pro" featureName="Plano de Crescimento">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Skill Growth Planner</h1>
-          <p className="text-muted-foreground text-sm mt-1">Plan Your Skill Development</p>
+          <h1 className="text-3xl font-serif font-bold">Plano de Crescimento</h1>
+          <p className="text-muted-foreground text-sm mt-1">Desenvolva as suas competências de forma estratégica</p>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
-          <Input placeholder="What skill do you want to develop?" value={skill} onChange={(e) => setSkill(e.target.value)} className="flex-1" />
+          <Input placeholder="Qual competência deseja desenvolver?" value={skill} onChange={(e) => setSkill(e.target.value)} className="flex-1" />
           <Button onClick={generate} disabled={isLoading || !skill.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Learning Plan</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Gerando...</> : <><Sparkles className="h-4 w-4" /> Gerar Plano de Aprendizado</>}
           </Button>
         </motion.div>
         {result && (
@@ -86,7 +86,7 @@ export default function SkillGrowth() {
                 <ReactMarkdown>{result}</ReactMarkdown>
               </div>
               <div className="mt-6 flex justify-end">
-                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Save Plan</Button>
+                <Button variant="outline" onClick={savePlan} className="gap-2"><Save className="h-4 w-4" /> Salvar Plano</Button>
               </div>
             </article>
           </motion.div>

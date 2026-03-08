@@ -63,15 +63,15 @@ export default function DailyFocus() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Daily Focus Generator">
+    <FeatureLock minTier="pro" featureName="Gerador de Foco Diário">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Daily Focus</h1>
-          <p className="text-muted-foreground text-sm mt-1">AI analyzes your tasks and goals to set today's priorities</p>
+          <h1 className="text-3xl font-serif font-bold">Foco Diário</h1>
+          <p className="text-muted-foreground text-sm mt-1">A IA analisa as suas tarefas e metas para definir as prioridades de hoje</p>
         </motion.div>
         <motion.div variants={item}>
           <Button onClick={generate} disabled={isLoading} className="gap-2" size="lg">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Generate Focus</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando...</> : <><Sparkles className="h-4 w-4" /> Gerar Foco</>}
           </Button>
         </motion.div>
         {result && (

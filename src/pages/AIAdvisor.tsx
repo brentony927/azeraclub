@@ -57,16 +57,16 @@ export default function AIAdvisor() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Personal AI Advisor">
+    <FeatureLock minTier="business" featureName="Consultor Estratégico de IA">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">AI Advisor</h1>
-          <p className="text-muted-foreground text-sm mt-1">Your personal strategic advisor powered by AI</p>
+          <h1 className="text-3xl font-serif font-bold">Consultor de IA</h1>
+          <p className="text-muted-foreground text-sm mt-1">O seu consultor estratégico pessoal potenciado por IA</p>
         </motion.div>
         <motion.div variants={item} className="space-y-3">
-          <Textarea placeholder="Ask any strategic question..." value={question} onChange={(e) => setQuestion(e.target.value)} rows={4} />
+          <Textarea placeholder="Faça qualquer pergunta estratégica..." value={question} onChange={(e) => setQuestion(e.target.value)} rows={4} />
           <Button onClick={ask} disabled={isLoading || !question.trim()} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Get Strategic Advice</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando...</> : <><Sparkles className="h-4 w-4" /> Obter Conselho Estratégico</>}
           </Button>
         </motion.div>
         {result && (

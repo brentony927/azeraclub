@@ -11,65 +11,65 @@ export default function TermsOfService() {
         className="max-w-3xl mx-auto space-y-8"
       >
         <Link to="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
 
         <div className="glass-card p-8 space-y-6">
           <div className="space-y-2">
-            <h1 className="text-3xl font-serif font-bold gold-text">Terms of Service</h1>
-            <p className="text-sm text-muted-foreground">Last Updated: March 2026</p>
+            <h1 className="text-3xl font-serif font-bold gold-text">Termos de Serviço</h1>
+            <p className="text-sm text-muted-foreground">Última atualização: Março 2026</p>
           </div>
 
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Welcome to AZERA CLUB, a premium lifestyle management platform designed to help users organise luxury experiences, travel, properties, networking events, and personal wellness in one intelligent environment.
+            Bem-vindo à AZERA CLUB, uma plataforma premium de gestão de estilo de vida concebida para ajudar os utilizadores a organizar experiências de luxo, viagens, imóveis, eventos de networking e bem-estar pessoal num único ambiente inteligente.
           </p>
-          <p className="text-sm text-muted-foreground">By accessing or using the AZERA CLUB platform, you agree to comply with these Terms of Service.</p>
+          <p className="text-sm text-muted-foreground">Ao aceder ou utilizar a plataforma AZERA CLUB, concorda em cumprir estes Termos de Serviço.</p>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">1. Platform Usage</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB provides digital tools that allow users to manage lifestyle activities such as travel planning, event discovery, property portfolios, and wellness schedules.</p>
-            <p className="text-sm text-muted-foreground">Users agree not to:</p>
+            <h2 className="text-lg font-serif font-semibold">1. Utilização da Plataforma</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">A AZERA CLUB disponibiliza ferramentas digitais que permitem aos utilizadores gerir atividades de estilo de vida, como planeamento de viagens, descoberta de eventos, portfólios de imóveis e agendas de bem-estar.</p>
+            <p className="text-sm text-muted-foreground">Os utilizadores comprometem-se a não:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Misuse or exploit the platform</li>
-              <li>Attempt to bypass security measures</li>
-              <li>Distribute malicious software</li>
-              <li>Use the platform for illegal activities</li>
+              <li>Utilizar indevidamente ou explorar a plataforma</li>
+              <li>Tentar contornar medidas de segurança</li>
+              <li>Distribuir software malicioso</li>
+              <li>Utilizar a plataforma para atividades ilegais</li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">2. User Accounts</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Users are responsible for maintaining the confidentiality of their login credentials and for all activities conducted through their account.</p>
+            <h2 className="text-lg font-serif font-semibold">2. Contas de Utilizador</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Os utilizadores são responsáveis por manter a confidencialidade das suas credenciais de acesso e por todas as atividades realizadas através da sua conta.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">3. Subscription Services</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Certain features require an active subscription. Plan pricing and included features may change over time.</p>
+            <h2 className="text-lg font-serif font-semibold">3. Serviços de Subscrição</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Algumas funcionalidades requerem uma subscrição ativa. Os preços e funcionalidades incluídas podem ser alterados ao longo do tempo.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">4. Data Ownership</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Users retain ownership of their personal data. AZERA CLUB processes data solely to provide services and platform functionality.</p>
+            <h2 className="text-lg font-serif font-semibold">4. Propriedade dos Dados</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Os utilizadores mantêm a propriedade dos seus dados pessoais. A AZERA CLUB processa dados exclusivamente para prestar serviços e funcionalidades da plataforma.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">5. Platform Availability</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB aims to maintain continuous service availability but may occasionally perform maintenance or upgrades.</p>
+            <h2 className="text-lg font-serif font-semibold">5. Disponibilidade da Plataforma</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">A AZERA CLUB procura manter a disponibilidade contínua do serviço, mas poderá ocasionalmente realizar manutenções ou atualizações.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">6. Limitation of Liability</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB is not responsible for losses caused by third-party services such as travel providers, event organisers, or hospitality partners.</p>
+            <h2 className="text-lg font-serif font-semibold">6. Limitação de Responsabilidade</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">A AZERA CLUB não é responsável por perdas causadas por serviços de terceiros, como fornecedores de viagens, organizadores de eventos ou parceiros de hospitalidade.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">7. Account Suspension</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Accounts may be suspended or terminated if users violate these Terms.</p>
+            <h2 className="text-lg font-serif font-semibold">7. Suspensão de Conta</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">As contas podem ser suspensas ou encerradas caso os utilizadores violem estes Termos.</p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">8. Changes to Terms</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">These Terms may be updated periodically. Continued use of the platform indicates acceptance of updated terms.</p>
+            <h2 className="text-lg font-serif font-semibold">8. Alterações aos Termos</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Estes Termos podem ser atualizados periodicamente. A utilização contínua da plataforma indica a aceitação dos termos atualizados.</p>
           </section>
         </div>
       </motion.div>

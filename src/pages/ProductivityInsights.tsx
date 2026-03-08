@@ -80,11 +80,11 @@ export default function ProductivityInsights() {
   ];
 
   return (
-    <FeatureLock minTier="pro" featureName="Productivity Insights">
+    <FeatureLock minTier="pro" featureName="Insights de Produtividade">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Productivity Insights</h1>
-          <p className="text-muted-foreground text-sm mt-1">Track your productivity and get AI-powered advice</p>
+          <h1 className="text-3xl font-serif font-bold">Insights de Produtividade</h1>
+          <p className="text-muted-foreground text-sm mt-1">Acompanhe a sua produtividade e receba conselhos da IA</p>
         </motion.div>
         <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {statCards.map((s) => (
@@ -98,7 +98,7 @@ export default function ProductivityInsights() {
         </motion.div>
         <motion.div variants={item}>
           <Button onClick={getAdvice} disabled={isLoading} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Get AI Advice</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando...</> : <><Sparkles className="h-4 w-4" /> Obter Conselhos da IA</>}
           </Button>
         </motion.div>
         {result && (

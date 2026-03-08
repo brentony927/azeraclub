@@ -11,13 +11,13 @@ interface DockItem {
 }
 
 const dockItems: DockItem[] = [
-  { id: "home", icon: <Home className="h-5 w-5" />, label: "Home", path: "/" },
-  { id: "experiences", icon: <Compass className="h-5 w-5" />, label: "Experiences", path: "/experiences" },
-  { id: "travel", icon: <Plane className="h-5 w-5" />, label: "Travel", path: "/travel" },
-  { id: "properties", icon: <Building2 className="h-5 w-5" />, label: "Properties", path: "/properties" },
+  { id: "home", icon: <Home className="h-5 w-5" />, label: "Início", path: "/" },
+  { id: "experiences", icon: <Compass className="h-5 w-5" />, label: "Experiências", path: "/experiences" },
+  { id: "travel", icon: <Plane className="h-5 w-5" />, label: "Viagens", path: "/travel" },
+  { id: "properties", icon: <Building2 className="h-5 w-5" />, label: "Imóveis", path: "/properties" },
   { id: "social", icon: <Users className="h-5 w-5" />, label: "Social", path: "/social" },
-  { id: "health", icon: <Heart className="h-5 w-5" />, label: "Health", path: "/health" },
-  { id: "profile", icon: <User className="h-5 w-5" />, label: "Profile", path: "/profile" },
+  { id: "health", icon: <Heart className="h-5 w-5" />, label: "Saúde", path: "/health" },
+  { id: "profile", icon: <User className="h-5 w-5" />, label: "Perfil", path: "/profile" },
 ];
 
 export default function MinimalDock() {
@@ -48,7 +48,6 @@ export default function MinimalDock() {
                 {item.icon}
               </button>
 
-              {/* Tooltip */}
               {isHovered && (
                 <div className="absolute -top-9 px-2 py-1 text-[10px] font-medium text-primary-foreground bg-primary rounded whitespace-nowrap">
                   {item.label}

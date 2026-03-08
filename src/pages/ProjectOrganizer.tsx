@@ -85,21 +85,21 @@ export default function ProjectOrganizer() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Project Organizer">
+    <FeatureLock minTier="pro" featureName="Organizador de Projetos">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item} className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-serif font-bold">Project Organizer</h1>
-            <p className="text-muted-foreground text-sm mt-1">Create and organize projects with AI</p>
+            <h1 className="text-3xl font-serif font-bold">Organizador de Projetos</h1>
+            <p className="text-muted-foreground text-sm mt-1">Crie e organize projetos com IA</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild><Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Create Project</Button></DialogTrigger>
+            <DialogTrigger asChild><Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Criar Projeto</Button></DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>New Project</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>Novo Projeto</DialogTitle></DialogHeader>
               <div className="space-y-4 mt-2">
-                <Input placeholder="Project name" value={name} onChange={(e) => setName(e.target.value)} />
-                <Textarea placeholder="Description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} rows={3} />
-                <Button onClick={add} className="w-full">Create</Button>
+                <Input placeholder="Nome do projeto" value={name} onChange={(e) => setName(e.target.value)} />
+                <Textarea placeholder="Descrição (opcional)" value={desc} onChange={(e) => setDesc(e.target.value)} rows={3} />
+                <Button onClick={add} className="w-full">Criar</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -109,7 +109,7 @@ export default function ProjectOrganizer() {
           <motion.div variants={item}>
             <Card className="p-12 text-center">
               <FolderKanban className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">No projects yet.</p>
+              <p className="text-muted-foreground text-sm">Nenhum projeto ainda.</p>
             </Card>
           </motion.div>
         ) : (
@@ -125,7 +125,7 @@ export default function ProjectOrganizer() {
                       </div>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" onClick={() => organizeWithAI(p)} disabled={organizing === p.id} className="gap-1 text-xs">
-                          {organizing === p.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />} Organize With AI
+                          {organizing === p.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />} Organizar com IA
                         </Button>
                         <button onClick={() => del(p.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                           <Trash2 className="h-3.5 w-3.5" />

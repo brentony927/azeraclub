@@ -68,15 +68,15 @@ export default function WeeklyReview() {
   };
 
   return (
-    <FeatureLock minTier="pro" featureName="Weekly Review">
+    <FeatureLock minTier="pro" featureName="Revisão Semanal">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Weekly Review</h1>
-          <p className="text-muted-foreground text-sm mt-1">AI analyzes your week and creates a performance report</p>
+          <h1 className="text-3xl font-serif font-bold">Revisão Semanal</h1>
+          <p className="text-muted-foreground text-sm mt-1">A IA analisa a sua semana e cria um relatório de desempenho</p>
         </motion.div>
         <motion.div variants={item}>
           <Button onClick={generate} disabled={isLoading} className="gap-2" size="lg">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing week...</> : <><Sparkles className="h-4 w-4" /> Generate Weekly Review</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analisando semana...</> : <><Sparkles className="h-4 w-4" /> Gerar Revisão Semanal</>}
           </Button>
         </motion.div>
         {result && (

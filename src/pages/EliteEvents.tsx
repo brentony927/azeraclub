@@ -43,19 +43,19 @@ export default function EliteEvents() {
   const getInvStatus = (eventId: string) => invitations.find(i => i.event_id === eventId);
 
   return (
-    <FeatureLock minTier="business" featureName="Private Networking Events">
+    <FeatureLock minTier="business" featureName="Eventos de Networking Exclusivos">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Elite Events</h1>
-          <p className="text-muted-foreground text-sm mt-1">Exclusive private networking events</p>
+          <h1 className="text-3xl font-serif font-bold">Eventos Exclusivos</h1>
+          <p className="text-muted-foreground text-sm mt-1">Eventos privados de networking exclusivos</p>
         </motion.div>
 
         {events.length === 0 ? (
           <motion.div variants={item}>
             <Card className="p-12 text-center">
               <Crown className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">No events scheduled at the moment.</p>
-              <p className="text-muted-foreground text-xs mt-1">Check back soon for exclusive events.</p>
+              <p className="text-muted-foreground text-sm">Nenhum evento agendado no momento.</p>
+              <p className="text-muted-foreground text-xs mt-1">Volte em breve para eventos exclusivos.</p>
             </Card>
           </motion.div>
         ) : (
@@ -82,7 +82,7 @@ export default function EliteEvents() {
                           </Badge>
                         ) : (
                           <Button size="sm" variant="outline" onClick={() => requestInvite(ev.id)} className="gap-1 text-xs">
-                            <Send className="h-3.5 w-3.5" /> Request Invitation
+                            <Send className="h-3.5 w-3.5" /> Solicitar Convite
                           </Button>
                         )}
                       </div>

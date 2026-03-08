@@ -59,27 +59,27 @@ export default function LifeMasterPlan() {
   };
 
   return (
-    <FeatureLock minTier="business" featureName="Long Term Life Planning">
+    <FeatureLock minTier="business" featureName="Plano de Vida de Longo Prazo">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
         <motion.div variants={item}>
-          <h1 className="text-3xl font-serif font-bold">Life Master Plan</h1>
-          <p className="text-muted-foreground text-sm mt-1">Build your long-term life strategy</p>
+          <h1 className="text-3xl font-serif font-bold">Plano de Vida</h1>
+          <p className="text-muted-foreground text-sm mt-1">Construa a sua estratégia de vida a longo prazo</p>
         </motion.div>
         <motion.div variants={item} className="space-y-3">
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">1 Year Goals</label>
-            <Textarea placeholder="What do you want to achieve in 1 year?" value={oneYear} onChange={(e) => setOneYear(e.target.value)} rows={2} />
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Metas de 1 Ano</label>
+            <Textarea placeholder="O que deseja alcançar em 1 ano?" value={oneYear} onChange={(e) => setOneYear(e.target.value)} rows={2} />
           </div>
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">5 Year Goals</label>
-            <Textarea placeholder="Where do you see yourself in 5 years?" value={fiveYear} onChange={(e) => setFiveYear(e.target.value)} rows={2} />
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Metas de 5 Anos</label>
+            <Textarea placeholder="Onde se vê em 5 anos?" value={fiveYear} onChange={(e) => setFiveYear(e.target.value)} rows={2} />
           </div>
           <div>
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">10 Year Goals</label>
-            <Textarea placeholder="Your ultimate 10-year vision..." value={tenYear} onChange={(e) => setTenYear(e.target.value)} rows={2} />
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">Metas de 10 Anos</label>
+            <Textarea placeholder="A sua visão definitiva para 10 anos..." value={tenYear} onChange={(e) => setTenYear(e.target.value)} rows={2} />
           </div>
           <Button onClick={build} disabled={isLoading || (!oneYear.trim() && !fiveYear.trim() && !tenYear.trim())} className="gap-2">
-            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Building...</> : <><Sparkles className="h-4 w-4" /> Build Master Plan</>}
+            {isLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Construindo...</> : <><Sparkles className="h-4 w-4" /> Construir Plano de Vida</>}
           </Button>
         </motion.div>
         {result && (
