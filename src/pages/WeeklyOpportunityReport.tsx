@@ -72,7 +72,7 @@ export default function WeeklyOpportunityReport() {
               </>
             )}
             <Button onClick={generate} disabled={loading}>
-              {loading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : "Generate Report"}
+              {loading ? <><Loader2 className="animate-spin h-4 w-4 mr-2" /> Gerando...</> : "Gerar Relatório"}
             </Button>
           </div>
         </div>
