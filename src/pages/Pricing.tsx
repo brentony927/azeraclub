@@ -138,7 +138,9 @@ export default function Pricing() {
 
   const handleManage = async () => {
     const { data, error } = await supabase.functions.invoke("customer-portal");
-    if (error || !data?.url) { toast.error("Erro ao abrir portal de assinatura."); return; }
+    if (error) { toast.error("Erro ao abrir portal de assinatura."); return; }
+    if (data?.error === "no_stripe_customer") { toast.info(data.message || "Seu plano foi ativado manualmente."); return; }
+    if (!data?.url) { toast.error("Erro ao abrir portal de assinatura."); return; }
     window.open(data.url, "_blank");
   };
 
