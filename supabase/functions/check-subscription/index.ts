@@ -32,9 +32,19 @@ serve(async (req) => {
     if (!authHeader) throw new Error("No authorization header");
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Auth error: ${userError.message}`);
-    const user = userData.user;
+    
+    // Retry auth up to 2 times to handle transient HTML error pages
+    let user = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+      if (!userError) {
+        user = userData.user;
+        break;
+      }
+      if (attempt === 1) throw new Error(`Auth error: ${userError.message}`);
+      logStep("Auth attempt failed, retrying", { attempt, error: userError.message });
+      await new Promise(r => setTimeout(r, 500));
+    }
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { email: user.email });
 
