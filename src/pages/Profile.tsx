@@ -1,23 +1,35 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Save, Loader2, ArrowLeft } from "lucide-react";
+import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
+import {
+  SKILL_OPTIONS, INDUSTRY_OPTIONS, LOOKING_FOR_OPTIONS,
+  COMMITMENT_OPTIONS, COMMITMENT_LABELS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
+} from "@/data/founderConstants";
 
-const INTEREST_OPTIONS = [
-  "Viagens de Luxo",
-  "Gastronomia",
-  "Networking",
-  "Arte & Cultura",
-  "Bem-estar",
-];
+function getFounderBadge(commitment: string | null, skills: string[] | null): string {
+  if (!commitment && (!skills || skills.length === 0)) return "Founder";
+  const s = (skills || []).map(x => x.toLowerCase());
+  if (s.includes("developer") || s.includes("ai")) return "Developer";
+  if (s.includes("designer")) return "Designer";
+  if (s.includes("marketing") || s.includes("sales")) return "Marketer";
+  if (s.includes("finance")) return "Investor";
+  if (commitment === "full_business") return "Builder";
+  if (commitment === "side_project") return "Co-Founder";
+  return "Founder";
+}
 
 export default function Profile() {
   const { user } = useAuth();
@@ -27,34 +39,87 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  // profiles table
   const [displayName, setDisplayName] = useState("");
   const [age, setAge] = useState("");
   const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
   const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // founder_profiles table
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [continent, setContinent] = useState("");
+  const [skills, setSkills] = useState<string[]>([]);
+  const [industry, setIndustry] = useState<string[]>([]);
+  const [building, setBuilding] = useState("");
+  const [lookingFor, setLookingFor] = useState<string[]>([]);
+  const [commitment, setCommitment] = useState("startup_idea");
+  const [interests, setInterests] = useState<string[]>([]);
+  const [interestSearch, setInterestSearch] = useState("");
+
+  // read-only stats
+  const [founderScore, setFounderScore] = useState(0);
+  const [isVerified, setIsVerified] = useState(false);
+  const [profileViews, setProfileViews] = useState(0);
+  const [hasFounderProfile, setHasFounderProfile] = useState(false);
+
+  // social proof
+  const [connectionsCount, setConnectionsCount] = useState(0);
+  const [venturesCount, setVenturesCount] = useState(0);
+  const [opportunitiesCount, setOpportunitiesCount] = useState(0);
+  const [currentVenture, setCurrentVenture] = useState<any>(null);
 
   useEffect(() => {
     if (!user) return;
-    (async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (data) {
-        setDisplayName(data.display_name || "");
-        setAge((data as any).age?.toString() || "");
-        setLocation((data as any).location || "");
-        setProfession((data as any).profession || "");
-        setBio((data as any).bio || "");
-        setInterests((data as any).interests || []);
-        setAvatarUrl(data.avatar_url || null);
-      }
-      setLoading(false);
-    })();
+    loadData();
   }, [user]);
+
+  const loadData = async () => {
+    if (!user) return;
+    const [profileRes, founderRes, connRes, ventRes, oppRes] = await Promise.all([
+      supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
+      supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
+      supabase.from("founder_connections").select("id", { count: "exact", head: true })
+        .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`).eq("status", "accepted"),
+      supabase.from("ventures").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+      supabase.from("founder_opportunities").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    ]);
+
+    if (profileRes.data) {
+      const p = profileRes.data;
+      setDisplayName(p.display_name || "");
+      setAge(p.age?.toString() || "");
+      setLocation(p.location || "");
+      setProfession(p.profession || "");
+      setBio(p.bio || "");
+      setAvatarUrl(p.avatar_url || null);
+    }
+
+    if (founderRes.data) {
+      const f = founderRes.data;
+      setHasFounderProfile(true);
+      setCountry(f.country || "");
+      setCity(f.city || "");
+      setContinent(f.continent || "");
+      setSkills(f.skills || []);
+      setIndustry(f.industry || []);
+      setBuilding(f.building || "");
+      setLookingFor(f.looking_for || []);
+      setCommitment(f.commitment || "startup_idea");
+      setInterests(f.interests || []);
+      setFounderScore(f.reputation_score || 0);
+      setIsVerified(f.is_verified || false);
+      setProfileViews(f.profile_views || 0);
+    }
+
+    setConnectionsCount(connRes.count || 0);
+    setVenturesCount(ventRes.data?.length || 0);
+    if (ventRes.data && ventRes.data.length > 0) setCurrentVenture(ventRes.data[0]);
+    setOpportunitiesCount(oppRes.count || 0);
+    setLoading(false);
+  };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,21 +128,15 @@ export default function Profile() {
     try {
       const ext = file.name.split(".").pop();
       const path = `${user.id}/avatar.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, file, { upsert: true });
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
       if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       setAvatarUrl(newUrl);
-
-      await supabase
-        .from("profiles")
-        .update({ avatar_url: newUrl } as any)
-        .eq("user_id", user.id);
+      await supabase.from("profiles").update({ avatar_url: newUrl } as any).eq("user_id", user.id);
+      if (hasFounderProfile) {
+        await supabase.from("founder_profiles").update({ avatar_url: newUrl }).eq("user_id", user.id);
+      }
       toast.success("Foto atualizada!");
     } catch (err: any) {
       toast.error(err.message || "Upload falhou");
@@ -90,18 +149,44 @@ export default function Profile() {
     if (!user) return;
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          display_name: displayName,
-          age: age ? parseInt(age) : null,
-          location: location || null,
-          profession: profession || null,
-          bio: bio || null,
-          interests: interests.length ? interests : null,
-        } as any)
-        .eq("user_id", user.id);
-      if (error) throw error;
+      // Update profiles table
+      const { error: profileError } = await supabase.from("profiles").update({
+        display_name: displayName,
+        age: age ? parseInt(age) : null,
+        location: location || null,
+        profession: profession || null,
+        bio: bio || null,
+        interests: interests.length ? interests : null,
+      } as any).eq("user_id", user.id);
+      if (profileError) throw profileError;
+
+      // Upsert founder_profiles
+      const founderData = {
+        user_id: user.id,
+        name: displayName || "Founder",
+        age: age ? parseInt(age) : null,
+        country: country || null,
+        city: city || null,
+        continent: continent || null,
+        skills: skills.length ? skills : [],
+        industry: industry.length ? industry : [],
+        building: building || null,
+        looking_for: lookingFor.length ? lookingFor : [],
+        commitment,
+        interests: interests.length ? interests : [],
+        avatar_url: avatarUrl,
+        is_published: true,
+      };
+
+      if (hasFounderProfile) {
+        const { error } = await supabase.from("founder_profiles").update(founderData).eq("user_id", user.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("founder_profiles").insert(founderData);
+        if (error) throw error;
+        setHasFounderProfile(true);
+      }
+
       toast.success("Perfil salvo!");
     } catch (err: any) {
       toast.error(err.message || "Erro ao salvar");
@@ -110,114 +195,237 @@ export default function Profile() {
     }
   };
 
-  const toggleInterest = (interest: string) => {
-    setInterests((prev) =>
-      prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest]
-    );
+  const toggleArray = (setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
+    setter(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
   };
+
+  const filteredInterests = interestSearch
+    ? BUSINESS_INTERESTS.filter(i => i.toLowerCase().includes(interestSearch.toLowerCase()))
+    : BUSINESS_INTERESTS;
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
-  const initials = displayName
-    ? displayName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
-    : "?";
+  const initials = displayName ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "?";
+  const badge = getFounderBadge(commitment, skills);
+  const scorePercent = Math.min((founderScore / 1000) * 100, 100);
+
+  const renderChips = (label: string, options: string[], selected: string[], setter: React.Dispatch<React.SetStateAction<string[]>>) => (
+    <div className="space-y-2">
+      <Label className="text-sm text-foreground">{label}</Label>
+      <div className="flex flex-wrap gap-2">
+        {options.map(opt => (
+          <button key={opt} type="button" onClick={() => toggleArray(setter, opt)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              selected.includes(opt)
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+            }`}
+          >{opt}</button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        {/* Back */}
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-6"
-        >
+    <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <button onClick={() => navigate("/dashboard")}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm mb-4">
           <ArrowLeft className="h-4 w-4" /> Voltar
         </button>
 
-        <h1 className="text-3xl font-serif font-bold moss-text mb-2">Perfil</h1>
-        <EliteBadge className="mb-8" />
+        <h1 className="text-3xl font-serif font-bold text-foreground mb-1">Perfil Completo</h1>
+        <EliteBadge className="mb-6" />
 
-        <div className="glass-card p-6 md:p-8 space-y-8">
-          {/* Avatar */}
-          <div className="flex justify-center">
-            <div
-              className="relative w-28 h-28 rounded-full cursor-pointer group"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-28 h-28 rounded-full object-cover border-2 border-primary/40" />
-              ) : (
-                <div className="w-28 h-28 rounded-full bg-secondary flex items-center justify-center border-2 border-primary/40">
-                  <span className="text-2xl font-bold text-foreground">{initials}</span>
+        {/* Founder Score + Badge + Stats (read-only) */}
+        <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              {/* Avatar */}
+              <div className="relative w-24 h-24 rounded-full cursor-pointer group shrink-0"
+                onClick={() => fileInputRef.current?.click()}>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full object-cover border-2 border-primary/40" />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center border-2 border-primary/40">
+                    <span className="text-2xl font-bold text-foreground">{initials}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 rounded-full bg-background/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  {uploading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <Camera className="h-5 w-5 text-primary" />}
                 </div>
-              )}
-              <div className="absolute inset-0 rounded-full bg-background/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                {uploading ? <Loader2 className="h-6 w-6 animate-spin text-accent" /> : <Camera className="h-6 w-6 text-accent" />}
+                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
               </div>
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-            </div>
-          </div>
 
-          {/* Fields */}
-          <div className="space-y-5">
-            <div>
-              <Label className="text-muted-foreground">Nome</Label>
-              <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="mt-1 bg-secondary/50 border-border/50 focus:border-primary/50" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-muted-foreground">Idade</Label>
-                <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="mt-1 bg-secondary/50 border-border/50 focus:border-primary/50" />
+              <div className="flex-1 text-center sm:text-left space-y-2">
+                <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                  <h2 className="text-xl font-bold text-foreground">{displayName || "Seu Nome"}</h2>
+                  {isVerified && <Shield className="h-4 w-4 text-primary" />}
+                  <Badge variant="secondary" className="text-xs">{badge}</Badge>
+                </div>
+                {(city || country) && (
+                  <p className="text-sm text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
+                )}
+                <div className="flex items-center gap-3 text-xs text-muted-foreground justify-center sm:justify-start">
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{profileViews} views</span>
+                  <span className="flex items-center gap-1"><Rocket className="h-3 w-3" />Score: {founderScore}</span>
+                </div>
+                <Progress value={scorePercent} className="h-1.5 max-w-48" />
               </div>
-              <div>
-                <Label className="text-muted-foreground">Cidade</Label>
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="São Paulo, BR" className="mt-1 bg-secondary/50 border-border/50 focus:border-primary/50" />
-              </div>
-            </div>
-            <div>
-              <Label className="text-muted-foreground">Profissão</Label>
-              <Input value={profession} onChange={(e) => setProfession(e.target.value)} className="mt-1 bg-secondary/50 border-border/50 focus:border-primary/50" />
-            </div>
-            <div>
-              <Label className="text-muted-foreground">Bio</Label>
-              <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} placeholder="Conte sobre você..." className="mt-1 bg-secondary/50 border-border/50 focus:border-primary/50 resize-none" />
             </div>
 
-            {/* Interests */}
-            <div>
-              <Label className="text-muted-foreground mb-2 block">Interesses</Label>
-              <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((interest) => {
-                  const selected = interests.includes(interest);
-                  return (
-                    <button
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
-                      className={`px-4 py-1.5 text-sm font-medium transition-all border ${
-                        selected
-                          ? "bg-primary/20 border-primary text-accent"
-                          : "bg-secondary/50 border-border/50 text-muted-foreground hover:border-primary/30"
-                      }`}
-                    >
-                      {interest}
-                    </button>
-                  );
-                })}
+            {/* Social Proof */}
+            <div className="grid grid-cols-3 gap-3 mt-5">
+              {[
+                { icon: Users, label: "Conexões", value: connectionsCount },
+                { icon: Briefcase, label: "Ventures", value: venturesCount },
+                { icon: Lightbulb, label: "Oportunidades", value: opportunitiesCount },
+              ].map(s => (
+                <div key={s.label} className="flex flex-col items-center p-3 rounded-lg bg-secondary/50">
+                  <s.icon className="h-4 w-4 text-primary mb-1" />
+                  <span className="text-lg font-bold text-foreground">{s.value}</span>
+                  <span className="text-[10px] text-muted-foreground">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Current Venture (read-only) */}
+        {currentVenture && (
+          <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Rocket className="h-4 w-4 text-primary" /> Current Venture
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="font-bold text-foreground">{currentVenture.name}</p>
+              <div className="flex gap-2 mt-1 flex-wrap">
+                {currentVenture.industry && <Badge variant="outline" className="text-[10px]">{currentVenture.industry}</Badge>}
+                <Badge variant="secondary" className="text-[10px]">{currentVenture.status}</Badge>
+              </div>
+              <Button variant="link" className="px-0 mt-1 text-xs h-auto" onClick={() => navigate("/venture-builder")}>
+                Ver no Venture Builder →
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Editable Fields */}
+        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Informações Pessoais</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Nome</Label>
+                <Input value={displayName} onChange={e => setDisplayName(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Idade</Label>
+                <Input type="number" value={age} onChange={e => setAge(e.target.value)} />
               </div>
             </div>
-          </div>
 
-          {/* Save */}
-          <Button onClick={handleSave} disabled={saving} className="w-full moss-gradient text-primary-foreground font-semibold h-12 uppercase tracking-wider text-xs">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-            SALVAR ALTERAÇÕES
-          </Button>
-        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">País</Label>
+                <Input value={country} onChange={e => setCountry(e.target.value)} placeholder="Brasil" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Cidade</Label>
+                <Input value={city} onChange={e => setCity(e.target.value)} placeholder="São Paulo" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-muted-foreground text-xs">Continente</Label>
+                <Select value={continent} onValueChange={setContinent}>
+                  <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent>
+                    {CONTINENT_OPTIONS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-muted-foreground text-xs">Profissão</Label>
+              <Input value={profession} onChange={e => setProfession(e.target.value)} />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-muted-foreground text-xs">Bio</Label>
+              <Textarea value={bio} onChange={e => setBio(e.target.value)} rows={2} placeholder="Sobre você..." className="resize-none" />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-muted-foreground text-xs">Elevator Pitch — O que você está construindo? (250 chars)</Label>
+              <Textarea value={building} onChange={e => setBuilding(e.target.value.slice(0, 250))} rows={2}
+                placeholder="Ex: Building an AI automation agency for small businesses." className="resize-none" />
+              <p className="text-[10px] text-muted-foreground text-right">{building.length}/250</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Skills, Industry, Looking For, Commitment */}
+        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Founder Profile</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {renderChips("Skills", SKILL_OPTIONS, skills, setSkills)}
+            {renderChips("Indústria", INDUSTRY_OPTIONS, industry, setIndustry)}
+            {renderChips("Procurando", LOOKING_FOR_OPTIONS, lookingFor, setLookingFor)}
+
+            <div className="space-y-1">
+              <Label className="text-muted-foreground text-xs">Nível de Comprometimento</Label>
+              <Select value={commitment} onValueChange={setCommitment}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {COMMITMENT_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Interests */}
+        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Interesses ({interests.length} selecionados)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input value={interestSearch} onChange={e => setInterestSearch(e.target.value)}
+                placeholder="Buscar interesses..." className="pl-9 h-8 text-xs" />
+            </div>
+            <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-1">
+              {filteredInterests.map(interest => (
+                <button key={interest} type="button" onClick={() => toggleArray(setInterests, interest)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                    interests.includes(interest)
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  }`}
+                >{interest}</button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Save */}
+        <Button onClick={handleSave} disabled={saving} className="w-full h-12 font-semibold uppercase tracking-wider text-xs">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+          SALVAR ALTERAÇÕES
+        </Button>
       </motion.div>
     </div>
   );
