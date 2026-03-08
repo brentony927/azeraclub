@@ -379,7 +379,7 @@ export default function FounderProfile() {
         <Card className="border-primary/20 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" /> Compatibility
+              <Sparkles className="h-3.5 w-3.5" /> Compatibilidade
             </h3>
             <div className="flex items-center gap-4">
               <span className={`text-3xl font-bold ${getMatchColor(matchScore)}`}>{matchScore}%</span>
