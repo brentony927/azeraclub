@@ -241,11 +241,11 @@ export default function VentureBuilder() {
                       <div className="flex gap-2">
                         <Input placeholder="Buscar founder..." value={inviteSearch} onChange={e => setInviteSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && searchFounders()} />
                         <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="rounded-md border border-input bg-background px-3 text-sm">
-                          <option value="co-founder">Co-founder</option>
-                          <option value="developer">Developer</option>
+                          <option value="co-founder">Co-fundador</option>
+                          <option value="developer">Desenvolvedor</option>
                           <option value="designer">Designer</option>
                           <option value="marketing">Marketing</option>
-                          <option value="investor">Investor</option>
+                          <option value="investor">Investidor</option>
                         </select>
                         <Button variant="outline" onClick={searchFounders}>Buscar</Button>
                       </div>

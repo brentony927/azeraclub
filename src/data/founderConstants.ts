@@ -13,34 +13,34 @@ export const BUSINESS_INTERESTS = [
 ];
 
 export const CONTINENT_OPTIONS = [
-  "North America",
-  "South America",
-  "Europe",
-  "Asia",
-  "Africa",
+  "América do Norte",
+  "América do Sul",
+  "Europa",
+  "Ásia",
+  "África",
   "Oceania",
 ];
 
 export const SKILL_OPTIONS = [
-  "Developer", "Marketing", "AI", "Sales", "Designer", "Product", "Finance", "Operations",
+  "Desenvolvedor", "Marketing", "AI", "Vendas", "Designer", "Produto", "Finanças", "Operações",
 ];
 
 export const INDUSTRY_OPTIONS = [
-  "SaaS", "AI", "E-commerce", "Fintech", "Education", "Health", "Web3", "Agency",
+  "SaaS", "AI", "E-commerce", "Fintech", "Educação", "Saúde", "Web3", "Agência",
 ];
 
 export const LOOKING_FOR_OPTIONS = [
-  "Co-founder", "Developer", "Investor", "Marketing Partner", "Designer",
+  "Co-fundador", "Desenvolvedor", "Investidor", "Parceiro de Marketing", "Designer",
 ];
 
 export const COMMITMENT_OPTIONS = [
-  { value: "side_project", label: "Side Project" },
-  { value: "startup_idea", label: "Startup Idea" },
-  { value: "full_business", label: "Full Business" },
+  { value: "side_project", label: "Projeto Paralelo" },
+  { value: "startup_idea", label: "Ideia de Startup" },
+  { value: "full_business", label: "Negócio Completo" },
 ];
 
 export const COMMITMENT_LABELS: Record<string, string> = {
-  side_project: "Side Project",
-  startup_idea: "Startup Idea",
-  full_business: "Full Business",
+  side_project: "Projeto Paralelo",
+  startup_idea: "Ideia de Startup",
+  full_business: "Negócio Completo",
 };

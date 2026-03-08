@@ -38,7 +38,7 @@ export default function Contact() {
         className="max-w-3xl mx-auto space-y-8"
       >
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+          <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
 
         <div className="grid gap-8 md:grid-cols-[1fr_1.2fr]">
