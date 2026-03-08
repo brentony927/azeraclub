@@ -80,6 +80,7 @@ import FounderProfile from "./pages/FounderProfile";
 import FounderMessages from "./pages/FounderMessages";
 import FounderOpportunities from "./pages/FounderOpportunities";
 import FounderNotificationsPage from "./pages/FounderNotificationsPage";
+import GlobalFounderMap from "./pages/GlobalFounderMap";
 
 const queryClient = new QueryClient();
 
