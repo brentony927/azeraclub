@@ -129,6 +129,39 @@ export default function AI() {
 
   useEffect(() => { loadConversations(); }, [loadConversations]);
 
+  // Load memories
+  const loadMemories = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("ai_memories")
+      .select("id, content, category, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (data) setMemories(data as any);
+  }, [user]);
+
+  useEffect(() => { loadMemories(); }, [loadMemories]);
+
+  const deleteMemory = async (id: string) => {
+    await supabase.from("ai_memories").delete().eq("id", id);
+    setMemories((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const triggerMemoryExtraction = async (conv: Msg[], convId: string | null) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) return;
+      await fetch(MEMORY_EXTRACT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ extractMemories: true, conversation: conv, conversationId: convId }),
+      });
+      loadMemories();
+    } catch (e) { console.error("Memory extraction failed:", e); }
+  };
+
   const loadConversation = async (convId: string) => {
     setActiveConvId(convId);
     const conv = conversations.find((c) => c.id === convId);
