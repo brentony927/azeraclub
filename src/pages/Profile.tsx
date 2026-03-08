@@ -347,7 +347,7 @@ export default function Profile() {
                     onBlur={async () => {
                       if (!username || username.length < 3) return;
                       setCheckingUsername(true);
-                      const { data } = await supabase.from("founder_profiles").select("id").eq("username" as any, username).neq("user_id", user!.id).maybeSingle();
+                      const { data } = await (supabase.from("founder_profiles") as any).select("id").eq("username", username).neq("user_id", user!.id).maybeSingle();
                       if (data) setUsernameError("Nome já em uso");
                       setCheckingUsername(false);
                     }}
