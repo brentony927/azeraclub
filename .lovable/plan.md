@@ -1,21 +1,100 @@
+## AZR AI com Contexto Completo do App
 
+A IA atualmente responde sem conhecer os dados do usuario. O plano e fazer a edge function buscar todos os dados relevantes do usuario no banco e injetar como contexto no system prompt, para que a IA possa opinar, sugerir e comentar com base real.
 
-## Plano: Definir conta como Elite
+---
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+### Abordagem
 
-### O que fazer
+**Na edge function `azera-ai**`, antes de chamar o modelo, buscar os dados do usuario usando o `serviceClient` (service role) e montar um bloco de contexto que sera injetado no system prompt.
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+**No frontend `AzeraChatbot.tsx**`, enviar um flag `includeContext: true` para que a edge function saiba que deve carregar o contexto completo.
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
+---
+
+### Dados que serao buscados (edge function)
+
+Usando o `userId` ja disponivel na funcao, buscar:
+
+1. **Profile** (`profiles`) — nome, bio, idade, avatar
+2. **Objetivos** (`objectives`) — ultimos 10 ativos
+3. **Tarefas** (`tasks`) — ultimas 10 pendentes
+4. **Diario** (`journal_entries`) — ultimas 5 entradas
+5. **Habitos** (`habits`) — todos ativos
+6. **Desafios** (`challenges`) — ativos
+7. **Ideias** (`ideas`) — ultimas 10
+8. **Projetos** (`projects`) — todos
+9. **Viagens** (`trips`) — proximas 5
+10. **Saude** (`health_appointments`) — proximos 5
+11. **Eventos sociais** (`social_events`) — proximos 5
+12. **Propriedades** (`properties`) — todas
+13. **Founder Profile** (`founder_profiles`) — se existir
+14. **Conexoes** (`founder_connections`) — contagem
+15. **Oportunidades** (`founder_opportunities`) — ultimas 5 do usuario
+16. **Plano do usuario** — ja disponivel na funcao
+17. Notificações
+18. Conversas
+
+---
+
+### Alteracoes
+
+**1. Edge function `supabase/functions/azera-ai/index.ts`:**
+
+Nova funcao `async function getUserContext(userId)` que:
+
+- Faz queries paralelas (Promise.all) a todas as tabelas acima
+- Monta uma string formatada tipo:
+
+```
+--- CONTEXTO DO USUARIO ---
+Nome: Lucas, 28 anos, Brasil
+Plano: Pro
+
+OBJETIVOS ATIVOS:
+1. Lancar MVP do SaaS (status: ativo, prazo: 2026-04-01)
+...
+
+TAREFAS PENDENTES:
+1. Revisar landing page (prioridade: alta)
+...
+
+HABITOS:
+1. Meditacao (frequencia: diaria, streak: 12)
+...
+--- FIM DO CONTEXTO ---
 ```
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+- Injeta esse contexto no system prompt junto com instrucao: "Use esses dados para personalizar suas respostas. Quando relevante, faca referencias aos objetivos, tarefas e projetos do usuario. De sugestoes baseadas no contexto real."
 
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+**2. Frontend `src/components/AzeraChatbot.tsx`:**
 
+- Adicionar `includeContext: true` no body do fetch para o chatbot flutuante
+- Nenhuma outra mudanca no frontend
+
+**3. Pagina AI (`src/pages/AI.tsx`):**
+
+- Tambem adicionar `includeContext: true` no body do streamChat
+
+**4. System prompt atualizado:**
+
+Adicionar ao prompt base instrucoes para a IA usar o contexto:
+
+- Referenciar dados do usuario naturalmente
+- Sugerir proximos passos baseados em objetivos/tarefas
+- Comentar sobre progresso de habitos/desafios
+- Opinar sobre ideias e projetos quando perguntada
+
+---
+
+### Arquivos editados (3):
+
+
+| Arquivo                                | Mudanca                                         |
+| -------------------------------------- | ----------------------------------------------- |
+| `supabase/functions/azera-ai/index.ts` | Nova funcao `getUserContext`, injecao no prompt |
+| `src/components/AzeraChatbot.tsx`      | Adicionar `includeContext: true` no body        |
+| `src/pages/AI.tsx`                     | Adicionar `includeContext: true` no body        |
+
+
+Sem mudancas no banco de dados. Sem novas dependencias.
