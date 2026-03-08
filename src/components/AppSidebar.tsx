@@ -33,6 +33,7 @@ import {
   Map,
   Rocket,
   MessageSquare,
+  MessageSquarePlus,
   Briefcase,
   Trophy,
   FileText,
