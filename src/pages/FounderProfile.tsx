@@ -43,6 +43,7 @@ export default function FounderProfile() {
   const [myProfile, setMyProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
+  const [isIncomingPending, setIsIncomingPending] = useState(false);
 
   // social proof
   const [connectionsCount, setConnectionsCount] = useState(0);
