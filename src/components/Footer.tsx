@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom";
 import azeraLogo from "@/assets/azera-logo.jpg";
 
-const footerLinks = [
+const navLinks = [
   { label: "Início", href: "/" },
   { label: "FAQ", href: "/faq" },
   { label: "Contacto", href: "/contact" },
-  { label: "Networking", href: "/networking" },
-  { label: "Perfil", href: "/profile" },
+];
+
+const legalLinks = [
+  { label: "Termos de Uso", href: "/terms" },
+  { label: "Privacidade", href: "/privacy" },
+  { label: "Diretrizes", href: "/community-guidelines" },
+  { label: "Pagamentos", href: "/payments-policy" },
+  { label: "Segurança", href: "/security-policy" },
+  { label: "Cookies", href: "/cookies" },
 ];
 
 export default function Footer() {
@@ -19,8 +26,15 @@ export default function Footer() {
             <span className="font-serif font-bold text-lg moss-text tracking-wider">AZERA CLUB</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-            {footerLinks.map((link) => (
+            {navLinks.map((link) => (
               <Link key={link.href} to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 py-1 px-1 min-h-[44px] flex items-center">
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <nav className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
+            {legalLinks.map((link) => (
+              <Link key={link.href} to={link.href} className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-300 py-1 px-1">
                 {link.label}
               </Link>
             ))}
