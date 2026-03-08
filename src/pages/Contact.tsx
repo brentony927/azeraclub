@@ -55,7 +55,7 @@ export default function Contact() {
             </div>
 
             <div className="space-y-3 pt-4 border-t border-border/30">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Email us directly</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Envie-nos um email</p>
               <a
                 href="mailto:support@azeraclub.com"
                 className="inline-flex items-center gap-2 text-primary hover:underline font-semibold text-lg"
