@@ -70,8 +70,8 @@ export default function Contact() {
           <div className="glass-card p-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+                <Label htmlFor="name">Nome</Label>
+                <Input id="name" placeholder="Seu nome" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
