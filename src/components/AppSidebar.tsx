@@ -122,12 +122,12 @@ export function AppSidebar() {
                 {plan !== "free" && (
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider"
                     style={{
-                      background: plan === "elite"
+                      background: plan === "business"
                         ? "linear-gradient(135deg, hsl(42,50%,56%), hsl(42,60%,70%))"
                         : plan === "pro"
                           ? "hsl(210,40%,50%)"
                           : "hsl(var(--muted))",
-                      color: plan === "elite" || plan === "pro" ? "hsl(0,0%,4%)" : "hsl(var(--foreground))",
+                      color: plan === "business" || plan === "pro" ? "hsl(0,0%,4%)" : "hsl(var(--foreground))",
                     }}
                   >
                     {plan.toUpperCase()}

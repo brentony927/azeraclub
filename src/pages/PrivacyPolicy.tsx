@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
             <p className="text-sm text-muted-foreground">Last Updated: March 2026</p>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">AZERA ELITE respects the privacy of its users and is committed to protecting personal information.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">AZERA CLUB respects the privacy of its users and is committed to protecting personal information.</p>
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">Information We Collect</h2>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">Third-Party Services</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Some platform features may involve third-party services such as travel bookings or event providers. AZERA ELITE is not responsible for the privacy policies of these external providers.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">Some platform features may involve third-party services such as travel bookings or event providers. AZERA CLUB is not responsible for the privacy policies of these external providers.</p>
           </section>
 
           <section className="space-y-3">
@@ -62,7 +62,7 @@ export default function PrivacyPolicy() {
 
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">Contact</h2>
-            <p className="text-sm text-muted-foreground">Privacy inquiries can be sent to: <a href="mailto:privacy@azeraelite.com" className="text-primary hover:underline">privacy@azeraelite.com</a></p>
+            <p className="text-sm text-muted-foreground">Privacy inquiries can be sent to: <a href="mailto:privacy@azeraclub.com" className="text-primary hover:underline">privacy@azeraclub.com</a></p>
           </section>
         </div>
       </motion.div>
