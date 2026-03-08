@@ -1,21 +1,24 @@
 
 
-## Plano: Definir conta como Elite
+## Cards de Pricing com Fundos Temáticos
 
-Você está correto que a tabela `user_plans` está no backend e **não** pode ser alterada pelo usuário no frontend — apenas via `service_role` (admin). O frontend só consegue **ler** o próprio plano.
+Aplicar gradientes de fundo distintos nos cards PRO (verde neon) e BUSINESS (dourado) na página de planos, similar ao screenshot.
 
-### O que fazer
+### Arquivo
 
-Inserir um registro na tabela `user_plans` para o usuário `brentonybss2025@gmail.com` com plano `elite`:
+| Ação | Arquivo |
+|------|---------|
+| Edit | `src/components/ui/pricing-section.tsx` — Adicionar classes/estilos de fundo por plano |
 
-```sql
-INSERT INTO public.user_plans (user_id, plan)
-VALUES ('1fedca26-41a0-44ce-adbc-ab8e2e9bb5bc', 'elite');
-```
+### Detalhes
 
-Isso é uma operação de dados (INSERT), não uma mudança de schema. O `check-subscription` já prioriza esta tabela sobre o Stripe, então o plano Elite será reconhecido imediatamente.
+Cada card recebe um estilo inline ou classe condicional baseado no `plan.key`:
 
-### Resultado
-- A conta terá acesso Elite em todo o app
-- Nenhum arquivo de código precisa ser alterado
+- **PRO (`key === "pro"`)**: Fundo com gradiente escuro-verde `linear-gradient(135deg, hsl(152,100%,50%,0.08), hsl(152,80%,30%,0.15), hsl(0,0%,6%))`, border verde `border-[hsl(152,100%,50%,0.3)]`, sparkles verdes, checkmarks verdes
+- **BUSINESS (`key === "business"`)**: Fundo com gradiente escuro-dourado `linear-gradient(135deg, hsl(51,100%,50%,0.08), hsl(42,60%,40%,0.15), hsl(0,0%,6%))`, border dourado `border-[hsl(51,100%,50%,0.3)]`, sparkles douradas, checkmarks dourados
+- **BASIC**: Mantém o estilo neutro atual
+
+Os checkmarks (`<Check>`) também mudam de cor: verde para PRO, dourado para BUSINESS, mantém accent para Basic.
+
+O badge "Mais Popular" / "Seu Plano" no PRO usa gradiente verde; no BUSINESS usa gradiente dourado.
 
