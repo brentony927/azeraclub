@@ -40,12 +40,21 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [showUpgradeCelebration, setShowUpgradeCelebration] = useState(false);
 
+  const lastCheckRef = useRef(0);
+
   const refresh = useCallback(async (isInterval = false) => {
     if (!user) {
       setPlan("free");
       setLoading(false);
       return;
     }
+    // Debounce: skip if checked < 30s ago (unless first load)
+    const now = Date.now();
+    if (lastCheckRef.current && now - lastCheckRef.current < 30000) {
+      setLoading(false);
+      return;
+    }
+    lastCheckRef.current = now;
     try {
       const { data } = await supabase.functions.invoke("check-subscription");
       let newPlan: PlanTier = "free";
