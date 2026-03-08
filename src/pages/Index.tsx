@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2 } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
