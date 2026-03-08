@@ -66,6 +66,7 @@ const mainItems = [
   { title: "Networking", url: "/networking", icon: Handshake },
   { title: "Perfil", url: "/profile", icon: UserCircle },
   { title: "Planos", url: "/planos", icon: CreditCard },
+  { title: "Sugestões", url: "/sugestoes", icon: MessageSquarePlus },
 ];
 
 const toolItems = [
