@@ -185,11 +185,9 @@ export function AppSidebar() {
               <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA CLUB</h2>
               <div className="flex items-center gap-2">
                 <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
-                 {plan !== "free" && (
-                   <span className="badge-plan text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider">
-                     {plan.toUpperCase()}
-                   </span>
-                 )}
+                 <span className="badge-plan text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider">
+                   {plan === "free" || plan === "basic" ? "FOUNDER" : plan.toUpperCase()}
+                 </span>
               </div>
             </div>
           )}

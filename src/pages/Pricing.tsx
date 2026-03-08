@@ -126,7 +126,7 @@ export default function Pricing() {
 
   const handleSubscribe = async (planKey: string, period?: string) => {
     if (!user) { navigate("/signup"); return; }
-    if (planKey === "basic") { toast.success("Você já está no plano Basic gratuito!"); return; }
+    if (planKey === "basic") { toast.success("Você já está no plano Founder gratuito!"); return; }
 
     if (period === "weekly") {
       const plan = plans.find(p => p.key === planKey);

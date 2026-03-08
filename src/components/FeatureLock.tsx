@@ -3,8 +3,8 @@ import { useSubscription, type PlanTier } from "@/contexts/SubscriptionContext";
 import { useNavigate } from "react-router-dom";
 
 const TIER_LABELS: Record<PlanTier, string> = {
-  free: "Free",
-  basic: "Basic",
+  free: "Founder",
+  basic: "Founder",
   pro: "Pro",
   business: "Business",
 };
