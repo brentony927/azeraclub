@@ -34,9 +34,9 @@ interface PricingSectionProps {
 type Period = "weekly" | "monthly" | "yearly";
 
 const PricingSwitch = ({ onSwitch, selected }: { onSwitch: (value: Period) => void; selected: Period }) => {
-  const periods: { key: Period; label: string }[] = [
+  const periods: { key: Period; label: string; disabled?: boolean }[] = [
     { key: "weekly", label: "Semanal" },
-    { key: "monthly", label: "Mensal" },
+    { key: "monthly", label: "Mensal", disabled: true },
     { key: "yearly", label: "Anual" },
   ];
 
@@ -46,10 +46,12 @@ const PricingSwitch = ({ onSwitch, selected }: { onSwitch: (value: Period) => vo
         {periods.map((p) => (
           <button
             key={p.key}
-            onClick={() => onSwitch(p.key)}
+            onClick={() => !p.disabled && onSwitch(p.key)}
+            disabled={p.disabled}
             className={cn(
               "relative z-10 w-fit h-10 rounded-full px-5 py-2 font-medium transition-colors text-sm",
-              selected === p.key ? "text-primary-foreground" : "text-muted-foreground"
+              selected === p.key ? "text-primary-foreground" : "text-muted-foreground",
+              p.disabled && "opacity-40 cursor-not-allowed line-through"
             )}
           >
             {selected === p.key && (
