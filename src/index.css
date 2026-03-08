@@ -802,6 +802,40 @@
   box-shadow: 0 0 16px hsla(42, 80%, 55%, 0.2);
 }
 
+/* ── Dark mode: Founder sidebar items ── */
+.dark .founder-sidebar-label {
+  background: linear-gradient(135deg, hsl(42, 90%, 65%), hsl(42, 70%, 78%), hsl(42, 90%, 65%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px hsla(42, 80%, 55%, 0.5));
+}
+
+.dark .founder-sidebar-text {
+  background: linear-gradient(90deg, hsl(42, 80%, 70%), hsl(42, 60%, 82%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .founder-sidebar-item {
+  color: hsl(42, 60%, 75%);
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.15), hsla(42, 60%, 70%, 0.1));
+  border: 1px solid hsla(42, 80%, 55%, 0.2);
+}
+
+.dark .founder-sidebar-item:hover {
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.3), hsla(42, 60%, 70%, 0.2));
+  border-color: hsla(42, 80%, 55%, 0.4);
+  box-shadow: 0 0 14px hsla(42, 80%, 55%, 0.2);
+}
+
+.dark .founder-sidebar-item-active {
+  background: linear-gradient(135deg, hsla(42, 80%, 55%, 0.35), hsla(42, 60%, 70%, 0.22));
+  border: 1px solid hsla(42, 80%, 55%, 0.45);
+  box-shadow: 0 0 20px hsla(42, 80%, 55%, 0.25);
+}
+
 /* ====== INTENSIFIED THEME OVERRIDES ====== */
 
 /* ── PRO: Inputs focus glow ── */
