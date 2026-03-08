@@ -1,38 +1,39 @@
-## AZERA CLUB — Strategic Investment Analysis
 
-**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-### Top 5 Priorities
+## Sidebar Collapsible Groups com Animações e Glow
 
-| # | Action | Impact |
-|---|--------|--------|
-| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
-| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
-| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
-| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
-| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
+### Resumo
+Transformar os grupos Ferramentas, Radares, Pro, Business e Plataforma em seções colapsáveis (fechadas por padrão). O label de cada grupo vira um botão clicável com chevron animado. Quando fechado, o label brilha com glow temático (verde PRO, dourado BUSINESS, neutro free). Quando aberto, o conteúdo expande com animação suave.
 
-### Scores by Area
+### Mudanças
 
-| Area | Score |
-|------|-------|
-| Product Clarity | 4/10 |
-| User Onboarding | 3/10 |
-| Core Value Proposition | 5/10 |
-| User Engagement | 5/10 |
-| Retention Mechanisms | 3/10 |
-| Network Effect Potential | 6/10 |
-| Feature Usefulness | 4/10 |
-| UX/UI Quality | 6/10 |
-| Monetization Model | 5/10 |
-| Premium Plan Value | 4/10 |
-| Competitive Positioning | 4/10 |
-| Scalability | 5/10 |
-| Trust & Safety | 4/10 |
-| Market Fit | 5/10 |
-| Psychological Triggers | 6/10 |
-| Viral Growth | 3/10 |
-| Community Health | 3/10 |
-| Abandonment Risk | 7/10 (HIGH) |
-| Differentiation | 5/10 |
-| Long-term Defensibility | 3/10 |
+**1. `src/components/AppSidebar.tsx`**
+- Importar `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent` de Radix
+- Importar `ChevronRight` do lucide
+- Adicionar state `openGroups` (Record<string, boolean>) para controlar quais grupos estão abertos
+- Auto-abrir grupo se a rota ativa estiver dentro dele
+- Criar componente/função `CollapsibleGroup` que renderiza:
+  - `Collapsible` com `open`/`onOpenChange`
+  - `CollapsibleTrigger` como label clicável com ícone do grupo + nome + chevron que roda 90° ao abrir
+  - `CollapsibleContent` com animação CSS para expandir/colapsar
+  - Classe CSS condicional `sidebar-group-glow` quando fechado
+- Aplicar nos 5 grupos: Ferramentas, Radares, Pro, Business, Plataforma
+- Manter mainItems e founderItems sempre visíveis (sem colapso)
+
+**2. `src/index.css`**
+- Adicionar keyframe `@keyframes sidebarGroupGlow` — pulso suave de box-shadow/border
+- Classes `.sidebar-group-label-collapsed` com glow animado
+- Variantes temáticas:
+  - `.pro-theme .sidebar-group-label-collapsed` — glow verde
+  - `.business-theme .sidebar-group-label-collapsed` — glow dourado
+  - Default (free/basic) — glow cinza/branco sutil
+- Dark mode overrides para cada variante
+- Animação de chevron: `transition-transform duration-300 rotate-90` quando aberto
+- `CollapsibleContent` animation: usar `data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up` (já existem no projeto)
+
+### Arquivos
+| Arquivo | Mudança |
+|---------|---------|
+| `src/components/AppSidebar.tsx` | Wrapping 5 grupos com Collapsible, state de abertura, auto-open por rota |
+| `src/index.css` | Glow keyframes + classes temáticas para labels colapsados |
+
