@@ -215,7 +215,7 @@ export function AppSidebar() {
           {!collapsed && (
             <SidebarGroupLabel className="px-3 mb-1 flex items-center gap-1.5">
               <Rocket className="h-3.5 w-3.5 founder-sidebar-icon" />
-              <span className="text-[10px] uppercase tracking-wider font-bold founder-sidebar-label">Founder Match</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold founder-sidebar-label">Founder Alignment</span>
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>

@@ -28,7 +28,7 @@ export default function FounderActivityFeed() {
 
       profiles.data?.forEach(p => {
         const lookingStr = (p.looking_for as string[])?.length > 0 ? ` — procurando ${(p.looking_for as string[])[0]}` : "";
-        activities.push({ id: p.id, type: "profile", text: `${p.name} entrou no Founder Match${lookingStr}`, created_at: p.created_at });
+        activities.push({ id: p.id, type: "profile", text: `${p.name} entrou no Founder Alignment${lookingStr}`, created_at: p.created_at });
       });
 
       activities.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
