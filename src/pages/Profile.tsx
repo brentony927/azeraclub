@@ -306,7 +306,7 @@ export default function Profile() {
                   <p className="text-sm text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
                 )}
                 <div className="flex items-center gap-3 text-xs text-muted-foreground justify-center sm:justify-start">
-                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{profileViews} views</span>
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{profileViews} visualizações</span>
                   <span className="flex items-center gap-1"><Rocket className="h-3 w-3" />Score: {founderScore}</span>
                 </div>
                 <Progress value={scorePercent} className="h-1.5 max-w-48" />
