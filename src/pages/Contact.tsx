@@ -48,9 +48,9 @@ export default function Contact() {
               <div className="p-2 rounded-xl bg-primary/10 w-fit">
                 <Mail className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="text-3xl font-serif font-bold gold-text">Contact Us</h1>
+              <h1 className="text-3xl font-serif font-bold gold-text">Contacte-nos</h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Have a question, suggestion or partnership inquiry? We'd love to hear from you.
+                Tem uma pergunta, sugestão ou proposta de parceria? Adoraríamos ouvir de você.
               </p>
             </div>
 
