@@ -320,7 +320,7 @@ export default function FounderProfile() {
       {profile.looking_for?.length > 0 && (
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Looking For</h3>
+            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Procurando</h3>
             <div className="flex flex-wrap gap-2">
               {profile.looking_for.map((l: string) => <Badge key={l} className="bg-primary/10 text-primary border-primary/20">{l}</Badge>)}
             </div>
