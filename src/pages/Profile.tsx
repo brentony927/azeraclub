@@ -21,15 +21,15 @@ import {
 } from "@/data/founderConstants";
 
 function getFounderBadge(commitment: string | null, skills: string[] | null): string {
-  if (!commitment && (!skills || skills.length === 0)) return "Founder";
+  if (!commitment && (!skills || skills.length === 0)) return "Fundador";
   const s = (skills || []).map(x => x.toLowerCase());
-  if (s.includes("developer") || s.includes("ai")) return "Developer";
+  if (s.includes("desenvolvedor") || s.includes("ai")) return "Desenvolvedor";
   if (s.includes("designer")) return "Designer";
-  if (s.includes("marketing") || s.includes("sales")) return "Marketer";
-  if (s.includes("finance")) return "Investor";
+  if (s.includes("marketing") || s.includes("vendas")) return "Estrategista";
+  if (s.includes("finanças")) return "Investidor";
   if (commitment === "full_business") return "Builder";
-  if (commitment === "side_project") return "Co-Founder";
-  return "Founder";
+  if (commitment === "side_project") return "Co-Fundador";
+  return "Fundador";
 }
 
 export default function Profile() {
