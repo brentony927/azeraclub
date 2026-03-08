@@ -1016,3 +1016,160 @@
 .custom-founder-pin div:hover {
   transform: scale(1.4) !important;
 }
+
+/* ══════════════════════════════════════════════════════
+   AZERA BRAND TEXT — Animated gradient title
+   ══════════════════════════════════════════════════════ */
+
+@keyframes brandShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.azera-brand-text {
+  background: linear-gradient(
+    90deg,
+    hsl(152 60% 40%),
+    hsl(170 80% 45%),
+    hsl(190 70% 50%),
+    hsl(152 60% 40%)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: brandShimmer 3s linear infinite;
+  filter: drop-shadow(0 0 8px hsl(152 60% 40% / 0.3));
+}
+
+.dark .azera-brand-text {
+  background: linear-gradient(
+    90deg,
+    hsl(152 80% 55%),
+    hsl(170 90% 60%),
+    hsl(190 80% 65%),
+    hsl(152 80% 55%)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pro-theme .azera-brand-text {
+  background: linear-gradient(
+    90deg,
+    hsl(152 100% 45%),
+    hsl(170 90% 50%),
+    hsl(190 80% 55%),
+    hsl(152 100% 45%)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px hsl(152 100% 50% / 0.4));
+}
+
+.business-theme .azera-brand-text {
+  background: linear-gradient(
+    90deg,
+    hsl(42 80% 55%),
+    hsl(35 80% 50%),
+    hsl(20 70% 55%),
+    hsl(42 80% 55%)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px hsl(42 80% 55% / 0.4));
+}
+
+/* ══════════════════════════════════════════════════════
+   SIDEBAR NAV ITEMS — Animated hover & active states
+   ══════════════════════════════════════════════════════ */
+
+.sidebar-nav-item {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 2px solid transparent;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.06), transparent);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.sidebar-nav-item:hover {
+  transform: translateX(2px);
+  color: hsl(var(--foreground));
+  background: hsl(var(--secondary) / 0.5);
+}
+
+.sidebar-nav-item:hover::before {
+  opacity: 1;
+}
+
+.sidebar-nav-item:hover .sidebar-nav-icon {
+  transform: scale(1.1);
+  transition: transform 300ms ease;
+}
+
+.sidebar-nav-item-active {
+  border-left: 2px solid hsl(var(--primary));
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--foreground));
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.08);
+}
+
+.sidebar-nav-item-active .sidebar-nav-icon {
+  color: hsl(var(--primary));
+  filter: drop-shadow(0 0 4px hsl(var(--primary) / 0.3));
+}
+
+/* Dark mode refinements */
+.dark .sidebar-nav-item:hover {
+  background: hsl(var(--secondary) / 0.4);
+}
+
+.dark .sidebar-nav-item-active {
+  background: hsl(var(--primary) / 0.12);
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.1);
+}
+
+/* PRO theme sidebar items */
+.pro-theme .sidebar-nav-item-active {
+  border-left-color: hsl(152 100% 50%);
+  box-shadow: 0 0 14px hsl(152 100% 50% / 0.12);
+}
+.pro-theme .sidebar-nav-item-active .sidebar-nav-icon {
+  color: hsl(152 100% 50%);
+  filter: drop-shadow(0 0 6px hsl(152 100% 50% / 0.4));
+}
+
+/* BUSINESS theme sidebar items */
+.business-theme .sidebar-nav-item-active {
+  border-left-color: hsl(51 100% 50%);
+  box-shadow: 0 0 14px hsl(51 100% 50% / 0.12);
+}
+.business-theme .sidebar-nav-item-active .sidebar-nav-icon {
+  color: hsl(51 100% 50%);
+  filter: drop-shadow(0 0 6px hsl(51 100% 50% / 0.4));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .azera-brand-text { animation: none; }
+  .sidebar-nav-item { transition: none; }
+  .sidebar-nav-item:hover { transform: none; }
+}

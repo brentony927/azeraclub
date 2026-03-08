@@ -162,13 +162,11 @@ export function AppSidebar() {
             <NavLink
               to={navItem.url}
               end={navItem.url === "/"}
-              className={`flex items-center gap-3 px-3 transition-all duration-300 ${
-                isActive
-                  ? "bg-primary/10 text-accent border border-primary/20"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              className={`flex items-center gap-3 px-3 sidebar-nav-item ${
+                isActive ? "sidebar-nav-item-active" : ""
               }`}
             >
-              <navItem.icon className={`h-4 w-4 ${isActive ? "text-accent" : ""}`} />
+              <navItem.icon className={`h-4 w-4 sidebar-nav-icon`} />
               {!collapsed && <span className="text-sm font-medium">{navItem.title}</span>}
             </NavLink>
           </SidebarMenuButton>
@@ -183,7 +181,7 @@ export function AppSidebar() {
           <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
           {!collapsed && (
             <div>
-              <h2 className="text-lg font-serif font-bold moss-text tracking-wider">AZERA CLUB</h2>
+              <h2 className="text-lg font-serif font-bold azera-brand-text tracking-wider">AZERA CLUB</h2>
               <div className="flex items-center gap-2">
                 <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
                  <span className="badge-plan text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider">
