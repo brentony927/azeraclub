@@ -104,6 +104,7 @@ export default function FounderFeed() {
         type: "connection",
         title: `${myProfile?.name || "Alguém"} quer se conectar com você`,
         body: myProfile?.building || null,
+        related_user_id: user.id,
       });
       toast({ title: "Solicitação enviada! 🤝" });
     }

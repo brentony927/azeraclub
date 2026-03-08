@@ -187,6 +187,7 @@ export default function Login() {
                   onChange={(e) => { setPassword(e.target.value); setErrorState(null); }}
                   className="pl-10 pr-10 h-11 bg-secondary/50 border-border/50"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"

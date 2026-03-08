@@ -89,6 +89,9 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
       <div className="p-4 border-b border-border/50">
         <h3 className="font-semibold text-foreground">{otherUserName}</h3>
       </div>
+      <div className="px-4 py-2 bg-muted/30 border-b border-border/30">
+        <p className="text-[10px] text-muted-foreground">⚠️ Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
+      </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map(msg => {
           const isMine = msg.from_user_id === user?.id;

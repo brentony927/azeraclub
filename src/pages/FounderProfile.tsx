@@ -409,9 +409,11 @@ export default function FounderProfile() {
                   {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
                 </Button>
               )}
-              <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
-                <MessageCircle className="h-4 w-4 mr-2" /> Message
-              </Button>
+              {connectionStatus === "accepted" && (
+                <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
+                  <MessageCircle className="h-4 w-4 mr-2" /> Message
+                </Button>
+              )}
               <Button variant="outline" onClick={() => navigate("/venture-builder")}>
                 <Send className="h-4 w-4 mr-2" /> Invite to Venture
               </Button>
