@@ -33,6 +33,8 @@ export default function TrendsRadar() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           requireTier: "pro",
+          newsContext: true,
+          newsQuery: topic,
           messages: [
             { role: "system", content: `Você é um analista de tendências. Liste 5-7 tendências atuais e relevantes sobre "${topic}". Para cada tendência: nome, por que importa, como aproveitar. Seja específico e acionável. Use markdown.` },
             { role: "user", content: `Quais são as tendências mais quentes em ${topic}?` },

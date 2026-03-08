@@ -38,7 +38,6 @@ function tierIndex(tier: string): number {
 }
 
 async function getUserPlan(userId: string, email: string): Promise<string> {
-  // Check manual plan override first
   const serviceClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -51,7 +50,6 @@ async function getUserPlan(userId: string, email: string): Promise<string> {
     .maybeSingle();
   if (manualPlan?.plan && manualPlan.plan !== "free") return manualPlan.plan;
 
-  // Fall back to Stripe
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   if (!stripeKey) return "free";
   
@@ -66,13 +64,44 @@ async function getUserPlan(userId: string, email: string): Promise<string> {
   return PRODUCT_MAP[productId] || "free";
 }
 
+async function fetchNewsArticles(query: string, pageSize = 6): Promise<string> {
+  const apiKey = Deno.env.get("NEWSAPI_KEY");
+  if (!apiKey) {
+    console.error("NEWSAPI_KEY not configured");
+    return "";
+  }
+  try {
+    const url = new URL("https://newsapi.org/v2/everything");
+    url.searchParams.set("q", query);
+    url.searchParams.set("language", "pt");
+    url.searchParams.set("pageSize", String(pageSize));
+    url.searchParams.set("sortBy", "publishedAt");
+    url.searchParams.set("apiKey", apiKey);
+
+    const resp = await fetch(url.toString());
+    if (!resp.ok) {
+      const t = await resp.text();
+      console.error("NewsAPI error:", resp.status, t);
+      return "";
+    }
+    const data = await resp.json();
+    if (!data.articles || data.articles.length === 0) return "";
+
+    return data.articles
+      .map((a: any, i: number) => `${i + 1}. **${a.title}** (${a.source?.name || "Fonte desconhecida"}, ${a.publishedAt?.slice(0, 10) || ""})\n   ${a.description || "Sem descrição."}\n   URL: ${a.url || ""}`)
+      .join("\n\n");
+  } catch (e) {
+    console.error("NewsAPI fetch error:", e);
+    return "";
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // --- AUTH: Validate JWT via getClaims ---
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -98,12 +127,11 @@ serve(async (req) => {
 
     const userId = claimsData.claims.sub as string;
     const userEmail = claimsData.claims.email as string;
-    const { messages, requireTier } = await req.json();
+    const { messages, requireTier, newsContext, newsQuery } = await req.json();
 
     // --- SUBSCRIPTION CHECK ---
     const plan = await getUserPlan(userId, userEmail);
 
-    // If a minimum tier is required (e.g. "pro" for Radars), enforce it
     if (requireTier && tierIndex(plan) < tierIndex(requireTier)) {
       return new Response(JSON.stringify({ error: "Upgrade required to access this feature." }), {
         status: 403,
@@ -135,6 +163,24 @@ serve(async (req) => {
       }
     }
 
+    // --- NEWS CONTEXT (optional) ---
+    let newsInjection = "";
+    if (newsContext && newsQuery) {
+      const articles = await fetchNewsArticles(newsQuery);
+      if (articles) {
+        newsInjection = `\n\n--- NOTÍCIAS REAIS E ATUALIZADAS (use como base para sua resposta) ---\n${articles}\n--- FIM DAS NOTÍCIAS ---\n\nIMPORTANTE: Baseie sua resposta nas notícias reais acima. Cite fontes quando possível. Não invente informações.`;
+      }
+    }
+
+    // --- BUILD MESSAGES ---
+    const systemContent = messages[0]?.role === "system"
+      ? messages[0].content + newsInjection
+      : SYSTEM_PROMPT + newsInjection;
+
+    const finalMessages = messages[0]?.role === "system"
+      ? [{ role: "system", content: systemContent }, ...messages.slice(1)]
+      : [{ role: "system", content: systemContent }, ...messages];
+
     // --- AI REQUEST ---
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -153,10 +199,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages,
-        ],
+        messages: finalMessages,
         stream: true,
       }),
     });

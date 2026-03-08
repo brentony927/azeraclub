@@ -37,6 +37,8 @@ export default function OpportunityRadar() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           requireTier: "pro",
+          newsContext: true,
+          newsQuery: `${area} ${city}`,
           messages: [
             { role: "system", content: `Você é um radar de oportunidades. Gere 5-8 oportunidades REALISTAS e ACIONÁVEIS para alguém na área de ${area} na cidade de ${city}. Inclua: eventos de negócios, conferências, meetups, oportunidades de investimento, editais, startups buscando sócios. Formate cada oportunidade com título, descrição curta, tipo e dica de ação. Use markdown.` },
             { role: "user", content: `Mostre oportunidades em ${area} para ${city}.` },
