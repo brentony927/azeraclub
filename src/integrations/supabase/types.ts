@@ -1097,6 +1097,41 @@ export type Database = {
         }
         Relationships: []
       }
+      venture_chat: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_ai: boolean
+          user_id: string
+          venture_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_ai?: boolean
+          user_id: string
+          venture_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_ai?: boolean
+          user_id?: string
+          venture_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_chat_venture_id_fkey"
+            columns: ["venture_id"]
+            isOneToOne: false
+            referencedRelation: "ventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       venture_members: {
         Row: {
           id: string
@@ -1164,11 +1199,56 @@ export type Database = {
           },
         ]
       }
+      venture_tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          status: string
+          title: string
+          user_id: string
+          venture_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          status?: string
+          title: string
+          user_id: string
+          venture_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          status?: string
+          title?: string
+          user_id?: string
+          venture_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venture_tasks_venture_id_fkey"
+            columns: ["venture_id"]
+            isOneToOne: false
+            referencedRelation: "ventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ventures: {
         Row: {
           ai_roadmap: string | null
           business_model: string | null
           created_at: string
+          goal: string | null
           id: string
           industry: string | null
           name: string
@@ -1176,6 +1256,7 @@ export type Database = {
           solution: string | null
           status: string
           target_market: string | null
+          total_score: number
           updated_at: string
           user_id: string
         }
@@ -1183,6 +1264,7 @@ export type Database = {
           ai_roadmap?: string | null
           business_model?: string | null
           created_at?: string
+          goal?: string | null
           id?: string
           industry?: string | null
           name: string
@@ -1190,6 +1272,7 @@ export type Database = {
           solution?: string | null
           status?: string
           target_market?: string | null
+          total_score?: number
           updated_at?: string
           user_id: string
         }
@@ -1197,6 +1280,7 @@ export type Database = {
           ai_roadmap?: string | null
           business_model?: string | null
           created_at?: string
+          goal?: string | null
           id?: string
           industry?: string | null
           name?: string
@@ -1204,6 +1288,7 @@ export type Database = {
           solution?: string | null
           status?: string
           target_market?: string | null
+          total_score?: number
           updated_at?: string
           user_id?: string
         }
