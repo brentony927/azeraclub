@@ -164,7 +164,7 @@ export default function Profile() {
       if (profileError) throw profileError;
 
       // Upsert founder_profiles
-      const founderData = {
+      const founderData: any = {
         user_id: user.id,
         name: displayName || "Founder",
         age: age ? parseInt(age) : null,
@@ -179,6 +179,7 @@ export default function Profile() {
         interests: interests.length ? interests : [],
         avatar_url: avatarUrl,
         is_published: true,
+        username: username || null,
       };
 
       if (hasFounderProfile) {
