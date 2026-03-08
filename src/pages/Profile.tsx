@@ -328,6 +328,55 @@ export default function Profile() {
             <CardTitle className="text-base">Informações Pessoais</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
+            {/* Username field */}
+            <div className="space-y-1">
+              <Label className="text-muted-foreground text-xs">Nome de Utilizador (ID público)</Label>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">@</span>
+                  <Input
+                    value={username}
+                    onChange={e => {
+                      const val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+                      setUsername(val);
+                      setUsernameError("");
+                      if (val && (val.length < 3 || !/^[a-z0-9_]{3,20}$/.test(val))) {
+                        setUsernameError("Mínimo 3 caracteres (letras, números, _)");
+                      }
+                    }}
+                    onBlur={async () => {
+                      if (!username || username.length < 3) return;
+                      setCheckingUsername(true);
+                      const { data } = await supabase.from("founder_profiles").select("id").eq("username" as any, username).neq("user_id", user!.id).maybeSingle();
+                      if (data) setUsernameError("Nome já em uso");
+                      setCheckingUsername(false);
+                    }}
+                    placeholder="ex: joao123"
+                    className="pl-8"
+                    maxLength={20}
+                  />
+                </div>
+                {username && !usernameError && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/founder-profile/${username}`);
+                      toast.success("Link copiado!");
+                    }}
+                  >
+                    Copiar Link
+                  </Button>
+                )}
+              </div>
+              {usernameError && <p className="text-[11px] text-destructive">{usernameError}</p>}
+              {checkingUsername && <p className="text-[11px] text-muted-foreground">Verificando...</p>}
+              {username && !usernameError && !checkingUsername && username.length >= 3 && (
+                <p className="text-[11px] text-primary">✓ Disponível — seu perfil: /founder-profile/{username}</p>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="text-muted-foreground text-xs">Nome</Label>

@@ -48,7 +48,7 @@ export default function FounderLeaderboard() {
             const initials = f.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
             const isTop3 = i < 3;
             return (
-              <motion.div key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+              <motion.div key={f.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }} onClick={() => window.location.href = `/founder-profile/${f.username || f.id}`} className="cursor-pointer">
                 <Card className={`transition-all ${isTop3 ? "border-yellow-500/30 bg-yellow-500/5" : ""}`}>
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className="text-2xl font-bold w-10 text-center shrink-0">

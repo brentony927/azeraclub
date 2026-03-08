@@ -299,6 +299,7 @@ export default function FounderFeed() {
                 isConnected={connections[p.user_id] === "accepted"}
                 isPending={connections[p.user_id] === "pending"}
                 matchScore={p.matchScore}
+                username={p.username}
               />
             ))}
           </div>

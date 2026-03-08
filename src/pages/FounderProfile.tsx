@@ -221,6 +221,20 @@ export default function FounderProfile() {
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>
+              {profile.username && (
+                <div className="flex items-center gap-2 justify-center sm:justify-start">
+                  <span className="text-sm text-muted-foreground font-mono">@{profile.username}</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/founder-profile/${profile.username}`);
+                      toast({ title: "Link copiado! 📋" });
+                    }}
+                    className="text-[10px] text-primary hover:underline"
+                  >
+                    Copiar
+                  </button>
+                </div>
+              )}
               {(profile.country || profile.city) && (
                 <div className="flex items-center gap-1 justify-center sm:justify-start">
                   <MapPin className="h-4 w-4 text-muted-foreground" />

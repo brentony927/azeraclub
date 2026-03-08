@@ -119,7 +119,7 @@ export default function FounderCard({
             variant="outline"
             className="flex-1 text-xs transition-transform duration-200"
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
-            onClick={() => navigate(`/founder-profile/${id}`)}
+            onClick={() => navigate(`/founder-profile/${username || id}`)}
           >
             <Eye className="h-3 w-3 mr-1" /> Ver Perfil
           </Button>
