@@ -100,7 +100,7 @@ export default function Profile() {
     }
 
     if (founderRes.data) {
-      const f = founderRes.data;
+      const f = founderRes.data as any;
       setHasFounderProfile(true);
       setCountry(f.country || "");
       setCity(f.city || "");
@@ -114,6 +114,7 @@ export default function Profile() {
       setFounderScore(f.reputation_score || 0);
       setIsVerified(f.is_verified || false);
       setProfileViews(f.profile_views || 0);
+      setUsername(f.username || "");
     }
 
     setConnectionsCount(connRes.count || 0);
