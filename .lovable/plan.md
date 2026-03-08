@@ -1,38 +1,34 @@
-## AZERA CLUB — Strategic Investment Analysis
 
-**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-### Top 5 Priorities
+## Sidebar Visual Upgrade — Gradiente AZERA CLUB + Animações nas Abas
 
-| # | Action | Impact |
-|---|--------|--------|
-| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
-| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
-| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
-| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
-| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
+### Mudanças
 
-### Scores by Area
+**1. `src/components/AppSidebar.tsx`**
+- Trocar classe `moss-text` do "AZERA CLUB" por nova classe `azera-brand-text` com gradiente vibrante animado (verde/cyan para PRO, ouro/amber para BUSINESS, verde/teal default)
+- Todas as abas (não-Founder) ganham classes de animação: hover com scale sutil, transição suave de cores, e um leve glow no item ativo
+- Manter Founder Alignment com destaque dourado existente — as outras seções ficam minimalistas em comparação
+- Abas regulares: tema claro = fundo claro com texto escuro, tema escuro = fundo escuro com texto claro (sem fundo colorido forte, apenas transições suaves)
 
-| Area | Score |
-|------|-------|
-| Product Clarity | 4/10 |
-| User Onboarding | 3/10 |
-| Core Value Proposition | 5/10 |
-| User Engagement | 5/10 |
-| Retention Mechanisms | 3/10 |
-| Network Effect Potential | 6/10 |
-| Feature Usefulness | 4/10 |
-| UX/UI Quality | 6/10 |
-| Monetization Model | 5/10 |
-| Premium Plan Value | 4/10 |
-| Competitive Positioning | 4/10 |
-| Scalability | 5/10 |
-| Trust & Safety | 4/10 |
-| Market Fit | 5/10 |
-| Psychological Triggers | 6/10 |
-| Viral Growth | 3/10 |
-| Community Health | 3/10 |
-| Abandonment Risk | 7/10 (HIGH) |
-| Differentiation | 5/10 |
-| Long-term Defensibility | 3/10 |
+**2. `src/index.css`**
+- Nova classe `.azera-brand-text` com gradiente animado (background-size 200%, animação shimmer) — cor muda por tema
+- Nova classe `.sidebar-nav-item` para todas as abas não-Founder:
+  - Hover: translateX(2px) + leve background fade-in + glow sutil
+  - Active: borda left com cor do tema + background sutil
+  - Transição suave de 300ms em tudo
+- `.sidebar-nav-item-active`: left border accent, leve glow
+- Garantir que no tema claro os itens tenham `color: foreground` e `bg: transparent`, e no escuro também — sem background colorido forte fora do Founder Alignment
+- Animação `@keyframes brandShimmer` para o texto AZERA CLUB
+
+### Resultado
+- "AZERA CLUB" em gradiente animado chamativo
+- Abas com micro-animações (hover slide, glow ativo) mas minimalistas
+- Founder Alignment permanece o único com gradiente dourado forte — destaque visual claro
+- Funciona bem em light e dark mode
+
+### Arquivos
+| Arquivo | Mudança |
+|---------|---------|
+| `src/components/AppSidebar.tsx` | Classe `azera-brand-text`, classes `sidebar-nav-item` nas abas |
+| `src/index.css` | Novas classes de animação sidebar, gradiente brand |
+
