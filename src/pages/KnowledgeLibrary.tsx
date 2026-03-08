@@ -34,6 +34,8 @@ export default function KnowledgeLibrary() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
         body: JSON.stringify({
+          newsContext: true,
+          newsQuery: cat.label.split(" ").slice(1).join(" "),
           messages: [
             { role: "system", content: `Você é um curador de notícias de alto nível e analista estratégico. Hoje é ${today}. Crie conteúdo baseado nas notícias e tendências MAIS RECENTES e RELEVANTES do dia. Formate com markdown: headers, bullets, bold. Use emojis para destacar. Mantenha em 600-900 palavras. Inclua uma seção "🎯 Insight do Dia" no final com uma reflexão estratégica.` },
             { role: "user", content: cat.prompt },
