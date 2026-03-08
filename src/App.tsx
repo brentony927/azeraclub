@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,79 +10,81 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 
 import ProtectedLayout from "@/components/ProtectedLayout";
 import HomeRoute from "@/components/HomeRoute";
-import Landing from "./pages/Landing";
-import AI from "./pages/AI";
-import Experiences from "./pages/Experiences";
-import Travel from "./pages/Travel";
-import Properties from "./pages/Properties";
-import Social from "./pages/Social";
-import Health from "./pages/Health";
-import Networking from "./pages/Networking";
-import Memories from "./pages/Memories";
-import Profile from "./pages/Profile";
-import Agenda from "./pages/Agenda";
-import Journal from "./pages/Journal";
-import IdeasVault from "./pages/IdeasVault";
-import Objectives from "./pages/Objectives";
-import Challenges from "./pages/Challenges";
-import OpportunityRadar from "./pages/OpportunityRadar";
-import TrendsRadar from "./pages/TrendsRadar";
-import KnowledgeLibrary from "./pages/KnowledgeLibrary";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Pricing from "./pages/Pricing";
-import TermsOfService from "./pages/TermsOfService";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CookiePolicy from "./pages/CookiePolicy";
-import CommunityGuidelines from "./pages/CommunityGuidelines";
-import PaymentsPolicy from "./pages/PaymentsPolicy";
-import SecurityPolicy from "./pages/SecurityPolicy";
-import FAQ from "./pages/FAQ";
-import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
-import Index from "./pages/Index";
+
+// Lazy-loaded pages for code splitting
+const Landing = lazy(() => import("./pages/Landing"));
+const AI = lazy(() => import("./pages/AI"));
+const Experiences = lazy(() => import("./pages/Experiences"));
+const Travel = lazy(() => import("./pages/Travel"));
+const Properties = lazy(() => import("./pages/Properties"));
+const Social = lazy(() => import("./pages/Social"));
+const Health = lazy(() => import("./pages/Health"));
+const Networking = lazy(() => import("./pages/Networking"));
+const Memories = lazy(() => import("./pages/Memories"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Agenda = lazy(() => import("./pages/Agenda"));
+const Journal = lazy(() => import("./pages/Journal"));
+const IdeasVault = lazy(() => import("./pages/IdeasVault"));
+const Objectives = lazy(() => import("./pages/Objectives"));
+const Challenges = lazy(() => import("./pages/Challenges"));
+const OpportunityRadar = lazy(() => import("./pages/OpportunityRadar"));
+const TrendsRadar = lazy(() => import("./pages/TrendsRadar"));
+const KnowledgeLibrary = lazy(() => import("./pages/KnowledgeLibrary"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const CommunityGuidelines = lazy(() => import("./pages/CommunityGuidelines"));
+const PaymentsPolicy = lazy(() => import("./pages/PaymentsPolicy"));
+const SecurityPolicy = lazy(() => import("./pages/SecurityPolicy"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const Contact = lazy(() => import("./pages/Contact"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Index = lazy(() => import("./pages/Index"));
 
 // PRO pages
-import SkillGrowth from "./pages/SkillGrowth";
-import GoalBreakdown from "./pages/GoalBreakdown";
-import DailyFocus from "./pages/DailyFocus";
-import ContentStrategy from "./pages/ContentStrategy";
-import ProductivityInsights from "./pages/ProductivityInsights";
-import HabitBuilder from "./pages/HabitBuilder";
-import ProjectOrganizer from "./pages/ProjectOrganizer";
-import WeeklyReview from "./pages/WeeklyReview";
+const SkillGrowth = lazy(() => import("./pages/SkillGrowth"));
+const GoalBreakdown = lazy(() => import("./pages/GoalBreakdown"));
+const DailyFocus = lazy(() => import("./pages/DailyFocus"));
+const ContentStrategy = lazy(() => import("./pages/ContentStrategy"));
+const ProductivityInsights = lazy(() => import("./pages/ProductivityInsights"));
+const HabitBuilder = lazy(() => import("./pages/HabitBuilder"));
+const ProjectOrganizer = lazy(() => import("./pages/ProjectOrganizer"));
+const WeeklyReview = lazy(() => import("./pages/WeeklyReview"));
 
 // BUSINESS pages
-import InvestmentRadar from "./pages/InvestmentRadar";
-import LifeSimulation from "./pages/LifeSimulation";
-import WealthPlanner from "./pages/WealthPlanner";
-import EliteEvents from "./pages/EliteEvents";
-import StrategicPartners from "./pages/StrategicPartners";
-import InvestorMatch from "./pages/InvestorMatch";
-import EliteLibrary from "./pages/EliteLibrary";
-import OpportunityAlerts from "./pages/OpportunityAlerts";
-import AIAdvisor from "./pages/AIAdvisor";
-import LifeMasterPlan from "./pages/LifeMasterPlan";
+const InvestmentRadar = lazy(() => import("./pages/InvestmentRadar"));
+const LifeSimulation = lazy(() => import("./pages/LifeSimulation"));
+const WealthPlanner = lazy(() => import("./pages/WealthPlanner"));
+const EliteEvents = lazy(() => import("./pages/EliteEvents"));
+const StrategicPartners = lazy(() => import("./pages/StrategicPartners"));
+const InvestorMatch = lazy(() => import("./pages/InvestorMatch"));
+const EliteLibrary = lazy(() => import("./pages/EliteLibrary"));
+const OpportunityAlerts = lazy(() => import("./pages/OpportunityAlerts"));
+const AIAdvisor = lazy(() => import("./pages/AIAdvisor"));
+const LifeMasterPlan = lazy(() => import("./pages/LifeMasterPlan"));
 
 // Platform pages
-import VentureBuilder from "./pages/VentureBuilder";
-import FounderLeaderboard from "./pages/FounderLeaderboard";
-import TrendScanner from "./pages/TrendScanner";
-import WeeklyOpportunityReport from "./pages/WeeklyOpportunityReport";
-import SavedItems from "./pages/SavedItems";
-import StartupRankings from "./pages/StartupRankings";
-import Suggestions from "./pages/Suggestions";
+const VentureBuilder = lazy(() => import("./pages/VentureBuilder"));
+const FounderLeaderboard = lazy(() => import("./pages/FounderLeaderboard"));
+const TrendScanner = lazy(() => import("./pages/TrendScanner"));
+const WeeklyOpportunityReport = lazy(() => import("./pages/WeeklyOpportunityReport"));
+const SavedItems = lazy(() => import("./pages/SavedItems"));
+const StartupRankings = lazy(() => import("./pages/StartupRankings"));
+const Suggestions = lazy(() => import("./pages/Suggestions"));
 
 // Founder Alignment pages
-import FounderMatch from "./pages/FounderMatch";
-import FounderFeed from "./pages/FounderFeed";
-import FounderProfile from "./pages/FounderProfile";
-import FounderMessages from "./pages/FounderMessages";
-import FounderOpportunities from "./pages/FounderOpportunities";
-import FounderNotificationsPage from "./pages/FounderNotificationsPage";
-import GlobalFounderMap from "./pages/GlobalFounderMap";
+const FounderMatch = lazy(() => import("./pages/FounderMatch"));
+const FounderFeed = lazy(() => import("./pages/FounderFeed"));
+const FounderProfile = lazy(() => import("./pages/FounderProfile"));
+const FounderMessages = lazy(() => import("./pages/FounderMessages"));
+const FounderOpportunities = lazy(() => import("./pages/FounderOpportunities"));
+const FounderNotificationsPage = lazy(() => import("./pages/FounderNotificationsPage"));
+const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
 
 const queryClient = new QueryClient();
 
@@ -94,7 +97,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <SubscriptionProvider>
-          
+          <Suspense fallback={null}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomeRoute />} />
@@ -178,6 +181,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
           </SubscriptionProvider>
         </AuthProvider>
       </BrowserRouter>
