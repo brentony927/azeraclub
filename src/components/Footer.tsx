@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { useAzeraLogo } from "@/hooks/useAzeraLogo";
 
 const navLinks = [
   { label: "Início", href: "/" },

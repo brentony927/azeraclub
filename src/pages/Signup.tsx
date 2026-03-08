@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { usePublicLogo } from "@/hooks/useAzeraLogo";
 
 export default function Signup() {
   const navigate = useNavigate();
