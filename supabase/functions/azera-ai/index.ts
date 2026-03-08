@@ -48,7 +48,11 @@ async function getUserPlan(userId: string, email: string): Promise<string> {
     .select("plan")
     .eq("user_id", userId)
     .maybeSingle();
-  if (manualPlan?.plan && manualPlan.plan !== "free") return manualPlan.plan;
+  if (manualPlan?.plan && manualPlan.plan !== "free") {
+    // Map legacy "elite" to "business"
+    const mapped = manualPlan.plan === "elite" ? "business" : manualPlan.plan;
+    return mapped;
+  }
 
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   if (!stripeKey) return "free";
