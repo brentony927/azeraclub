@@ -383,10 +383,21 @@ export default function FounderProfile() {
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex flex-wrap gap-3">
-              <Button onClick={handleConnect} disabled={!!connectionStatus}>
-                <UserPlus className="h-4 w-4 mr-2" />
-                {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
-              </Button>
+              {isIncomingPending ? (
+                <>
+                  <Button onClick={handleAcceptConnection}>
+                    <Check className="h-4 w-4 mr-2" /> Aceitar Conexão
+                  </Button>
+                  <Button variant="outline" onClick={handleRejectConnection}>
+                    <X className="h-4 w-4 mr-2" /> Recusar
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={handleConnect} disabled={!!connectionStatus}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Connect"}
+                </Button>
+              )}
               <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
                 <MessageCircle className="h-4 w-4 mr-2" /> Message
               </Button>
