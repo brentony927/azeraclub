@@ -8,10 +8,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { usePublicLogo } from "@/hooks/useAzeraLogo";
 
 export default function Login() {
   const navigate = useNavigate();
+  const azeraLogo = usePublicLogo();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

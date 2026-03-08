@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { usePublicLogo } from "@/hooks/useAzeraLogo";
 
 export default function ForgotPassword() {
+  const azeraLogo = usePublicLogo();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);

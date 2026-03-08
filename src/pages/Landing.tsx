@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import ScrollReveal from "@/components/ScrollReveal";
 import Footer from "@/components/Footer";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { usePublicLogo } from "@/hooks/useAzeraLogo";
 
 const features = [
   {
@@ -50,6 +50,7 @@ const opportunities = [
 ];
 
 export default function Landing() {
+  const azeraLogo = usePublicLogo();
   const scrollToHowItWorks = () => {
     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
   };

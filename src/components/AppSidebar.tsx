@@ -47,7 +47,7 @@ import {
   Layers,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { useAzeraLogo } from "@/hooks/useAzeraLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -252,6 +252,7 @@ export function AppSidebar() {
     await signOut();
     navigate("/login");
   };
+  const azeraLogo = useAzeraLogo();
 
   const renderItems = (items: NavItem[]) =>
     items.map((navItem) => {

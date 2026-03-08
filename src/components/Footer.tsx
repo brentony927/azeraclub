@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import azeraLogo from "@/assets/azera-logo.jpg";
+import { useAzeraLogo } from "@/hooks/useAzeraLogo";
 
 const navLinks = [
   { label: "Início", href: "/" },
@@ -17,6 +17,7 @@ const legalLinks = [
 ];
 
 export default function Footer() {
+  const azeraLogo = useAzeraLogo();
   return (
     <footer className="border-t border-border/30 bg-card/30 backdrop-blur-xl">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
