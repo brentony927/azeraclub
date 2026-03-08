@@ -82,7 +82,7 @@ export default function VentureTasksTab({ ventureId, members }: { ventureId: str
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Kanban Board</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quadro Kanban</h3>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button size="sm"><Plus className="h-3.5 w-3.5 mr-1" /> Nova Tarefa</Button></DialogTrigger>
           <DialogContent>

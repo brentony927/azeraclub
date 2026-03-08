@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import FeatureLock from "@/components/FeatureLock";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
-const LOOKING_OPTIONS = ["Co-founder", "Developer", "Investor", "Marketing Partner", "Designer"];
+const LOOKING_OPTIONS = ["Co-fundador", "Desenvolvedor", "Investidor", "Parceiro de Marketing", "Designer"];
 
 interface Opportunity {
   id: string;

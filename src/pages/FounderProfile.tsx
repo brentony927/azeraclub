@@ -201,7 +201,7 @@ export default function FounderProfile() {
   const theirInterests: string[] = profile.interests || [];
   const sharedInterests = myInterests.filter(i => theirInterests.includes(i));
 
-  const stageLabel: Record<string, string> = { idea: "Idea", prototype: "Prototype", mvp: "MVP", building: "Early Startup", active: "Growth", scaling: "Scaling" };
+  const stageLabel: Record<string, string> = { idea: "Ideia", prototype: "Protótipo", mvp: "MVP", building: "Startup Inicial", active: "Crescimento", scaling: "Escalando" };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 relative space-y-6">

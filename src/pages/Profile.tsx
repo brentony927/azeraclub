@@ -499,7 +499,7 @@ export default function Profile() {
         {/* Skills, Industry, Looking For, Commitment */}
         <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Founder Profile</CardTitle>
+            <CardTitle className="text-base">Perfil de Founder</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             {renderChips("Skills", SKILL_OPTIONS, skills, setSkills)}

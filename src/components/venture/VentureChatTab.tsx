@@ -98,7 +98,7 @@ export default function VentureChatTab({ ventureId, venture }: { ventureId: stri
               msg.is_ai ? "bg-primary/10 border border-primary/20" :
               msg.user_id === user?.id ? "bg-primary text-primary-foreground" : "bg-secondary"
             }`}>
-              {msg.is_ai && <Badge variant="outline" className="text-[9px] mb-1 gap-1"><Bot className="h-2.5 w-2.5" />AI Co-Founder</Badge>}
+              {msg.is_ai && <Badge variant="outline" className="text-[9px] mb-1 gap-1"><Bot className="h-2.5 w-2.5" />Co-Fundador IA</Badge>}
               <p className="whitespace-pre-wrap">{msg.content}</p>
               <p className="text-[10px] opacity-50 mt-1">{new Date(msg.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</p>
             </div>
