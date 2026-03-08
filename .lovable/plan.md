@@ -1,38 +1,26 @@
-## AZERA CLUB — Strategic Investment Analysis
 
-**Overall Score: 4.4/10 — NOT READY FOR INVESTMENT**
 
-### Top 5 Priorities
+## Fix: Sidebar tabs showing light theme in dark mode
 
-| # | Action | Impact |
-|---|--------|--------|
-| 1 | Kill 60% of features → Focus on Founder Networking + Venture Builder + AI | Clarity + quality |
-| 2 | Build viral loops → Referral, public SEO profiles, shareable content | Growth |
-| 3 | Fix onboarding → Guided wizard, value in first 5 minutes | Activation |
-| 4 | Add social feed → Posts, milestones, reactions, discussions | Retention |
-| 5 | Make Business tier exclusive → Real events, verified badges, curated intros | Revenue |
+### Problem
+The sidebar navigation items (both regular and Founder Alignment) use hardcoded light-toned colors/backgrounds that don't adapt to dark mode. The `sidebar-nav-item` and `founder-sidebar-item` classes lack proper `.dark` overrides.
 
-### Scores by Area
+### Changes
 
-| Area | Score |
-|------|-------|
-| Product Clarity | 4/10 |
-| User Onboarding | 3/10 |
-| Core Value Proposition | 5/10 |
-| User Engagement | 5/10 |
-| Retention Mechanisms | 3/10 |
-| Network Effect Potential | 6/10 |
-| Feature Usefulness | 4/10 |
-| UX/UI Quality | 6/10 |
-| Monetization Model | 5/10 |
-| Premium Plan Value | 4/10 |
-| Competitive Positioning | 4/10 |
-| Scalability | 5/10 |
-| Trust & Safety | 4/10 |
-| Market Fit | 5/10 |
-| Psychological Triggers | 6/10 |
-| Viral Growth | 3/10 |
-| Community Health | 3/10 |
-| Abandonment Risk | 7/10 (HIGH) |
-| Differentiation | 5/10 |
-| Long-term Defensibility | 3/10 |
+**`src/index.css`** — Add dark mode overrides:
+
+1. **Regular tabs (`.sidebar-nav-item`)**: Already has a `.dark` hover override but the active state `hsl(var(--primary) / 0.08)` may not be visible enough. Increase opacity and ensure text contrast.
+
+2. **Founder Alignment items (`.founder-sidebar-item`)**: Currently hardcoded gold backgrounds (`hsla(42, 80%, 55%, 0.12)`) with no `.dark` variant. Add:
+   - `.dark .founder-sidebar-item` — darker gold-tinted background, lighter gold text
+   - `.dark .founder-sidebar-item:hover` — stronger gold glow on dark bg
+   - `.dark .founder-sidebar-item-active` — more visible gold gradient on dark bg
+   - `.dark .founder-sidebar-label` / `.dark .founder-sidebar-text` — brighter gold for readability
+
+3. **Sidebar content area**: Ensure the sidebar wrapper uses `bg-sidebar` CSS variable correctly (already set to dark values in `.dark` — `0 0% 4%`). The issue may be theme class specificity — verify pro-theme dark overrides.
+
+### Files
+| File | Change |
+|------|--------|
+| `src/index.css` | Add `.dark` overrides for founder-sidebar-item, founder-sidebar-item-active, founder-sidebar-label, founder-sidebar-text; strengthen dark mode contrast for sidebar-nav-item-active |
+
