@@ -54,9 +54,11 @@ export default function Journal() {
   useEffect(() => { fetchEntries(); }, [user]);
 
   const analyzeEntry = async (text: string): Promise<string> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error("Faça login para usar o diário.");
     const resp = await fetch(CHAT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
       body: JSON.stringify({
         messages: [
           { role: "system", content: "Você é um coach de vida. O usuário escreveu uma reflexão no diário. Analise brevemente (3-5 linhas): dê uma perspectiva construtiva, um conselho prático e um aprendizado. Seja empático e direto." },
