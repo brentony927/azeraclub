@@ -16,6 +16,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 import VentureTasksTab from "@/components/venture/VentureTasksTab";
 import VentureChatTab from "@/components/venture/VentureChatTab";
 import VentureRoadmapTab from "@/components/venture/VentureRoadmapTab";
+import { sendNotification } from "@/lib/sendNotification";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
