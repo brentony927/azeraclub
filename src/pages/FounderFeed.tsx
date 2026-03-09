@@ -60,17 +60,8 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem("founder-intro-seen");
-  });
-
   // Founder plan user plans for Business priority
   const [userPlans, setUserPlans] = useState<Record<string, string>>({});
-
-  const handleIntroComplete = () => {
-    sessionStorage.setItem("founder-intro-seen", "true");
-    setShowIntro(false);
-  };
 
   useEffect(() => {
     if (!user) return;
