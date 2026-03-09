@@ -179,7 +179,10 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Nome</Label>
-              <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required placeholder="Seu nome" />
+              <Input value={form.name} onChange={e => {
+                const newName = e.target.value;
+                setForm(p => ({ ...p, name: newName, username: p.username || generateUsername(newName) }));
+              }} required placeholder="Seu nome" />
             </div>
             <div className="space-y-2">
               <Label>Idade</Label>
