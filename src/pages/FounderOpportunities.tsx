@@ -10,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play } from "lucide-react";
+import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FeatureLock from "@/components/FeatureLock";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 
@@ -31,6 +32,7 @@ interface Opportunity {
 }
 
 export default function FounderOpportunities() {
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
   const { canAccess } = useSubscription();
   const [opps, setOpps] = useState<Opportunity[]>([]);
@@ -115,6 +117,18 @@ export default function FounderOpportunities() {
       ...prev,
       looking_for: prev.looking_for.includes(val) ? prev.looking_for.filter(v => v !== val) : [...prev.looking_for, val],
     }));
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    const { error } = await supabase.from("founder_opportunities").delete().eq("id", id);
+    setDeletingId(null);
+    if (error) {
+      toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
+    } else {
+      setOpps(prev => prev.filter(o => o.id !== id));
+      toast({ title: "Oportunidade excluída ✓" });
+    }
   };
 
   const isVideo = (url: string) => /\.(mp4|webm|mov|avi)$/i.test(url);
@@ -247,11 +261,34 @@ export default function FounderOpportunities() {
               <CardContent className="p-5">
                 <div className="flex justify-between items-start">
                   <h3 className="font-semibold text-foreground">{opp.title}</h3>
-                  {opp.equity_available && (
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                      <DollarSign className="h-3 w-3 mr-0.5" /> Equity
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {opp.equity_available && (
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                        <DollarSign className="h-3 w-3 mr-0.5" /> Equity
+                      </Badge>
+                    )}
+                    {opp.user_id === user?.id && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Excluir oportunidade?</AlertDialogTitle>
+                            <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(opp.id)} disabled={deletingId === opp.id}>
+                              {deletingId === opp.id ? "Excluindo..." : "Excluir"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </div>
                 {opp.project && <p className="text-sm text-muted-foreground mt-1">Projeto: {opp.project}</p>}
                 {opp.description && <p className="text-sm text-foreground/80 mt-2">{opp.description}</p>}
