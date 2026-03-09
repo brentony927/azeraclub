@@ -85,6 +85,7 @@ const FounderMessages = lazy(() => import("./pages/FounderMessages"));
 const FounderOpportunities = lazy(() => import("./pages/FounderOpportunities"));
 const FounderNotificationsPage = lazy(() => import("./pages/FounderNotificationsPage"));
 const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
+const HowToUse = lazy(() => import("./pages/HowToUse"));
 
 const queryClient = new QueryClient();
 
