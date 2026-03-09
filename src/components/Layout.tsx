@@ -23,6 +23,12 @@ export default function Layout() {
   return (
     <SidebarProvider>
       <div className={`min-h-screen flex w-full animated-bg ${themeClass}`}>
+        {/* Minimalist background animation */}
+        <div className="page-bg-animation">
+          <div className="page-bg-orb page-bg-orb-1" />
+          <div className="page-bg-orb page-bg-orb-2" />
+          <div className="page-bg-orb page-bg-orb-3" />
+        </div>
         {isPremium && <EliteBackground plan={plan} />}
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
