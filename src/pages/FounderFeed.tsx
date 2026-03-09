@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
-import { calculateMatchScore } from "@/lib/founderMatch";
+import { calculateMatchScore, calculateProfileScore } from "@/lib/founderMatch";
 import {
   SKILL_OPTIONS, LOOKING_FOR_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
 } from "@/data/founderConstants";
