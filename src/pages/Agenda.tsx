@@ -162,9 +162,37 @@ export default function Agenda() {
       </motion.div>
 
       <div className="grid lg:grid-cols-[280px_1fr] gap-6">
-        {/* Calendar + Filters */}
+        {/* Calendar + Filters — collapsible on mobile */}
         <motion.div variants={item} className="space-y-4">
+          {/* Filters always visible */}
           <Card>
+            <CardContent className="px-4 py-3 space-y-1">
+              <div className="flex flex-wrap gap-2 lg:flex-col">
+                {["all", "task", "event", "goal"].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-3 py-2 rounded-md text-sm transition-colors min-h-[44px] lg:w-full lg:text-left ${
+                      filter === f ? "bg-primary/10 text-foreground font-medium" : "text-muted-foreground hover:bg-secondary/50"
+                    }`}
+                  >
+                    {f === "all" ? "Todos" : TYPE_LABELS[f]}
+                  </button>
+                ))}
+              </div>
+              {selectedDate && (
+                <button
+                  onClick={() => setSelectedDate(undefined)}
+                  className="w-full text-left px-3 py-2 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors min-h-[44px]"
+                >
+                  Limpar data ✕
+                </button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Calendar hidden on mobile */}
+          <Card className="hidden lg:block">
             <CardContent className="p-3">
               <Calendar
                 mode="single"
@@ -172,35 +200,6 @@ export default function Agenda() {
                 onSelect={setSelectedDate}
                 className="w-full"
               />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Filter className="h-4 w-4" /> Filtros
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4 space-y-1">
-              {["all", "task", "event", "goal"].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                    filter === f ? "bg-primary/10 text-foreground font-medium" : "text-muted-foreground hover:bg-secondary/50"
-                  }`}
-                >
-                  {f === "all" ? "Todos" : TYPE_LABELS[f]}
-                </button>
-              ))}
-              {selectedDate && (
-                <button
-                  onClick={() => setSelectedDate(undefined)}
-                  className="w-full text-left px-3 py-2 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Limpar data ✕
-                </button>
-              )}
             </CardContent>
           </Card>
         </motion.div>
