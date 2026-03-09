@@ -10,10 +10,12 @@ import { Separator } from "@/components/ui/separator";
 import {
   MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck,
   Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send, Check, X,
+  RefreshCw, TrendingUp,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
+import { useFounderScore, LEVEL_COLORS, SCORE_BADGES } from "@/lib/founderScore";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
