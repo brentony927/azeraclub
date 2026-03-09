@@ -182,7 +182,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: conic-gradient(from var(--shine-angle, 0deg) at 50% 50%, transparent 0%, hsla(152, 40%, 50%, 0.04) 10%, transparent 20%);
+    background: conic-gradient(from var(--shine-angle, 0deg) at 50% 50%, transparent 0%, hsla(0, 0%, 50%, 0.04) 10%, transparent 20%);
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
