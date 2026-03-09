@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactNode } from "react";
+import { useRef, ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 
 interface ScrollRevealProps {
@@ -14,9 +14,9 @@ export default function ScrollReveal({ children, className = "", delay = 0 }: Sc
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.95, filter: "blur(10px)" }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 32 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
