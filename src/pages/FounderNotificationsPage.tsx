@@ -93,11 +93,10 @@ export default function FounderNotificationsPage() {
       await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
       setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
       const { data: myProfile } = await supabase.from("founder_profiles").select("name").eq("user_id", user.id).maybeSingle();
-      await supabase.from("founder_notifications").insert({
-        user_id: n.related_user_id,
+      await sendNotification({
+        user_id: n.related_user_id!,
         type: "connection",
         title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
-        related_user_id: user.id,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }

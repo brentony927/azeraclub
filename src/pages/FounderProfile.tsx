@@ -169,11 +169,10 @@ export default function FounderProfile() {
     if (!error) {
       setConnectionStatus("accepted");
       setIsIncomingPending(false);
-      await supabase.from("founder_notifications").insert({
+      await sendNotification({
         user_id: profile.user_id,
         type: "connection",
         title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
-        related_user_id: user.id,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }
