@@ -83,7 +83,6 @@ export default function FounderMatch() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
-      {showIntro && <FounderMatchIntro onComplete={handleIntroComplete} />}
       <FounderParticlesBackground />
       {showOnboarding && <FounderOnboarding onComplete={handleOnboardingComplete} />}
       {showConfetti && (
