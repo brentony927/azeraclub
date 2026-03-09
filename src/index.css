@@ -1645,6 +1645,17 @@
   --tw-gradient-via: hsl(0 0% 50% / 0.03);
 }
 
+.landing-monochrome .gold-gradient {
+  background: linear-gradient(135deg, hsl(0 0% 18%), hsl(0 0% 28%), hsl(0 0% 14%)) !important;
+}
+
+.landing-monochrome .gold-text {
+  background: linear-gradient(135deg, hsl(0 0% 95%), hsl(0 0% 75%)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
 /* Gradient border cards (rounded-compatible) */
 .card-border-pro,
 .card-border-business {

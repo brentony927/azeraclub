@@ -86,7 +86,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="landing-monochrome min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -238,9 +238,9 @@ export default function Signup() {
               />
               <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                 Aceito os{" "}
-                <Link to="/terms" className="text-primary hover:underline" target="_blank">Termos de Uso</Link>
+                <Link to="/terms" className="text-foreground hover:underline" target="_blank">Termos de Uso</Link>
                 {" "}e a{" "}
-                <Link to="/privacy" className="text-primary hover:underline" target="_blank">Política de Privacidade</Link>
+                <Link to="/privacy" className="text-foreground hover:underline" target="_blank">Política de Privacidade</Link>
               </label>
             </div>
 
@@ -255,18 +255,18 @@ export default function Signup() {
 
           <p className="text-center text-sm text-muted-foreground">
             Já tem conta?{" "}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            <Link to="/login" className="text-foreground hover:underline font-medium">
               Entrar
             </Link>
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-            <Link to="/terms" className="hover:text-primary transition-colors">Termos</Link>
-            <Link to="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
-            <Link to="/community-guidelines" className="hover:text-primary transition-colors">Diretrizes</Link>
-            <Link to="/payments-policy" className="hover:text-primary transition-colors">Pagamentos</Link>
-            <Link to="/security-policy" className="hover:text-primary transition-colors">Segurança</Link>
-            <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Termos</Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacidade</Link>
+            <Link to="/community-guidelines" className="hover:text-foreground transition-colors">Diretrizes</Link>
+            <Link to="/payments-policy" className="hover:text-foreground transition-colors">Pagamentos</Link>
+            <Link to="/security-policy" className="hover:text-foreground transition-colors">Segurança</Link>
+            <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
           </div>
         </div>
       </motion.div>

@@ -72,7 +72,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 animated-bg relative">
+    <div className="landing-monochrome min-h-screen flex items-center justify-center bg-background p-4 animated-bg relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -84,7 +84,7 @@ export default function Login() {
           <div className="text-center space-y-2">
             <div className="relative inline-block">
               <img src={azeraLogo} alt="AZERA" className="w-14 h-14 rounded-xl object-contain mx-auto" />
-              <div className="absolute inset-0 rounded-xl animate-glow-pulse pointer-events-none" />
+              
             </div>
             <h1 className="text-2xl font-serif font-bold moss-text">AZERA CLUB</h1>
             <p className="text-sm text-muted-foreground">
@@ -122,7 +122,7 @@ export default function Login() {
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-border/40" />
             <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-              <span className="text-primary/40">✦</span> ou <span className="text-primary/40">✦</span>
+              <span className="text-muted-foreground/40">✦</span> ou <span className="text-muted-foreground/40">✦</span>
             </span>
             <div className="flex-1 h-px bg-border/40" />
           </div>
@@ -207,7 +207,7 @@ export default function Login() {
             </div>
 
             <div className="text-right">
-              <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+              <Link to="/forgot-password" className="text-xs text-foreground hover:underline">
                 Esqueceu a senha?
               </Link>
             </div>
@@ -223,7 +223,7 @@ export default function Login() {
 
           <p className="text-center text-sm text-muted-foreground">
             Não tem conta?{" "}
-            <Link to="/signup" className="text-primary hover:underline font-medium">
+            <Link to="/signup" className="text-foreground hover:underline font-medium">
               Criar conta
             </Link>
           </p>
