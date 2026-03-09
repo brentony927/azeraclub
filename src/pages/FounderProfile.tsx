@@ -17,6 +17,7 @@ import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
+import { sendNotification } from "@/lib/sendNotification";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
