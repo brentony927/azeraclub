@@ -600,7 +600,8 @@
     radial-gradient(ellipse 800px 400px at 80% 20%, hsl(35 100% 45% / 0.04) 0%, transparent 70%),
     radial-gradient(ellipse 400px 800px at 50% 80%, hsl(42 80% 55% / 0.05) 0%, transparent 70%) !important;
 }
-.dark.business-theme .animated-bg::before {
+[data-sidebar-theme="dark"] .business-theme .animated-bg::before,
+.dark .business-theme .animated-bg::before {
   background:
     radial-gradient(ellipse 600px 600px at 20% 50%, hsl(51 100% 50% / 0.08) 0%, transparent 70%),
     radial-gradient(ellipse 800px 400px at 80% 20%, hsl(35 100% 45% / 0.06) 0%, transparent 70%),
