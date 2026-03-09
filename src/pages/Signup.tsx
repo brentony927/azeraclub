@@ -238,9 +238,9 @@ export default function Signup() {
               />
               <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                 Aceito os{" "}
-                <Link to="/terms" className="text-primary hover:underline" target="_blank">Termos de Uso</Link>
+                <Link to="/terms" className="text-foreground hover:underline" target="_blank">Termos de Uso</Link>
                 {" "}e a{" "}
-                <Link to="/privacy" className="text-primary hover:underline" target="_blank">Política de Privacidade</Link>
+                <Link to="/privacy" className="text-foreground hover:underline" target="_blank">Política de Privacidade</Link>
               </label>
             </div>
 
