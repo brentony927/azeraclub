@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock } from "lucide-react";
+import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock, Trash2, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,17 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   SKILL_OPTIONS, INDUSTRY_OPTIONS, LOOKING_FOR_OPTIONS,
   COMMITMENT_OPTIONS, COMMITMENT_LABELS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
@@ -41,6 +52,9 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   // profiles table
   const [displayName, setDisplayName] = useState("");
@@ -230,6 +244,27 @@ export default function Profile() {
 
   const toggleArray = (setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     setter(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "EXCLUIR") {
+      toast.error("Digite EXCLUIR para confirmar");
+      return;
+    }
+    setDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke("delete-account");
+      if (error) throw error;
+      toast.success("Conta excluída com sucesso");
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir conta");
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmOpen(false);
+      setDeleteConfirmText("");
+    }
   };
 
   const filteredInterests = interestSearch
@@ -543,6 +578,56 @@ export default function Profile() {
           {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
           SALVAR ALTERAÇÕES
         </Button>
+
+        {/* Danger Zone */}
+        <Card className="border-destructive/50 bg-destructive/5 mt-8">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" /> Zona de Perigo
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Ao excluir sua conta, todos os seus dados serão permanentemente removidos. Esta ação não pode ser desfeita.
+            </p>
+            <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full sm:w-auto">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Excluir Perfil
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+                    <AlertTriangle className="h-5 w-5" /> Excluir conta permanentemente
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <p>Esta ação é <strong>irreversível</strong>. Todos os seus dados, incluindo perfil, ventures, conexões e mensagens serão permanentemente excluídos.</p>
+                    <p>Para confirmar, digite <strong>EXCLUIR</strong> abaixo:</p>
+                    <Input
+                      value={deleteConfirmText}
+                      onChange={(e) => setDeleteConfirmText(e.target.value.toUpperCase())}
+                      placeholder="Digite EXCLUIR"
+                      className="mt-2"
+                    />
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteConfirmText("")}>Cancelar</AlertDialogCancel>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDeleteAccount}
+                    disabled={deleteConfirmText !== "EXCLUIR" || deleting}
+                  >
+                    {deleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+                    Excluir Conta
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );

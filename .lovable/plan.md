@@ -1,58 +1,38 @@
-## Plano: Botão de Excluir Perfil na Página de Perfil
 
-### Objetivo
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Adicionar um botão de exclusão de conta na página de perfil (`/profile`) com confirmação de segurança via AlertDialog.
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Implementação
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-#### 1. Componentes Necessários
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-- Usar `AlertDialog` existente para confirmação
-- Botão vermelho (destructive) no final da página de perfil
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-#### 2. Fluxo de Exclusão
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-1. Usuário clica em "Excluir Perfil"
-2. Modal de confirmação aparece com aviso sobre a ação irreversível
-3. Usuário deve digitar "EXCLUIR" para confirmar
-4. Sistema exclui dados do usuário (profiles, founder_profiles) e faz logout
-
-#### 3. Alterações no Profile.tsx
-
-- Adicionar imports: `AlertDialog` components, `Trash2` icon
-- Adicionar estados: `deleteConfirmOpen`, `deleteConfirmText`, `deleting`
-- Adicionar função `handleDeleteAccount()` que:
-  - Valida confirmação de texto
-  - Exclui `founder_profiles` (se existir)
-  - Exclui `profiles`
-  - Faz signOut
-  - Redireciona para `/login`
-- Adicionar seção "Zona de Perigo" com o botão e AlertDialog
-
-#### 4. Layout
-
-```text
-┌────────────────────────────────────────┐
-│ [SALVAR ALTERAÇÕES]                    │
-├────────────────────────────────────────┤
-│ ⚠️ Zona de Perigo                      │
-│ ┌────────────────────────────────────┐ │
-│ │ 🗑️ Excluir Perfil                 │ │
-│ │ Esta ação é permanente...          │ │
-│ │              [Excluir Perfil] 🔴   │ │
-│ └────────────────────────────────────┘ │
-└────────────────────────────────────────┘
-```
-
-### Detalhes Técnicos
-
-- RLS já permite que usuários deletem seu próprio `founder_profiles`
-- RLS de `profiles` não permite DELETE — será necessário criar uma Edge Function ou adicionar política
-- A exclusão via Supabase Auth (`supabase.auth.admin.deleteUser`) requer service_role, então criaremos uma Edge Function `delete-account`
-
-### Arquivos a Modificar
-
-1. **src/pages/Profile.tsx** — Adicionar UI do botão e AlertDialog
-2. **supabase/functions/delete-account/index.ts** — Nova função para exclusão segura
-3. **supabase/config.toml** — Configurar a função
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
