@@ -1682,3 +1682,38 @@
 .card-border-business::before {
   background: linear-gradient(135deg, hsl(51,100%,50%), hsl(42,70%,55%), hsl(20,80%,50%));
 }
+
+/* ============ MOBILE PERFORMANCE OPTIMIZATIONS ============ */
+@media (max-width: 768px) {
+  /* Reduce blur intensity on mobile */
+  .glass-card,
+  .glass-card-hover {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Disable heavy animations on mobile */
+  .pro-particle,
+  .business-particle {
+    animation: none !important;
+    display: none !important;
+  }
+
+  .page-bg-orb {
+    animation-duration: 30s !important;
+    filter: blur(60px) !important;
+  }
+
+  /* Disable heavy keyframe animations */
+  .azera-brand-text::after {
+    animation: none !important;
+  }
+
+  /* Simplify glass-card pseudo-elements */
+  .glass-card::before,
+  .glass-card::after,
+  .glass-card-hover::before,
+  .glass-card-hover::after {
+    box-shadow: none !important;
+  }
+}
