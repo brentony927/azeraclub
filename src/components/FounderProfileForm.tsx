@@ -37,8 +37,13 @@ interface FounderProfileFormProps {
 }
 
 export default function FounderProfileForm({ initialData, onSubmit, loading, submitLabel = "Publicar Perfil", userId }: FounderProfileFormProps) {
+  const generateUsername = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "") + "_" + Math.floor(Math.random() * 1000);
+  };
+
   const [form, setForm] = useState<FounderFormData>({
     name: initialData?.name || "",
+    username: (initialData as any)?.username || "",
     age: initialData?.age || null,
     country: initialData?.country || "",
     city: initialData?.city || "",
