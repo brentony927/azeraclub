@@ -7,7 +7,7 @@ const navItems = [
   { icon: Brain, label: "IA", path: "/ia" },
   { icon: CalendarDays, label: "Agenda", path: "/agenda" },
   { icon: Users, label: "Rede", path: "/founder-match" },
-  { icon: User, label: "Perfil", path: "/perfil" },
+  { icon: User, label: "Perfil", path: "/profile" },
 ];
 
 export default function MobileBottomNav() {
@@ -18,7 +18,7 @@ export default function MobileBottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-border/30 backdrop-blur-xl bg-background/80 pb-safe">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
-          const isActive = pathname === item.path;
+          const isActive = pathname === item.path || pathname.startsWith(item.path + "/");
           return (
             <button
               key={item.path}

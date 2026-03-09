@@ -241,7 +241,7 @@ export default function Agenda() {
                           </div>
                           <button
                             onClick={() => deleteTask(t.id)}
-                            className="opacity-0 group-hover:opacity-100 text-xs text-muted-foreground hover:text-destructive transition-all"
+                            className="opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 max-lg:opacity-70 text-xs text-muted-foreground hover:text-destructive transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
                           >
                             ✕
                           </button>
@@ -273,7 +273,7 @@ export default function Agenda() {
                           <span className="text-xs text-muted-foreground">{formatDateLabel(t.date)}</span>
                           <button
                             onClick={() => deleteTask(t.id)}
-                            className="opacity-0 group-hover:opacity-100 text-xs text-muted-foreground hover:text-destructive transition-all"
+                            className="opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 max-lg:opacity-70 text-xs text-muted-foreground hover:text-destructive transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
                           >
                             ✕
                           </button>

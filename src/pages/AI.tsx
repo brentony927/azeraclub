@@ -336,7 +336,7 @@ export default function AI() {
                           </div>
                           <button
                             onClick={() => deleteMemory(mem.id)}
-                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0"
+                            className="opacity-0 group-hover:opacity-100 max-md:opacity-70 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
                           >
                             <X className="h-3 w-3" />
                           </button>

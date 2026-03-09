@@ -254,7 +254,7 @@ export default function Profile() {
       <div className="flex flex-wrap gap-2">
         {options.map(opt => (
           <button key={opt} type="button" onClick={() => toggleArray(setter, opt)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-all min-h-[44px] ${
               selected.includes(opt)
                 ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
