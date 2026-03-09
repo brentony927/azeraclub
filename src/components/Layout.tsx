@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
+import DevelopmentBanner from "@/components/DevelopmentBanner";
 
 export default function Layout() {
   const { plan } = useSubscription();
