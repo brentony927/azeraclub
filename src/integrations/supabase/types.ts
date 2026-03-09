@@ -1496,7 +1496,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_rounded_coordinates: {
+        Args: { p_user_id: string }
+        Returns: {
+          latitude: number
+          longitude: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
