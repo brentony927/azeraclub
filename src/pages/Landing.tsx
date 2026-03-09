@@ -124,7 +124,7 @@ export default function Landing() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group">
+            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group w-full sm:w-auto">
               <Link to="/signup">
                 Começar Grátis
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -133,7 +133,7 @@ export default function Landing() {
             <Button
               variant="outline"
               size="lg"
-              className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5"
+              className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5 w-full sm:w-auto"
               onClick={scrollToHowItWorks}
             >
               Veja Como Funciona
@@ -364,13 +364,13 @@ export default function Landing() {
             Junte-se a pessoas ambiciosas que estão a usar IA para organizar, otimizar e crescer.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group">
+            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group w-full sm:w-auto">
               <Link to="/signup">
                 Começar Grátis
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5">
+            <Button asChild variant="outline" size="lg" className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5 w-full sm:w-auto">
               <Link to="/planos">Ver Planos e Preços</Link>
             </Button>
           </div>

@@ -1,64 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Plano: Experiência Mobile Fluida
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Problemas Identificados
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-1. **MobileBottomNav link quebrado**: O botão "Perfil" aponta para `/perfil` mas a rota real é `/profile` — o link não funciona no mobile
-2. **Agenda**: Calendar sidebar ocupa muito espaço no mobile; layout `lg:grid-cols` não se adapta bem; botão de delete usa `group-hover` que não funciona em touch
-3. **AI page**: Input inferior precisa de `pb-safe` para não ficar atrás da barra do sistema em iPhones
-4. **Profile page**: Tem botão "Voltar" duplicado (já existe no Layout header)
-5. **Touch targets insuficientes**: Botões de delete em tasks/conversations são `opacity-0 group-hover:opacity-100` — invisíveis no mobile
-6. **Chatbot input**: Precisa de `pb-safe` mais robusto no mobile
-7. **Landing page**: Botões CTA poderiam ser full-width no mobile para melhor usabilidade
-8. **Founder Messages**: Layout 3-colunas não adaptado para mobile
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-## Alterações por Ficheiro
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### `src/components/MobileBottomNav.tsx`
-- Corrigir path `/perfil` → `/profile`
-- Melhorar detecção de rota ativa com `startsWith` em vez de igualdade exata
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-### `src/pages/Agenda.tsx`
-- Esconder calendário sidebar no mobile, mostrar apenas como collapsible ou abaixo da lista
-- Tornar botões de delete sempre visíveis no mobile (não depender de hover)
-- Adicionar swipe ou tap-to-reveal para ações
-
-### `src/pages/AI.tsx`
-- Adicionar `pb-safe` ao input inferior quando há mensagens
-- Fechar sidebar ao selecionar conversa no mobile
-
-### `src/pages/Profile.tsx`
-- Remover botão "Voltar" duplicado (Layout já tem)
-- Garantir que chips de seleção tenham touch targets mínimos de 44px
-
-### `src/pages/Index.tsx`
-- Garantir que cards de notificação não cortam no mobile
-- Touch target do botão de delete de notificações
-
-### `src/components/AzeraChatbot.tsx`
-- Garantir que o panel full-screen no mobile respeita `pb-safe` no input
-
-### `src/pages/Landing.tsx`
-- Botões CTA em `flex-col` no mobile já funcionam, apenas garantir `w-full` nos botões
-
-### `src/index.css`
-- Adicionar classe utilitária `.touch-action-visible` para mobile que substitui `group-hover:opacity-100` por sempre visível em touch devices
-- Melhorar `.pb-safe` para incluir bottom nav height
-
-### `src/pages/FounderMessages.tsx`
-- Garantir que a lista de conversas e o chat se alternam corretamente no mobile (já existe lógica, verificar se funciona)
-
-## Resumo
-
-| Ficheiro | Alteração Principal |
-|---|---|
-| `MobileBottomNav.tsx` | Fix path `/perfil` → `/profile`, melhorar active detection |
-| `Agenda.tsx` | Calendar collapsible no mobile, delete buttons visíveis em touch |
-| `AI.tsx` | `pb-safe` no input, fechar sidebar ao selecionar conversa mobile |
-| `Profile.tsx` | Remover back button duplicado |
-| `Index.tsx` | Touch targets em notificações |
-| `AzeraChatbot.tsx` | `pb-safe` robusto no mobile |
-| `Landing.tsx` | Botões full-width no mobile |
-| `index.css` | Utility classes para touch devices |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

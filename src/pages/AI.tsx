@@ -293,7 +293,7 @@ export default function AI() {
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 ml-2"
+                    className="opacity-0 group-hover:opacity-100 max-md:opacity-70 p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                     title="Excluir conversa"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -336,7 +336,7 @@ export default function AI() {
                           </div>
                           <button
                             onClick={() => deleteMemory(mem.id)}
-                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0"
+                            className="opacity-0 group-hover:opacity-100 max-md:opacity-70 p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -507,7 +507,7 @@ export default function AI() {
 
         {/* Bottom input (when chatting) */}
         {hasMessages && (
-          <div className="px-4 py-3 border-t border-border/30">
+          <div className="px-4 py-3 border-t border-border/30 pb-safe mb-16 md:mb-0">
             {isLimitReached ? (
               <div className="max-w-3xl mx-auto p-3 rounded-xl border border-[hsl(42,50%,56%)]/30 bg-[hsl(42,50%,56%)]/10 text-center">
                 <p className="text-xs font-medium text-foreground mb-1">Limite diário atingido 🔒</p>
