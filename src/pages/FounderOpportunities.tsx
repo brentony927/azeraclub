@@ -15,7 +15,8 @@ import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2, Messa
 import { toast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FeatureLock from "@/components/FeatureLock";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 
 const LOOKING_OPTIONS = ["Co-fundador", "Desenvolvedor", "Investidor", "Parceiro de Marketing", "Designer"];
 

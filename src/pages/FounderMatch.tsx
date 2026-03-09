@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderProfileForm from "@/components/FounderProfileForm";
 import FounderOnboarding from "@/components/FounderOnboarding";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 

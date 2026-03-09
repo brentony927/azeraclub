@@ -104,7 +104,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (!user) return;
-    const interval = setInterval(() => refresh(true), 60000);
+    const interval = setInterval(() => refresh(true), 120000);
     return () => clearInterval(interval);
   }, [user, refresh]);
 

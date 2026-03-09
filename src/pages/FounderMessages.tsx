@@ -6,7 +6,8 @@ import FounderChat from "@/components/FounderChat";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Loader2, ArrowLeft } from "lucide-react";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 
 interface Conversation {
   userId: string;
