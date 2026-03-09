@@ -643,8 +643,10 @@
   border-color: hsl(42 40% 60% / 0.35) !important;
   box-shadow: 0 8px 32px -8px hsl(51 100% 50% / 0.12), inset 0 1px 0 0 hsl(51 100% 50% / 0.08) !important;
 }
-.dark.pro-theme .glass-card { border-color: hsl(152 25% 20% / 0.6) !important; }
-.dark.business-theme .glass-card { border-color: hsl(42 25% 20% / 0.6) !important; }
+[data-sidebar-theme="dark"] .pro-theme .glass-card,
+.dark .pro-theme .glass-card { border-color: hsl(152 25% 20% / 0.6) !important; }
+[data-sidebar-theme="dark"] .business-theme .glass-card,
+.dark .business-theme .glass-card { border-color: hsl(42 25% 20% / 0.6) !important; }
 
 .pro-theme .glass-card-hover:hover {
   border-color: hsl(152 100% 50% / 0.4) !important;
