@@ -158,6 +158,10 @@ export default function Index() {
   const greeting = getGreeting();
 
   return (
+    <>
+      {showTutorial && user && (
+        <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
+      )}
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
