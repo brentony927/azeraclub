@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3, MessageSquare } from "lucide-react";
+import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ParticlesBackground from "@/components/ParticlesBackground";
