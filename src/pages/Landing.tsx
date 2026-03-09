@@ -35,12 +35,12 @@ const features = [
   },
 ];
 
-const weekPlan = [
-  { day: "Segunda", task: "Deep Work — Estratégia de Negócios" },
-  { day: "Terça", task: "Networking e construção de relações" },
-  { day: "Quarta", task: "Execução e desenvolvimento de projetos" },
-  { day: "Quinta", task: "Aprendizado e crescimento de habilidades" },
-  { day: "Sexta", task: "Revisão de progresso e detecção de oportunidades" },
+const founderMatches = [
+  { name: "Match de Sócios", desc: "Encontre co-fundadores com skills complementares" },
+  { name: "Score de Compatibilidade", desc: "Algoritmo inteligente de alinhamento" },
+  { name: "Networking Global", desc: "Founders de 6 continentes conectados" },
+  { name: "Venture Builder", desc: "Construa startups em equipa" },
+  { name: "Oportunidades", desc: "Publique e descubra parcerias estratégicas" },
 ];
 
 const opportunities = [
