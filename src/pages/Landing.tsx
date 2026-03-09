@@ -61,7 +61,7 @@ export default function Landing() {
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <div className="absolute inset-0 z-0">
           <ParticlesBackground />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/70 to-background" />
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
@@ -77,11 +77,22 @@ export default function Landing() {
             </span>
           </motion.div>
 
+          {/* Premium badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            O Sistema Operacional para Vidas Ambiciosas
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-[1.1] tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] tracking-tight text-balance"
           >
             A Sua Vida.{" "}
             <span className="moss-text">Organizada, Otimizada</span>{" "}
@@ -113,16 +124,16 @@ export default function Landing() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium">
+            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group">
               <Link to="/signup">
                 Começar Grátis
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="h-13 px-8 text-base font-semibold"
+              className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5"
               onClick={scrollToHowItWorks}
             >
               Veja Como Funciona
@@ -138,35 +149,34 @@ export default function Landing() {
             Plano gratuito disponível · Sem cartão de crédito
           </motion.p>
 
+          {/* App mockup with gradient border */}
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9 }}
             className="mt-12 mx-auto max-w-3xl"
           >
-            <div className="glass-card p-1 rounded-2xl">
-              <div className="bg-card rounded-xl p-4 sm:p-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-destructive/60" />
-                  <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
-                  <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
-                  <div className="ml-auto text-xs text-muted-foreground font-mono">azera.app</div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="glass-card p-3 rounded-lg space-y-2">
-                    <Sparkles className="h-4 w-4 text-accent" />
-                    <p className="text-[10px] sm:text-xs font-semibold">AZERA IA</p>
-                    <div className="h-1.5 bg-muted rounded-full w-3/4" />
+            <div className="gradient-border p-[1px] rounded-2xl">
+              <div className="bg-card rounded-2xl p-1">
+                <div className="bg-card rounded-xl p-4 sm:p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-destructive/60" />
+                    <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
+                    <div className="w-3 h-3 rounded-full bg-muted-foreground/30" />
+                    <div className="ml-auto text-xs text-muted-foreground font-mono opacity-60">azera.app</div>
                   </div>
-                  <div className="glass-card p-3 rounded-lg space-y-2">
-                    <Target className="h-4 w-4 text-accent" />
-                    <p className="text-[10px] sm:text-xs font-semibold">Agenda</p>
-                    <div className="h-1.5 bg-muted rounded-full w-2/3" />
-                  </div>
-                  <div className="glass-card p-3 rounded-lg space-y-2">
-                    <Radar className="h-4 w-4 text-accent" />
-                    <p className="text-[10px] sm:text-xs font-semibold">Radar</p>
-                    <div className="h-1.5 bg-muted rounded-full w-1/2" />
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { icon: Sparkles, label: "AZERA IA", w: "w-3/4" },
+                      { icon: Target, label: "Agenda", w: "w-2/3" },
+                      { icon: Radar, label: "Radar", w: "w-1/2" },
+                    ].map((item) => (
+                      <div key={item.label} className="glass-card card-shine p-3 rounded-lg space-y-2">
+                        <item.icon className="h-4 w-4 text-primary" />
+                        <p className="text-[10px] sm:text-xs font-semibold">{item.label}</p>
+                        <div className={`h-1.5 bg-primary/20 rounded-full ${item.w}`} />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -179,7 +189,7 @@ export default function Landing() {
       <section id="how-it-works" className="py-24 sm:py-32 px-4">
         <div className="max-w-6xl mx-auto space-y-16">
           <ScrollReveal className="text-center space-y-4">
-            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest">
               Como funciona
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold">
@@ -190,12 +200,16 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((f, i) => (
               <ScrollReveal key={f.label} delay={i * 0.15}>
-                <Card className="glass-card-hover h-full border-border/30">
-                  <CardContent className="p-8 space-y-5">
-                    <div className="w-12 h-12 rounded-xl moss-gradient flex items-center justify-center">
-                      <f.icon className="h-6 w-6 text-primary-foreground" />
+                <Card className="glass-card-hover card-shine h-full border-border/20 relative overflow-hidden">
+                  <CardContent className="p-8 space-y-5 relative z-10">
+                    {/* Step number */}
+                    <span className="absolute top-4 right-4 text-6xl font-serif font-bold text-primary/[0.06]">
+                      {i + 1}
+                    </span>
+                    <div className="w-14 h-14 rounded-2xl moss-gradient flex items-center justify-center shadow-lg shadow-primary/20">
+                      <f.icon className="h-7 w-7 text-primary-foreground" />
                     </div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wider">
                       {f.label}
                     </p>
                     <h3 className="text-xl font-serif font-bold">{f.title}</h3>
@@ -204,8 +218,8 @@ export default function Landing() {
                     </p>
                     <ul className="space-y-2 pt-2">
                       {f.details.map((d) => (
-                        <li key={d} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                        <li key={d} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                           {d}
                         </li>
                       ))}
@@ -225,10 +239,11 @@ export default function Landing() {
       </section>
 
       {/* ===== VEJA EM AÇÃO ===== */}
-      <section className="py-24 sm:py-32 px-4 bg-secondary/30">
-        <div className="max-w-6xl mx-auto space-y-16">
+      <section className="py-24 sm:py-32 px-4 relative">
+        <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
+        <div className="max-w-6xl mx-auto space-y-16 relative z-10">
           <ScrollReveal className="text-center space-y-4">
-            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest">
               Veja a AZERA em Ação
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold">
@@ -239,13 +254,13 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <ScrollReveal delay={0}>
-              <Card className="glass-card-hover h-full border-border/30">
+              <Card className="glass-card-hover card-shine h-full border-border/20">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <MessageSquare className="h-4 w-4" />
+                    <MessageSquare className="h-4 w-4 text-primary" />
                     Planeamento com IA
                   </div>
-                  <div className="rounded-xl bg-secondary p-3 text-sm">
+                  <div className="rounded-xl bg-secondary/60 p-3 text-sm">
                     Organize a minha semana para máxima produtividade.
                   </div>
                   <div className="rounded-xl glass-card p-4 space-y-3">
@@ -266,13 +281,13 @@ export default function Landing() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.15}>
-              <Card className="glass-card-hover h-full border-border/30">
+              <Card className="glass-card-hover card-shine h-full border-border/20">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Radar className="h-4 w-4" />
+                    <Radar className="h-4 w-4 text-primary" />
                     Radar de Oportunidades
                   </div>
-                  <div className="rounded-xl bg-secondary p-3 text-sm">
+                  <div className="rounded-xl bg-secondary/60 p-3 text-sm">
                     Em quais oportunidades devo focar este mês?
                   </div>
                   <div className="rounded-xl glass-card p-4 space-y-3">
@@ -294,28 +309,28 @@ export default function Landing() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.3}>
-              <Card className="glass-card-hover h-full border-border/30">
+              <Card className="glass-card-hover card-shine h-full border-border/20">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <BarChart3 className="h-4 w-4" />
+                    <BarChart3 className="h-4 w-4 text-primary" />
                     Relatório Semanal de Inteligência
                   </div>
                   <div className="rounded-xl glass-card p-4 space-y-4">
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="text-center p-3 rounded-lg bg-secondary/60">
+                      <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
                         <p className="text-2xl font-serif font-bold moss-text">78%</p>
                         <p className="text-[10px] text-muted-foreground">Índice de Produtividade</p>
                       </div>
-                      <div className="text-center p-3 rounded-lg bg-secondary/60">
+                      <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
                         <p className="text-2xl font-serif font-bold">12/16</p>
                         <p className="text-[10px] text-muted-foreground">Metas Concluídas</p>
                       </div>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-secondary/60">
+                    <div className="text-center p-3 rounded-lg bg-primary/5 border border-primary/10">
                       <p className="text-lg font-serif font-bold moss-text">3</p>
                       <p className="text-[10px] text-muted-foreground">Oportunidades Detectadas</p>
                     </div>
-                    <div className="p-3 rounded-lg bg-accent/10 border border-border/30">
+                    <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-1">Recomendação da IA</p>
                       <p className="text-xs text-foreground">
                         Foque em tarefas de alto impacto e agende duas reuniões de networking esta semana.
@@ -339,8 +354,9 @@ export default function Landing() {
       </section>
 
       {/* ===== CTA FINAL ===== */}
-      <section className="py-24 sm:py-32 px-4">
-        <ScrollReveal className="max-w-2xl mx-auto text-center space-y-8">
+      <section className="py-24 sm:py-32 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent pointer-events-none" />
+        <ScrollReveal className="max-w-2xl mx-auto text-center space-y-8 relative z-10">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold">
             Pronto para <span className="moss-text">estrategizar a sua vida</span>?
           </h2>
@@ -348,31 +364,35 @@ export default function Landing() {
             Junte-se a pessoas ambiciosas que estão a usar IA para organizar, otimizar e crescer.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium">
+            <Button asChild size="lg" className="h-13 px-8 text-base font-semibold moss-gradient text-primary-foreground btn-premium group">
               <Link to="/signup">
                 Começar Grátis
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-13 px-8 text-base font-semibold">
+            <Button asChild variant="outline" size="lg" className="h-13 px-8 text-base font-semibold border-primary/20 hover:bg-primary/5">
               <Link to="/planos">Ver Planos e Preços</Link>
             </Button>
           </div>
           <p className="text-xs text-muted-foreground/60">
             Plano gratuito disponível · Sem cartão de crédito
           </p>
-          <div className="flex items-center justify-center gap-6 pt-4">
-            <Link to="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">FAQ</Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Contacto</Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Termos</Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacidade</Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link to="/community-guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Diretrizes</Link>
-            <span className="text-muted-foreground/30">·</span>
-            <Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Segurança</Link>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-4">
+            {[
+              { label: "FAQ", to: "/faq" },
+              { label: "Contacto", to: "/contact" },
+              { label: "Termos", to: "/terms" },
+              { label: "Privacidade", to: "/privacy" },
+              { label: "Diretrizes", to: "/community-guidelines" },
+              { label: "Segurança", to: "/security-policy" },
+            ].map((link, i) => (
+              <span key={link.to} className="flex items-center gap-4 sm:gap-6">
+                {i > 0 && <span className="text-muted-foreground/20 hidden sm:inline">·</span>}
+                <Link to={link.to} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+                  {link.label}
+                </Link>
+              </span>
+            ))}
           </div>
         </ScrollReveal>
       </section>
