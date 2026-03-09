@@ -1,20 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Atualizar Logos da AZERA CLUB
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### O que fazer
-Substituir os ficheiros de logo existentes pelas novas versões carregadas:
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-1. **Copiar as novas logos para `src/assets/`**:
-   - `LOGO_PRINCIPAL.jpeg` (logo preta, fundo branco) → `src/assets/azera-logo-black.png` — usada no tema claro
-   - `LOGO_PRETA.png` (logo branca, fundo preto) → `src/assets/azera-logo-white.png` — usada no tema escuro
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-2. **Copiar para `public/og-image.png`** a versão principal para pré-visualização social.
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-Nenhuma alteração de código é necessária — o hook `useAzeraLogo.ts` já seleciona `logoBlack` para tema claro e `logoWhite` para tema escuro, que é exactamente a lógica pedida.
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-### Arquivos a substituir
-- `src/assets/azera-logo-black.png` ← `LOGO_PRINCIPAL.jpeg`
-- `src/assets/azera-logo-white.png` ← `LOGO_PRETA.png`
-- `public/og-image.png` ← `LOGO_PRINCIPAL.jpeg`
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
