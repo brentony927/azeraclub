@@ -72,17 +72,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 animated-bg relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <div className="glass-card p-8 space-y-6">
           {/* Logo */}
           <div className="text-center space-y-2">
-            <img src={azeraLogo} alt="AZERA" className="w-12 h-12 rounded-xl object-contain mx-auto" />
-            <h1 className="text-2xl font-serif font-bold gold-text">AZERA CLUB</h1>
+            <div className="relative inline-block">
+              <img src={azeraLogo} alt="AZERA" className="w-14 h-14 rounded-xl object-contain mx-auto" />
+              <div className="absolute inset-0 rounded-xl animate-glow-pulse pointer-events-none" />
+            </div>
+            <h1 className="text-2xl font-serif font-bold moss-text">AZERA CLUB</h1>
             <p className="text-sm text-muted-foreground">
               Entre na sua conta
             </p>
@@ -92,7 +96,7 @@ export default function Login() {
           <div className="space-y-3">
             <Button
               variant="outline"
-              className="w-full h-11 bg-secondary/50 border-border/50 hover:bg-secondary hover:border-primary/20"
+              className="w-full h-11 bg-card/60 border-border/30 hover:bg-secondary hover:border-primary/20 transition-all"
               onClick={handleGoogleLogin}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -105,7 +109,7 @@ export default function Login() {
             </Button>
             <Button
               variant="outline"
-              className="w-full h-11 bg-secondary/50 border-border/50 hover:bg-secondary hover:border-primary/20"
+              className="w-full h-11 bg-card/60 border-border/30 hover:bg-secondary hover:border-primary/20 transition-all"
               onClick={handleAppleLogin}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -116,9 +120,11 @@ export default function Login() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-border/50" />
-            <span className="text-xs text-muted-foreground">ou</span>
-            <div className="flex-1 h-px bg-border/50" />
+            <div className="flex-1 h-px bg-border/40" />
+            <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <span className="text-primary/40">✦</span> ou <span className="text-primary/40">✦</span>
+            </span>
+            <div className="flex-1 h-px bg-border/40" />
           </div>
 
           {/* Error banner for invalid credentials */}
@@ -163,30 +169,30 @@ export default function Login() {
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm text-muted-foreground">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="relative group">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setErrorState(null); }}
-                  className="pl-10 h-11 bg-secondary/50 border-border/50"
+                  className="pl-10 h-11 bg-card/60 border-border/30 focus:border-primary/40 focus:ring-primary/20"
                   required
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm text-muted-foreground">Senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setErrorState(null); }}
-                  className="pl-10 pr-10 h-11 bg-secondary/50 border-border/50"
+                  className="pl-10 pr-10 h-11 bg-card/60 border-border/30 focus:border-primary/40 focus:ring-primary/20"
                   required
                   minLength={6}
                 />
@@ -208,7 +214,7 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full h-11 gold-gradient text-primary-foreground font-semibold hover:opacity-90"
+              className="w-full h-11 moss-gradient text-primary-foreground font-semibold btn-premium"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}
@@ -223,9 +229,9 @@ export default function Login() {
           </p>
 
           <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-            <Link to="/terms" className="hover:text-primary transition-colors">Termos</Link>
-            <Link to="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
-            <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Termos</Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacidade</Link>
+            <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
           </div>
         </div>
       </motion.div>

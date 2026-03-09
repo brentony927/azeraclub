@@ -155,9 +155,12 @@ export default function AzeraChatbot() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-24 md:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
+            className="fixed bottom-24 md:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-opacity chatbot-pulse"
+            style={{
+              background: 'linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%))',
+            }}
           >
-            <MessageSquare className="h-6 w-6 text-primary-foreground" />
+            <MessageSquare className="h-6 w-6 text-white" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -169,15 +172,15 @@ export default function AzeraChatbot() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed z-50 border border-border/40 bg-background flex flex-col overflow-hidden ${
+            className={`fixed z-50 border border-border/30 bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden ${
               isMobile
                 ? "inset-0 rounded-none"
                 : "bottom-6 right-6 w-[400px] h-[540px] rounded-[20px]"
             }`}
-            style={{ boxShadow: isMobile ? "none" : "0 25px 60px -12px hsla(0,0%,0%,0.25)" }}
+            style={{ boxShadow: isMobile ? "none" : "0 25px 60px -12px hsla(152,20%,10%,0.3)" }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border/30">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border/20" style={{ background: 'linear-gradient(135deg, hsl(152 38% 28% / 0.05), transparent)' }}>
               <div className="flex items-center gap-3">
                 <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded-lg object-contain" />
                 <div>
@@ -200,12 +203,16 @@ export default function AzeraChatbot() {
               )}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  {msg.role === "assistant" && (
+                    <img src={azeraLogo} alt="" className="w-6 h-6 rounded-md object-contain mr-2 mt-1 shrink-0" />
+                  )}
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                    className={`max-w-[80%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-[16px] rounded-br-[4px]"
-                        : "bg-secondary text-foreground rounded-[16px] rounded-bl-[4px]"
+                        ? "rounded-[16px] rounded-br-[4px] text-white"
+                        : "bg-secondary/60 text-foreground rounded-[16px] rounded-bl-[4px]"
                     }`}
+                    style={msg.role === "user" ? { background: 'linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%))' } : undefined}
                   >
                     {msg.role === "assistant" ? (
                       <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -219,7 +226,8 @@ export default function AzeraChatbot() {
               ))}
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
-                  <div className="bg-secondary px-3.5 py-2.5 rounded-[16px] rounded-bl-[4px]">
+                  <img src={azeraLogo} alt="" className="w-6 h-6 rounded-md object-contain mr-2 mt-1 shrink-0" />
+                  <div className="bg-secondary/60 px-3.5 py-2.5 rounded-[16px] rounded-bl-[4px]">
                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                   </div>
                 </div>
@@ -227,8 +235,8 @@ export default function AzeraChatbot() {
             </div>
 
             {/* Input */}
-            <div className="px-4 py-3 border-t border-border/30 pb-safe">
-              <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex items-center gap-2 rounded-[16px] border border-border bg-background px-3 py-1.5 focus-within:border-ring/50 transition-colors" style={{ boxShadow: "0 1px 3px 0 hsla(0,0%,0%,0.06)" }}>
+            <div className="px-4 py-3 border-t border-border/20 pb-safe">
+              <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex items-center gap-2 rounded-[16px] border border-border/30 bg-card/60 px-3 py-1.5 focus-within:border-primary/30 focus-within:shadow-[0_0_0_2px_hsl(152_38%_36%/0.1)] transition-all" style={{ boxShadow: "0 1px 3px 0 hsla(0,0%,0%,0.06)" }}>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -239,7 +247,8 @@ export default function AzeraChatbot() {
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground disabled:opacity-40 hover:opacity-80 transition-opacity shrink-0"
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white disabled:opacity-40 hover:opacity-80 transition-opacity shrink-0"
+                  style={{ background: 'linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%))' }}
                 >
                   <Send className="h-4 w-4" />
                 </button>

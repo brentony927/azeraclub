@@ -285,9 +285,11 @@ export default function Index() {
 
       {/* Daily Insight */}
       <motion.div variants={item}>
-        <Card className="bg-secondary/30">
+        <Card className="glass-card border-border/20 overflow-hidden">
           <CardContent className="p-4 flex items-center gap-3">
-            <Zap className="h-4 w-4 text-accent shrink-0" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10 shrink-0">
+              <Zap className="h-4 w-4 text-primary" />
+            </div>
             <p className="text-sm text-foreground/80">{insight}</p>
           </CardContent>
         </Card>
