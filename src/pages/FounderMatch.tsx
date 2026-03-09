@@ -36,10 +36,6 @@ export default function FounderMatch() {
       });
   }, [user, navigate]);
 
-  const handleIntroComplete = () => {
-    sessionStorage.setItem("founder-intro-seen", "true");
-    setShowIntro(false);
-  };
 
   const handleOnboardingComplete = () => {
     if (user) localStorage.setItem(`founder-onboarding-${user.id}`, "true");
