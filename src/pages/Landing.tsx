@@ -61,7 +61,7 @@ export default function Landing() {
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <div className="absolute inset-0 z-0">
-          <ParticlesBackground />
+          <Suspense fallback={null}><ParticlesBackground /></Suspense>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/70 to-background" />
         </div>
 

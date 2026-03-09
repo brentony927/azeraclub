@@ -157,7 +157,7 @@ export default function FounderOpportunities() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">

@@ -92,7 +92,7 @@ export default function FounderMatch() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       {showOnboarding && <FounderOnboarding onComplete={handleOnboardingComplete} />}
       {showConfetti && (
         <div className="fixed inset-0 z-50 pointer-events-none founder-confetti" onAnimationEnd={() => setShowConfetti(false)} />

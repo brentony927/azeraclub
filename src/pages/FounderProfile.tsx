@@ -212,7 +212,7 @@ export default function FounderProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 relative space-y-6">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Voltar
       </button>
