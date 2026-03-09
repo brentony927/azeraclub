@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3, MessageSquare } from "lucide-react";
+import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ParticlesBackground from "@/components/ParticlesBackground";
@@ -35,12 +35,12 @@ const features = [
   },
 ];
 
-const weekPlan = [
-  { day: "Segunda", task: "Deep Work — Estratégia de Negócios" },
-  { day: "Terça", task: "Networking e construção de relações" },
-  { day: "Quarta", task: "Execução e desenvolvimento de projetos" },
-  { day: "Quinta", task: "Aprendizado e crescimento de habilidades" },
-  { day: "Sexta", task: "Revisão de progresso e detecção de oportunidades" },
+const founderMatches = [
+  { name: "Match de Sócios", desc: "Encontre co-fundadores com skills complementares" },
+  { name: "Score de Compatibilidade", desc: "Algoritmo inteligente de alinhamento" },
+  { name: "Networking Global", desc: "Founders de 6 continentes conectados" },
+  { name: "Venture Builder", desc: "Construa startups em equipa" },
+  { name: "Oportunidades", desc: "Publique e descubra parcerias estratégicas" },
 ];
 
 const opportunities = [
@@ -257,21 +257,21 @@ export default function Landing() {
               <Card className="glass-card-hover card-shine h-full border-border/20">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <MessageSquare className="h-4 w-4 text-primary" />
-                    Planeamento com IA
+                    <Users className="h-4 w-4 text-primary" />
+                    Founder Alignment
                   </div>
                   <div className="rounded-xl bg-secondary/60 p-3 text-sm">
-                    Organize a minha semana para máxima produtividade.
+                    Encontre o sócio ideal para o seu projeto.
                   </div>
                   <div className="rounded-xl glass-card p-4 space-y-3">
-                    <p className="text-xs font-semibold moss-text">AZERA IA</p>
-                    <p className="text-sm font-semibold">A sua estrutura semanal estratégica:</p>
+                    <p className="text-xs font-semibold moss-text">AZERA MATCH</p>
+                    <p className="text-sm font-semibold">O seu ecossistema de founders:</p>
                     <ul className="space-y-2">
-                      {weekPlan.map((w) => (
-                        <li key={w.day} className="text-xs text-muted-foreground">
-                          <span className="font-semibold text-foreground">{w.day}</span>
+                      {founderMatches.map((f) => (
+                        <li key={f.name} className="text-xs text-muted-foreground">
+                          <span className="font-semibold text-foreground">{f.name}</span>
                           <br />
-                          {w.task}
+                          {f.desc}
                         </li>
                       ))}
                     </ul>
