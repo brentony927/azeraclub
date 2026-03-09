@@ -12,9 +12,9 @@ import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle } from "lucide-
 import { Button } from "@/components/ui/button";
 
 const tiers = {
-  basic: { price_id: "price_free", product_id: "prod_free" },
-  pro: { price_id: "price_1T8ivaFn0fMTE8T5rWOyh9YX", product_id: "prod_U6wptLNnilCLi5" },
-  business: { price_id: "price_1T8ix7Fn0fMTE8T5F7LjGHB5", product_id: "prod_U6wq54yOsZU99H" },
+  basic: { price_id: "price_free", price_id_yearly: "price_free", product_id: "prod_free" },
+  pro: { price_id: "price_1T8ivaFn0fMTE8T5rWOyh9YX", price_id_yearly: "price_1T8tayFn0fMTE8T5Fq468U0q", product_id: "prod_U6wptLNnilCLi5" },
+  business: { price_id: "price_1T8ix7Fn0fMTE8T5F7LjGHB5", price_id_yearly: "price_1T8tcQFn0fMTE8T55lpjUePD", product_id: "prod_U6wq54yOsZU99H" },
 };
 
 const PIX_KEY = "043.869.512-70";
