@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.send-founder-message]
 verify_jwt = false
+
+[functions.calculate-founder-score]
+verify_jwt = false

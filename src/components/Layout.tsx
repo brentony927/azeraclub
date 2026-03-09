@@ -4,6 +4,7 @@ import AzeraChatbot from "@/components/AzeraChatbot";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import FloatingNotification from "@/components/FloatingNotification";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -68,6 +69,7 @@ export default function Layout() {
         </div>
       </div>
       <MobileBottomNav />
+      <FloatingNotification />
       <AzeraChatbot />
     </SidebarProvider>
   );

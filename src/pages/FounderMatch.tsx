@@ -66,6 +66,13 @@ export default function FounderMatch() {
     if (error) {
       toast({ title: "Erro ao criar perfil", description: error.message, variant: "destructive" });
     } else {
+      // Trigger score calculation
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        supabase.functions.invoke("calculate-founder-score", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        }).catch(() => {});
+      }
       setShowConfetti(true);
       toast({ title: "Perfil publicado! 🚀" });
       setTimeout(() => navigate("/founder-feed"), 2000);
