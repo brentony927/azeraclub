@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/sendNotification";
 
 interface Notification {
   id: string;
@@ -114,11 +115,10 @@ export default function FounderNotifications() {
       setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
       // notify the sender
       const { data: myProfile } = await supabase.from("founder_profiles").select("name").eq("user_id", user.id).maybeSingle();
-      await supabase.from("founder_notifications").insert({
-        user_id: n.related_user_id,
+      await sendNotification({
+        user_id: n.related_user_id!,
         type: "connection",
         title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
-        related_user_id: user.id,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }

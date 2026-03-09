@@ -16,6 +16,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 import VentureTasksTab from "@/components/venture/VentureTasksTab";
 import VentureChatTab from "@/components/venture/VentureChatTab";
 import VentureRoadmapTab from "@/components/venture/VentureRoadmapTab";
+import { sendNotification } from "@/lib/sendNotification";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
@@ -123,13 +124,12 @@ export default function VentureBuilder() {
     if (!selected || !user) return;
     await supabase.from("venture_members").insert({ venture_id: selected.id, user_id: userId, role: inviteRole });
     // Send team_invitation notification
-    await supabase.from("founder_notifications").insert({
+    await sendNotification({
       user_id: userId,
       type: "team_invitation",
       title: `Você foi convidado para a equipe "${selected.name}"`,
       body: `Função: ${inviteRole}`,
       action_url: "/venture-builder",
-      related_user_id: user.id,
     });
     toast.success("Convite enviado!");
     supabase.from("venture_members").select("*").eq("venture_id", selected.id).then(({ data }) => setMembers((data as VentureMember[]) || []));

@@ -17,6 +17,7 @@ import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
+import { sendNotification } from "@/lib/sendNotification";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
@@ -94,7 +95,7 @@ export default function FounderProfile() {
           .maybeSingle();
         if (!recentView) {
           await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", prof.id);
-          await supabase.from("founder_notifications").insert({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil", related_user_id: user.id });
+          await sendNotification({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil" });
         }
       }
 
@@ -156,7 +157,7 @@ export default function FounderProfile() {
     const { error } = await supabase.from("founder_connections").insert({ from_user_id: user.id, to_user_id: profile.user_id, status: "pending" });
     if (!error) {
       setConnectionStatus("pending");
-      await supabase.from("founder_notifications").insert({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar`, related_user_id: user.id });
+      await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar` });
       toast({ title: "Solicitação enviada! 🤝" });
     }
   };
@@ -168,11 +169,10 @@ export default function FounderProfile() {
     if (!error) {
       setConnectionStatus("accepted");
       setIsIncomingPending(false);
-      await supabase.from("founder_notifications").insert({
+      await sendNotification({
         user_id: profile.user_id,
         type: "connection",
         title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
-        related_user_id: user.id,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }

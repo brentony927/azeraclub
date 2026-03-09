@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Globe, MapPin, Search, Navigation, Filter, X, Users, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { INDUSTRY_OPTIONS, SKILL_OPTIONS, LOOKING_FOR_OPTIONS, COMMITMENT_OPTIONS } from "@/data/founderConstants";
+import { sendNotification } from "@/lib/sendNotification";
 import FeatureLock from "@/components/FeatureLock";
 
 // Fix default marker icon
@@ -150,12 +151,11 @@ export default function GlobalFounderMap() {
       setConnections(prev => ({ ...prev, [targetUserId]: "pending" }));
       toast.success("Pedido de conexão enviado!");
       // Notification
-      await supabase.from("founder_notifications").insert({
+      await sendNotification({
         user_id: targetUserId,
         title: "Nova solicitação de conexão",
         body: `${myProfile?.name || "Um founder"} quer se conectar com você.`,
         type: "connection",
-        related_user_id: user.id,
         action_url: `/founder-profile/${user.id}`,
       });
     }

@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Search, Users, Filter, X, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/sendNotification";
 import { calculateMatchScore } from "@/lib/founderMatch";
 import {
   SKILL_OPTIONS, LOOKING_FOR_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
@@ -107,12 +108,11 @@ export default function FounderFeed() {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       setConnections(prev => ({ ...prev, [targetUserId]: "pending" }));
-      await supabase.from("founder_notifications").insert({
+      await sendNotification({
         user_id: targetUserId,
         type: "connection",
         title: `${myProfile?.name || "Alguém"} quer se conectar com você`,
         body: myProfile?.building || null,
-        related_user_id: user.id,
       });
       toast({ title: "Solicitação enviada! 🤝" });
     }

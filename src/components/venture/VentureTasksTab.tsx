@@ -3,6 +3,7 @@ import { Plus, Calendar, User, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { sendNotification } from "@/lib/sendNotification";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -61,12 +62,11 @@ export default function VentureTasksTab({ ventureId, members }: { ventureId: str
       const task = tasks.find(t => t.id === taskId);
       for (const m of members) {
         if (m.user_id !== user.id) {
-          await supabase.from("founder_notifications").insert({
+          await sendNotification({
             user_id: m.user_id,
             type: "venture_activity",
             title: `Tarefa "${task?.title || ""}" movida para ${newStatus}`,
             action_url: "/venture-builder",
-            related_user_id: user.id,
           });
         }
       }
