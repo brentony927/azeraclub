@@ -61,8 +61,8 @@ export default function FounderFeed() {
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  // Founder plan user plans for Business priority
   const [userPlans, setUserPlans] = useState<Record<string, string>>({});
+  const [founderLevels, setFounderLevels] = useState<Record<string, string>>({});
 
   const fetchData = useCallback(async () => {
     if (!user) return;
