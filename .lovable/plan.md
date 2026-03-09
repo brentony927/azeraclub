@@ -1,38 +1,55 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: 4 Correções no Sistema de Founders + Mobile
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### 1. Sidebar mobile fecha automaticamente ao navegar
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+**Problema**: No mobile, a sidebar (Sheet) permanece aberta após clicar num link.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+**Solução**: No `AppSidebar.tsx`, usar `useSidebar().setOpenMobile(false)` ao clicar em qualquer `NavLink`. Criar um wrapper que chama `setOpenMobile(false)` no `onClick`.
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 2. Feed de Founders — diagnóstico e correção
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**Diagnóstico**: Verifiquei o banco e só existe **1 perfil** publicado. A query do feed funciona corretamente (retorna esse perfil para outros usuários). O Realtime está ativado. O problema é que o **segundo perfil nunca foi inserido com sucesso** — provavelmente ocorreu um erro silencioso.
+
+**Causa provável**: O `FounderMatch.tsx` não inclui o campo `username` no insert. Se houve qualquer erro, o toast pode não ter sido visível. Além disso, o formulário não tem campo de username, mas o perfil na rota usa username para navegação.
+
+**Correções**:
+- Adicionar campo `username` ao formulário de criação (`FounderProfileForm`) — obrigatório, gerado automaticamente a partir do nome
+- Melhorar feedback de erro no insert com mensagens mais claras
+- Adicionar log de debug no `fetchData` do feed para garantir visibilidade dos erros
+
+### 3. Upload de fotos/vídeos nas Oportunidades
+
+**Alterações**:
+- **Migration SQL**: Adicionar colunas `media_urls text[]` e `media_type text` na tabela `founder_opportunities`
+- **Storage**: Criar bucket `opportunity-media` (público)
+- **`FounderOpportunities.tsx`**: Adicionar input de upload de imagens/vídeos no dialog de criação, upload para Storage, salvar URLs no banco
+- Exibir as imagens/vídeos nos cards de oportunidade
+
+### 4. Ordenar founders por completude + confiança
+
+**Solução**: Criar função `calculateProfileScore(profile)` que pontua:
+- Nome preenchido: +10
+- Avatar: +15
+- Building: +10
+- Skills (1+): +10
+- Industry (1+): +10
+- Interests (3+): +10
+- Looking_for (1+): +5
+- País/Cidade: +10
+- Continent: +5
+- Commitment: +5
+- is_verified: +10
+
+**Ordenação no feed**: Primeiro por `profileScore` (desc), depois por `matchScore` (desc). Founders com perfis mais completos e verificados aparecem no topo.
+
+### Arquivos alterados
+- `src/components/AppSidebar.tsx` — auto-close mobile
+- `src/components/FounderProfileForm.tsx` — adicionar campo username
+- `src/pages/FounderMatch.tsx` — incluir username no insert
+- `src/pages/FounderFeed.tsx` — ordenação por completude + confiança
+- `src/pages/FounderOpportunities.tsx` — upload de mídia
+- `src/lib/founderMatch.ts` — função `calculateProfileScore`
+- Migration SQL — colunas media na tabela + bucket de storage
+
