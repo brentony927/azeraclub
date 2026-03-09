@@ -72,7 +72,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 animated-bg relative">
+    <div className="landing-monochrome min-h-screen flex items-center justify-center bg-background p-4 animated-bg relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.02] pointer-events-none" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
