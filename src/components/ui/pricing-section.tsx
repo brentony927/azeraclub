@@ -193,15 +193,12 @@ export default function PricingSection({
                 className={cn(
                   "relative glass-card-hover flex flex-col h-full",
                   !isPro && !isBusiness && "border-border/50",
-                  isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50"
+                  isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50",
+                  isPro && "card-border-pro",
+                  isBusiness && "card-border-business"
                 )}
                 style={{
                   ...(cardBg ? { background: cardBg } : {}),
-                  ...((isPro || isBusiness) ? {
-                    borderImage: borderGradient,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                  } : {}),
                   ...((isCurrentPlan && (isPro || isBusiness)) ? {
                     boxShadow: isPro 
                       ? "0 0 30px -5px hsl(152,100%,50%,0.3), inset 0 1px 0 hsl(152,100%,50%,0.1)" 
