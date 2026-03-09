@@ -14,6 +14,7 @@ import {
 
 interface FounderFormData {
   name: string;
+  username: string;
   age: number | null;
   country: string;
   city: string;
@@ -36,8 +37,13 @@ interface FounderProfileFormProps {
 }
 
 export default function FounderProfileForm({ initialData, onSubmit, loading, submitLabel = "Publicar Perfil", userId }: FounderProfileFormProps) {
+  const generateUsername = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "") + "_" + Math.floor(Math.random() * 1000);
+  };
+
   const [form, setForm] = useState<FounderFormData>({
     name: initialData?.name || "",
+    username: (initialData as any)?.username || "",
     age: initialData?.age || null,
     country: initialData?.country || "",
     city: initialData?.city || "",
@@ -173,12 +179,24 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Nome</Label>
-              <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required placeholder="Seu nome" />
+              <Input value={form.name} onChange={e => {
+                const newName = e.target.value;
+                setForm(p => ({ ...p, name: newName, username: p.username || generateUsername(newName) }));
+              }} required placeholder="Seu nome" />
             </div>
             <div className="space-y-2">
               <Label>Idade</Label>
               <Input type="number" value={form.age ?? ""} onChange={e => setForm(p => ({ ...p, age: e.target.value ? Number(e.target.value) : null }))} placeholder="25" />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Username</Label>
+            <div className="flex items-center gap-1">
+              <span className="text-sm text-muted-foreground">@</span>
+              <Input value={form.username} onChange={e => setForm(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))} required placeholder="seu_username" className="flex-1" />
+            </div>
+            <p className="text-[10px] text-muted-foreground">Minúsculas, números e underscores. Será seu link público.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -375,6 +375,8 @@ export type Database = {
           equity_available: boolean | null
           id: string
           looking_for: string[] | null
+          media_type: string | null
+          media_urls: string[] | null
           project: string | null
           title: string
           user_id: string
@@ -385,6 +387,8 @@ export type Database = {
           equity_available?: boolean | null
           id?: string
           looking_for?: string[] | null
+          media_type?: string | null
+          media_urls?: string[] | null
           project?: string | null
           title: string
           user_id: string
@@ -395,6 +399,8 @@ export type Database = {
           equity_available?: boolean | null
           id?: string
           looking_for?: string[] | null
+          media_type?: string | null
+          media_urls?: string[] | null
           project?: string | null
           title?: string
           user_id?: string

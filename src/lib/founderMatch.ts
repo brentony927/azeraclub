@@ -61,6 +61,22 @@ export function calculateMatchScore(me: MatchProfile, other: MatchProfile): numb
   return Math.round(score);
 }
 
+export function calculateProfileScore(profile: any): number {
+  let score = 0;
+  if (profile.name) score += 10;
+  if (profile.avatar_url) score += 15;
+  if (profile.building) score += 10;
+  if (profile.skills?.length > 0) score += 10;
+  if (profile.industry?.length > 0) score += 10;
+  if (profile.interests?.length >= 3) score += 10;
+  if (profile.looking_for?.length > 0) score += 5;
+  if (profile.country && profile.city) score += 10;
+  if (profile.continent) score += 5;
+  if (profile.commitment) score += 5;
+  if (profile.is_verified) score += 10;
+  return score;
+}
+
 export function getMatchColor(score: number): string {
   if (score >= 70) return "text-green-400 bg-green-500/15 border-green-500/30";
   if (score >= 40) return "text-yellow-400 bg-yellow-500/15 border-yellow-500/30";

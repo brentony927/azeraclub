@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
-import { calculateMatchScore } from "@/lib/founderMatch";
+import { calculateMatchScore, calculateProfileScore } from "@/lib/founderMatch";
 import {
   SKILL_OPTIONS, LOOKING_FOR_OPTIONS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
 } from "@/data/founderConstants";
@@ -180,9 +180,13 @@ export default function FounderFeed() {
   const withScores = filtered.map(p => ({
     ...p,
     matchScore: myProfile ? calculateMatchScore(myProfile, p) : 0,
+    profileScore: calculateProfileScore(p),
   }));
 
-  withScores.sort((a, b) => b.matchScore - a.matchScore);
+  withScores.sort((a, b) => {
+    if (b.profileScore !== a.profileScore) return b.profileScore - a.profileScore;
+    return b.matchScore - a.matchScore;
+  });
 
   // For Founder: cap at 5
   const FOUNDER_LIMIT = 5;
