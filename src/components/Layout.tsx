@@ -17,6 +17,7 @@ import BackgroundToggle, { useBackgroundMode } from "@/components/BackgroundTogg
 export default function Layout() {
   const { plan } = useSubscription();
   const isPremium = plan === "pro" || plan === "business";
+  const [bgMode, setBgMode] = useBackgroundMode();
   const themeClass = plan === "business" ? "business-theme" : plan === "pro" ? "pro-theme" : "";
   const backBtnClass = plan === "business" ? "business-back-btn" : plan === "pro" ? "pro-back-btn" : "text-muted-foreground hover:text-foreground hover:bg-accent";
   const location = useLocation();
