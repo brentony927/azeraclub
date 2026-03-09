@@ -215,7 +215,7 @@
     position: absolute;
     inset: -1px;
     border-radius: 17px;
-    background: linear-gradient(135deg, hsl(152 60% 45% / 0.4), hsl(170 50% 40% / 0.1), hsl(152 60% 45% / 0.4));
+    background: linear-gradient(135deg, hsl(0 0% 50% / 0.4), hsl(0 0% 40% / 0.1), hsl(0 0% 50% / 0.4));
     z-index: -1;
     animation: borderGlow 3s ease-in-out infinite;
   }
