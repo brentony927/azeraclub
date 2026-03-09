@@ -20,14 +20,30 @@ export default function FounderMessages() {
   const { user } = useAuth();
   const location = useLocation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
   const [selectedUser, setSelectedUser] = useState<{ userId: string; name: string } | null>(
-    (location.state as any)?.userId ? { userId: (location.state as any).userId, name: (location.state as any).userName || "Fundador" } : null
+    (location.state as any)?.userId
+      ? { userId: (location.state as any).userId, name: (location.state as any).userName || "Fundador" }
+      : (location.state as any)?.selectedUser
+        ? { userId: (location.state as any).selectedUser, name: (location.state as any).selectedUserName || "Fundador" }
+        : null
   );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
-    const fetchConversations = async () => {
+
+    const fetchData = async () => {
+      // Fetch blocked users
+      const { data: blocks } = await supabase
+        .from("user_blocks")
+        .select("blocked_id")
+        .eq("blocker_id", user.id);
+
+      const blocked = new Set<string>(blocks?.map(b => b.blocked_id) || []);
+      setBlockedIds(blocked);
+
+      // Fetch messages
       const { data: msgs } = await supabase
         .from("founder_messages")
         .select("*")
@@ -41,6 +57,7 @@ export default function FounderMessages() {
 
       msgs.forEach(m => {
         const otherId = m.from_user_id === user.id ? m.to_user_id : m.from_user_id;
+        if (blocked.has(otherId)) return; // Skip blocked users
         userIds.add(otherId);
         if (!convMap.has(otherId)) {
           convMap.set(otherId, { lastMsg: m.content, lastAt: m.created_at, unread: 0 });
@@ -73,20 +90,37 @@ export default function FounderMessages() {
 
         setConversations(convList);
 
-        if (selectedUser && !convMap.has(selectedUser.userId)) {
-          setConversations(prev => [{ userId: selectedUser.userId, name: selectedUser.name, lastMessage: "", lastAt: new Date().toISOString(), unread: 0 }, ...prev]);
+        if (selectedUser && !convMap.has(selectedUser.userId) && !blocked.has(selectedUser.userId)) {
+          setConversations(prev => [
+            { userId: selectedUser.userId, name: selectedUser.name, lastMessage: "", lastAt: new Date().toISOString(), unread: 0 },
+            ...prev,
+          ]);
         }
+      } else if (selectedUser && !blocked.has(selectedUser.userId)) {
+        setConversations([
+          { userId: selectedUser.userId, name: selectedUser.name, lastMessage: "", lastAt: new Date().toISOString(), unread: 0 },
+        ]);
       }
       setLoading(false);
     };
-    fetchConversations();
+    fetchData();
   }, [user]);
+
+  const handleBlock = (userId: string) => {
+    setBlockedIds(prev => new Set(prev).add(userId));
+    setConversations(prev => prev.filter(c => c.userId !== userId));
+    if (selectedUser?.userId === userId) setSelectedUser(null);
+  };
+
+  const handleDeleteConversation = (userId: string) => {
+    setConversations(prev => prev.filter(c => c.userId !== userId));
+    if (selectedUser?.userId === userId) setSelectedUser(null);
+  };
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
   }
 
-  // Mobile: show chat if selected, list otherwise
   const showChatOnMobile = !!selectedUser;
 
   return (
@@ -97,7 +131,6 @@ export default function FounderMessages() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[70vh]">
-        {/* Conversation list — hidden on mobile when chat is open */}
         <Card className={`border-border/50 bg-card/80 backdrop-blur-sm overflow-y-auto ${showChatOnMobile ? "hidden md:block" : ""}`}>
           {conversations.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">Nenhuma conversa ainda.</div>
@@ -122,7 +155,6 @@ export default function FounderMessages() {
           )}
         </Card>
 
-        {/* Chat area — hidden on mobile when no chat selected */}
         <Card className={`border-border/50 bg-card/80 backdrop-blur-sm md:col-span-2 overflow-hidden ${!showChatOnMobile ? "hidden md:block" : ""}`}>
           {selectedUser ? (
             <>
@@ -131,7 +163,12 @@ export default function FounderMessages() {
                   <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
                 </Button>
               </div>
-              <FounderChat otherUserId={selectedUser.userId} otherUserName={selectedUser.name} />
+              <FounderChat
+                otherUserId={selectedUser.userId}
+                otherUserName={selectedUser.name}
+                onBlock={handleBlock}
+                onDeleteConversation={handleDeleteConversation}
+              />
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground text-sm">

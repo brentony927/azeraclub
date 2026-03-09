@@ -85,6 +85,7 @@ const FounderMessages = lazy(() => import("./pages/FounderMessages"));
 const FounderOpportunities = lazy(() => import("./pages/FounderOpportunities"));
 const FounderNotificationsPage = lazy(() => import("./pages/FounderNotificationsPage"));
 const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
+const HowToUse = lazy(() => import("./pages/HowToUse"));
 
 const queryClient = new QueryClient();
 
@@ -169,6 +170,7 @@ const App = () => (
               <Route path="/founder-opportunities" element={<FounderOpportunities />} />
               <Route path="/founder-notifications" element={<FounderNotificationsPage />} />
               <Route path="/global-map" element={<GlobalFounderMap />} />
+              <Route path="/como-usar" element={<HowToUse />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
