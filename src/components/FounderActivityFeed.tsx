@@ -22,6 +22,9 @@ export default function FounderActivityFeed() {
 
       const activities: ActivityItem[] = [];
 
+      if (opps.error) console.error("Activity feed opps error:", opps.error);
+      if (profiles.error) console.error("Activity feed profiles error:", profiles.error);
+
       opps.data?.forEach(o => {
         activities.push({ id: o.id, type: "opportunity", text: `Nova oportunidade: ${o.title}`, created_at: o.created_at });
       });

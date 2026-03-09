@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Search, Users, Filter, X, Lock } from "lucide-react";
+import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
 import { calculateMatchScore } from "@/lib/founderMatch";
@@ -60,32 +60,67 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   // Founder plan user plans for Business priority
   const [userPlans, setUserPlans] = useState<Record<string, string>>({});
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!user) return;
-    const fetchData = async () => {
-      const [profilesRes, connectionsRes, myRes] = await Promise.all([
-        supabase.from("founder_profiles").select("*").eq("is_published", true).neq("user_id", user.id),
-        supabase.from("founder_connections").select("*").or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
-        supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
-      ]);
+    setLoading(true);
+    const [profilesRes, connectionsRes, myRes] = await Promise.all([
+      supabase.from("founder_profiles").select("*").eq("is_published", true).neq("user_id", user.id),
+      supabase.from("founder_connections").select("*").or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
+      supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
+    ]);
 
-      if (profilesRes.data) setProfiles(profilesRes.data as FounderProfile[]);
-      if (myRes.data) setMyProfile(myRes.data as FounderProfile);
-      if (connectionsRes.data) {
-        const map: Record<string, string> = {};
-        connectionsRes.data.forEach(c => {
-          const otherId = c.from_user_id === user.id ? c.to_user_id : c.from_user_id;
-          map[otherId] = c.status;
-        });
-        setConnections(map);
-      }
-      setLoading(false);
-    };
-    fetchData();
+    if (profilesRes.error) {
+      toast({ title: "Erro ao carregar founders", description: profilesRes.error.message, variant: "destructive" });
+    }
+    if (profilesRes.data) setProfiles(profilesRes.data as FounderProfile[]);
+    if (myRes.data) setMyProfile(myRes.data as FounderProfile);
+    if (connectionsRes.data) {
+      const map: Record<string, string> = {};
+      connectionsRes.data.forEach(c => {
+        const otherId = c.from_user_id === user.id ? c.to_user_id : c.from_user_id;
+        map[otherId] = c.status;
+      });
+      setConnections(map);
+    }
+    setLoading(false);
+    setRefreshing(false);
   }, [user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Realtime subscription for new/updated profiles
+  useEffect(() => {
+    const channel = supabase
+      .channel("founder-profiles-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "founder_profiles" },
+        () => { fetchData(); }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchData]);
+
+  // Auto-refresh when tab regains focus
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") fetchData();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [fetchData]);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+  };
 
   const handleConnect = async (targetUserId: string) => {
     if (!user) return;
@@ -206,6 +241,14 @@ export default function FounderFeed() {
           </div>
           <div className="flex items-center gap-2">
             <FounderNotifications />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Atualizar
+            </Button>
             <Button
               variant={showFilters ? "default" : "outline"}
               size="sm"

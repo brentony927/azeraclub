@@ -1,39 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Corrigir Feed de Founders
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Diagnóstico
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-Analisei o código e identifiquei os problemas:
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-1. **Sem atualização em tempo real** — O feed só carrega dados uma vez no mount (`useEffect` com `[user]`). Quando um novo founder publica o perfil, os outros usuários NÃO veem até recarregar a página manualmente.
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-2. **Erros silenciosos** — As queries não verificam `error` nos resultados. Se a query falhar, o feed simplesmente fica vazio sem feedback.
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-3. **Sem mecanismo de refresh** — Não há polling, realtime subscription, nem botão de "atualizar" para o usuário.
-
-### Alterações
-
-#### 1. `src/pages/FounderFeed.tsx` — Adicionar Realtime + Error Handling
-
-- Adicionar subscription Realtime na tabela `founder_profiles` para detectar novos perfis publicados
-- Adicionar tratamento de erros nas queries com toast de feedback
-- Adicionar botão de "Atualizar" manual no header
-- Refetch automático quando o componente ganha foco (via `visibilitychange`)
-
-#### 2. `src/components/FounderActivityFeed.tsx` — Error Handling
-
-- Adicionar tratamento de erros nas queries do activity feed
-
-#### 3. Migration SQL — Habilitar Realtime na tabela
-
-```sql
-ALTER PUBLICATION supabase_realtime ADD TABLE public.founder_profiles;
-```
-
-### Resultado Esperado
-- Novos perfis aparecem automaticamente no feed de outros usuários (via Realtime)
-- Erros são reportados ao usuário via toast
-- Botão de refresh manual como fallback
-- Auto-refresh quando o usuário volta à aba
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
