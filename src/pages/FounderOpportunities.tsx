@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Briefcase, Plus, Loader2, DollarSign } from "lucide-react";
+import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import FeatureLock from "@/components/FeatureLock";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
@@ -26,6 +26,8 @@ interface Opportunity {
   equity_available: boolean | null;
   looking_for: string[];
   created_at: string;
+  media_urls: string[] | null;
+  media_type: string | null;
 }
 
 export default function FounderOpportunities() {
@@ -36,17 +38,54 @@ export default function FounderOpportunities() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", project: "", equity: false, looking_for: [] as string[] });
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.from("founder_opportunities").select("*").order("created_at", { ascending: false }).then(({ data }) => {
-      if (data) setOpps(data);
+      if (data) setOpps(data as Opportunity[]);
       setLoading(false);
     });
   }, []);
 
+  const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length + mediaFiles.length > 5) {
+      toast({ title: "Máximo 5 arquivos", variant: "destructive" });
+      return;
+    }
+    setMediaFiles(prev => [...prev, ...files]);
+    setMediaPreviews(prev => [...prev, ...files.map(f => URL.createObjectURL(f))]);
+  };
+
+  const removeMedia = (index: number) => {
+    setMediaFiles(prev => prev.filter((_, i) => i !== index));
+    setMediaPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleCreate = async () => {
     if (!user || !form.title.trim()) return;
     setSaving(true);
+
+    // Upload media files
+    let media_urls: string[] = [];
+    let media_type: string | null = null;
+
+    if (mediaFiles.length > 0) {
+      for (const file of mediaFiles) {
+        const ext = file.name.split(".").pop();
+        const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error } = await supabase.storage.from("opportunity-media").upload(path, file);
+        if (!error) {
+          const { data: urlData } = supabase.storage.from("opportunity-media").getPublicUrl(path);
+          media_urls.push(urlData.publicUrl);
+        }
+      }
+      const hasVideo = mediaFiles.some(f => f.type.startsWith("video/"));
+      media_type = hasVideo ? "mixed" : "image";
+    }
+
     const { data, error } = await supabase.from("founder_opportunities").insert({
       user_id: user.id,
       title: form.title,
@@ -54,13 +93,18 @@ export default function FounderOpportunities() {
       project: form.project || null,
       equity_available: form.equity,
       looking_for: form.looking_for,
+      media_urls: media_urls.length > 0 ? media_urls : null,
+      media_type,
     }).select().single();
+
     setSaving(false);
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
-      if (data) setOpps(prev => [data, ...prev]);
+      if (data) setOpps(prev => [data as Opportunity, ...prev]);
       setForm({ title: "", description: "", project: "", equity: false, looking_for: [] });
+      setMediaFiles([]);
+      setMediaPreviews([]);
       setDialogOpen(false);
       toast({ title: "Oportunidade publicada! 🎯" });
     }
@@ -72,6 +116,8 @@ export default function FounderOpportunities() {
       looking_for: prev.looking_for.includes(val) ? prev.looking_for.filter(v => v !== val) : [...prev.looking_for, val],
     }));
   };
+
+  const isVideo = (url: string) => /\.(mp4|webm|mov|avi)$/i.test(url);
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
@@ -93,7 +139,7 @@ export default function FounderOpportunities() {
             <DialogTrigger asChild>
               <Button><Plus className="h-4 w-4 mr-2" /> Publicar</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>Nova Oportunidade</DialogTitle></DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -108,6 +154,49 @@ export default function FounderOpportunities() {
                   <Label>Descrição</Label>
                   <Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={3} />
                 </div>
+
+                {/* Media Upload */}
+                <div className="space-y-2">
+                  <Label>Fotos / Vídeos (máx. 5)</Label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleMediaSelect}
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {mediaPreviews.map((preview, i) => (
+                      <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group">
+                        {mediaFiles[i]?.type.startsWith("video/") ? (
+                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Play className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <img src={preview} alt="" className="w-full h-full object-cover" />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeMedia(i)}
+                          className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {mediaFiles.length < 5 && (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-20 h-20 rounded-lg border-2 border-dashed border-border hover:border-primary flex items-center justify-center transition-colors"
+                      >
+                        <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Checkbox checked={form.equity} onCheckedChange={c => setForm(p => ({ ...p, equity: !!c }))} />
                   <Label className="text-sm">Equity disponível</Label>
@@ -142,7 +231,6 @@ export default function FounderOpportunities() {
         )}
       </div>
 
-      {/* Legal disclaimer */}
       <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
         <p className="text-[10px] text-muted-foreground">⚠️ As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
       </div>
@@ -167,7 +255,23 @@ export default function FounderOpportunities() {
                 </div>
                 {opp.project && <p className="text-sm text-muted-foreground mt-1">Projeto: {opp.project}</p>}
                 {opp.description && <p className="text-sm text-foreground/80 mt-2">{opp.description}</p>}
-                {opp.looking_for?.length > 0 && (
+
+                {/* Media display */}
+                {opp.media_urls && opp.media_urls.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {opp.media_urls.map((url, i) => (
+                      <div key={i} className="w-24 h-24 rounded-lg overflow-hidden border border-border">
+                        {isVideo(url) ? (
+                          <video src={url} controls className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={url} alt="" className="w-full h-full object-cover cursor-pointer" onClick={() => window.open(url, "_blank")} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {opp.looking_for && opp.looking_for.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {opp.looking_for.map(l => (
                       <Badge key={l} variant="outline" className="text-xs">{l}</Badge>

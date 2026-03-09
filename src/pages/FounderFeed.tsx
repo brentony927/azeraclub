@@ -180,9 +180,13 @@ export default function FounderFeed() {
   const withScores = filtered.map(p => ({
     ...p,
     matchScore: myProfile ? calculateMatchScore(myProfile, p) : 0,
+    profileScore: calculateProfileScore(p),
   }));
 
-  withScores.sort((a, b) => b.matchScore - a.matchScore);
+  withScores.sort((a, b) => {
+    if (b.profileScore !== a.profileScore) return b.profileScore - a.profileScore;
+    return b.matchScore - a.matchScore;
+  });
 
   // For Founder: cap at 5
   const FOUNDER_LIMIT = 5;

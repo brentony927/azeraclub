@@ -381,6 +381,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild className="h-11 mb-0.5">
                       <NavLink
                         to={navItem.url}
+                        onClick={handleNavClick}
                         className={`flex items-center gap-3 px-3 transition-all duration-300 ${
                         isActive ?
                         "founder-sidebar-item-active" :

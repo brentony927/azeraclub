@@ -48,6 +48,7 @@ export default function FounderMatch() {
     const { error } = await supabase.from("founder_profiles").insert({
       user_id: user.id,
       name: formData.name,
+      username: formData.username,
       age: formData.age,
       country: formData.country,
       city: formData.city,

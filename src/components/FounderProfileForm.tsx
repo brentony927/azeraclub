@@ -190,6 +190,15 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
             </div>
           </div>
 
+          <div className="space-y-2">
+            <Label>Username</Label>
+            <div className="flex items-center gap-1">
+              <span className="text-sm text-muted-foreground">@</span>
+              <Input value={form.username} onChange={e => setForm(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "") }))} required placeholder="seu_username" className="flex-1" />
+            </div>
+            <p className="text-[10px] text-muted-foreground">Minúsculas, números e underscores. Será seu link público.</p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>País</Label>
