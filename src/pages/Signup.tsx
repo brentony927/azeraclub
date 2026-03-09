@@ -255,7 +255,7 @@ export default function Signup() {
 
           <p className="text-center text-sm text-muted-foreground">
             Já tem conta?{" "}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            <Link to="/login" className="text-foreground hover:underline font-medium">
               Entrar
             </Link>
           </p>
