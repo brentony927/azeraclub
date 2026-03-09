@@ -246,6 +246,27 @@ export default function Profile() {
     setter(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
   };
 
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "EXCLUIR") {
+      toast.error("Digite EXCLUIR para confirmar");
+      return;
+    }
+    setDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke("delete-account");
+      if (error) throw error;
+      toast.success("Conta excluída com sucesso");
+      await supabase.auth.signOut();
+      navigate("/login");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao excluir conta");
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmOpen(false);
+      setDeleteConfirmText("");
+    }
+  };
+
   const filteredInterests = interestSearch
     ? BUSINESS_INTERESTS.filter(i => i.toLowerCase().includes(interestSearch.toLowerCase()))
     : BUSINESS_INTERESTS;
