@@ -12,6 +12,7 @@ import { AnimatePresence } from "framer-motion";
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
+import BackgroundToggle, { useBackgroundMode } from "@/components/BackgroundToggle";
 
 export default function Layout() {
   const { plan } = useSubscription();
