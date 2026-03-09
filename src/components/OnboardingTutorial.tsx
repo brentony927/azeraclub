@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Rocket, CalendarDays, Brain, Users, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const SLIDES = [
   {
