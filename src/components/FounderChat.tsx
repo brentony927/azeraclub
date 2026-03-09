@@ -106,35 +106,45 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
   const handleSend = async () => {
     if (!newMsg.trim() || !user || sending) return;
 
-    // Check weekly limit for Founder
+    // Check weekly limit for Founder (client-side check for UX, server enforces)
     if (isFounder && weeklyCount >= WEEKLY_LIMIT) return;
 
     setSending(true);
 
-    // Insert message
-    const { data: inserted } = await supabase.from("founder_messages").insert({
-      from_user_id: user.id,
-      to_user_id: otherUserId,
-      content: newMsg.trim(),
-    }).select().single();
+    try {
+      // Use edge function to send message with server-side rate limiting
+      const { data, error } = await supabase.functions.invoke("send-founder-message", {
+        body: {
+          to_user_id: otherUserId,
+          content: newMsg.trim(),
+          is_founder: isFounder,
+        },
+      });
 
-    if (inserted) {
-      setMessages(prev => [...prev, inserted]);
+      if (error) {
+        console.error("Failed to send message:", error);
+        setSending(false);
+        return;
+      }
+
+      if (data?.limit_reached) {
+        setWeeklyCount(WEEKLY_LIMIT);
+        setSending(false);
+        return;
+      }
+
+      if (data?.message) {
+        setMessages(prev => [...prev, data.message]);
+        if (isFounder) {
+          setWeeklyCount(prev => prev + 1);
+        }
+      }
+
+      setNewMsg("");
+    } catch (err) {
+      console.error("Send message error:", err);
     }
 
-    // Update weekly count for Founder
-    if (isFounder) {
-      const weekStart = getWeekStart();
-      const newCount = weeklyCount + 1;
-      await supabase.from("weekly_message_limits").upsert({
-        user_id: user.id,
-        week_start: weekStart,
-        message_count: newCount,
-      }, { onConflict: "user_id,week_start" });
-      setWeeklyCount(newCount);
-    }
-
-    setNewMsg("");
     setSending(false);
   };
 
