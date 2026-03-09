@@ -174,7 +174,7 @@ export default function AzeraChatbot() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className={`fixed z-50 border border-border/30 bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden ${
               isMobile
-                ? "inset-0 rounded-none"
+                ? "inset-0 rounded-none pt-safe"
                 : "bottom-6 right-6 w-[400px] h-[540px] rounded-[20px]"
             }`}
             style={{ boxShadow: isMobile ? "none" : "0 25px 60px -12px hsla(152,20%,10%,0.3)" }}
