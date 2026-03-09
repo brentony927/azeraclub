@@ -45,8 +45,9 @@ interface OnboardingTutorialProps {
 export default function OnboardingTutorial({ userId, onComplete }: OnboardingTutorialProps) {
   const [step, setStep] = useState(0);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     localStorage.setItem(`onboarding-tutorial-${userId}`, "true");
+    await supabase.from("profiles").update({ has_seen_onboarding: true }).eq("user_id", userId);
     onComplete();
   };
 
