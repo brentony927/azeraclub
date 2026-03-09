@@ -11,30 +11,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Authentication: require a valid user session OR a cron secret
+    // Only allow cron secret — no regular user access
     const cronSecret = Deno.env.get("CRON_SECRET");
-    const authHeader = req.headers.get("Authorization");
     const cronHeader = req.headers.get("X-Cron-Secret");
 
-    // Option 1: Cron secret for scheduled invocations
-    if (cronSecret && cronHeader === cronSecret) {
-      // Authorized via cron secret
-    }
-    // Option 2: Valid authenticated user (service role or admin)
-    else if (authHeader?.startsWith("Bearer ")) {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-      const authClient = createClient(supabaseUrl, supabaseAnonKey, {
-        global: { headers: { Authorization: authHeader } },
-      });
-      const { data, error } = await authClient.auth.getUser();
-      if (error || !data?.user) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-    } else {
+    if (!cronSecret || cronHeader !== cronSecret) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -167,7 +148,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: String(error) }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -117,7 +117,6 @@ export default function FounderChat({ otherUserId, otherUserName }: FounderChatP
         body: {
           to_user_id: otherUserId,
           content: newMsg.trim(),
-          is_founder: isFounder,
         },
       });
 

@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
 
     const userId = claimsData.claims.sub;
     const body = await req.json();
-    const { to_user_id, content, is_founder } = body;
+    const { to_user_id, content } = body;
 
     if (!to_user_id || !content) {
       return new Response(JSON.stringify({ error: "Missing to_user_id or content" }), {
@@ -69,8 +69,18 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
-    // Check weekly limit for Founder tier
-    if (is_founder) {
+    // Determine plan server-side instead of trusting client
+    const { data: planData } = await serviceClient
+      .from("user_plans")
+      .select("plan")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    const userPlan = planData?.plan || "free";
+    const isLimitedPlan = userPlan === "free" || userPlan === "basic";
+
+    // Check weekly limit for free/basic tier
+    if (isLimitedPlan) {
       const weekStart = getWeekStart();
       const { data: limitData } = await serviceClient
         .from("weekly_message_limits")
