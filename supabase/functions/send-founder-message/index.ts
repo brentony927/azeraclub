@@ -63,13 +63,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Sanitize content
     const safeContent = String(content).slice(0, 2000);
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const serviceClient = createClient(supabaseUrl, serviceKey);
 
-    // Determine plan server-side instead of trusting client
+    // Check if the recipient has blocked the sender
+    const { data: blockData } = await serviceClient
+      .from("user_blocks")
+      .select("id")
+      .or(`and(blocker_id.eq.${to_user_id},blocked_id.eq.${userId}),and(blocker_id.eq.${userId},blocked_id.eq.${to_user_id})`)
+      .limit(1);
+
+    if (blockData && blockData.length > 0) {
+      return new Response(JSON.stringify({ error: "Blocked", blocked: true }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Determine plan server-side
     const { data: planData } = await serviceClient
       .from("user_plans")
       .select("plan")
@@ -79,7 +92,6 @@ Deno.serve(async (req) => {
     const userPlan = planData?.plan || "free";
     const isLimitedPlan = userPlan === "free" || userPlan === "basic";
 
-    // Check weekly limit for free/basic tier
     if (isLimitedPlan) {
       const weekStart = getWeekStart();
       const { data: limitData } = await serviceClient
@@ -98,7 +110,6 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Atomically increment or insert the count
       await serviceClient.from("weekly_message_limits").upsert({
         user_id: userId,
         week_start: weekStart,
@@ -106,7 +117,6 @@ Deno.serve(async (req) => {
       }, { onConflict: "user_id,week_start" });
     }
 
-    // Insert the message
     const { data: inserted, error: insertError } = await serviceClient
       .from("founder_messages")
       .insert({
