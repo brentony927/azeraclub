@@ -19,6 +19,7 @@ import {
 import { format, startOfWeek, endOfWeek, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import OnboardingTutorial from "@/components/OnboardingTutorial";
 
 interface Task {
   id: string;
