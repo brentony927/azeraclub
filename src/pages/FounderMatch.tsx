@@ -16,9 +16,6 @@ export default function FounderMatch() {
   const [saving, setSaving] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem("founder-intro-seen");
-  });
 
   useEffect(() => {
     if (!user) return;
