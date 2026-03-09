@@ -262,10 +262,50 @@ export default function FounderProfile() {
               {/* Founder Score */}
               <div className="pt-2">
                 <div className="flex items-center justify-between mb-1">
-                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground">Founder Score</h3>
-                  <span className="text-xs font-semibold text-foreground">{repScore}/100</span>
+                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                    <TrendingUp className="h-3 w-3" /> Founder Score
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    {founderScore && (
+                      <span className={`text-xs font-bold ${LEVEL_COLORS[founderScore.level] || "text-foreground"}`}>
+                        {founderScore.level}
+                      </span>
+                    )}
+                    <span className="text-xs font-semibold text-foreground">{founderScore?.total_score ?? repScore}/100</span>
+                  </div>
                 </div>
-                <Progress value={repScore} className="h-2" />
+                <Progress value={founderScore?.total_score ?? repScore} className="h-2" />
+                {founderScore && (
+                  <div className="grid grid-cols-5 gap-1 mt-2">
+                    {[
+                      { label: "Perfil", value: founderScore.profile_points, max: 15 },
+                      { label: "Rede", value: founderScore.network_points, max: 25 },
+                      { label: "Projetos", value: founderScore.project_points, max: 25 },
+                      { label: "Atividade", value: founderScore.activity_points, max: 20 },
+                      { label: "Influência", value: founderScore.influence_points, max: 15 },
+                    ].map(p => (
+                      <div key={p.label} className="text-center">
+                        <p className="text-[9px] text-muted-foreground">{p.label}</p>
+                        <p className="text-[11px] font-bold text-foreground">{p.value}/{p.max}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Badges */}
+                {founderScore && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {SCORE_BADGES.filter(b => b.check(founderScore)).map(b => (
+                      <Badge key={b.key} variant="secondary" className="text-[10px] gap-1">
+                        {b.icon} {b.label}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                {isOwn && (
+                  <Button variant="ghost" size="sm" className="mt-2 text-xs h-7" onClick={recalculate} disabled={scoreLoading}>
+                    <RefreshCw className={`h-3 w-3 mr-1 ${scoreLoading ? "animate-spin" : ""}`} /> Atualizar Score
+                  </Button>
+                )}
               </div>
             </div>
           </div>
