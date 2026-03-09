@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderProfileForm from "@/components/FounderProfileForm";
 import FounderOnboarding from "@/components/FounderOnboarding";
-import FounderMatchIntro from "@/components/FounderMatchIntro";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
