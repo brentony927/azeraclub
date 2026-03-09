@@ -104,7 +104,12 @@ export default function FounderCard({
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground truncate">{name}</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-semibold text-foreground truncate">{name}</h3>
+              {founderLevel && (
+                <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0">{founderLevel}</Badge>
+              )}
+            </div>
             {building && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{building}</p>}
             {country && (
               <div className="flex items-center gap-1 mt-1">
