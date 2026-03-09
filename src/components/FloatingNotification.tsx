@@ -73,7 +73,7 @@ export default function FloatingNotification() {
           animate={{ opacity: 1, y: 0, x: 0 }}
           exit={{ opacity: 0, y: 40 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="fixed bottom-20 left-4 z-50 max-w-xs cursor-pointer"
+          className="fixed bottom-28 md:bottom-20 left-4 z-50 max-w-xs cursor-pointer"
           onClick={handleClick}
         >
           <div className="bg-card border border-border/60 rounded-xl shadow-lg p-4 flex items-start gap-3 backdrop-blur-xl">

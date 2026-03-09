@@ -17,7 +17,7 @@ export default function DevelopmentBanner() {
   };
 
   return (
-    <div className="relative rounded-lg border-2 border-destructive bg-destructive/15 p-4 mb-4 animate-pulse">
+    <div className="relative rounded-lg border-2 border-destructive bg-destructive/15 p-4 mb-4 dev-banner-pulse">
       <button
         onClick={handleDismiss}
         className="absolute top-2 right-2 p-1 rounded-md text-destructive hover:bg-destructive/20 transition-colors"

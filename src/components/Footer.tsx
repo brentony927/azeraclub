@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAzeraLogo } from "@/hooks/useAzeraLogo";
 
 const navLinks = [
-  { label: "Início", href: "/" },
+  { label: "Início", href: "/dashboard" },
   { label: "FAQ", href: "/faq" },
   { label: "Contacto", href: "/contact" },
 ];
