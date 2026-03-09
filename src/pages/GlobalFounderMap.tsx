@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Globe, MapPin, Search, Navigation, Filter, X, Users, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { INDUSTRY_OPTIONS, SKILL_OPTIONS, LOOKING_FOR_OPTIONS, COMMITMENT_OPTIONS } from "@/data/founderConstants";
+import { sendNotification } from "@/lib/sendNotification";
 import FeatureLock from "@/components/FeatureLock";
 
 // Fix default marker icon
