@@ -61,7 +61,10 @@ export default function Layout() {
               )}
               <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" />
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-1">
+              {isPremium && <BackgroundToggle mode={bgMode} onToggle={setBgMode} />}
+              <ThemeToggle />
+            </div>
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <DevelopmentBanner />
