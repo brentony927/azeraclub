@@ -61,6 +61,9 @@ export default function FounderProfile() {
   const [currentVentureTeamSize, setCurrentVentureTeamSize] = useState(0);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
 
+  // Founder Score hook — we'll set userId once profile loads
+  const [profileUserId, setProfileUserId] = useState<string | undefined>();
+  const { score: founderScore, loading: scoreLoading, recalculate } = useFounderScore(profileUserId);
   useEffect(() => {
     if (!id) return;
     const load = async () => {
