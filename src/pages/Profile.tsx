@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock } from "lucide-react";
+import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock, Trash2, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,17 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   SKILL_OPTIONS, INDUSTRY_OPTIONS, LOOKING_FOR_OPTIONS,
   COMMITMENT_OPTIONS, COMMITMENT_LABELS, CONTINENT_OPTIONS, BUSINESS_INTERESTS,
