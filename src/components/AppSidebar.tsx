@@ -48,6 +48,7 @@ import {
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAzeraLogo } from "@/hooks/useAzeraLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
