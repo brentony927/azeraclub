@@ -55,7 +55,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
     // Debounce: skip if checked < 30s ago (unless first load)
     const now = Date.now();
-    if (lastCheckRef.current && now - lastCheckRef.current < 30000) {
+    if (lastCheckRef.current && now - lastCheckRef.current < 60000) {
       setLoading(false);
       return;
     }
