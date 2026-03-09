@@ -106,13 +106,24 @@ export default function GlobalFounderMap() {
     setLoading(true);
     const { data, error } = await supabase
       .from("founder_profiles")
-      .select("id, user_id, name, avatar_url, skills, industry, looking_for, building, commitment, country, city, latitude, longitude, reputation_score, is_verified, username, interests")
-      .eq("is_published", true)
-      .not("latitude", "is", null)
-      .not("longitude", "is", null);
+      .select("id, user_id, name, avatar_url, skills, industry, looking_for, building, commitment, country, city, reputation_score, is_verified, username, interests")
+      .eq("is_published", true);
 
     if (!error && data) {
-      setFounders(data as FounderMapProfile[]);
+      // Fetch rounded coordinates for each founder with location
+      const foundersWithCoords: FounderMapProfile[] = [];
+      for (const f of data) {
+        const { data: coordData } = await supabase.rpc("get_rounded_coordinates", { p_user_id: f.user_id });
+        const coords = coordData?.[0];
+        if (coords?.latitude && coords?.longitude) {
+          foundersWithCoords.push({
+            ...f,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          } as FounderMapProfile);
+        }
+      }
+      setFounders(foundersWithCoords);
     }
 
     if (user) {
