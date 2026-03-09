@@ -207,7 +207,7 @@ export default function Login() {
             </div>
 
             <div className="text-right">
-              <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+              <Link to="/forgot-password" className="text-xs text-foreground hover:underline">
                 Esqueceu a senha?
               </Link>
             </div>
