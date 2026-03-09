@@ -89,6 +89,17 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
   }, [user]);
 
+  // Force immediate refresh after Stripe checkout success (bypass debounce)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("checkout") === "success") {
+      lastCheckRef.current = 0; // reset debounce
+      refresh();
+      // Clean URL
+      window.history.replaceState({}, "", location.pathname);
+    }
+  }, [location.search, refresh]);
+
   useEffect(() => { refresh(); }, [refresh]);
 
   useEffect(() => {
