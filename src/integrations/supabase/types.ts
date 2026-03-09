@@ -825,6 +825,7 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string | null
+          has_seen_onboarding: boolean
           id: string
           interests: string[] | null
           location: string | null
@@ -840,6 +841,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          has_seen_onboarding?: boolean
           id?: string
           interests?: string[] | null
           location?: string | null
@@ -855,6 +857,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          has_seen_onboarding?: boolean
           id?: string
           interests?: string[] | null
           location?: string | null
