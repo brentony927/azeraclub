@@ -1,38 +1,46 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Corrigir Recebimento de Plano Após Pagamento
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Problemas Encontrados
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Existem **3 bugs críticos** que impedem o utilizador de receber o plano após pagar:
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+### 1. Product IDs desalinhados (BUG PRINCIPAL)
+A página de Pricing usa product IDs **novos** para o checkout Stripe:
+- Pro: `prod_U6wptLNnilCLi5`
+- Business: `prod_U6wq54yOsZU99H`
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+Mas o `SubscriptionContext` mapeia product IDs **antigos**:
+- `prod_U62xpa0u9xDiJO` → pro
+- `prod_U62xPut1mfd9CG` → business
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+Resultado: Stripe devolve o product_id correto, mas o frontend não o reconhece e assume "free".
+
+### 2. URL de sucesso errada
+O `create-checkout` redireciona para `/` (landing page) após pagamento. Deveria ir para `/dashboard` para o utilizador ver o plano ativo.
+
+### 3. Sem refresh imediato pós-checkout
+Quando o utilizador volta do Stripe, não há refresh forçado da assinatura. O debounce de 30s pode atrasar a detecção.
+
+---
+
+## Solução
+
+### `src/contexts/SubscriptionContext.tsx`
+- Adicionar os product IDs novos ao `PRODUCT_MAP` (manter os antigos também para retrocompatibilidade)
+- Adicionar handling do typo `"bussiness"` (presente na base de dados) mapeando para `"business"`
+- Detectar `?checkout=success` na URL e forçar refresh imediato (bypass do debounce)
+
+### `supabase/functions/create-checkout/index.ts`
+- Mudar `success_url` de `/` para `/dashboard?checkout=success`
+
+### `supabase/functions/check-subscription/index.ts`
+- Atualizar `PLAN_PRODUCT_MAP` com os product IDs novos para consistência
+
+| Ficheiro | Alteração |
+|---|---|
+| `src/contexts/SubscriptionContext.tsx` | Adicionar novos product IDs + handling "bussiness" + refresh pós-checkout |
+| `supabase/functions/create-checkout/index.ts` | success_url → `/dashboard?checkout=success` |
+| `supabase/functions/check-subscription/index.ts` | Atualizar PLAN_PRODUCT_MAP com novos IDs |
+
