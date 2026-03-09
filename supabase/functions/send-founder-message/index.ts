@@ -1,0 +1,127 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const WEEKLY_LIMIT = 10;
+
+function getWeekStart(): string {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(now.setDate(diff));
+  return monday.toISOString().split("T")[0];
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(
+      authHeader.replace("Bearer ", "")
+    );
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userId = claimsData.claims.sub;
+    const body = await req.json();
+    const { to_user_id, content, is_founder } = body;
+
+    if (!to_user_id || !content) {
+      return new Response(JSON.stringify({ error: "Missing to_user_id or content" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (to_user_id === userId) {
+      return new Response(JSON.stringify({ error: "Cannot message yourself" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Sanitize content
+    const safeContent = String(content).slice(0, 2000);
+
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const serviceClient = createClient(supabaseUrl, serviceKey);
+
+    // Check weekly limit for Founder tier
+    if (is_founder) {
+      const weekStart = getWeekStart();
+      const { data: limitData } = await serviceClient
+        .from("weekly_message_limits")
+        .select("message_count")
+        .eq("user_id", userId)
+        .eq("week_start", weekStart)
+        .maybeSingle();
+
+      const currentCount = limitData?.message_count || 0;
+
+      if (currentCount >= WEEKLY_LIMIT) {
+        return new Response(JSON.stringify({ error: "Weekly message limit reached", limit_reached: true }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Atomically increment or insert the count
+      await serviceClient.from("weekly_message_limits").upsert({
+        user_id: userId,
+        week_start: weekStart,
+        message_count: currentCount + 1,
+      }, { onConflict: "user_id,week_start" });
+    }
+
+    // Insert the message
+    const { data: inserted, error: insertError } = await serviceClient
+      .from("founder_messages")
+      .insert({
+        from_user_id: userId,
+        to_user_id,
+        content: safeContent,
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      return new Response(JSON.stringify({ error: "Failed to send message" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ message: inserted }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("[send-founder-message]", error);
+    return new Response(JSON.stringify({ error: "Failed to send message" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});
