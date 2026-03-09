@@ -64,8 +64,9 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       const { data } = await supabase.functions.invoke("check-subscription");
       let newPlan: PlanTier = "free";
       if (data?.manual_plan) {
-        // Map legacy "elite" to "business"
-        const mp = data.manual_plan === "elite" ? "business" : data.manual_plan;
+        // Map legacy "elite" and typo "bussiness" to "business"
+        let mp = data.manual_plan;
+        if (mp === "elite" || mp === "bussiness") mp = "business";
         newPlan = mp as PlanTier;
       } else if (data?.subscribed && data.product_id) {
         newPlan = PRODUCT_MAP[data.product_id] || "free";
