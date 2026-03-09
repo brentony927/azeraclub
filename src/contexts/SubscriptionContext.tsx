@@ -18,6 +18,9 @@ interface SubscriptionContextType {
 const TIER_ORDER: PlanTier[] = ["free", "basic", "pro", "business"];
 
 const PRODUCT_MAP: Record<string, PlanTier> = {
+  prod_U6wptLNnilCLi5: "pro",
+  prod_U6wq54yOsZU99H: "business",
+  // Legacy IDs for backwards compatibility
   prod_U62xpa0u9xDiJO: "pro",
   prod_U62xPut1mfd9CG: "business",
 };
