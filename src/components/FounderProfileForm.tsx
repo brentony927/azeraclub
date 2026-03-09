@@ -14,6 +14,7 @@ import {
 
 interface FounderFormData {
   name: string;
+  username: string;
   age: number | null;
   country: string;
   city: string;
