@@ -257,6 +257,12 @@ export function AppSidebar() {
   };
   const azeraLogo = useAzeraLogo();
 
+  const { setOpenMobile } = useSidebar();
+
+  const handleNavClick = () => {
+    setOpenMobile(false);
+  };
+
   const renderItems = (items: NavItem[]) =>
   items.map((navItem) => {
     const isActive =
@@ -270,6 +276,7 @@ export function AppSidebar() {
             <NavLink
             to={navItem.url}
             end={navItem.url === "/"}
+            onClick={handleNavClick}
             className={`flex items-center gap-3 px-3 sidebar-nav-item ${
             isActive ? "sidebar-nav-item-active" : ""} ${navItem.url === "/planos" ? "sidebar-plans-glow" : ""}`
             }>
