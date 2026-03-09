@@ -710,8 +710,10 @@
 }
 .pro-theme .elite-header { border-bottom: 1px solid hsl(152 40% 50% / 0.3); }
 .business-theme .elite-header { border-bottom: 1px solid hsl(42 40% 60% / 0.35); }
-.dark.pro-theme .elite-header { border-bottom-color: hsl(152 25% 20% / 0.5); background: hsl(152 6% 5% / 0.7); }
-.dark.business-theme .elite-header { border-bottom-color: hsl(42 25% 20% / 0.5); background: hsl(35 6% 4% / 0.7); }
+[data-sidebar-theme="dark"] .pro-theme .elite-header,
+.dark .pro-theme .elite-header { border-bottom-color: hsl(152 25% 20% / 0.5); background: hsl(152 6% 5% / 0.7); }
+[data-sidebar-theme="dark"] .business-theme .elite-header,
+.dark .business-theme .elite-header { border-bottom-color: hsl(42 25% 20% / 0.5); background: hsl(35 6% 4% / 0.7); }
 
 /* ── Scrollbar ── */
 .dark.pro-theme ::-webkit-scrollbar-track { background: hsl(152, 6%, 5%) !important; }
