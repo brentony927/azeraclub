@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Rocket, CalendarDays, Brain, Users, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const SLIDES = [
   {
@@ -44,8 +45,9 @@ interface OnboardingTutorialProps {
 export default function OnboardingTutorial({ userId, onComplete }: OnboardingTutorialProps) {
   const [step, setStep] = useState(0);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     localStorage.setItem(`onboarding-tutorial-${userId}`, "true");
+    await supabase.from("profiles").update({ has_seen_onboarding: true }).eq("user_id", userId);
     onComplete();
   };
 
