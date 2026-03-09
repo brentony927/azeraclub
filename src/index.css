@@ -226,19 +226,19 @@
 
   /* ====== Gradients ====== */
   .moss-gradient {
-    background: linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%), hsl(152 50% 25%));
+    background: linear-gradient(135deg, hsl(0 0% 18%), hsl(0 0% 28%), hsl(0 0% 14%));
     @apply rounded-[14px];
   }
 
   .moss-text {
-    background: linear-gradient(135deg, hsl(152 38% 30%), hsl(160 50% 38%));
+    background: linear-gradient(135deg, hsl(0 0% 20%), hsl(0 0% 30%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .dark .moss-text {
-    background: linear-gradient(135deg, hsl(152 60% 55%), hsl(170 50% 50%));
+    background: linear-gradient(135deg, hsl(0 0% 85%), hsl(0 0% 75%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
