@@ -48,6 +48,7 @@ import {
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAzeraLogo } from "@/hooks/useAzeraLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -282,20 +283,28 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50">
       <SidebarHeader className="p-4 border-b border-border/30">
-        <div className="flex items-center gap-3">
-          <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
-          {!collapsed &&
-          <div>
-              <h2 className="text-lg font-serif font-bold azera-brand-text tracking-wider">AZERA CLUB</h2>
-              <div className="flex items-center gap-2">
-                <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
-                <span className="badge-plan text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider">
-                  {plan === "free" || plan === "basic" ? "FOUNDER" : plan.toUpperCase()}
-                </span>
+        {!collapsed ? (
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
+              <div>
+                <h2 className="text-lg font-serif font-bold azera-brand-text tracking-wider">AZERA CLUB</h2>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">Inteligência & Networking</p>
+                  <span className="badge-plan text-[9px] px-1.5 py-0.5 rounded-full font-bold tracking-wider">
+                    {plan === "free" || plan === "basic" ? "FOUNDER" : plan.toUpperCase()}
+                  </span>
+                </div>
               </div>
             </div>
-          }
-        </div>
+            <ThemeToggle size="compact" />
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
+            <ThemeToggle size="compact" />
+          </div>
+        )}
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-3">
