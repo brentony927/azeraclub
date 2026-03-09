@@ -6,7 +6,6 @@ import FounderCard from "@/components/FounderCard";
 import FounderCardSkeleton from "@/components/FounderCardSkeleton";
 import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
-import FounderMatchIntro from "@/components/FounderMatchIntro";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import UpgradeTrigger from "@/components/UpgradeTrigger";
 import { Input } from "@/components/ui/input";
