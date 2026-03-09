@@ -271,7 +271,7 @@ export function AppSidebar() {
             to={navItem.url}
             end={navItem.url === "/"}
             className={`flex items-center gap-3 px-3 sidebar-nav-item ${
-            isActive ? "sidebar-nav-item-active" : ""}`
+            isActive ? "sidebar-nav-item-active" : ""} ${navItem.url === "/planos" ? "sidebar-plans-glow" : ""}`
             }>
             
               <navItem.icon className="h-4 w-4 sidebar-nav-icon" />
