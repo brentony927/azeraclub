@@ -408,32 +408,7 @@
     position: relative;
     overflow: hidden;
   }
-  .animated-bg::before {
-    content: '';
-    position: absolute;
-    inset: -50%;
-    background: 
-      radial-gradient(ellipse 600px 600px at 20% 50%, hsl(0 0% 15% / 0.40) 0%, transparent 70%),
-      radial-gradient(ellipse 800px 400px at 80% 20%, hsl(0 0% 14% / 0.35) 0%, transparent 70%),
-      radial-gradient(ellipse 400px 800px at 50% 80%, hsl(0 0% 18% / 0.38) 0%, transparent 70%);
-    animation: bgFloat 20s ease-in-out infinite;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .dark .animated-bg::before {
-    background: 
-      radial-gradient(ellipse 600px 600px at 20% 50%, hsl(0 0% 30% / 0.22) 0%, transparent 70%),
-      radial-gradient(ellipse 800px 400px at 80% 20%, hsl(0 0% 25% / 0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 400px 800px at 50% 80%, hsl(0 0% 28% / 0.20) 0%, transparent 70%);
-  }
-
-  @keyframes bgFloat {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(2%, -3%) rotate(1deg); }
-    50% { transform: translate(-1%, 2%) rotate(-0.5deg); }
-    75% { transform: translate(3%, 1%) rotate(0.5deg); }
-  }
+  /* animated-bg::before removed — redundant with page-bg-orbs */
 
   /* ====== Chatbot pulse ring ====== */
   .chatbot-pulse {
