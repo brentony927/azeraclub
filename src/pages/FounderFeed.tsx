@@ -384,6 +384,7 @@ export default function FounderFeed() {
                   isPending={connections[p.user_id] === "pending"}
                   matchScore={p.matchScore}
                   username={p.username}
+                  founderLevel={founderLevels[p.user_id] || null}
                 />
               ))}
             </div>
