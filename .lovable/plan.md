@@ -1,38 +1,56 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Tornar o Site Mais Fluido
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### Problemas Identificados
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+1. **`backdrop-filter: blur(40px)`** em TODOS os `.glass-card` — operação de GPU muito cara, especialmente com múltiplos cards na tela
+2. **`animated-bg::before`** com `inset: -50%` — elemento gigante (3x a tela) animando continuamente
+3. **3 orbs de fundo** com `filter: blur(80px)` + animação de 20-25s — composição pesada
+4. **PageTransition** usa `filter: blur(6px)` na entrada — força repaint durante navegação
+5. **ScrollReveal** inicia com `filter: blur(10px)` e `scale(0.95)` — pesado ao scrollar
+6. **EliteBackground** renderiza 36 partículas + 5 orbs animados (PRO/Business)
+7. **Falta de `will-change`** nos elementos animados base
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+### Alterações
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+#### 1. `src/index.css` — Otimizar CSS
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+| Elemento | Antes | Depois |
+|----------|-------|--------|
+| `.glass-card` backdrop-filter | `blur(40px) saturate(1.6)` | `blur(16px) saturate(1.2)` |
+| `.page-bg-orb` filter | `blur(80px)` | `blur(60px)` + `will-change: transform` |
+| `.page-bg-orb` opacity | `0.06` | `0.04` (mais sutil = menos composição) |
+| `.animated-bg::before` inset | `-50%` | Remover completamente (redundante com orbs) |
+| `.glass-card-hover:hover` | `translateY(-2px) scale(1.005)` | `translateY(-1px)` apenas |
+| Adicionar | — | `will-change: transform` em elementos animados |
+| `.card-shine` | Rotação contínua de conic-gradient | Simplificar para opacity transition |
+
+#### 2. `src/components/PageTransition.tsx` — Remover blur
+
+- Remover `filter: "blur(6px)"` / `"blur(4px)"` das animações
+- Reduzir duração de `0.45s` para `0.3s`
+- Manter apenas `opacity` + `y` (GPU-friendly)
+
+#### 3. `src/components/ScrollReveal.tsx` — Simplificar
+
+- Remover `filter: "blur(10px)"` e `scale: 0.95`
+- Manter apenas `opacity` + `y` com duração menor (`0.5s` vs `0.8s`)
+
+#### 4. `src/components/EliteBackground.tsx` — Reduzir partículas
+
+- Reduzir de 36 para 16 partículas
+- Adicionar `will-change: transform, opacity` inline
+
+#### 5. `src/components/Layout.tsx` — Remover animated-bg redundante
+
+- Remover a div `.animated-bg::before` (já temos os 3 orbs que fazem o mesmo efeito)
+- Ou remover classe `animated-bg` do wrapper
+
+### Resultado Esperado
+- Menos layers de composição GPU (backdrop-filter mais leve)
+- Menos elementos animados simultâneos
+- Transições de página sem blur (operação cara)
+- Scroll mais suave sem blur nos reveals
+- ~50% menos partículas no background premium
+
