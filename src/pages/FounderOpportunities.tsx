@@ -277,12 +277,27 @@ export default function FounderOpportunities() {
             <Card key={opp.id} className="border-border/50 bg-card/80 backdrop-blur-sm">
               <CardContent className="p-5">
                 <div className="flex justify-between items-start">
-                  <h3 className="font-semibold text-foreground">{opp.title}</h3>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{opp.title}</h3>
+                    {authorNames[opp.user_id] && (
+                      <p className="text-xs text-muted-foreground mt-0.5">Publicado por {authorNames[opp.user_id]}</p>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     {opp.equity_available && (
                       <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                         <DollarSign className="h-3 w-3 mr-0.5" /> Equity
                       </Badge>
+                    )}
+                    {user && opp.user_id !== user.id && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-primary"
+                        onClick={() => navigate("/founder-messages", { state: { selectedUser: opp.user_id, selectedUserName: authorNames[opp.user_id] || "Founder" } })}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                      </Button>
                     )}
                     {opp.user_id === user?.id && (
                       <AlertDialog>
