@@ -56,7 +56,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden landing-monochrome">
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <div className="absolute inset-0 z-0">
