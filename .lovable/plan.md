@@ -1,54 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Auditoria de Segurança Completa - Azera Club
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Problemas Encontrados
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### 1. CRITICO: Journal.tsx usa anon key em vez do token do utilizador
-Em `src/pages/Journal.tsx` (linha 59), a chamada à AI usa `VITE_SUPABASE_PUBLISHABLE_KEY` como Bearer token em vez do access token do utilizador autenticado. Isso significa:
-- A edge function `azera-ai` vai rejeitar com 401 (getClaims falha com anon key)
-- OU pior: se não rejeitar, qualquer pessoa não autenticada poderia chamar a função
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**Correção:** Usar `supabase.auth.getSession()` para obter o token real, como feito em todos os outros componentes (AI.tsx, AzeraChatbot.tsx, etc.).
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### 2. BAIXO: Email visivel na sidebar
-Em `src/components/AppSidebar.tsx` (linha 422), o email do utilizador é exibido na sidebar. Isso é comportamento padrão e aceitavel (apenas o proprio utilizador ve), mas vale confirmar que nao aparece em areas publicas.
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-### 3. OK: Edge functions validam auth corretamente
-- `azera-ai`: Usa `getClaims()` para validar token
-- `check-subscription`: Usa `getUser()` com retry
-- `create-checkout` e `customer-portal`: Validam auth header
-- `cancel-subscription`: Valida auth header
-
-### 4. OK: Nenhum secret exposto no frontend
-- Apenas `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` (publicas por design)
-- Secrets privados (STRIPE_SECRET_KEY, LOVABLE_API_KEY, etc.) apenas em edge functions via `Deno.env.get()`
-
-### 5. OK: RLS policies robustas
-- Todas as tabelas com dados de utilizador tem RLS ativo com `user_id = auth.uid()`
-- Nenhuma tabela com PII exposta publicamente
-- `founder_profiles` corretamente filtra por `is_published = true` para SELECT publico
-
-### 6. OK: Sem console.log no frontend (nenhum encontrado)
-
-### 7. OK: Sem dangerouslySetInnerHTML com input do utilizador (apenas chart.tsx com CSS gerado internamente)
-
-### 8. OK: localStorage/sessionStorage usados apenas para preferencias UI, nada sensivel
-
----
-
-## Plano de Correção
-
-| Ficheiro | Alteração |
-|---|---|
-| `src/pages/Journal.tsx` | Substituir `VITE_SUPABASE_PUBLISHABLE_KEY` pelo access token real do utilizador via `supabase.auth.getSession()` |
-
-### Detalhe Tecnico
-
-Em `src/pages/Journal.tsx`, a funcao `analyzeEntry` sera corrigida para:
-1. Obter a sessao atual com `const { data: { session } } = await supabase.auth.getSession()`
-2. Usar `session?.access_token` no header Authorization
-3. Rejeitar se nao houver sessao ativa
-
-Todas as outras paginas (AI.tsx, AzeraChatbot.tsx, ContentStrategy.tsx, etc.) ja usam o token correto - apenas Journal.tsx tem este bug.
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
