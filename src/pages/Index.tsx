@@ -82,6 +82,10 @@ export default function Index() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [aiTip] = useState(() => AI_TIPS[Math.floor(Math.random() * AI_TIPS.length)]);
   const [insight] = useState(() => DAILY_INSIGHTS[Math.floor(Math.random() * DAILY_INSIGHTS.length)]);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    if (!user) return false;
+    return !localStorage.getItem(`onboarding-tutorial-${user.id}`);
+  });
 
   const displayName =
     user?.user_metadata?.full_name ||
