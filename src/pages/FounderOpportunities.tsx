@@ -119,6 +119,18 @@ export default function FounderOpportunities() {
     }));
   };
 
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    const { error } = await supabase.from("founder_opportunities").delete().eq("id", id);
+    setDeletingId(null);
+    if (error) {
+      toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
+    } else {
+      setOpps(prev => prev.filter(o => o.id !== id));
+      toast({ title: "Oportunidade excluída ✓" });
+    }
+  };
+
   const isVideo = (url: string) => /\.(mp4|webm|mov|avi)$/i.test(url);
 
   if (loading) {
