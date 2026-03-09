@@ -299,28 +299,35 @@ export default function Index() {
       <motion.div variants={item} className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <CalendarDays className="h-4 w-4" /> Sua Agenda
+            <CalendarDays className="h-4 w-4 text-primary" /> Sua Agenda
           </h2>
-          <button onClick={() => navigate("/agenda")} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+          <button onClick={() => navigate("/agenda")} className="text-xs text-primary hover:text-foreground flex items-center gap-1 transition-colors font-medium">
             Ver tudo <ArrowRight className="h-3 w-3" />
           </button>
         </div>
 
         {todayTasks.length === 0 ? (
-          <Card className="p-6 text-center">
+          <Card className="glass-card border-border/20 p-8 text-center space-y-2">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+              <CalendarDays className="h-5 w-5 text-primary" />
+            </div>
             <p className="text-muted-foreground text-sm">Nenhuma tarefa para hoje.</p>
-            <button onClick={() => navigate("/agenda")} className="text-xs text-accent hover:underline mt-1">Adicionar tarefa</button>
+            <button onClick={() => navigate("/agenda")} className="text-xs text-primary hover:underline font-medium">Adicionar tarefa</button>
           </Card>
         ) : (
           <div className="space-y-2">
             {todayTasks.map((t) => (
-              <Card key={t.id} className={`transition-all ${t.status === "done" ? "opacity-50" : "hover:border-primary/20"}`}>
+              <Card key={t.id} className={`glass-card border-border/20 transition-all group ${t.status === "done" ? "opacity-50" : "hover:border-primary/20"}`}>
                 <CardContent className="p-3 flex items-center gap-3">
+                  <div className={`w-1.5 h-8 rounded-full shrink-0 ${
+                    t.type === "meeting" ? "bg-blue-500/60" : 
+                    t.type === "health" ? "bg-red-500/60" : "bg-primary/40"
+                  }`} />
                   <Checkbox checked={t.status === "done"} onCheckedChange={() => toggleTask(t)} />
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm ${t.status === "done" ? "line-through text-muted-foreground" : "font-medium"}`}>{t.title}</p>
                   </div>
-                  {t.time && <span className="text-xs text-muted-foreground">{t.time.slice(0, 5)}</span>}
+                  {t.time && <span className="text-xs text-muted-foreground font-mono">{t.time.slice(0, 5)}</span>}
                 </CardContent>
               </Card>
             ))}
@@ -331,26 +338,29 @@ export default function Index() {
       {/* Upcoming Events */}
       <motion.div variants={item} className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-          <Handshake className="h-4 w-4" /> Eventos no Radar
+          <Handshake className="h-4 w-4 text-primary" /> Eventos no Radar
         </h2>
 
         {upcomingEvents.length === 0 ? (
-          <Card className="p-6 text-center">
+          <Card className="glass-card border-border/20 p-8 text-center space-y-2">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
+              <Handshake className="h-5 w-5 text-primary" />
+            </div>
             <p className="text-muted-foreground text-sm">Nenhum evento próximo.</p>
           </Card>
         ) : (
           <div className="space-y-2">
             {upcomingEvents.map((ev) => (
-              <Card key={ev.id} className="hover:border-primary/20 transition-colors">
+              <Card key={ev.id} className="glass-card border-border/20 hover:border-primary/20 transition-all">
                 <CardContent className="p-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                    <CalendarDays className="h-4 w-4 text-accent" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <CalendarDays className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{ev.title}</p>
                     {ev.location && <p className="text-xs text-muted-foreground truncate">{ev.location}</p>}
                   </div>
-                  {ev.date && <span className="text-xs text-muted-foreground">{format(new Date(ev.date + "T12:00:00"), "dd MMM", { locale: ptBR })}</span>}
+                  {ev.date && <span className="text-xs text-muted-foreground font-mono">{format(new Date(ev.date + "T12:00:00"), "dd MMM", { locale: ptBR })}</span>}
                 </CardContent>
               </Card>
             ))}
