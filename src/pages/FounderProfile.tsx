@@ -80,6 +80,7 @@ export default function FounderProfile() {
       }
       if (!prof) { setLoading(false); return; }
       setProfile(prof);
+      setProfileUserId(prof.user_id);
 
       // Record visit in profile_visits + increment views (dedup: 1 per visitor per day)
       if (user && prof.user_id !== user.id) {
