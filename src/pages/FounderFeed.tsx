@@ -287,10 +287,10 @@ export default function FounderFeed() {
               {isPro ? (
                 <div>
                   <Label className="text-xs text-muted-foreground">Continente</Label>
-                  <Select value={continentFilter} onValueChange={setContinentFilter}>
+                  <Select value={continentFilter || "all"} onValueChange={v => setContinentFilter(v === "all" ? "" : v)}>
                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos</SelectItem>
+                      <SelectItem value="all">Todos</SelectItem>
                       {CONTINENT_OPTIONS.map(c => (
                         <SelectItem key={c} value={c}>{c}</SelectItem>
                       ))}
