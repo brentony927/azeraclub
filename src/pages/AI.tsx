@@ -507,7 +507,7 @@ export default function AI() {
 
         {/* Bottom input (when chatting) */}
         {hasMessages && (
-          <div className="px-4 py-3 border-t border-border/30">
+          <div className="px-4 py-3 border-t border-border/30 pb-safe mb-16 md:mb-0">
             {isLimitReached ? (
               <div className="max-w-3xl mx-auto p-3 rounded-xl border border-[hsl(42,50%,56%)]/30 bg-[hsl(42,50%,56%)]/10 text-center">
                 <p className="text-xs font-medium text-foreground mb-1">Limite diário atingido 🔒</p>
