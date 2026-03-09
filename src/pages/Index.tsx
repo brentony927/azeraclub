@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
