@@ -23,6 +23,7 @@ interface FounderCardProps {
   isPending?: boolean;
   matchScore?: number;
   username?: string | null;
+  founderLevel?: string | null;
 }
 
 export default function FounderCard({
