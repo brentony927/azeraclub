@@ -68,6 +68,7 @@ export default function Layout() {
         </div>
       </div>
       <MobileBottomNav />
+      <FloatingNotification />
       <AzeraChatbot />
     </SidebarProvider>
   );
