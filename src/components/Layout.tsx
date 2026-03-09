@@ -12,10 +12,12 @@ import { AnimatePresence } from "framer-motion";
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
+import BackgroundToggle, { useBackgroundMode } from "@/components/BackgroundToggle";
 
 export default function Layout() {
   const { plan } = useSubscription();
   const isPremium = plan === "pro" || plan === "business";
+  const [bgMode, setBgMode] = useBackgroundMode();
   const themeClass = plan === "business" ? "business-theme" : plan === "pro" ? "pro-theme" : "";
   const backBtnClass = plan === "business" ? "business-back-btn" : plan === "pro" ? "pro-back-btn" : "text-muted-foreground hover:text-foreground hover:bg-accent";
   const location = useLocation();
@@ -26,12 +28,16 @@ export default function Layout() {
     <SidebarProvider>
       <div className={`min-h-screen flex w-full animated-bg ${themeClass}`}>
         {/* Minimalist background animation */}
-        <div className="page-bg-animation">
-          <div className="page-bg-orb page-bg-orb-1" />
-          <div className="page-bg-orb page-bg-orb-2" />
-          <div className="page-bg-orb page-bg-orb-3" />
-        </div>
-        {isPremium && <EliteBackground plan={plan} />}
+        {bgMode === "animated" && (
+          <>
+            <div className="page-bg-animation">
+              <div className="page-bg-orb page-bg-orb-1" />
+              <div className="page-bg-orb page-bg-orb-2" />
+              <div className="page-bg-orb page-bg-orb-3" />
+            </div>
+            {isPremium && <EliteBackground plan={plan} />}
+          </>
+        )}
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header
@@ -55,7 +61,10 @@ export default function Layout() {
               )}
               <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" />
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-1">
+              {isPremium && <BackgroundToggle mode={bgMode} onToggle={setBgMode} />}
+              <ThemeToggle />
+            </div>
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <DevelopmentBanner />
