@@ -304,8 +304,9 @@
   .page-bg-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.06;
+    filter: blur(60px);
+    opacity: 0.04;
+    will-change: transform;
     animation: bgOrbFloat 20s ease-in-out infinite;
   }
 
