@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/sendNotification";
 
 interface Notification {
   id: string;
