@@ -84,7 +84,7 @@ export default function Login() {
           <div className="text-center space-y-2">
             <div className="relative inline-block">
               <img src={azeraLogo} alt="AZERA" className="w-14 h-14 rounded-xl object-contain mx-auto" />
-              <div className="absolute inset-0 rounded-xl animate-glow-pulse pointer-events-none" />
+              
             </div>
             <h1 className="text-2xl font-serif font-bold moss-text">AZERA CLUB</h1>
             <p className="text-sm text-muted-foreground">
