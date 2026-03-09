@@ -10,101 +10,101 @@
 
 @layer base {
   :root {
-    --background: 150 10% 99%;
-    --foreground: 150 5% 4%;
+    --background: 0 0% 99%;
+    --foreground: 0 0% 4%;
 
-    --card: 150 8% 99%;
-    --card-foreground: 150 5% 4%;
+    --card: 0 0% 99%;
+    --card-foreground: 0 0% 4%;
 
-    --popover: 150 8% 99%;
-    --popover-foreground: 150 5% 4%;
+    --popover: 0 0% 99%;
+    --popover-foreground: 0 0% 4%;
 
-    --primary: 152 38% 20%;
+    --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 150 8% 95%;
-    --secondary-foreground: 150 5% 9%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 150 6% 94%;
-    --muted-foreground: 150 3% 40%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 152 38% 36%;
+    --accent: 0 0% 15%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 150 5% 88%;
-    --input: 150 5% 88%;
-    --ring: 152 38% 36%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 0 0% 30%;
 
     --radius: 0.75rem;
 
-    --chart-1: 152 60% 45%;
-    --chart-2: 160 50% 40%;
-    --chart-3: 170 45% 35%;
-    --chart-4: 180 40% 30%;
-    --chart-5: 190 35% 25%;
+    --chart-1: 0 0% 20%;
+    --chart-2: 0 0% 35%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 65%;
+    --chart-5: 0 0% 80%;
 
-    --sidebar-background: 150 8% 97%;
-    --sidebar-foreground: 150 5% 4%;
-    --sidebar-primary: 152 38% 20%;
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 0 0% 4%;
+    --sidebar-primary: 0 0% 9%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 150 8% 94%;
-    --sidebar-accent-foreground: 152 38% 20%;
-    --sidebar-border: 150 5% 88%;
-    --sidebar-ring: 152 38% 36%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 0 0% 30%;
 
-    --section-light: 150 8% 95%;
-    --section-dark-text: 150 5% 9%;
+    --section-light: 0 0% 95%;
+    --section-dark-text: 0 0% 9%;
   }
 
   .dark {
-    --background: 150 6% 5%;
-    --foreground: 150 3% 96%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 96%;
 
-    --card: 150 5% 8%;
-    --card-foreground: 150 3% 96%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 150 5% 8%;
-    --popover-foreground: 150 3% 96%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 152 60% 55%;
-    --primary-foreground: 150 6% 4%;
+    --primary: 0 0% 85%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 150 5% 13%;
-    --secondary-foreground: 150 3% 96%;
+    --secondary: 0 0% 13%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 150 5% 14%;
-    --muted-foreground: 150 3% 55%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 152 60% 45%;
-    --accent-foreground: 150 6% 4%;
+    --accent: 0 0% 70%;
+    --accent-foreground: 0 0% 4%;
 
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 150 5% 16%;
-    --input: 150 5% 16%;
-    --ring: 152 60% 45%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 70%;
 
-    --chart-1: 152 60% 55%;
-    --chart-2: 160 50% 50%;
-    --chart-3: 170 45% 45%;
-    --chart-4: 180 40% 40%;
-    --chart-5: 190 35% 35%;
+    --chart-1: 0 0% 80%;
+    --chart-2: 0 0% 65%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 35%;
+    --chart-5: 0 0% 20%;
 
-    --sidebar-background: 150 6% 4%;
-    --sidebar-foreground: 150 3% 96%;
-    --sidebar-primary: 152 60% 55%;
-    --sidebar-primary-foreground: 150 6% 4%;
-    --sidebar-accent: 150 5% 13%;
-    --sidebar-accent-foreground: 152 60% 55%;
-    --sidebar-border: 150 5% 14%;
-    --sidebar-ring: 152 60% 45%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 0 0% 85%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 13%;
+    --sidebar-accent-foreground: 0 0% 85%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 0 0% 70%;
 
-    --section-light: 150 5% 13%;
-    --section-dark-text: 150 3% 96%;
+    --section-light: 0 0% 13%;
+    --section-dark-text: 0 0% 96%;
   }
 }
 

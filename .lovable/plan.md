@@ -1,55 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Tema Preto & Branco para Founders (Plano Free)
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Problema
-Atualmente o tema base (Founder/Free) usa tons de verde (hue 150-152) nos tokens CSS. O utilizador quer que Founders tenham apenas **preto e branco** — sem cores — mantendo animações e efeitos iguais.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-## Solução
-Alterar os tokens CSS base (`:root` e `.dark`) para **escala de cinza pura** (hue 0, saturation 0%), removendo qualquer toque de verde. Os temas PRO e BUSINESS continuam inalterados.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-### `src/index.css`
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**`:root` (light mode)** — trocar todos os hue 150/152 por tons neutros puros:
-```
---background: 0 0% 99%;
---foreground: 0 0% 4%;
---card: 0 0% 99%;
---card-foreground: 0 0% 4%;
---popover: 0 0% 99%;
---popover-foreground: 0 0% 4%;
---primary: 0 0% 9%;
---primary-foreground: 0 0% 98%;
---secondary: 0 0% 95%;
---secondary-foreground: 0 0% 9%;
---muted: 0 0% 94%;
---muted-foreground: 0 0% 40%;
---accent: 0 0% 15%;
---accent-foreground: 0 0% 100%;
---border: 0 0% 88%;
---input: 0 0% 88%;
---ring: 0 0% 30%;
---chart-1 a 5: tons de cinza
---sidebar-*: tons neutros
-```
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**`.dark` (dark mode)** — mesma lógica, cinza puro:
-```
---background: 0 0% 5%;
---foreground: 0 0% 96%;
---primary: 0 0% 85%;
---accent: 0 0% 70%;
---border: 0 0% 16%;
-etc.
-```
-
-**Sparkles/gold tokens** — manter iguais (já são neutros no base)
-
-### Ficheiros Afetados
-
-| Ficheiro | Alteração |
-|---|---|
-| `src/index.css` | `:root` e `.dark` — substituir hue 150/152 por 0 0% (grayscale puro) |
-
-Nenhuma alteração em componentes — as animações, efeitos, orbs e partículas continuam exatamente iguais. Apenas as variáveis de cor base mudam.
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
