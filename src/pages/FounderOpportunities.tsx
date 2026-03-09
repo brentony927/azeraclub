@@ -36,7 +36,9 @@ export default function FounderOpportunities() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
   const { canAccess } = useSubscription();
+  const navigate = useNavigate();
   const [opps, setOpps] = useState<Opportunity[]>([]);
+  const [authorNames, setAuthorNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -46,8 +48,22 @@ export default function FounderOpportunities() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    supabase.from("founder_opportunities").select("*").order("created_at", { ascending: false }).then(({ data }) => {
-      if (data) setOpps(data as Opportunity[]);
+    supabase.from("founder_opportunities").select("*").order("created_at", { ascending: false }).then(async ({ data }) => {
+      if (data) {
+        setOpps(data as Opportunity[]);
+        const userIds = [...new Set(data.map(o => o.user_id))];
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("founder_profiles")
+            .select("user_id, name")
+            .in("user_id", userIds);
+          if (profiles) {
+            const map: Record<string, string> = {};
+            profiles.forEach(p => { map[p.user_id] = p.name; });
+            setAuthorNames(map);
+          }
+        }
+      }
       setLoading(false);
     });
   }, []);
