@@ -139,36 +139,106 @@
 
   /* ====== Glassmorphism cards ====== */
   .glass-card {
-    @apply bg-card/40 backdrop-blur-2xl border border-border/30 rounded-[16px];
-    box-shadow: 0 8px 32px -8px hsla(0, 0%, 0%, 0.1);
+    @apply bg-card/50 border border-border/20 rounded-[16px];
+    backdrop-filter: blur(40px) saturate(1.6);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    box-shadow: 
+      0 8px 32px -8px hsla(152, 20%, 10%, 0.08),
+      inset 0 1px 0 0 hsla(0, 0%, 100%, 0.06);
+    border-top: 1px solid hsla(0, 0%, 100%, 0.12);
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-700 ease-out;
+    @apply glass-card transition-all duration-500 ease-out;
   }
 
   .glass-card-hover:hover {
-    @apply border-primary/25;
-    box-shadow: 0 20px 60px -15px hsla(0, 0%, 0%, 0.15);
-    transform: translateY(-4px) scale(1.01);
+    @apply border-primary/20;
+    box-shadow: 
+      0 24px 64px -16px hsla(152, 30%, 10%, 0.12),
+      inset 0 1px 0 0 hsla(0, 0%, 100%, 0.1);
+    transform: translateY(-2px) scale(1.005);
   }
 
   .dark .glass-card {
-    box-shadow: 0 8px 32px -8px hsla(0, 0%, 0%, 0.6);
+    box-shadow: 
+      0 8px 32px -8px hsla(0, 0%, 0%, 0.5),
+      inset 0 1px 0 0 hsla(152, 40%, 50%, 0.04);
+    border-top: 1px solid hsla(152, 40%, 50%, 0.06);
   }
 
   .dark .glass-card-hover:hover {
-    box-shadow: 0 20px 60px -15px hsla(0, 0%, 0%, 0.4);
+    box-shadow: 
+      0 24px 64px -16px hsla(0, 0%, 0%, 0.4),
+      inset 0 1px 0 0 hsla(152, 40%, 50%, 0.08);
+  }
+
+  /* ====== Card shine effect ====== */
+  .card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-shine::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(from var(--shine-angle, 0deg) at 50% 50%, transparent 0%, hsla(152, 40%, 50%, 0.04) 10%, transparent 20%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card-shine:hover::before {
+    opacity: 1;
+    animation: spotlight 4s linear infinite;
+  }
+
+  @keyframes spotlight {
+    from { --shine-angle: 0deg; }
+    to { --shine-angle: 360deg; }
+  }
+
+  @property --shine-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  /* ====== Gradient border utility ====== */
+  .gradient-border {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: 16px;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 17px;
+    background: linear-gradient(135deg, hsl(152 60% 45% / 0.4), hsl(170 50% 40% / 0.1), hsl(152 60% 45% / 0.4));
+    z-index: -1;
+    animation: borderGlow 3s ease-in-out infinite;
+  }
+  @keyframes borderGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
   }
 
   /* ====== Gradients ====== */
   .moss-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    background: linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%), hsl(152 50% 25%));
     @apply rounded-[14px];
   }
 
   .moss-text {
-    background: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)));
+    background: linear-gradient(135deg, hsl(152 38% 30%), hsl(160 50% 38%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dark .moss-text {
+    background: linear-gradient(135deg, hsl(152 60% 55%), hsl(170 50% 50%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -190,10 +260,11 @@
   /* ====== Premium button effects ====== */
   .btn-premium {
     @apply relative overflow-hidden transition-all duration-300 rounded-[14px];
+    box-shadow: 0 4px 16px -4px hsl(152 38% 28% / 0.3);
   }
   .btn-premium:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 30px -5px hsl(var(--primary) / 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 8px 32px -6px hsl(152 38% 28% / 0.4);
   }
   .btn-premium:active {
     transform: scale(0.97);
@@ -213,15 +284,21 @@
 
   /* ====== Input glow ====== */
   .input-glow:focus-within {
-    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3),
-                0 0 20px -5px hsl(var(--ring) / 0.2);
-    border-color: hsl(var(--ring) / 0.5);
+    box-shadow: 0 0 0 2px hsl(152 38% 36% / 0.2),
+                0 0 20px -5px hsl(152 38% 36% / 0.15);
+    border-color: hsl(152 38% 36% / 0.4);
   }
 
   /* ====== Section alternation ====== */
   .section-light {
     background-color: hsl(var(--section-light));
     color: hsl(var(--section-dark-text));
+  }
+
+  /* ====== Dot grid pattern ====== */
+  .dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
+    background-size: 32px 32px;
   }
 
   /* ====== Animated background ====== */
@@ -254,6 +331,27 @@
     25% { transform: translate(2%, -3%) rotate(1deg); }
     50% { transform: translate(-1%, 2%) rotate(-0.5deg); }
     75% { transform: translate(3%, 1%) rotate(0.5deg); }
+  }
+
+  /* ====== Chatbot pulse ring ====== */
+  .chatbot-pulse {
+    position: relative;
+  }
+  .chatbot-pulse::before,
+  .chatbot-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid hsl(152 60% 45% / 0.3);
+    animation: pulseRing 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  .chatbot-pulse::after {
+    animation-delay: 1.25s;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.5); opacity: 0; }
   }
 }
 
