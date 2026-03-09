@@ -485,6 +485,45 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_scores: {
+        Row: {
+          activity_points: number
+          id: string
+          influence_points: number
+          level: string
+          network_points: number
+          profile_points: number
+          project_points: number
+          total_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_points?: number
+          id?: string
+          influence_points?: number
+          level?: string
+          network_points?: number
+          profile_points?: number
+          project_points?: number
+          total_score?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_points?: number
+          id?: string
+          influence_points?: number
+          level?: string
+          network_points?: number
+          profile_points?: number
+          project_points?: number
+          total_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goal_plans: {
         Row: {
           breakdown: string
