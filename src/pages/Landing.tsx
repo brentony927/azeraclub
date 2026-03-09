@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import ParticlesBackground from "@/components/ParticlesBackground";
+import { lazy, Suspense } from "react";
+const ParticlesBackground = lazy(() => import("@/components/ParticlesBackground"));
 import ScrollReveal from "@/components/ScrollReveal";
 import Footer from "@/components/Footer";
 import { usePublicLogo } from "@/hooks/useAzeraLogo";
@@ -60,7 +61,7 @@ export default function Landing() {
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
         <div className="absolute inset-0 z-0">
-          <ParticlesBackground />
+          <Suspense fallback={null}><ParticlesBackground /></Suspense>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/70 to-background" />
         </div>
 

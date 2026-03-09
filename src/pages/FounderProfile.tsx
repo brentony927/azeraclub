@@ -16,7 +16,8 @@ import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
 import { useFounderScore, LEVEL_COLORS, SCORE_BADGES } from "@/lib/founderScore";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { sendNotification } from "@/lib/sendNotification";
@@ -211,7 +212,7 @@ export default function FounderProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 relative space-y-6">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Voltar
       </button>

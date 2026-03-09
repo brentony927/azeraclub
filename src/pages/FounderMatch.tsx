@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import FounderProfileForm from "@/components/FounderProfileForm";
 import FounderOnboarding from "@/components/FounderOnboarding";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -91,7 +92,7 @@ export default function FounderMatch() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       {showOnboarding && <FounderOnboarding onComplete={handleOnboardingComplete} />}
       {showConfetti && (
         <div className="fixed inset-0 z-50 pointer-events-none founder-confetti" onAnimationEnd={() => setShowConfetti(false)} />

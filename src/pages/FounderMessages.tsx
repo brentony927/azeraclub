@@ -6,7 +6,8 @@ import FounderChat from "@/components/FounderChat";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Loader2, ArrowLeft } from "lucide-react";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 
 interface Conversation {
   userId: string;
@@ -125,7 +126,7 @@ export default function FounderMessages() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <h1 className="text-2xl font-bold text-foreground flex items-center gap-2 mb-6">
         <MessageCircle className="h-6 w-6" /> Mensagens
       </h1>

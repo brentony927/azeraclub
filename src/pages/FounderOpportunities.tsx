@@ -15,7 +15,8 @@ import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2, Messa
 import { toast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FeatureLock from "@/components/FeatureLock";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 
 const LOOKING_OPTIONS = ["Co-fundador", "Desenvolvedor", "Investidor", "Parceiro de Marketing", "Designer"];
 
@@ -156,7 +157,7 @@ export default function FounderOpportunities() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">

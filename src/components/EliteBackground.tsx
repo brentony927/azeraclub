@@ -1,22 +1,24 @@
 import { PlanTier } from "@/contexts/SubscriptionContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EliteBackgroundProps {
   plan: PlanTier;
 }
 
 export default function EliteBackground({ plan }: EliteBackgroundProps) {
+  const isMobile = useIsMobile();
   const orbClass = plan === "pro" ? "pro-orb" : "business-orb";
   const particleClass = plan === "pro" ? "pro-particle" : "business-particle";
+  const orbCount = isMobile ? 3 : 5;
+  const particleCount = isMobile ? 6 : 16;
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      <div className={`elite-orb ${orbClass}-1`} />
-      <div className={`elite-orb ${orbClass}-2`} />
-      <div className={`elite-orb ${orbClass}-3`} />
-      <div className={`elite-orb ${orbClass}-4`} />
-      <div className={`elite-orb ${orbClass}-5`} />
+      {Array.from({ length: orbCount }).map((_, i) => (
+        <div key={`orb-${i}`} className={`elite-orb ${orbClass}-${i + 1}`} />
+      ))}
 
-      {Array.from({ length: 16 }).map((_, i) => (
+      {Array.from({ length: particleCount }).map((_, i) => (
         <div
           key={i}
           className={particleClass}

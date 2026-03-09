@@ -6,7 +6,8 @@ import FounderCard from "@/components/FounderCard";
 import FounderCardSkeleton from "@/components/FounderCardSkeleton";
 import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
-import FounderParticlesBackground from "@/components/FounderParticlesBackground";
+import { lazy, Suspense } from "react";
+const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 import UpgradeTrigger from "@/components/UpgradeTrigger";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -237,7 +238,7 @@ export default function FounderFeed() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 relative">
-      <FounderParticlesBackground />
+      <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-6">
