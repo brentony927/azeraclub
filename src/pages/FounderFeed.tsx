@@ -67,10 +67,11 @@ export default function FounderFeed() {
   const fetchData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
-    const [profilesRes, connectionsRes, myRes] = await Promise.all([
+    const [profilesRes, connectionsRes, myRes, scoresRes] = await Promise.all([
       supabase.from("founder_profiles").select("*").eq("is_published", true).neq("user_id", user.id),
       supabase.from("founder_connections").select("*").or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
       supabase.from("founder_profiles").select("*").eq("user_id", user.id).maybeSingle(),
+      supabase.from("founder_scores").select("user_id, level"),
     ]);
 
     if (profilesRes.error) {
@@ -85,6 +86,11 @@ export default function FounderFeed() {
         map[otherId] = c.status;
       });
       setConnections(map);
+    }
+    if (scoresRes.data) {
+      const lvls: Record<string, string> = {};
+      (scoresRes.data as any[]).forEach(s => { lvls[s.user_id] = s.level; });
+      setFounderLevels(lvls);
     }
     setLoading(false);
     setRefreshing(false);
