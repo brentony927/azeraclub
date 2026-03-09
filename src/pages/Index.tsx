@@ -150,12 +150,14 @@ export default function Index() {
   const weekTotal = weekTasks.length;
   const score = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
 
+  const greeting = getGreeting();
+
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
-          {getGreeting()}, {displayName.split(" ")[0]}.
+          {greeting.emoji} {greeting.text}, {displayName.split(" ")[0]}.
         </h1>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
@@ -197,7 +199,7 @@ export default function Index() {
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        {!n.read && <span className="h-2 w-2 rounded-full bg-accent shrink-0" />}
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-primary shrink-0" />}
                         <p className={`text-sm truncate ${!n.read ? "font-semibold" : "text-muted-foreground"}`}>
                           {n.title}
                         </p>
@@ -223,14 +225,16 @@ export default function Index() {
 
       {/* AZERA Score + AI Tip row */}
       <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-5">
+        <Card className="gradient-border overflow-hidden">
+          <CardContent className="p-5 relative">
             <div className="flex items-center gap-3 mb-3">
-              <Trophy className="h-5 w-5 text-accent" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center moss-gradient shadow-lg shadow-primary/20">
+                <Trophy className="h-4 w-4 text-white" />
+              </div>
               <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">AZERA SCORE</p>
             </div>
             <div className="flex items-end gap-2 mb-2">
-              <span className="text-4xl font-bold text-foreground">{score}</span>
+              <span className="text-4xl font-bold font-serif text-foreground">{score}</span>
               <span className="text-lg text-muted-foreground mb-1">/ 100</span>
             </div>
             <Progress value={score} className="h-2 mb-2" />
@@ -240,16 +244,21 @@ export default function Index() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-5 flex flex-col justify-between h-full">
+        <Card className="glass-card card-shine overflow-hidden border-border/20">
+          <CardContent className="p-5 flex flex-col justify-between h-full relative">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Brain className="h-5 w-5 text-accent" />
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
+                  <Brain className="h-4 w-4 text-primary" />
+                </div>
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">AZERA AI sugere</p>
               </div>
-              <p className="text-sm text-foreground/90 italic">"{aiTip}"</p>
+              <div className="relative pl-4">
+                <span className="absolute -left-1 top-0 text-3xl font-serif text-primary/20 leading-none">"</span>
+                <p className="text-sm text-foreground/90 italic leading-relaxed">{aiTip}</p>
+              </div>
             </div>
-            <button onClick={() => navigate("/ia")} className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-3 self-start">
+            <button onClick={() => navigate("/ia")} className="text-xs text-primary hover:text-foreground transition-colors mt-3 self-start font-medium">
               Conversar →
             </button>
           </CardContent>
@@ -258,16 +267,16 @@ export default function Index() {
 
       {/* Suggestions CTA */}
       <motion.div variants={item}>
-        <Card className="border-accent/40 bg-gradient-to-r from-accent/10 to-primary/10 cursor-pointer hover:from-accent/15 hover:to-primary/15 transition-all" onClick={() => navigate("/sugestoes")}>
+        <Card className="glass-card card-shine border-primary/20 cursor-pointer hover:border-primary/30 transition-all group" onClick={() => navigate("/sugestoes")}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-              <Lightbulb className="h-5 w-5 text-accent" />
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+              <Lightbulb className="h-5 w-5 text-primary animate-float" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold">Tem uma ideia para melhorar o Azera?</p>
               <p className="text-xs text-muted-foreground">Deixe sua sugestão e ajude a construir a plataforma!</p>
             </div>
-            <Button size="sm" variant="outline" className="shrink-0 border-accent/30 text-accent hover:bg-accent/10">
+            <Button size="sm" variant="outline" className="shrink-0 border-primary/20 text-primary hover:bg-primary/10">
               Sugerir
             </Button>
           </CardContent>
