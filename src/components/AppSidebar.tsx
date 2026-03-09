@@ -44,7 +44,8 @@ import {
   Activity,
   Zap,
   Building2,
-  Layers } from
+  Layers,
+  HelpCircle } from
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAzeraLogo } from "@/hooks/useAzeraLogo";
