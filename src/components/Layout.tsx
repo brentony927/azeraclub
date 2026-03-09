@@ -58,6 +58,7 @@ export default function Layout() {
             <ThemeToggle />
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
+            <DevelopmentBanner />
             <AnimatePresence mode="wait">
               <PageTransition key={location.pathname}>
                 <Outlet />

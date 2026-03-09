@@ -175,23 +175,6 @@ export default function Index() {
         <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
       )}
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
-      {/* Development Warning Banner */}
-      <motion.div variants={item}>
-        <div className="relative rounded-lg border-2 border-destructive bg-destructive/15 p-4 animate-pulse">
-          <p className="text-sm font-bold text-destructive text-center">
-            🚧 Este site ainda é apenas um projeto em desenvolvimento. Podem ocorrer erros e instabilidades.
-          </p>
-          <p className="text-xs text-destructive/80 text-center mt-1">
-            Sua opinião é essencial! Deixe seu feedback, ideias e sugestões para nos ajudar a melhorar.
-          </p>
-          <div className="flex justify-center mt-2">
-            <Button size="sm" variant="destructive" onClick={() => navigate("/sugestoes")} className="text-xs">
-              💡 Deixar Feedback
-            </Button>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
