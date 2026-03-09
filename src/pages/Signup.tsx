@@ -261,12 +261,12 @@ export default function Signup() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-            <Link to="/terms" className="hover:text-primary transition-colors">Termos</Link>
-            <Link to="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
-            <Link to="/community-guidelines" className="hover:text-primary transition-colors">Diretrizes</Link>
-            <Link to="/payments-policy" className="hover:text-primary transition-colors">Pagamentos</Link>
-            <Link to="/security-policy" className="hover:text-primary transition-colors">Segurança</Link>
-            <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Termos</Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacidade</Link>
+            <Link to="/community-guidelines" className="hover:text-foreground transition-colors">Diretrizes</Link>
+            <Link to="/payments-policy" className="hover:text-foreground transition-colors">Pagamentos</Link>
+            <Link to="/security-policy" className="hover:text-foreground transition-colors">Segurança</Link>
+            <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
           </div>
         </div>
       </motion.div>
