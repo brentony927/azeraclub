@@ -1282,31 +1282,34 @@
 .azera-brand-text {
   background: linear-gradient(
     90deg,
-    hsl(152 60% 40%),
-    hsl(170 80% 45%),
-    hsl(190 70% 50%),
-    hsl(152 60% 40%)
+    hsl(0 0% 20%),
+    hsl(0 0% 45%),
+    hsl(0 0% 90%),
+    hsl(0 0% 45%),
+    hsl(0 0% 20%)
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: brandShimmer 3s linear infinite;
-  filter: drop-shadow(0 0 8px hsl(152 60% 40% / 0.3));
+  filter: drop-shadow(0 0 6px hsl(0 0% 30% / 0.3));
 }
 
 .dark .azera-brand-text {
   background: linear-gradient(
     90deg,
-    hsl(152 80% 55%),
-    hsl(170 90% 60%),
-    hsl(190 80% 65%),
-    hsl(152 80% 55%)
+    hsl(0 0% 65%),
+    hsl(0 0% 80%),
+    hsl(0 0% 100%),
+    hsl(0 0% 80%),
+    hsl(0 0% 65%)
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 6px hsl(0 0% 80% / 0.3));
 }
 
 .pro-theme .azera-brand-text {
