@@ -48,7 +48,6 @@ import {
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAzeraLogo } from "@/hooks/useAzeraLogo";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -294,6 +293,7 @@ export function AppSidebar() {
 
   // Calculate effective sidebar theme
   const effectiveTheme = sidebarTheme === "system" ? globalTheme : sidebarTheme;
+  const isSidebarDark = effectiveTheme === "dark";
 
   // Save sidebar theme preference
   useEffect(() => {
@@ -308,6 +308,19 @@ export function AppSidebar() {
       return "system";
     });
   };
+
+  const themeToggleButton = (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggleSidebarTheme}
+      className="sidebar-theme-toggle relative overflow-hidden rounded-full h-7 w-7"
+      title={`Sidebar: ${sidebarTheme === "system" ? "Auto" : sidebarTheme === "light" ? "Claro" : "Escuro"}`}
+    >
+      <Sun className={`h-3.5 w-3.5 transition-all ${isSidebarDark ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"}`} />
+      <Moon className={`absolute h-3.5 w-3.5 transition-all ${isSidebarDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`} />
+    </Button>
+  );
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50" data-sidebar-theme={effectiveTheme}>
@@ -326,30 +339,12 @@ export function AppSidebar() {
                 </div>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSidebarTheme}
-              className="relative overflow-hidden rounded-full h-6 w-6"
-              title={`Sidebar: ${sidebarTheme === "system" ? "Auto" : sidebarTheme === "light" ? "Claro" : "Escuro"}`}
-            >
-              <Sun className="h-3 w-3 rotate-0 scale-100 transition-all dark:data-[sidebar-theme=dark]:-rotate-90 dark:data-[sidebar-theme=dark]:scale-0" />
-              <Moon className="absolute h-3 w-3 rotate-90 scale-0 transition-all dark:data-[sidebar-theme=dark]:rotate-0 dark:data-[sidebar-theme=dark]:scale-100" />
-            </Button>
+            {themeToggleButton}
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
             <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded object-contain" />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSidebarTheme}
-              className="relative overflow-hidden rounded-full h-6 w-6"
-              title={`Sidebar: ${sidebarTheme === "system" ? "Auto" : sidebarTheme === "light" ? "Claro" : "Escuro"}`}
-            >
-              <Sun className="h-3 w-3 rotate-0 scale-100 transition-all dark:data-[sidebar-theme=dark]:-rotate-90 dark:data-[sidebar-theme=dark]:scale-0" />
-              <Moon className="absolute h-3 w-3 rotate-90 scale-0 transition-all dark:data-[sidebar-theme=dark]:rotate-0 dark:data-[sidebar-theme=dark]:scale-100" />
-            </Button>
+            {themeToggleButton}
           </div>
         )}
       </SidebarHeader>
