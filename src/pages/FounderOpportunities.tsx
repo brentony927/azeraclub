@@ -31,7 +31,7 @@ interface Opportunity {
   media_type: string | null;
 }
 
-export default function FounderOpportunities() {
+const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
   const { canAccess } = useSubscription();
   const [opps, setOpps] = useState<Opportunity[]>([]);
