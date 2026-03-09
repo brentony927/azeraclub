@@ -1,28 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Corrigir Imagem de Pré-visualização Social (OG Image)
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Problema
-A `og:image` no `index.html` aponta para um URL externo do Google Cloud Storage que mostra uma imagem genérica/quebrada quando o link é partilhado no WhatsApp, Instagram, LinkedIn, etc.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### Correção
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-1. **Copiar a logo** `src/assets/azera-logo-black.png` para `public/og-image.png` — para que fique acessível como URL pública estática.
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-2. **Atualizar `index.html`** — substituir os URLs da `og:image` e `twitter:image` para apontar para o domínio publicado:
-   ```html
-   <meta property="og:image" content="https://azeraclub.lovable.app/og-image.png">
-   <meta name="twitter:image" content="https://azeraclub.lovable.app/og-image.png">
-   ```
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-3. **Adicionar `og:url`** para garantir que crawlers associem corretamente:
-   ```html
-   <meta property="og:url" content="https://azeraclub.lovable.app">
-   ```
-
-> **Nota**: A logo preta sobre fundo branco é ideal para partilha social (boa visibilidade). Se preferir uma imagem com fundo colorido/premium, posso gerar uma depois. Redes sociais podem demorar a atualizar o cache — ferramentas como o [Facebook Debugger](https://developers.facebook.com/tools/debug/) ajudam a forçar a atualização.
-
-### Arquivos a editar
-- `public/og-image.png` — copiar logo
-- `index.html` — atualizar meta tags
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
