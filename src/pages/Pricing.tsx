@@ -141,8 +141,9 @@ export default function Pricing() {
     const tier = tiers[planKey as keyof typeof tiers];
     if (!tier) return;
     setLoadingPlan(planKey);
+    const priceId = period === "yearly" ? tier.price_id_yearly : tier.price_id;
     const { data, error } = await supabase.functions.invoke("create-checkout", {
-      body: { priceId: tier.price_id },
+      body: { priceId },
     });
     setLoadingPlan(null);
     if (error || !data?.url) {

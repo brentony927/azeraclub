@@ -267,7 +267,7 @@ export default function PricingSection({
                     )}
                     disabled={isCurrentPlan || loadingPlan === plan.key}
                     onClick={() =>
-                      isCurrentPlan ? onManage() : onSubscribe(plan.key, period)
+                      isCurrentPlan ? onManage() : onSubscribe(plan.key, period as string)
                     }
                   >
                     {isCurrentPlan

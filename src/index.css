@@ -244,8 +244,109 @@
     background-clip: text;
   }
 
-  .gold-gradient { @apply moss-gradient; }
-  .gold-text { @apply moss-text; }
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(42 70% 55%), hsl(35 80% 60%), hsl(48 65% 50%), hsl(42 70% 55%));
+    background-size: 200% 200%;
+    animation: goldShimmer 3s ease-in-out infinite;
+  }
+
+  .gold-text {
+    background: linear-gradient(135deg, hsl(42 70% 55%), hsl(35 80% 60%), hsl(48 65% 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dark .gold-text {
+    background: linear-gradient(135deg, hsl(42 80% 65%), hsl(35 90% 70%), hsl(48 75% 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gold-aura-btn {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gold-aura-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, hsl(42 70% 55% / 0.35), hsl(42 70% 55% / 0.1), transparent);
+    animation: auraRise 2.5s ease-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .gold-aura-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 10%;
+    right: 10%;
+    height: 8px;
+    background: radial-gradient(ellipse, hsl(42 70% 55% / 0.5), transparent);
+    filter: blur(4px);
+    animation: auraRise 2.5s ease-out infinite;
+    pointer-events: none;
+  }
+
+  /* ====== Page Background Animation ====== */
+  .page-bg-animation {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .page-bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.06;
+    animation: bgOrbFloat 20s ease-in-out infinite;
+  }
+
+  .page-bg-orb-1 {
+    width: 400px; height: 400px;
+    background: hsl(var(--accent));
+    top: -100px; left: -100px;
+    animation-delay: 0s;
+  }
+  .page-bg-orb-2 {
+    width: 300px; height: 300px;
+    background: hsl(var(--primary));
+    bottom: -80px; right: -80px;
+    animation-delay: -7s;
+    animation-duration: 25s;
+  }
+  .page-bg-orb-3 {
+    width: 250px; height: 250px;
+    background: hsl(var(--accent));
+    top: 40%; left: 60%;
+    animation-delay: -14s;
+    animation-duration: 22s;
+  }
+
+  @keyframes goldShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes auraRise {
+    0% { opacity: 0; transform: translateY(8px); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-20px); }
+  }
+
+  @keyframes bgOrbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -20px) scale(1.05); }
+    50% { transform: translate(-20px, 30px) scale(0.95); }
+    75% { transform: translate(20px, 20px) scale(1.02); }
+  }
 
   .stat-card {
     @apply glass-card-hover p-4 sm:p-5 lg:p-6 relative overflow-hidden;
