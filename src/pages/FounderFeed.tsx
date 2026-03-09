@@ -242,6 +242,14 @@ export default function FounderFeed() {
           <div className="flex items-center gap-2">
             <FounderNotifications />
             <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Atualizar
+            </Button>
+            <Button
               variant={showFilters ? "default" : "outline"}
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
