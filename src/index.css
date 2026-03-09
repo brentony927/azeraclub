@@ -1248,6 +1248,39 @@
   .sidebar-nav-item:hover { transform: none; }
 }
 
+/* ── Isolated Sidebar Theme Support ── */
+[data-sidebar-theme="dark"] {
+  --sidebar-background: 0 0% 4%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 0 0% 98%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 0 0% 15%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 0 0% 15%;
+  --sidebar-ring: 0 0% 32%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 63%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --foreground: 0 0% 98%;
+}
+
+[data-sidebar-theme="light"] {
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 4%;
+  --sidebar-primary: 0 0% 9%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 0 0% 96%;
+  --sidebar-accent-foreground: 0 0% 9%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-ring: 0 0% 63%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 9%;
+  --foreground: 0 0% 4%;
+}
+
 /* ── Greeting gradient text ── */
 .greeting-gradient-text {
   background: linear-gradient(135deg, hsl(152 60% 40%), hsl(180 70% 45%), hsl(152 60% 40%));
