@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -10,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2 } from "lucide-react";
+import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2, MessageCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FeatureLock from "@/components/FeatureLock";
@@ -35,7 +36,9 @@ export default function FounderOpportunities() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
   const { canAccess } = useSubscription();
+  const navigate = useNavigate();
   const [opps, setOpps] = useState<Opportunity[]>([]);
+  const [authorNames, setAuthorNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -45,8 +48,22 @@ export default function FounderOpportunities() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    supabase.from("founder_opportunities").select("*").order("created_at", { ascending: false }).then(({ data }) => {
-      if (data) setOpps(data as Opportunity[]);
+    supabase.from("founder_opportunities").select("*").order("created_at", { ascending: false }).then(async ({ data }) => {
+      if (data) {
+        setOpps(data as Opportunity[]);
+        const userIds = [...new Set(data.map(o => o.user_id))];
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("founder_profiles")
+            .select("user_id, name")
+            .in("user_id", userIds);
+          if (profiles) {
+            const map: Record<string, string> = {};
+            profiles.forEach(p => { map[p.user_id] = p.name; });
+            setAuthorNames(map);
+          }
+        }
+      }
       setLoading(false);
     });
   }, []);
@@ -260,12 +277,27 @@ export default function FounderOpportunities() {
             <Card key={opp.id} className="border-border/50 bg-card/80 backdrop-blur-sm">
               <CardContent className="p-5">
                 <div className="flex justify-between items-start">
-                  <h3 className="font-semibold text-foreground">{opp.title}</h3>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{opp.title}</h3>
+                    {authorNames[opp.user_id] && (
+                      <p className="text-xs text-muted-foreground mt-0.5">Publicado por {authorNames[opp.user_id]}</p>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     {opp.equity_available && (
                       <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                         <DollarSign className="h-3 w-3 mr-0.5" /> Equity
                       </Badge>
+                    )}
+                    {user && opp.user_id !== user.id && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-primary"
+                        onClick={() => navigate("/founder-messages", { state: { selectedUser: opp.user_id, selectedUserName: authorNames[opp.user_id] || "Founder" } })}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                      </Button>
                     )}
                     {opp.user_id === user?.id && (
                       <AlertDialog>
