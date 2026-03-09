@@ -432,6 +432,15 @@
   }
 }
 
+/* Dev banner pulsing border */
+.dev-banner-pulse {
+  animation: devBorderPulse 2s ease-in-out infinite;
+}
+@keyframes devBorderPulse {
+  0%, 100% { border-color: hsl(var(--destructive)); }
+  50% { border-color: hsl(var(--destructive) / 0.3); }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

@@ -155,7 +155,7 @@ export default function AzeraChatbot() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-24 md:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-opacity chatbot-pulse"
+            className="fixed bottom-28 md:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-opacity chatbot-pulse"
             style={{
               background: 'linear-gradient(135deg, hsl(152 38% 28%), hsl(160 45% 35%))',
             }}
@@ -174,7 +174,7 @@ export default function AzeraChatbot() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className={`fixed z-50 border border-border/30 bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden ${
               isMobile
-                ? "inset-0 rounded-none"
+                ? "inset-0 rounded-none pt-safe"
                 : "bottom-6 right-6 w-[400px] h-[540px] rounded-[20px]"
             }`}
             style={{ boxShadow: isMobile ? "none" : "0 25px 60px -12px hsla(152,20%,10%,0.3)" }}
