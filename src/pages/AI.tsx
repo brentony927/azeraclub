@@ -293,7 +293,7 @@ export default function AI() {
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 ml-2"
+                    className="opacity-0 group-hover:opacity-100 max-md:opacity-70 p-1 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-all shrink-0 ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                     title="Excluir conversa"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
