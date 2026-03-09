@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useLocation } from "react-router-dom";
 
 export type PlanTier = "free" | "basic" | "pro" | "business";
 
@@ -17,6 +18,9 @@ interface SubscriptionContextType {
 const TIER_ORDER: PlanTier[] = ["free", "basic", "pro", "business"];
 
 const PRODUCT_MAP: Record<string, PlanTier> = {
+  prod_U6wptLNnilCLi5: "pro",
+  prod_U6wq54yOsZU99H: "business",
+  // Legacy IDs for backwards compatibility
   prod_U62xpa0u9xDiJO: "pro",
   prod_U62xPut1mfd9CG: "business",
 };
@@ -35,6 +39,7 @@ export const useSubscription = () => useContext(SubscriptionContext);
 
 export function SubscriptionProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
+  const location = useLocation();
   const [plan, setPlan] = useState<PlanTier>("free");
   const [loading, setLoading] = useState(true);
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
@@ -59,8 +64,9 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       const { data } = await supabase.functions.invoke("check-subscription");
       let newPlan: PlanTier = "free";
       if (data?.manual_plan) {
-        // Map legacy "elite" to "business"
-        const mp = data.manual_plan === "elite" ? "business" : data.manual_plan;
+        // Map legacy "elite" and typo "bussiness" to "business"
+        let mp = data.manual_plan;
+        if (mp === "elite" || mp === "bussiness") mp = "business";
         newPlan = mp as PlanTier;
       } else if (data?.subscribed && data.product_id) {
         newPlan = PRODUCT_MAP[data.product_id] || "free";
@@ -82,6 +88,17 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setLoading(false);
     }
   }, [user]);
+
+  // Force immediate refresh after Stripe checkout success (bypass debounce)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("checkout") === "success") {
+      lastCheckRef.current = 0; // reset debounce
+      refresh();
+      // Clean URL
+      window.history.replaceState({}, "", location.pathname);
+    }
+  }, [location.search, refresh]);
 
   useEffect(() => { refresh(); }, [refresh]);
 

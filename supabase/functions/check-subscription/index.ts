@@ -12,8 +12,8 @@ const logStep = (step: string, details?: any) => {
 };
 
 const PLAN_PRODUCT_MAP: Record<string, string> = {
-  pro: "prod_U62xpa0u9xDiJO",
-  business: "prod_U62xPut1mfd9CG",
+  pro: "prod_U6wptLNnilCLi5",
+  business: "prod_U6wq54yOsZU99H",
 };
 
 serve(async (req) => {
