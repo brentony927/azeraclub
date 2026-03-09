@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Search, Users, Filter, X, Lock } from "lucide-react";
+import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
 import { calculateMatchScore } from "@/lib/founderMatch";
