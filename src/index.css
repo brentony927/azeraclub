@@ -930,11 +930,14 @@
 }
 
 /* ── PRO: Sidebar border tint ── */
-.dark.pro-theme [data-sidebar="sidebar"] {
+[data-sidebar-theme="dark"] .pro-theme [data-sidebar="sidebar"],
+.dark .pro-theme [data-sidebar="sidebar"] {
   border-color: hsl(152 25% 20% / 0.7) !important;
 }
-.dark.pro-theme [data-sidebar="header"],
-.dark.pro-theme [data-sidebar="footer"] {
+[data-sidebar-theme="dark"] .pro-theme [data-sidebar="header"],
+[data-sidebar-theme="dark"] .pro-theme [data-sidebar="footer"],
+.dark .pro-theme [data-sidebar="header"],
+.dark .pro-theme [data-sidebar="footer"] {
   border-color: hsl(152 25% 20% / 0.5) !important;
 }
 .pro-theme [data-sidebar="sidebar"] {
@@ -942,11 +945,14 @@
 }
 
 /* ── BUSINESS: Sidebar border tint ── */
-.dark.business-theme [data-sidebar="sidebar"] {
+[data-sidebar-theme="dark"] .business-theme [data-sidebar="sidebar"],
+.dark .business-theme [data-sidebar="sidebar"] {
   border-color: hsl(42 25% 20% / 0.7) !important;
 }
-.dark.business-theme [data-sidebar="header"],
-.dark.business-theme [data-sidebar="footer"] {
+[data-sidebar-theme="dark"] .business-theme [data-sidebar="header"],
+[data-sidebar-theme="dark"] .business-theme [data-sidebar="footer"],
+.dark .business-theme [data-sidebar="header"],
+.dark .business-theme [data-sidebar="footer"] {
   border-color: hsl(42 25% 20% / 0.5) !important;
 }
 .business-theme [data-sidebar="sidebar"] {
@@ -954,10 +960,12 @@
 }
 
 /* ── Dark mode sidebar background ── */
-.dark.pro-theme [data-sidebar="sidebar"] {
+[data-sidebar-theme="dark"] .pro-theme [data-sidebar="sidebar"],
+.dark .pro-theme [data-sidebar="sidebar"] {
   background: hsl(152 6% 3%) !important;
 }
-.dark.business-theme [data-sidebar="sidebar"] {
+[data-sidebar-theme="dark"] .business-theme [data-sidebar="sidebar"],
+.dark .business-theme [data-sidebar="sidebar"] {
   background: hsl(35 6% 3%) !important;
 }
 
