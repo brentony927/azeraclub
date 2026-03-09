@@ -83,7 +83,8 @@ const mainItems: NavItem[] = [
 { title: "Networking", url: "/networking", icon: Handshake },
 { title: "Perfil", url: "/profile", icon: UserCircle },
 { title: "Planos", url: "/planos", icon: CreditCard },
-{ title: "Sugestões", url: "/sugestoes", icon: MessageSquarePlus }];
+{ title: "Sugestões", url: "/sugestoes", icon: MessageSquarePlus },
+{ title: "Como Usar", url: "/como-usar", icon: HelpCircle }];
 
 
 const toolItems: NavItem[] = [
