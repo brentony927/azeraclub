@@ -6,7 +6,6 @@ import FounderCard from "@/components/FounderCard";
 import FounderCardSkeleton from "@/components/FounderCardSkeleton";
 import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
-import FounderMatchIntro from "@/components/FounderMatchIntro";
 import FounderParticlesBackground from "@/components/FounderParticlesBackground";
 import UpgradeTrigger from "@/components/UpgradeTrigger";
 import { Input } from "@/components/ui/input";
@@ -61,17 +60,8 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem("founder-intro-seen");
-  });
-
   // Founder plan user plans for Business priority
   const [userPlans, setUserPlans] = useState<Record<string, string>>({});
-
-  const handleIntroComplete = () => {
-    sessionStorage.setItem("founder-intro-seen", "true");
-    setShowIntro(false);
-  };
 
   useEffect(() => {
     if (!user) return;
@@ -202,7 +192,6 @@ export default function FounderFeed() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 relative">
-      {showIntro && <FounderMatchIntro onComplete={handleIntroComplete} />}
       <FounderParticlesBackground />
 
       <div className="relative z-10">

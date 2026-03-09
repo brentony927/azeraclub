@@ -1,42 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Tutorial de Primeira Vez + Remover Animação Founder Intro
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### O que será feito
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-1. **Criar tutorial de primeira vez** — Quando o usuário cria conta e entra no dashboard pela primeira vez, aparece um tutorial interativo (steps/slides) mostrando as funções principais do app, com destaque especial para o Founder Alignment.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-2. **Remover a animação Three.js do Founder Alignment** — Eliminar o `FounderMatchIntro` (animação 3D de partículas formando "AZERA") que aparece ao entrar no FounderMatch e FounderFeed.
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### Alterações
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-#### 1. Novo componente `src/components/OnboardingTutorial.tsx`
-Tutorial com ~5 slides usando Framer Motion:
-- **Slide 1**: "Bem-vindo à AZERA" — visão geral da plataforma
-- **Slide 2**: "Organize sua vida" — Agenda, Diário, Objetivos
-- **Slide 3**: "IA Pessoal" — Assistente inteligente
-- **Slide 4**: "Founder Alignment" (destaque) — Encontre co-founders, networking global, Venture Builder
-- **Slide 5**: "Comece agora" — CTA para explorar
-
-Controle: `localStorage` com chave `onboarding-tutorial-${user.id}` para mostrar apenas na primeira vez.
-
-#### 2. `src/pages/Index.tsx` — Integrar tutorial
-- Importar e renderizar `OnboardingTutorial` condicionalmente (se não visto).
-
-#### 3. `src/pages/FounderMatch.tsx` — Remover intro 3D
-- Remover import e uso de `FounderMatchIntro`
-- Remover estado `showIntro` e handler `handleIntroComplete`
-
-#### 4. `src/pages/FounderFeed.tsx` — Remover intro 3D
-- Remover import e uso de `FounderMatchIntro`
-- Remover estado `showIntro` e handler `handleIntroComplete`
-
-#### 5. `src/components/FounderMatchIntro.tsx` — Deletar arquivo
-- Não mais utilizado (Three.js + GSAP pesado removido = melhor performance)
-
-### Design do Tutorial
-- Overlay fullscreen com backdrop blur
-- Card central com ícone animado, título e descrição por slide
-- Dots de progresso + botão "Próximo" / "Começar"
-- Visual minimalista preto/branco, com o slide do Founder Alignment tendo um destaque dourado sutil
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ import {
 import { format, startOfWeek, endOfWeek, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import OnboardingTutorial from "@/components/OnboardingTutorial";
 
 interface Task {
   id: string;
@@ -81,6 +82,10 @@ export default function Index() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [aiTip] = useState(() => AI_TIPS[Math.floor(Math.random() * AI_TIPS.length)]);
   const [insight] = useState(() => DAILY_INSIGHTS[Math.floor(Math.random() * DAILY_INSIGHTS.length)]);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    if (!user) return false;
+    return !localStorage.getItem(`onboarding-tutorial-${user.id}`);
+  });
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -153,6 +158,10 @@ export default function Index() {
   const greeting = getGreeting();
 
   return (
+    <>
+      {showTutorial && user && (
+        <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
+      )}
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
@@ -368,5 +377,6 @@ export default function Index() {
         )}
       </motion.div>
     </motion.div>
+    </>
   );
 }
