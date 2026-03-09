@@ -444,7 +444,7 @@
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 2px solid hsl(152 60% 45% / 0.3);
+    border: 2px solid hsl(0 0% 50% / 0.3);
     animation: pulseRing 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   .chatbot-pulse::after {
