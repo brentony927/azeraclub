@@ -33,6 +33,7 @@ interface Props {
   isLiked: boolean;
   comments: Comment[];
   onRefresh: () => void;
+  myName?: string;
 }
 
 export default function FounderPostCard({
