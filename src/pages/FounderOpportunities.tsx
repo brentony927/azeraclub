@@ -292,12 +292,18 @@ export default function FounderOpportunities() {
                     )}
                     {user && opp.user_id !== user.id && (
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-primary"
-                        onClick={() => navigate("/founder-messages", { state: { selectedUser: opp.user_id, selectedUserName: authorNames[opp.user_id] || "Founder" } })}
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={() => navigate("/founder-messages", {
+                          state: {
+                            selectedUser: opp.user_id,
+                            selectedUserName: authorNames[opp.user_id] || "Founder",
+                            opportunityContext: opp.title,
+                          }
+                        })}
                       >
-                        <MessageCircle className="h-4 w-4" />
+                        <MessageCircle className="h-3 w-3 mr-1" /> Responder
                       </Button>
                     )}
                     {opp.user_id === user?.id && (
