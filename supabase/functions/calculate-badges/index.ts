@@ -90,6 +90,10 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "profile_complete", check: s => s.profileComplete },
   { key: "mentor", check: s => s.totalScore >= 70 && s.connections >= 10 },
   { key: "diamond_founder", check: s => s.totalScore >= 95 && s.connections >= 50 },
+  // Partner badges
+  { key: "growth_partner", check: s => s.referralConversions >= 1 },
+  { key: "azera_ambassador", check: s => s.referralConversions >= 10 },
+  { key: "top_connector", check: s => s.referralConversions >= 50 },
 ];
 
 Deno.serve(async (req) => {
