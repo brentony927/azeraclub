@@ -23,6 +23,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { sendNotification } from "@/lib/sendNotification";
 import FounderPostCard from "@/components/FounderPostCard";
+import BadgeShowcase from "@/components/BadgeShowcase";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
