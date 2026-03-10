@@ -21,11 +21,11 @@ interface ToolItem {
   extra?: string;
 }
 
-const toolConfig: Record<ToolType, { icon: typeof BookOpen; label: string; emoji: string; table: string }> = {
-  journal: { icon: BookOpen, label: "Diário", emoji: "📝", table: "journal_entries" },
-  ideas: { icon: Lightbulb, label: "Ideias", emoji: "💡", table: "ideas" },
-  objectives: { icon: Target, label: "Objetivos", emoji: "🎯", table: "objectives" },
-  challenges: { icon: Trophy, label: "Desafios", emoji: "🏆", table: "challenges" },
+const toolConfig: Record<ToolType, { icon: typeof BookOpen; label: string; tag: string; table: string }> = {
+  journal: { icon: BookOpen, label: "Diário", tag: "[Diário]", table: "journal_entries" },
+  ideas: { icon: Lightbulb, label: "Ideias", tag: "[Ideia]", table: "ideas" },
+  objectives: { icon: Target, label: "Objetivos", tag: "[Objetivo]", table: "objectives" },
+  challenges: { icon: Trophy, label: "Desafios", tag: "[Desafio]", table: "challenges" },
 };
 
 export default function CreateFounderPost({ onPostCreated }: Props) {
