@@ -87,7 +87,17 @@ export default function FounderPostCard({
     setSendingComment(false);
     if (!error) {
       setCommentText("");
+      setLocalCommentsCount(prev => prev + 1);
       onRefresh();
+      // Notify post author
+      if (post.user_id !== user.id) {
+        sendNotification({
+          user_id: post.user_id,
+          type: "post_comment",
+          title: `${myName || "Alguém"} comentou na sua publicação 💬`,
+          action_url: "/founder-feed",
+        });
+      }
     }
   };
 
