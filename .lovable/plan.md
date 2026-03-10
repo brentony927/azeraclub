@@ -1,38 +1,59 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Tornar o Site Mais Fluido e Rápido
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+Após analisar o código, identifiquei os principais gargalos de performance:
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+### Problemas Encontrados
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+1. **CustomCursor** — MutationObserver observa o `document.body` inteiro com `subtree: true`, re-buscando TODOS os elementos interativos a cada mudança no DOM. Extremamente pesado.
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+2. **FounderParticlesBackground** — 70 partículas com links entre elas. Carrega a biblioteca tsparticles inteira. Consome GPU e CPU constantemente.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+3. **ActivityTicker** — Animação Framer Motion infinita (`x: ["0%", "-50%"]`) recalculando layout continuamente.
+
+4. **EliteBackground** — 16 partículas com `will-change: transform, opacity` em cada uma. Muitas layers de GPU desnecessárias.
+
+5. **Backdrop-filter blur(16px)** — Glass cards usam blur pesado em todo o site. Cada card com blur cria uma camada de composição.
+
+6. **AnimatePresence + PageTransition** — Exit animations bloqueiam a troca de página (espera a animação de saída antes de mostrar a nova).
+
+### Correções
+
+**Ficheiro `src/components/CustomCursor.tsx`:**
+- Usar `requestAnimationFrame` para throttle do mousemove
+- Remover MutationObserver — usar CSS `cursor: none` + `:hover` nos interativos em vez de JS event listeners
+- Em mobile, não renderizar nada
+
+**Ficheiro `src/components/FounderParticlesBackground.tsx`:**
+- Reduzir partículas de 70 para 30
+- Desativar links entre partículas (link rendering é o mais pesado)
+- Limitar FPS a 30
+
+**Ficheiro `src/components/ActivityTicker.tsx`:**
+- Substituir animação Framer Motion por CSS `@keyframes` com `transform: translateX()` — muito mais leve (GPU-only, sem JS por frame)
+
+**Ficheiro `src/components/EliteBackground.tsx`:**
+- Reduzir partículas desktop de 16 para 8, mobile de 6 para 3
+- Remover `will-change` inline — deixar o browser decidir
+
+**Ficheiro `src/components/Layout.tsx`:**
+- Remover `AnimatePresence mode="wait"` — o `mode="wait"` bloqueia a renderização da nova página até a exit animation terminar. Mudar para renderização direta sem exit animation.
+
+**Ficheiro `src/components/PageTransition.tsx`:**
+- Simplificar para apenas fade-in rápido (sem exit, sem translateY). Reduzir duração para 0.18s.
+
+**Ficheiro `src/index.css`:**
+- Reduzir blur do glass-card de 16px para 10px
+- Adicionar `content-visibility: auto` nos cards para lazy rendering
+- Simplificar `glass-card-hover` transition de 500ms para 200ms
+
+### Ficheiros a editar
+- `src/components/CustomCursor.tsx`
+- `src/components/FounderParticlesBackground.tsx`
+- `src/components/ActivityTicker.tsx`
+- `src/components/EliteBackground.tsx`
+- `src/components/Layout.tsx`
+- `src/components/PageTransition.tsx`
+- `src/index.css`
+
