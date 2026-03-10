@@ -366,8 +366,9 @@ export default function AI() {
           </button>
           <span className="text-[13px] font-semibold text-foreground">AZR AI</span>
           {activeMood && (
-            <span className="text-[11px] text-muted-foreground ml-2">
-              {MOODS.find((m) => m.id === activeMood)?.emoji} {MOODS.find((m) => m.id === activeMood)?.label}
+            <span className="text-[11px] text-muted-foreground ml-2 flex items-center gap-1">
+              <Icon3D icon={MOODS.find((m) => m.id === activeMood)?.icon || Smile} color={MOODS.find((m) => m.id === activeMood)?.color || "gold"} size="xs" />
+              {MOODS.find((m) => m.id === activeMood)?.label}
             </span>
           )}
           {isBasicPlan && (
