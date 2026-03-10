@@ -371,7 +371,7 @@ export default function Profile() {
             </div>
 
             {/* Social Proof / Analytics */}
-            {isPro ? (
+            {canAccess("pro") || isOwner ? (
               <div className="grid grid-cols-3 gap-3 mt-5">
                 {[
                   { icon: Users, label: "Conexões", value: connectionsCount },
