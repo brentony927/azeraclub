@@ -216,6 +216,21 @@ export default function TermsOfService() {
             </p>
           </section>
 
+          {/* 14 — Programa de Parceiros */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">14. Programa de Parceiros</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              O AZERA CLUB oferece um programa de parceiros que permite aos utilizadores indicar novos membros e receber comissões sobre assinaturas pagas.
+            </p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>O AZERA CLUB não garante ganhos financeiros através do programa de parceiros</li>
+              <li>Comissões podem ser revisadas, ajustadas ou canceladas em casos de fraude, abuso ou manipulação do sistema</li>
+              <li>Pagamentos são realizados apenas após verificação interna e um período mínimo de 7 dias após a compra</li>
+              <li>O uso de técnicas fraudulentas (contas duplicadas, auto-referência, manipulação de tráfego) resultará em cancelamento imediato da conta de parceiro</li>
+              <li>O AZERA CLUB reserva-se o direito de modificar as taxas de comissão, termos e condições do programa a qualquer momento</li>
+            </ul>
+          </section>
+
           {/* Contacto */}
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">Contacto</h2>

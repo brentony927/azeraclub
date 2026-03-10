@@ -174,6 +174,39 @@ export type Database = {
           },
         ]
       }
+      commissions: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          approved_at: string | null
+          created_at: string | null
+          id: string
+          paid_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          approved_at?: string | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          approved_at?: string | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       elite_events: {
         Row: {
           category: string | null
@@ -1005,6 +1038,69 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_profiles: {
+        Row: {
+          commission_rate: number | null
+          cpf: string | null
+          created_at: string | null
+          enabled: boolean | null
+          full_name: string | null
+          id: string
+          partner_id: string
+          paypal_email: string | null
+          pix_key: string | null
+          user_id: string
+        }
+        Insert: {
+          commission_rate?: number | null
+          cpf?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          full_name?: string | null
+          id?: string
+          partner_id: string
+          paypal_email?: string | null
+          pix_key?: string | null
+          user_id: string
+        }
+        Update: {
+          commission_rate?: number | null
+          cpf?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          full_name?: string | null
+          id?: string
+          partner_id?: string
+          paypal_email?: string | null
+          pix_key?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payouts: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          created_at: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          created_at?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          created_at?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       pinned_conversations: {
         Row: {
           created_at: string
@@ -1222,6 +1318,27 @@ export type Database = {
           updated_at?: string
           user_id?: string
           valuation?: number | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string | null
+          id: string
+          referrer_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          referrer_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          referrer_id?: string
+          user_id?: string
         }
         Relationships: []
       }

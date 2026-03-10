@@ -5,6 +5,7 @@ import {
   Eye, Clock, Coffee, Briefcase, PenTool, Mountain, Puzzle,
   Megaphone, HandshakeIcon, MapPin, BarChart3, Layers, Wallet,
   Swords, GraduationCap, Telescope, FileText, CircleDot, Wand2,
+  Sprout, BadgeCheck, Network,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -63,6 +64,11 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   { key: "profile_complete", name: "Perfil Completo", description: "Todas as informações preenchidas", criterion: "Perfil 100% completo", icon: Eye, colorClass: "badge-green" },
   { key: "mentor", name: "Mentor", description: "Ajudou outros founders", criterion: "Score 70+ e 10+ conexões", icon: GraduationCap, colorClass: "badge-blue" },
   { key: "diamond_founder", name: "Diamante Founder", description: "Top 1% da plataforma", criterion: "Score 95+ e 50+ conexões", icon: Gem, colorClass: "badge-gold-metallic" },
+
+  // ── Partner badges ──
+  { key: "growth_partner", name: "Growth Partner", description: "Primeira conversão como parceiro", criterion: "1+ referral convertido", icon: Sprout, colorClass: "badge-green" },
+  { key: "azera_ambassador", name: "Azera Ambassador", description: "Embaixador oficial da plataforma", criterion: "10+ referrals convertidos", icon: BadgeCheck, colorClass: "badge-gold-metallic" },
+  { key: "top_connector", name: "Top Connector", description: "Conector de elite", criterion: "50+ referrals convertidos", icon: Network, colorClass: "badge-purple" },
 ];
 
 export function getBadgeByKey(key: string): BadgeDefinition | undefined {

@@ -44,6 +44,18 @@ export default function Signup() {
         toast.error(error.message);
       }
     } else {
+      // Capture referral
+      const refId = localStorage.getItem("azera_ref");
+      const refTs = parseInt(localStorage.getItem("azera_ref_ts") || "0");
+      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+      const userId = data.user?.id;
+
+      if (refId && userId && (Date.now() - refTs < thirtyDays)) {
+        await supabase.from("referrals" as any).insert({ referrer_id: refId, user_id: userId });
+        localStorage.removeItem("azera_ref");
+        localStorage.removeItem("azera_ref_ts");
+      }
+
       // Auto-confirm is enabled, so if we got a session, go straight in
       if (data.session) {
         toast.success("Conta criada com sucesso!");

@@ -30,6 +30,7 @@ interface Stats {
   opportunities: number;
   accountAgeDays: number;
   profileComplete: boolean;
+  referralConversions: number;
 }
 
 const ALL_BADGE_KEYS = [
@@ -41,6 +42,7 @@ const ALL_BADGE_KEYS = [
   "ten_challenges","thirty_posts","streak_14","streak_90","score_50","ten_projects",
   "first_idea","first_objective","first_challenge","journal_master","five_opportunities",
   "early_adopter","profile_complete","mentor","diamond_founder",
+  "growth_partner","azera_ambassador","top_connector",
 ];
 
 const BADGE_RULES: BadgeRule[] = [
@@ -88,6 +90,10 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "profile_complete", check: s => s.profileComplete },
   { key: "mentor", check: s => s.totalScore >= 70 && s.connections >= 10 },
   { key: "diamond_founder", check: s => s.totalScore >= 95 && s.connections >= 50 },
+  // Partner badges
+  { key: "growth_partner", check: s => s.referralConversions >= 1 },
+  { key: "azera_ambassador", check: s => s.referralConversions >= 10 },
+  { key: "top_connector", check: s => s.referralConversions >= 50 },
 ];
 
 Deno.serve(async (req) => {
@@ -109,7 +115,7 @@ Deno.serve(async (req) => {
     const [
       venturesRes, connectionsRes, projectsRes, objectivesCompletedRes, objectivesTotalRes,
       ideasRes, challengesCompletedRes, challengesTotalRes, postsRes, habitsRes,
-      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes,
+      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes, partnerRes,
     ] = await Promise.all([
       supabaseAdmin.from("ventures").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_connections").select("id", { count: "exact", head: true })
@@ -128,6 +134,7 @@ Deno.serve(async (req) => {
       supabaseAdmin.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("trips").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_opportunities").select("id", { count: "exact", head: true }).eq("user_id", userId),
+      supabaseAdmin.from("partner_profiles").select("partner_id").eq("user_id", userId).maybeSingle(),
     ]);
 
     const fp = profileRes.data;
@@ -135,6 +142,17 @@ Deno.serve(async (req) => {
     const accountCreated = fp?.created_at ? new Date(fp.created_at) : new Date();
     const accountAgeDays = Math.floor((Date.now() - accountCreated.getTime()) / (1000 * 60 * 60 * 24));
     const profileComplete = !!(fp?.name && fp?.city && fp?.country && fp?.skills?.length && fp?.industry?.length && fp?.building && fp?.looking_for?.length && fp?.avatar_url);
+
+    // Count referral conversions for partner badges
+    let referralConversions = 0;
+    const partnerData = (partnerRes as any)?.data;
+    if (partnerData?.partner_id) {
+      const { count: refCount } = await supabaseAdmin
+        .from("commissions")
+        .select("id", { count: "exact", head: true })
+        .eq("affiliate_id", partnerData.partner_id);
+      referralConversions = refCount || 0;
+    }
 
     const stats: Stats = {
       ventures: venturesRes.count || 0,
@@ -156,6 +174,7 @@ Deno.serve(async (req) => {
       opportunities: opportunitiesRes.count || 0,
       accountAgeDays,
       profileComplete,
+      referralConversions,
     };
 
     // Site owner gets ALL badges

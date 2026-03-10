@@ -86,6 +86,7 @@ const FounderOpportunities = lazy(() => import("./pages/FounderOpportunities"));
 const FounderNotificationsPage = lazy(() => import("./pages/FounderNotificationsPage"));
 const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
 const HowToUse = lazy(() => import("./pages/HowToUse"));
+const Earn = lazy(() => import("./pages/Earn"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -97,6 +98,20 @@ const queryClient = new QueryClient({
   },
 });
 
+// Capture referral param on mount
+function ReferralCapture() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  if (ref) {
+    const existing = localStorage.getItem("azera_ref");
+    if (!existing) {
+      localStorage.setItem("azera_ref", ref);
+      localStorage.setItem("azera_ref_ts", Date.now().toString());
+    }
+  }
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
@@ -106,6 +121,7 @@ const App = () => (
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <SubscriptionProvider>
+          <ReferralCapture />
           <Suspense fallback={null}>
           <Routes>
             {/* Public routes */}
@@ -121,6 +137,7 @@ const App = () => (
             <Route path="/community-guidelines" element={<CommunityGuidelines />} />
             <Route path="/payments-policy" element={<PaymentsPolicy />} />
             <Route path="/security-policy" element={<SecurityPolicy />} />
+            <Route path="/earn" element={<Earn />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
 

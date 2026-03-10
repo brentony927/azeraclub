@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
 import BadgeShowcase from "@/components/BadgeShowcase";
+import PartnerSection from "@/components/PartnerSection";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -593,6 +594,9 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Partner Section */}
+        <PartnerSection />
 
         {/* Save */}
         <Button onClick={handleSave} disabled={saving} className="w-full h-12 font-semibold uppercase tracking-wider text-xs">
