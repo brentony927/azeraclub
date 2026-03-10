@@ -167,7 +167,7 @@ export default function FounderProfile() {
     const { error } = await supabase.from("founder_connections").insert({ from_user_id: user.id, to_user_id: profile.user_id, status: "pending" });
     if (!error) {
       setConnectionStatus("pending");
-      await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar`, related_user_id: user.id });
+      await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar` });
       toast({ title: "Solicitação enviada! 🤝" });
     }
   };

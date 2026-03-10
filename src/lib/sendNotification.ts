@@ -6,7 +6,6 @@ interface SendNotificationParams {
   title: string;
   body?: string | null;
   action_url?: string | null;
-  related_user_id?: string | null;
 }
 
 export async function sendNotification(params: SendNotificationParams): Promise<void> {
