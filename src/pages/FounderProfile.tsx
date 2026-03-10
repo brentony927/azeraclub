@@ -170,7 +170,7 @@ export default function FounderProfile() {
     if (!error) {
       setConnectionStatus("pending");
       await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar` });
-      toast({ title: "Solicitação enviada! 🤝" });
+      toast({ title: "Solicitação enviada!" });
     }
   };
 
