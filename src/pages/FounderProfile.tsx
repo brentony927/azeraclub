@@ -501,29 +501,32 @@ export default function FounderProfile() {
             <div className="flex flex-wrap gap-3">
               {isIncomingPending ? (
                 <>
-                  <Button onClick={handleAcceptConnection}>
+                  <Button onClick={handleAcceptConnection} className="min-h-[44px]">
                     <Check className="h-4 w-4 mr-2" /> Aceitar Conexão
                   </Button>
-                  <Button variant="outline" onClick={handleRejectConnection}>
+                  <Button variant="outline" onClick={handleRejectConnection} className="min-h-[44px]">
                     <X className="h-4 w-4 mr-2" /> Recusar
                   </Button>
                 </>
               ) : (
-                <Button onClick={handleConnect} disabled={!!connectionStatus}>
+                <Button onClick={handleConnect} disabled={!!connectionStatus} className="min-h-[44px]">
                   <UserPlus className="h-4 w-4 mr-2" />
                   {connectionStatus === "accepted" ? "Conectado" : connectionStatus === "pending" ? "Pendente" : "Conectar"}
                 </Button>
               )}
               {connectionStatus === "accepted" && (
-                <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })}>
+                <Button variant="outline" onClick={() => navigate("/founder-messages", { state: { userId: profile.user_id, userName: profile.name } })} className="min-h-[44px]">
                   <MessageCircle className="h-4 w-4 mr-2" /> Mensagem
                 </Button>
               )}
-              <Button variant="outline" onClick={() => navigate("/venture-builder")}>
+              <Button variant="outline" onClick={() => navigate("/venture-builder")} className="min-h-[44px]">
                 <Send className="h-4 w-4 mr-2" /> Convidar para Venture
               </Button>
               <BookmarkButton itemId={profile.id} itemType="founder" />
               <ReportUserDialog reportedUserId={profile.user_id} reportedUserName={profile.name} />
+              {myProfile?.is_site_owner && (
+                <OwnerModPanel targetUserId={profile.user_id} targetName={profile.name} />
+              )}
             </div>
           </CardContent>
         </Card>
