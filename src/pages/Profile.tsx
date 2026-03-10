@@ -239,7 +239,7 @@ export default function Profile() {
 
       // Save GPS to founder_locations (separate table for privacy)
       if (latitude != null && longitude != null) {
-        await supabase.from("founder_locations" as any).upsert({
+        await supabase.from("founder_locations").upsert({
           user_id: user.id,
           latitude,
           longitude,
