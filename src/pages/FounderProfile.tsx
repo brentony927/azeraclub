@@ -104,7 +104,8 @@ export default function FounderProfile() {
           .maybeSingle();
         if (!recentView) {
           await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", prof.id);
-          await sendNotification({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil" });
+          const { data: visitorProfile } = await supabase.from("founder_profiles").select("name, username").eq("user_id", user.id).maybeSingle();
+          await sendNotification({ user_id: prof.user_id, type: "profile_view", title: `${visitorProfile?.name || visitorProfile?.username || "Alguém"} visualizou seu perfil 👀` });
         }
       }
 
@@ -166,7 +167,7 @@ export default function FounderProfile() {
     const { error } = await supabase.from("founder_connections").insert({ from_user_id: user.id, to_user_id: profile.user_id, status: "pending" });
     if (!error) {
       setConnectionStatus("pending");
-      await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || "Alguém"} quer se conectar` });
+      await sendNotification({ user_id: profile.user_id, type: "connection", title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar` });
       toast({ title: "Solicitação enviada! 🤝" });
     }
   };
@@ -181,7 +182,7 @@ export default function FounderProfile() {
       await sendNotification({
         user_id: profile.user_id,
         type: "connection",
-        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        title: `${myProfile?.name || myProfile?.username || "Alguém"} aceitou sua conexão! 🎉`,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }

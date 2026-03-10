@@ -80,7 +80,7 @@ export default function FounderNotificationsPage() {
       .order("created_at", { ascending: false })
       .limit(100)
       .then(({ data }) => {
-        if (data) setNotifications(data as Notification[]);
+        if (data) setNotifications((data as Notification[]).filter(n => n.type !== "message"));
         setLoading(false);
       });
   }, [user]);

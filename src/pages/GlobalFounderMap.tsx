@@ -165,7 +165,7 @@ export default function GlobalFounderMap() {
       await sendNotification({
         user_id: targetUserId,
         title: "Nova solicitação de conexão",
-        body: `${myProfile?.name || "Um founder"} quer se conectar com você.`,
+        body: `${myProfile?.name || myProfile?.username || "Um founder"} quer se conectar com você.`,
         type: "connection",
         action_url: `/founder-profile/${user.id}`,
       });

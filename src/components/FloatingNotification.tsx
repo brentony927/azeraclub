@@ -37,7 +37,9 @@ export default function FloatingNotification() {
         filter: `user_id=eq.${user.id}`,
       }, (payload) => {
         const n = payload.new as any;
-        setQueue(prev => [...prev, { id: n.id, title: n.title, body: n.body, type: n.type, action_url: n.action_url }]);
+        if (n.type !== "message") {
+          setQueue(prev => [...prev, { id: n.id, title: n.title, body: n.body, type: n.type, action_url: n.action_url }]);
+        }
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };

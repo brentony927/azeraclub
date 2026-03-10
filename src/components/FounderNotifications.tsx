@@ -87,7 +87,7 @@ export default function FounderNotifications() {
       .order("created_at", { ascending: false })
       .limit(20)
       .then(({ data }) => {
-        if (data) setNotifications(data as Notification[]);
+        if (data) setNotifications((data as Notification[]).filter(n => n.type !== "message"));
       });
 
     const channel = supabase
@@ -98,7 +98,8 @@ export default function FounderNotifications() {
         table: "founder_notifications",
         filter: `user_id=eq.${user.id}`,
       }, (payload) => {
-        setNotifications(prev => [payload.new as Notification, ...prev]);
+        const n = payload.new as Notification;
+        if (n.type !== "message") setNotifications(prev => [n, ...prev]);
       })
       .subscribe();
 

@@ -53,6 +53,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useTheme } from "next-themes";
+import { supabase } from "@/integrations/supabase/client";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -261,6 +262,33 @@ export function AppSidebar() {
 
   const { setOpenMobile } = useSidebar();
 
+  // Unread messages count for "Conversas" badge
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnread = async () => {
+      const { count } = await supabase.from("founder_messages").select("id", { count: "exact", head: true })
+        .eq("to_user_id", user.id).eq("read", false);
+      setUnreadMessages(count || 0);
+    };
+    fetchUnread();
+
+    const channel = supabase
+      .channel("sidebar-unread-msgs")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "founder_messages", filter: `to_user_id=eq.${user.id}` }, () => {
+        setUnreadMessages(prev => prev + 1);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "founder_messages", filter: `to_user_id=eq.${user.id}` }, (payload) => {
+        if ((payload.new as any).read && !(payload.old as any).read) {
+          setUnreadMessages(prev => Math.max(0, prev - 1));
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   const handleNavClick = () => {
     setOpenMobile(false);
   };
@@ -271,6 +299,8 @@ export function AppSidebar() {
     navItem.url === "/" ?
     location.pathname === "/" :
     location.pathname.startsWith(navItem.url);
+
+    const showBadge = navItem.url === "/founder-messages" && unreadMessages > 0;
 
     return (
       <SidebarMenuItem key={navItem.title}>
@@ -284,7 +314,12 @@ export function AppSidebar() {
             }>
             
               <navItem.icon className="h-4 w-4 sidebar-nav-icon" />
-              {!collapsed && <span className="text-sm font-medium">{navItem.title}</span>}
+              {!collapsed && <span className="text-sm font-medium flex-1">{navItem.title}</span>}
+              {showBadge && (
+                <span className="ml-auto w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                  {unreadMessages > 9 ? "9+" : unreadMessages}
+                </span>
+              )}
             </NavLink>
           </SidebarMenuButton>
         </SidebarMenuItem>);
