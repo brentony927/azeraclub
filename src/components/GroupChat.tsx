@@ -25,6 +25,7 @@ interface GroupMember {
 interface Props {
   groupId: string;
   groupName: string;
+  ownerUserId?: string;
 }
 
 export default function GroupChat({ groupId, groupName }: Props) {
