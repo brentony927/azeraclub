@@ -262,6 +262,33 @@ export function AppSidebar() {
 
   const { setOpenMobile } = useSidebar();
 
+  // Unread messages count for "Conversas" badge
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnread = async () => {
+      const { count } = await supabase.from("founder_messages").select("id", { count: "exact", head: true })
+        .eq("to_user_id", user.id).eq("read", false);
+      setUnreadMessages(count || 0);
+    };
+    fetchUnread();
+
+    const channel = supabase
+      .channel("sidebar-unread-msgs")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "founder_messages", filter: `to_user_id=eq.${user.id}` }, () => {
+        setUnreadMessages(prev => prev + 1);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "founder_messages", filter: `to_user_id=eq.${user.id}` }, (payload) => {
+        if ((payload.new as any).read && !(payload.old as any).read) {
+          setUnreadMessages(prev => Math.max(0, prev - 1));
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   const handleNavClick = () => {
     setOpenMobile(false);
   };
