@@ -1,38 +1,42 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Corrigir Notificações e Lógicas Faltantes
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### Problemas Identificados
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+1. **Like em post → sem notificação** — `toggleLike()` no `FounderPostCard.tsx` não envia notificação ao autor do post
+2. **Comentário em post → sem notificação** — `handleComment()` não notifica o autor do post
+3. **Mensagem direta → sem notificação** — `send-founder-message` edge function insere mensagem mas nunca notifica o destinatário
+4. **Resposta a oportunidade → sem notificação** — clicar "Responder" em `FounderOpportunities` navega para mensagens sem notificar o dono da oportunidade
+5. **Contagem de comentários não atualiza localmente** — após comentar, o `commentsCount` no card não reflete o novo comentário até reload completo
+6. **Post criado → sem notificação para conexões** — quando um founder publica, suas conexões não são notificadas
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+### Correções
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+#### 1. FounderPostCard.tsx — Notificação ao curtir e comentar
+- Em `toggleLike()`: se não é o próprio post, chamar `sendNotification()` com type `post_like`, título "[nome] curtiu sua publicação"
+- Em `handleComment()`: se não é o próprio post, chamar `sendNotification()` com type `post_comment`, título "[nome] comentou na sua publicação"
+- Receber `myName` como prop para usar no título da notificação
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+#### 2. send-founder-message edge function — Notificar destinatário
+- Após insert bem-sucedido, inserir na tabela `founder_notifications` com type `message`, título "[nome] enviou uma mensagem"
+- Buscar nome do remetente via `founder_profiles`
+
+#### 3. FounderOpportunities.tsx — Notificar ao responder oportunidade
+- Antes de navegar para mensagens, chamar `sendNotification()` com type `opportunity_reply`
+
+#### 4. FounderPostCard.tsx — Atualizar commentsCount local
+- Após comentário bem-sucedido, incrementar o commentsCount local no estado
+
+#### 5. Adicionar types de notificação ao send-notification
+- Verificar que os novos types (`post_like`, `post_comment`, `message`, `opportunity_reply`) estão na lista de tipos permitidos da edge function
+
+### Arquivos a editar
+- `src/components/FounderPostCard.tsx` — adicionar sendNotification em like/comment + commentsCount local
+- `supabase/functions/send-founder-message/index.ts` — notificar destinatário após envio
+- `supabase/functions/send-notification/index.ts` — adicionar novos types permitidos
+- `src/pages/FounderOpportunities.tsx` — notificar ao responder oportunidade
+- `src/pages/FounderFeed.tsx` — passar myName para FounderPostCard
+- `src/components/FounderNotifications.tsx` — adicionar ícones/rotas para novos types
+- `src/pages/FounderNotificationsPage.tsx` — adicionar ícones/rotas para novos types
+
