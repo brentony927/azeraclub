@@ -199,6 +199,16 @@
     to { --shine-angle: 360deg; }
   }
 
+  /* ====== Ticker scroll ====== */
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-scroll {
+    animation: ticker-scroll linear infinite;
+  }
+
+
   @property --shine-angle {
     syntax: "<angle>";
     initial-value: 0deg;
