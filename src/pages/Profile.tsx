@@ -136,6 +136,7 @@ export default function Profile() {
       setIsVerified(f.is_verified || false);
       setProfileViews(f.profile_views || 0);
       setUsername(f.username || "");
+      setIsOwner(f.is_site_owner || false);
     }
 
     setConnectionsCount(connRes.count || 0);
