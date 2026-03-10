@@ -101,9 +101,10 @@ export default function FounderMessages() {
       });
 
       if (userIds.size > 0) {
-        const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name").in("user_id", Array.from(userIds));
+        const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name, avatar_url").in("user_id", Array.from(userIds));
         const nameMap = new Map<string, string>();
-        profiles?.forEach(p => nameMap.set(p.user_id, p.name));
+        const avatarMap = new Map<string, string | null>();
+        profiles?.forEach(p => { nameMap.set(p.user_id, p.name); avatarMap.set(p.user_id, p.avatar_url); });
 
         const convList: Conversation[] = [];
         convMap.forEach((val, odId) => {
