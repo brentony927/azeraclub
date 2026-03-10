@@ -51,6 +51,7 @@ export default function FounderMessages() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [connectedUsers, setConnectedUsers] = useState<{ userId: string; name: string }[]>([]);
+  const [ownerUserId, setOwnerUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
