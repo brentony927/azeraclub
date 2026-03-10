@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Building2, Users, Plus } from "lucide-react";
+import { Building2, Users, Plus, Home } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Button } from "@/components/ui/button";
 import { useProperties } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
