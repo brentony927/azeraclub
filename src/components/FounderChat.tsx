@@ -4,7 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Lock, MoreVertical, Trash2, Ban, Flag } from "lucide-react";
+import { Send, Lock, MoreVertical, Trash2, Ban, Flag, AlertTriangle } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -32,6 +34,7 @@ interface FounderChatProps {
   onDeleteConversation?: (userId: string) => void;
   isOtherOwner?: boolean;
   isMeOwner?: boolean;
+  otherUserAvatar?: string | null;
 }
 
 const WEEKLY_LIMIT = 10;
@@ -44,7 +47,7 @@ function getWeekStart(): string {
   return monday.toISOString().split("T")[0];
 }
 
-export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation, isOtherOwner, isMeOwner }: FounderChatProps) {
+export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation, isOtherOwner, isMeOwner, otherUserAvatar }: FounderChatProps) {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
   const navigate = useNavigate();
@@ -53,10 +56,18 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
   const [sending, setSending] = useState(false);
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [reportOpen, setReportOpen] = useState(false);
+  const [myAvatar, setMyAvatar] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const isFounder = !canAccess("pro");
   const remaining = Math.max(0, WEEKLY_LIMIT - weeklyCount);
+
+  // Load my avatar
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("founder_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => { if (data?.avatar_url) setMyAvatar(data.avatar_url); });
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -213,8 +224,9 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
         </DropdownMenu>
       </div>
 
-      <div className="px-4 py-2 bg-muted/30 border-b border-border/30">
-        <p className="text-[10px] text-muted-foreground">⚠️ Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
+      <div className="px-4 py-2 bg-muted/30 border-b border-border/30 flex items-start gap-2">
+        <Icon3D icon={AlertTriangle} color="silver" size="xs" className="mt-0.5 shrink-0" />
+        <p className="text-[10px] text-muted-foreground">Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
       </div>
 
       {isFounder && (
@@ -234,8 +246,16 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
         {messages.map(msg => {
           const isMine = msg.from_user_id === user?.id;
           const isOwnerMsg = isMine ? isMeOwner : isOtherOwner;
+          const avatar = isMine ? myAvatar : otherUserAvatar;
+          const initials = isMine ? "Eu" : otherUserName?.charAt(0)?.toUpperCase() || "?";
           return (
-            <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+            <div key={msg.id} className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
+              {!isMine && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatar ? <AvatarImage src={avatar} /> : null}
+                  <AvatarFallback className="text-[9px]">{initials}</AvatarFallback>
+                </Avatar>
+              )}
               <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
                 isOwnerMsg
                   ? "owner-message rounded-br-md"
@@ -248,6 +268,12 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
                   {format(new Date(msg.created_at), "HH:mm")}
                 </p>
               </div>
+              {isMine && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatar ? <AvatarImage src={avatar} /> : null}
+                  <AvatarFallback className="text-[9px]">Eu</AvatarFallback>
+                </Avatar>
+              )}
             </div>
           );
         })}

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Users, CalendarDays, Check, Star, Plus } from "lucide-react";
+import { MapPin, Users, CalendarDays, Check, Star, Plus, Mic, Handshake, Sparkles, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSocialEvents, useUpdateSocialEventRsvp } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
 import AddSocialEventDialog from "@/components/AddSocialEventDialog";
+import Icon3D from "@/components/ui/icon-3d";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -16,8 +17,11 @@ const rsvpStyles: Record<string, string> = {
   pendente: "bg-muted text-muted-foreground",
 };
 
-const typeIcons: Record<string, string> = {
-  Conferência: "🎤", Networking: "🤝", Gala: "✨", VIP: "💎",
+const typeIconMap: Record<string, { icon: any; color: "gold" | "red" | "blue" | "green" | "silver" }> = {
+  Conferência: { icon: Mic, color: "blue" },
+  Networking: { icon: Handshake, color: "green" },
+  Gala: { icon: Sparkles, color: "gold" },
+  VIP: { icon: Gem, color: "gold" },
 };
 
 export default function Social() {
@@ -41,13 +45,18 @@ export default function Social() {
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : events.length === 0 ? (
         <EmptyState icon="💎" title="Nenhum evento social" description="Adicione eventos de networking, conferências e galas ao seu radar social." actionLabel="Adicionar Evento" onAction={() => setDialogOpen(true)} />
+
       ) : (
         <div className="space-y-4">
           {events.map((ev) => (
             <motion.div key={ev.id} variants={item} className="glass-card-hover p-6">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-xl shrink-0">
-                  {typeIcons[ev.type || ""] || "📅"}
+                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  {typeIconMap[ev.type || ""] ? (
+                    <Icon3D icon={typeIconMap[ev.type!].icon} color={typeIconMap[ev.type!].color} size="md" />
+                  ) : (
+                    <Icon3D icon={CalendarDays} color="silver" size="md" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="flex items-start justify-between gap-2">

@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2, MessageCircle } from "lucide-react";
+import { Briefcase, Plus, Loader2, DollarSign, ImagePlus, X, Play, Trash2, MessageCircle, AlertTriangle } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { toast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import FeatureLock from "@/components/FeatureLock";
@@ -264,8 +265,9 @@ export default function FounderOpportunities() {
         )}
       </div>
 
-      <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-        <p className="text-[10px] text-muted-foreground">⚠️ As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
+      <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30 flex items-start gap-2">
+        <Icon3D icon={AlertTriangle} color="gold" size="xs" className="mt-0.5 shrink-0" />
+        <p className="text-[10px] text-muted-foreground">As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
       </div>
 
       {opps.length === 0 ? (

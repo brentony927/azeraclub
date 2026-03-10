@@ -947,6 +947,45 @@
   will-change: transform, opacity;
 }
 
+/* ── OWNER Orbs (red intense) ── */
+.owner-orb-1 {
+  width: 700px; height: 700px;
+  top: -10%; left: -5%;
+  background: radial-gradient(circle, hsl(0 90% 50% / 0.35) 0%, hsl(350 80% 40% / 0.15) 40%, transparent 70%);
+  animation-duration: 20s;
+}
+.owner-orb-2 {
+  width: 550px; height: 550px;
+  top: 50%; right: -5%;
+  background: radial-gradient(circle, hsl(350 90% 45% / 0.28) 0%, hsl(0 80% 55% / 0.12) 40%, transparent 70%);
+  animation-duration: 16s;
+  animation-delay: -5s;
+}
+.owner-orb-3 {
+  width: 500px; height: 500px;
+  bottom: 10%; left: 30%;
+  background: radial-gradient(circle, hsl(10 85% 45% / 0.22) 0%, hsl(0 90% 50% / 0.08) 40%, transparent 70%);
+  animation-duration: 22s;
+  animation-delay: -10s;
+}
+.owner-orb-4 {
+  width: 420px; height: 420px;
+  top: 20%; right: 30%;
+  background: radial-gradient(circle, hsl(0 90% 50% / 0.25) 0%, hsl(340 80% 45% / 0.1) 40%, transparent 70%);
+  animation-duration: 25s;
+  animation-delay: -7s;
+}
+
+/* ── OWNER Particles (red) ── */
+.owner-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: hsl(0 90% 50% / 0.9);
+  box-shadow: 0 0 10px hsl(0 90% 50% / 0.6), 0 0 20px hsl(350 80% 45% / 0.3);
+  animation: eliteParticleFloat 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 /* ── PRO gradients — 3-color ── */
 .pro-theme .moss-gradient,
 .pro-theme .gold-gradient {
@@ -1155,6 +1194,7 @@
   .elite-orb,
   .pro-particle,
   .business-particle,
+  .owner-particle,
   .pro-theme .stat-card,
   .business-theme .stat-card {
     animation: none !important;
@@ -1970,7 +2010,8 @@
 
   /* Disable heavy animations on mobile */
   .pro-particle,
-  .business-particle {
+  .business-particle,
+  .owner-particle {
     animation: none !important;
     display: none !important;
   }

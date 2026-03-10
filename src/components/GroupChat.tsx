@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Loader2, Settings, Users, UserMinus, ShieldCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 
@@ -33,6 +34,7 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [members, setMembers] = useState<GroupMember[]>([]);
   const [names, setNames] = useState<Record<string, string>>({});
+  const [avatars, setAvatars] = useState<Record<string, string | null>>({});
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -55,10 +57,12 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
 
     const userIds = [...new Set([...msgs.map(m => m.user_id), ...mems.map(m => m.user_id)])];
     if (userIds.length > 0) {
-      const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name").in("user_id", userIds);
-      const map: Record<string, string> = {};
-      profiles?.forEach(p => { map[p.user_id] = p.name; });
-      setNames(map);
+      const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name, avatar_url").in("user_id", userIds);
+      const nameMap: Record<string, string> = {};
+      const avatarMap: Record<string, string | null> = {};
+      profiles?.forEach(p => { nameMap[p.user_id] = p.name; avatarMap[p.user_id] = p.avatar_url; });
+      setNames(nameMap);
+      setAvatars(avatarMap);
     }
     setLoading(false);
   };
@@ -154,7 +158,13 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
           const isMe = m.user_id === user?.id;
           const isOwnerMsg = ownerUserId && m.user_id === ownerUserId;
           return (
-            <div key={m.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+            <div key={m.id} className={`flex items-end gap-2 ${isMe ? "justify-end" : "justify-start"}`}>
+              {!isMe && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatars[m.user_id] ? <AvatarImage src={avatars[m.user_id]!} /> : null}
+                  <AvatarFallback className="text-[9px]">{(names[m.user_id] || "?").charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+              )}
               <div className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${
                 isOwnerMsg
                   ? "owner-message"
@@ -166,6 +176,12 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
                   {new Date(m.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
+              {isMe && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatars[m.user_id] ? <AvatarImage src={avatars[m.user_id]!} /> : null}
+                  <AvatarFallback className="text-[9px]">Eu</AvatarFallback>
+                </Avatar>
+              )}
             </div>
           );
         })}

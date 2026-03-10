@@ -56,7 +56,7 @@ export default function Layout() {
               <div className="page-bg-orb page-bg-orb-2" />
               <div className="page-bg-orb page-bg-orb-3" />
             </div>
-            {isPremium && <EliteBackground plan={plan} />}
+            {(isPremium || isOwner) && <EliteBackground plan={plan} isOwner={isOwner} />}
           </>
         )}
         <AppSidebar />

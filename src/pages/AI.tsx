@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X } from "lucide-react";
+import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X, Smile, CloudSun, Lightbulb, Frown, Flame, Briefcase } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,12 +21,12 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 const DAILY_LIMIT_BASIC = 20;
 
 const MOODS = [
-  { id: "feliz", label: "Feliz", emoji: "😊" },
-  { id: "calmo", label: "Calmo", emoji: "😌" },
-  { id: "focado", label: "Focado", emoji: "💡" },
-  { id: "triste", label: "Triste", emoji: "😔" },
-  { id: "motivado", label: "Motivado", emoji: "🔥" },
-  { id: "ceo", label: "CEO Mode", emoji: "👔", minTier: "business" as const },
+  { id: "feliz", label: "Feliz", icon: Smile, color: "green" as const },
+  { id: "calmo", label: "Calmo", icon: CloudSun, color: "blue" as const },
+  { id: "focado", label: "Focado", icon: Lightbulb, color: "gold" as const },
+  { id: "triste", label: "Triste", icon: Frown, color: "silver" as const },
+  { id: "motivado", label: "Motivado", icon: Flame, color: "red" as const },
+  { id: "ceo", label: "CEO Mode", icon: Briefcase, color: "gold" as const, minTier: "business" as const },
 ];
 
 const SUGGESTIONS = [
@@ -365,8 +366,9 @@ export default function AI() {
           </button>
           <span className="text-[13px] font-semibold text-foreground">AZR AI</span>
           {activeMood && (
-            <span className="text-[11px] text-muted-foreground ml-2">
-              {MOODS.find((m) => m.id === activeMood)?.emoji} {MOODS.find((m) => m.id === activeMood)?.label}
+            <span className="text-[11px] text-muted-foreground ml-2 flex items-center gap-1">
+              <Icon3D icon={MOODS.find((m) => m.id === activeMood)?.icon || Smile} color={MOODS.find((m) => m.id === activeMood)?.color || "gold"} size="xs" />
+              {MOODS.find((m) => m.id === activeMood)?.label}
             </span>
           )}
           {isBasicPlan && (
@@ -464,7 +466,7 @@ export default function AI() {
                           : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
-                      {mood.emoji} {mood.label}
+                      <Icon3D icon={mood.icon} color={mood.color} size="xs" /> {mood.label}
                       {locked && <Lock className="h-3 w-3 ml-0.5" />}
                     </button>
                   );
@@ -555,7 +557,7 @@ export default function AI() {
                             : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                       >
-                        {mood.emoji} {mood.label}
+                        <Icon3D icon={mood.icon} color={mood.color} size="xs" /> {mood.label}
                         {locked && <Lock className="h-2.5 w-2.5 ml-0.5" />}
                       </button>
                     );

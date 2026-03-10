@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import PricingSection, { type PricingPlan } from "@/components/ui/pricing-section";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle } from "lucide-react";
+import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const tiers = {
@@ -211,6 +211,11 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-16">
+      <div className="w-full max-w-4xl mb-4">
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
+        </Button>
+      </div>
       <PricingSection
         plans={plans}
         onSubscribe={handleSubscribe}

@@ -3,12 +3,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EliteBackgroundProps {
   plan: PlanTier;
+  isOwner?: boolean;
 }
 
-export default function EliteBackground({ plan }: EliteBackgroundProps) {
+export default function EliteBackground({ plan, isOwner }: EliteBackgroundProps) {
   const isMobile = useIsMobile();
-  const orbClass = plan === "pro" ? "pro-orb" : "business-orb";
-  const particleClass = plan === "pro" ? "pro-particle" : "business-particle";
+  const orbClass = isOwner ? "owner-orb" : plan === "pro" ? "pro-orb" : "business-orb";
+  const particleClass = isOwner ? "owner-particle" : plan === "pro" ? "pro-particle" : "business-particle";
   const orbCount = isMobile ? 2 : 4;
   const particleCount = isMobile ? 3 : 8;
 

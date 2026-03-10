@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Loader2, ArrowLeft, Pin, PinOff, Users } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import { lazy, Suspense } from "react";
 const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
@@ -21,6 +22,7 @@ interface Conversation {
   unread: number;
   isPinned?: boolean;
   opportunityTitle?: string;
+  avatarUrl?: string | null;
 }
 
 interface GroupConversation {
@@ -100,15 +102,17 @@ export default function FounderMessages() {
       });
 
       if (userIds.size > 0) {
-        const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name").in("user_id", Array.from(userIds));
+        const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name, avatar_url").in("user_id", Array.from(userIds));
         const nameMap = new Map<string, string>();
-        profiles?.forEach(p => nameMap.set(p.user_id, p.name));
+        const avatarMap = new Map<string, string | null>();
+        profiles?.forEach(p => { nameMap.set(p.user_id, p.name); avatarMap.set(p.user_id, p.avatar_url); });
 
         const convList: Conversation[] = [];
         convMap.forEach((val, odId) => {
           convList.push({
             userId: odId,
             name: nameMap.get(odId) || "Fundador",
+            avatarUrl: avatarMap.get(odId) || null,
             lastMessage: val.lastMsg,
             lastAt: val.lastAt,
             unread: val.unread,
@@ -297,6 +301,7 @@ export default function FounderMessages() {
               <FounderChat
                 otherUserId={selectedUser.userId}
                 otherUserName={selectedUser.name}
+                otherUserAvatar={conversations.find(c => c.userId === selectedUser.userId)?.avatarUrl}
                 onBlock={handleBlock}
                 onDeleteConversation={handleDeleteConversation}
                 isOtherOwner={ownerUserId === selectedUser.userId}
@@ -321,7 +326,11 @@ function ConversationItem({ conv, isSelected, onSelect, onTogglePin }: {
     <div className={`flex items-center border-b border-border/30 hover:bg-secondary/50 transition-colors ${isSelected ? "bg-secondary/70" : ""}`}>
       <button onClick={onSelect} className="flex-1 text-left p-4">
         <div className="flex justify-between items-start">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-7 w-7 shrink-0">
+              {conv.avatarUrl ? <AvatarImage src={conv.avatarUrl} /> : null}
+              <AvatarFallback className="text-[10px]">{conv.name?.charAt(0)?.toUpperCase() || "?"}</AvatarFallback>
+            </Avatar>
             {conv.isPinned && <Pin className="h-3 w-3 text-primary shrink-0" />}
             <p className="font-medium text-sm text-foreground">{conv.name}</p>
           </div>

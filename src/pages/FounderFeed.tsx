@@ -17,7 +17,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
+import { Search, Users, Filter, X, Lock, RefreshCw, HeartHandshake } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
 import { calculateMatchScore, calculateProfileScore } from "@/lib/founderMatch";
@@ -83,6 +83,7 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortByMatch, setSortByMatch] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [founderLevels, setFounderLevels] = useState<Record<string, string>>({});
 
@@ -297,6 +298,7 @@ export default function FounderFeed() {
   }));
 
   withScores.sort((a, b) => {
+    if (sortByMatch) return b.matchScore - a.matchScore;
     if (b.profileScore !== a.profileScore) return b.profileScore - a.profileScore;
     return b.matchScore - a.matchScore;
   });
@@ -529,6 +531,19 @@ export default function FounderFeed() {
 
           {/* Founders Tab */}
           <TabsContent value="founders" className="mt-4">
+            {myProfile && (
+              <div className="mb-4">
+                <Button
+                  variant={sortByMatch ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSortByMatch(!sortByMatch)}
+                  className="text-xs"
+                >
+                  <HeartHandshake className="h-4 w-4 mr-1" />
+                  Mais Parecidos Comigo
+                </Button>
+              </div>
+            )}
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (<FounderCardSkeleton key={i} />))}
