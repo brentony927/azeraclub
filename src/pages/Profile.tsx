@@ -595,6 +595,9 @@ export default function Profile() {
           </CardContent>
         </Card>
 
+        {/* Partner Section */}
+        <PartnerSection />
+
         {/* Save */}
         <Button onClick={handleSave} disabled={saving} className="w-full h-12 font-semibold uppercase tracking-wider text-xs">
           {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}

@@ -134,6 +134,7 @@ Deno.serve(async (req) => {
       supabaseAdmin.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("trips").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_opportunities").select("id", { count: "exact", head: true }).eq("user_id", userId),
+      supabaseAdmin.from("partner_profiles").select("partner_id").eq("user_id", userId).maybeSingle(),
     ]);
 
     const fp = profileRes.data;
