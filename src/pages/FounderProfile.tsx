@@ -396,7 +396,7 @@ export default function FounderProfile() {
 
       {/* === 7. INTERESTS === */}
       {profile.interests?.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interesses</h3>
             <div className="flex flex-wrap gap-1.5">
