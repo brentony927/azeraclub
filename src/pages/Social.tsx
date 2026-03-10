@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Users, CalendarDays, Check, Star, Plus } from "lucide-react";
+import { MapPin, Users, CalendarDays, Check, Star, Plus, Mic, Handshake, Sparkles, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSocialEvents, useUpdateSocialEventRsvp } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
 import AddSocialEventDialog from "@/components/AddSocialEventDialog";
+import Icon3D from "@/components/ui/icon-3d";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -16,8 +17,11 @@ const rsvpStyles: Record<string, string> = {
   pendente: "bg-muted text-muted-foreground",
 };
 
-const typeIcons: Record<string, string> = {
-  Conferência: "🎤", Networking: "🤝", Gala: "✨", VIP: "💎",
+const typeIconMap: Record<string, { icon: any; color: "gold" | "red" | "blue" | "green" | "silver" }> = {
+  Conferência: { icon: Mic, color: "blue" },
+  Networking: { icon: Handshake, color: "green" },
+  Gala: { icon: Sparkles, color: "gold" },
+  VIP: { icon: Gem, color: "gold" },
 };
 
 export default function Social() {
