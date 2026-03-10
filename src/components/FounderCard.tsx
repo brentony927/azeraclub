@@ -1,11 +1,12 @@
 import { useState, useRef, memo } from "react";
-import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
+import { MapPin, Eye, UserPlus, Sparkles, Crown, Star } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { getMatchColor } from "@/lib/founderMatch";
+import Icon3D from "@/components/ui/icon-3d";
 
 interface FounderCardProps {
   id: string;
