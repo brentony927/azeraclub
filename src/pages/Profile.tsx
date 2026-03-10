@@ -165,7 +165,7 @@ export default function Profile() {
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       setAvatarUrl(newUrl);
-      await supabase.from("profiles").update({ avatar_url: newUrl } as any).eq("user_id", user.id);
+      await supabase.from("profiles").update({ avatar_url: newUrl }).eq("user_id", user.id);
       if (hasFounderProfile) {
         await supabase.from("founder_profiles").update({ avatar_url: newUrl }).eq("user_id", user.id);
       }
