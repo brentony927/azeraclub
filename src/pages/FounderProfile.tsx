@@ -228,12 +228,14 @@ export default function FounderProfile() {
       <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
         <CardContent className="p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-3 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
-              {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
-              ) : (
-                <span className="text-2xl font-bold text-foreground">{initials}</span>
-              )}
+            <div className={`relative shrink-0 ${isSiteOwner ? "owner-avatar-3d-ring" : ""}`}>
+              <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden ring-3 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
+                ) : (
+                  <span className="text-2xl font-bold text-foreground">{initials}</span>
+                )}
+              </div>
             </div>
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
