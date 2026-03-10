@@ -23,6 +23,7 @@ import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { sendNotification } from "@/lib/sendNotification";
 import FounderPostCard from "@/components/FounderPostCard";
+import BadgeShowcase from "@/components/BadgeShowcase";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
@@ -317,6 +318,13 @@ export default function FounderProfile() {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* === BADGE SHOWCASE === */}
+      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <CardContent className="p-6">
+          <BadgeShowcase userId={profile.user_id} showLocked={isOwn} />
         </CardContent>
       </Card>
 

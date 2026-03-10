@@ -15,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
+import BadgeShowcase from "@/components/BadgeShowcase";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -407,6 +408,15 @@ export default function Profile() {
             )}
           </CardContent>
         </Card>
+
+        {/* Badge Showcase */}
+        {user && (
+          <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">
+            <CardContent className="pt-6">
+              <BadgeShowcase userId={user.id} showLocked />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Current Venture (read-only) */}
         {currentVenture && (

@@ -71,6 +71,7 @@ const plans: PricingPlan[] = [
       "Insights semanais",
       "Modo foco (deep work planner)",
       "Weekly Intelligence Report",
+      "🛡️ Insígnia de Confiança Pro",
     ],
   },
   {
@@ -94,6 +95,7 @@ const plans: PricingPlan[] = [
       "Relatórios estratégicos mensais",
       "Life Strategy AI",
       "Oportunidades premium",
+      "🛡️ Insígnia de Confiança Business",
     ],
   },
 ];

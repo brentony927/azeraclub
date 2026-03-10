@@ -1936,3 +1936,88 @@
     box-shadow: none !important;
   }
 }
+
+/* ===== BADGE SYSTEM ===== */
+@keyframes badge-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 6px 1px currentColor; }
+  50% { box-shadow: 0 0 12px 3px currentColor; }
+}
+
+.badge-earned {
+  animation: badge-pulse 3s ease-in-out infinite;
+}
+
+.badge-white {
+  background: hsl(0 0% 95%);
+  color: hsl(0 0% 20%);
+  box-shadow: 0 0 8px hsl(0 0% 80% / 0.6);
+}
+
+.badge-black {
+  background: hsl(0 0% 10%);
+  color: hsl(0 0% 90%);
+  box-shadow: 0 0 8px hsl(0 0% 30% / 0.5);
+}
+
+.badge-green {
+  background: hsl(142 70% 45%);
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 8px hsl(142 70% 45% / 0.5);
+}
+
+.badge-yellow {
+  background: hsl(45 93% 50%);
+  color: hsl(0 0% 10%);
+  box-shadow: 0 0 8px hsl(45 93% 50% / 0.5);
+}
+
+.badge-blue {
+  background: hsl(217 91% 55%);
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 8px hsl(217 91% 55% / 0.5);
+}
+
+.badge-orange {
+  background: hsl(25 95% 55%);
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 8px hsl(25 95% 55% / 0.5);
+}
+
+.badge-pink {
+  background: hsl(330 80% 60%);
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 8px hsl(330 80% 60% / 0.5);
+}
+
+.badge-purple {
+  background: hsl(270 70% 55%);
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 8px hsl(270 70% 55% / 0.5);
+}
+
+.badge-gold-metallic {
+  background: linear-gradient(145deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  background-size: 300% 300%;
+  animation: badge-shimmer 3s linear infinite, badge-pulse 3s ease-in-out infinite;
+  color: hsl(0 0% 10%);
+  box-shadow: 0 0 12px hsl(43 74% 49% / 0.6);
+}
+
+.badge-trust-pro {
+  background: linear-gradient(135deg, hsl(142 70% 40%), hsl(160 60% 50%));
+  color: hsl(0 0% 100%);
+  box-shadow: 0 0 10px hsl(142 70% 45% / 0.5);
+}
+
+.badge-trust-business {
+  background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728);
+  background-size: 200% 200%;
+  animation: badge-shimmer 3s linear infinite, badge-pulse 3s ease-in-out infinite;
+  color: hsl(0 0% 10%);
+  box-shadow: 0 0 12px hsl(43 74% 49% / 0.5);
+}
