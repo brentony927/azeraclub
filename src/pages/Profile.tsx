@@ -47,8 +47,8 @@ function getFounderBadge(commitment: string | null, skills: string[] | null): st
 export default function Profile() {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
-  const isPro = canAccess("pro");
   const navigate = useNavigate();
+  const [isOwner, setIsOwner] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

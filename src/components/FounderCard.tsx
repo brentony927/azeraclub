@@ -66,7 +66,9 @@ const FounderCard = memo(function FounderCard({
       <div className="absolute top-2 right-2 flex items-center gap-1.5">
         <BookmarkButton itemType="founder" itemId={id} size={14} />
         {isHighlighted && (
-          <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold">⭐ DESTAQUE</Badge>
+          <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold flex items-center gap-1">
+            <Icon3D icon={Star} color="gold" size="xs" /> DESTAQUE
+          </Badge>
         )}
       </div>
 
