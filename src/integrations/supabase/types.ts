@@ -543,8 +543,6 @@ export type Database = {
           is_published: boolean | null
           is_site_owner: boolean
           is_verified: boolean | null
-          latitude: number | null
-          longitude: number | null
           looking_for: string[] | null
           name: string
           profile_views: number | null
@@ -569,8 +567,6 @@ export type Database = {
           is_published?: boolean | null
           is_site_owner?: boolean
           is_verified?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
           looking_for?: string[] | null
           name: string
           profile_views?: number | null
@@ -595,8 +591,6 @@ export type Database = {
           is_published?: boolean | null
           is_site_owner?: boolean
           is_verified?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
           looking_for?: string[] | null
           name?: string
           profile_views?: number | null
