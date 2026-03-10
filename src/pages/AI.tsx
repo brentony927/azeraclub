@@ -21,12 +21,12 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 const DAILY_LIMIT_BASIC = 20;
 
 const MOODS = [
-  { id: "feliz", label: "Feliz", emoji: "😊" },
-  { id: "calmo", label: "Calmo", emoji: "😌" },
-  { id: "focado", label: "Focado", emoji: "💡" },
-  { id: "triste", label: "Triste", emoji: "😔" },
-  { id: "motivado", label: "Motivado", emoji: "🔥" },
-  { id: "ceo", label: "CEO Mode", emoji: "👔", minTier: "business" as const },
+  { id: "feliz", label: "Feliz", icon: Smile, color: "green" as const },
+  { id: "calmo", label: "Calmo", icon: CloudSun, color: "blue" as const },
+  { id: "focado", label: "Focado", icon: Lightbulb, color: "gold" as const },
+  { id: "triste", label: "Triste", icon: Frown, color: "silver" as const },
+  { id: "motivado", label: "Motivado", icon: Flame, color: "red" as const },
+  { id: "ceo", label: "CEO Mode", icon: Briefcase, color: "gold" as const, minTier: "business" as const },
 ];
 
 const SUGGESTIONS = [
