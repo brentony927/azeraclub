@@ -328,9 +328,9 @@ export default function FounderProfile() {
           { label: "Projetos", value: projectsJoined, icon: Briefcase },
           { label: "Oportunidades", value: oppsCount, icon: Lightbulb },
         ].map(s => (
-          <Card key={s.label} className="border-border/50 bg-card/80 backdrop-blur-sm">
+          <Card key={s.label} className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-stat-card" : ""}`}>
             <CardContent className="p-4 flex flex-col items-center gap-1">
-              <s.icon className="h-4 w-4 text-muted-foreground" />
+              <s.icon className={`h-4 w-4 ${isSiteOwner ? "text-[hsl(0,100%,55%)]" : "text-muted-foreground"}`} />
               <span className="text-xl font-bold text-foreground">{s.value}</span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
             </CardContent>
