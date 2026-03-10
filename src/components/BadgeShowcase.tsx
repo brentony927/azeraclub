@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BADGE_DEFINITIONS } from "@/lib/badges";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Lock } from "lucide-react";
+import { Lock, Trophy } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 
 interface BadgeShowcaseProps {
   userId: string;
@@ -57,7 +58,7 @@ export default function BadgeShowcase({ userId, showLocked = false }: BadgeShowc
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-        🏆 Insígnias {showLocked && <span className="text-xs text-muted-foreground font-normal">({totalEarned}/{BADGE_DEFINITIONS.length})</span>}
+        <Icon3D icon={Trophy} color="gold" size="sm" /> Insígnias {showLocked && <span className="text-xs text-muted-foreground font-normal">({totalEarned}/{BADGE_DEFINITIONS.length})</span>}
       </h3>
       <div className="flex flex-wrap gap-2">
         <TooltipProvider delayDuration={200}>

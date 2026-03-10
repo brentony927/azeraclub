@@ -1,45 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Perfil do Dono 100% Desbloqueado + Elementos 3D no lugar de Emojis
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### 1. Perfil do Dono totalmente desbloqueado — `src/pages/Profile.tsx`
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-Atualmente o perfil tem seções bloqueadas por `isPro` (analytics, "ver quem visitou"). Para o owner, tudo deve estar visível:
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-- Detectar `is_site_owner` do `founder_profiles` no `loadData()`
-- Criar variável `isOwner` e usar `isPro || isOwner` em todas as gates de acesso
-- Remover blur/lock overlay das seções de Social Proof e Profile Visits quando owner
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### 2. Elementos 3D no lugar de Emojis — `src/components/ui/icon-3d.tsx` (novo)
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-Criar componente `Icon3D` que renderiza ícones Lucide dentro de esferas CSS com efeito 3D (gradiente radial, sombra interna, reflexo, transform perspective):
-
-```tsx
-<Icon3D icon={Trophy} color="gold" size="sm" />
-```
-
-Estilos CSS com:
-- `background: radial-gradient(circle at 30% 30%, highlight, base, dark)` para efeito esférico
-- `box-shadow: inset` para profundidade
-- `transform: perspective(100px) rotateX(-5deg)` para 3D
-
-### 3. Substituir emojis nos componentes
-
-**`src/components/BadgeShowcase.tsx`**:
-- `🏆 Insígnias` → `<Icon3D icon={Trophy} color="gold" /> Insígnias`
-
-**`src/components/FounderCard.tsx`**:
-- `👑 OWNER` → `<Icon3D icon={Crown} color="red" /> OWNER`
-- `⭐ DESTAQUE` → `<Icon3D icon={Star} color="gold" /> DESTAQUE`
-
-### 4. CSS para efeitos 3D — `src/index.css`
-
-Adicionar classes `.icon-3d`, `.icon-3d-gold`, `.icon-3d-red`, `.icon-3d-blue` com gradientes radiais e sombras para simular profundidade 3D.
-
-### Ficheiros a criar/editar
-- `src/components/ui/icon-3d.tsx` (novo — componente 3D icon)
-- `src/components/BadgeShowcase.tsx` (emoji → 3D)
-- `src/components/FounderCard.tsx` (emoji → 3D)
-- `src/pages/Profile.tsx` (owner = tudo desbloqueado)
-- `src/index.css` (3D icon styles)
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

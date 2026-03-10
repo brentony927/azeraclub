@@ -1,11 +1,12 @@
 import { useState, useRef, memo } from "react";
-import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
+import { MapPin, Eye, UserPlus, Sparkles, Crown, Star } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { getMatchColor } from "@/lib/founderMatch";
+import Icon3D from "@/components/ui/icon-3d";
 
 interface FounderCardProps {
   id: string;
@@ -65,15 +66,17 @@ const FounderCard = memo(function FounderCard({
       <div className="absolute top-2 right-2 flex items-center gap-1.5">
         <BookmarkButton itemType="founder" itemId={id} size={14} />
         {isHighlighted && (
-          <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold">⭐ DESTAQUE</Badge>
+          <Badge className="bg-[hsl(42,50%,56%)] text-[hsl(0,0%,4%)] text-[9px] font-bold flex items-center gap-1">
+            <Icon3D icon={Star} color="gold" size="xs" /> DESTAQUE
+          </Badge>
         )}
       </div>
 
       {/* Owner badge */}
       {isSiteOwner && (
         <div className="absolute top-2 left-2">
-          <Badge className="owner-badge text-[9px] font-bold">
-            👑 OWNER
+          <Badge className="owner-badge text-[9px] font-bold flex items-center gap-1">
+            <Icon3D icon={Crown} color="red" size="xs" /> OWNER
           </Badge>
         </div>
       )}

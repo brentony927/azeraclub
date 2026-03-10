@@ -47,8 +47,8 @@ function getFounderBadge(commitment: string | null, skills: string[] | null): st
 export default function Profile() {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
-  const isPro = canAccess("pro");
   const navigate = useNavigate();
+  const [isOwner, setIsOwner] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -136,6 +136,7 @@ export default function Profile() {
       setIsVerified(f.is_verified || false);
       setProfileViews(f.profile_views || 0);
       setUsername(f.username || "");
+      setIsOwner(f.is_site_owner || false);
     }
 
     setConnectionsCount(connRes.count || 0);
@@ -361,7 +362,7 @@ export default function Profile() {
                   <Eye className="h-4 w-4 text-primary" />
                   <span className="text-sm font-medium text-foreground">{visitCount} pessoas visitaram seu perfil</span>
                 </div>
-                {!isPro && (
+                {!canAccess("pro") && !isOwner && (
                   <button onClick={() => navigate("/planos")} className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
                     <Lock className="h-3 w-3" /> Ver quem
                   </button>
@@ -370,7 +371,7 @@ export default function Profile() {
             </div>
 
             {/* Social Proof / Analytics */}
-            {isPro ? (
+            {canAccess("pro") || isOwner ? (
               <div className="grid grid-cols-3 gap-3 mt-5">
                 {[
                   { icon: Users, label: "Conexões", value: connectionsCount },
