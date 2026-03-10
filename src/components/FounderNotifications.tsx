@@ -98,7 +98,8 @@ export default function FounderNotifications() {
         table: "founder_notifications",
         filter: `user_id=eq.${user.id}`,
       }, (payload) => {
-        setNotifications(prev => [payload.new as Notification, ...prev]);
+        const n = payload.new as Notification;
+        if (n.type !== "message") setNotifications(prev => [n, ...prev]);
       })
       .subscribe();
 

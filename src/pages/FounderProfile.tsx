@@ -181,7 +181,7 @@ export default function FounderProfile() {
       await sendNotification({
         user_id: profile.user_id,
         type: "connection",
-        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        title: `${myProfile?.name || myProfile?.username || "Alguém"} aceitou sua conexão! 🎉`,
       });
       toast({ title: "Conexão aceita! 🤝" });
     }

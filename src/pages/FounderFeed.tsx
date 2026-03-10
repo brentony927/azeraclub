@@ -248,7 +248,7 @@ export default function FounderFeed() {
       await sendNotification({
         user_id: targetUserId,
         type: "connection",
-        title: `${myProfile?.name || "Alguém"} quer se conectar com você`,
+        title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar com você`,
         body: myProfile?.building || null,
       });
       toast({ title: "Solicitação enviada! 🤝" });
