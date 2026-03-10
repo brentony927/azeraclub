@@ -268,18 +268,18 @@ export default function FounderProfile() {
                 <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} visualizações</span>
               </div>
               {/* Founder Score */}
-              <div className="pt-2">
+              <div className={`pt-2 ${isSiteOwner ? "owner-progress" : ""}`}>
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" /> Founder Score
                   </h3>
                   <div className="flex items-center gap-2">
                     {founderScore && (
-                      <span className={`text-xs font-bold ${LEVEL_COLORS[founderScore.level] || "text-foreground"}`}>
+                      <span className={`text-xs font-bold ${isSiteOwner ? "text-[hsl(0,100%,50%)]" : LEVEL_COLORS[founderScore.level] || "text-foreground"}`}>
                         {founderScore.level}
                       </span>
                     )}
-                    <span className="text-xs font-semibold text-foreground">{founderScore?.total_score ?? repScore}/100</span>
+                    <span className={`text-xs font-semibold ${isSiteOwner ? "text-[hsl(0,100%,55%)]" : "text-foreground"}`}>{founderScore?.total_score ?? repScore}/100</span>
                   </div>
                 </div>
                 <Progress value={founderScore?.total_score ?? repScore} className="h-2" />
