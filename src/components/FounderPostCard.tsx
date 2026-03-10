@@ -202,7 +202,7 @@ export default function FounderPostCard({
             <div key={c.id} className="flex gap-2">
               <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
                 {c.author_avatar ? (
-                  <img src={c.author_avatar} alt="" className="w-6 h-6 rounded-full object-cover" />
+                  <img src={c.author_avatar} alt="" className="w-6 h-6 rounded-full object-cover" loading="lazy" />
                 ) : (
                   <span className="text-[8px] font-bold text-foreground">{(c.author_name || "?")[0]}</span>
                 )}

@@ -166,4 +166,6 @@ const FounderCard = memo(function FounderCard({
       </CardContent>
     </Card>
   );
-}
+});
+
+export default FounderCard;
