@@ -143,6 +143,17 @@ Deno.serve(async (req) => {
     const accountAgeDays = Math.floor((Date.now() - accountCreated.getTime()) / (1000 * 60 * 60 * 24));
     const profileComplete = !!(fp?.name && fp?.city && fp?.country && fp?.skills?.length && fp?.industry?.length && fp?.building && fp?.looking_for?.length && fp?.avatar_url);
 
+    // Count referral conversions for partner badges
+    let referralConversions = 0;
+    const partnerData = (partnerRes as any)?.data;
+    if (partnerData?.partner_id) {
+      const { count: refCount } = await supabaseAdmin
+        .from("commissions")
+        .select("id", { count: "exact", head: true })
+        .eq("affiliate_id", partnerData.partner_id);
+      referralConversions = refCount || 0;
+    }
+
     const stats: Stats = {
       ventures: venturesRes.count || 0,
       connections: connectionsRes.count || 0,
@@ -163,6 +174,7 @@ Deno.serve(async (req) => {
       opportunities: opportunitiesRes.count || 0,
       accountAgeDays,
       profileComplete,
+      referralConversions,
     };
 
     // Site owner gets ALL badges
