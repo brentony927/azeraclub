@@ -164,10 +164,10 @@ export default function GlobalFounderMap() {
       // Notification
       await sendNotification({
         user_id: targetUserId,
-        title: "Nova solicitação de conexão",
-        body: `${myProfile?.name || myProfile?.username || "Um founder"} quer se conectar com você.`,
+        title: `${myProfile?.name || myProfile?.username || "Um founder"} quer se conectar com você 🤝`,
         type: "connection",
-        action_url: `/founder-profile/${user.id}`,
+        action_url: `/founder-profile/${myProfile?.username || user.id}`,
+        related_user_id: user.id,
       });
     }
   };

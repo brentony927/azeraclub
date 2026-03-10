@@ -83,6 +83,21 @@ export default function FounderNotificationsPage() {
         if (data) setNotifications((data as Notification[]).filter(n => n.type !== "message"));
         setLoading(false);
       });
+
+    const channel = supabase
+      .channel("notifications-page-realtime")
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "founder_notifications",
+        filter: `user_id=eq.${user.id}`,
+      }, (payload) => {
+        const n = payload.new as Notification;
+        if (n.type !== "message") setNotifications(prev => [n, ...prev]);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [user]);
 
   const resolveProfileNavigation = async (userId: string) => {
