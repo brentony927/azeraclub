@@ -13,6 +13,7 @@ import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
 import BackgroundToggle, { useBackgroundMode } from "@/components/BackgroundToggle";
+import CommandPalette from "@/components/CommandPalette";
 
 export default function Layout() {
   const { plan } = useSubscription();
