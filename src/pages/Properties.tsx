@@ -35,7 +35,7 @@ export default function Properties() {
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : properties.length === 0 ? (
-        <EmptyState icon="🏠" title="Nenhuma propriedade cadastrada" description="Adicione suas propriedades para gerenciar seu portfólio imobiliário." actionLabel="Adicionar Propriedade" onAction={() => setDialogOpen(true)} />
+        <EmptyState icon={<Icon3D icon={Home} color="silver" size="lg" animated />} title="Nenhuma propriedade cadastrada" description="Adicione suas propriedades para gerenciar seu portfólio imobiliário." actionLabel="Adicionar Propriedade" onAction={() => setDialogOpen(true)} />
       ) : (
         <>
           <motion.div variants={item} className="grid sm:grid-cols-3 gap-4">
