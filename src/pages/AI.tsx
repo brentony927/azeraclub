@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X } from "lucide-react";
+import { Send, Loader2, Trash2, Plus, PanelLeftClose, PanelLeft, ArrowLeft, Lock, Brain, X, Smile, CloudSun, Lightbulb, Frown, Flame, Briefcase } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
