@@ -52,11 +52,13 @@ const FounderCard = memo(function FounderCard({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${
-        isHighlighted
+        isSiteOwner
+          ? "owner-card"
+          : isHighlighted
           ? "border-[hsl(42,50%,56%)]/40 bg-gradient-to-br from-[hsl(42,50%,56%)]/5 to-transparent shadow-[0_0_20px_hsl(42,50%,56%,0.1)]"
           : "border-border/50 bg-card/80 backdrop-blur-sm"
       }`}
-      style={isHighlighted ? {
+      style={isHighlighted && !isSiteOwner ? {
         borderImage: "linear-gradient(135deg, hsla(51,100%,50%,0.4), hsla(35,80%,50%,0.3), hsla(20,70%,50%,0.2)) 1",
       } : undefined}
     >
