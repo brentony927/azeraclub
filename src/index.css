@@ -504,30 +504,94 @@
   border: 2px solid hsl(0, 100%, 50%);
   border-radius: 16px;
   box-shadow:
-    0 0 30px hsl(0, 100%, 50%, 0.25),
-    0 0 60px hsl(0, 100%, 50%, 0.1),
-    inset 0 0 30px hsl(0, 100%, 50%, 0.05);
-  background: linear-gradient(135deg, hsl(0, 100%, 50%, 0.03), transparent, hsl(0, 100%, 50%, 0.03));
+    0 0 40px hsl(0, 100%, 50%, 0.35),
+    0 0 80px hsl(0, 100%, 50%, 0.15),
+    inset 0 0 60px hsl(0, 100%, 50%, 0.08);
+  background:
+    radial-gradient(ellipse at 20% 20%, hsl(0, 100%, 50%, 0.12), transparent 60%),
+    radial-gradient(ellipse at 80% 80%, hsl(0, 100%, 40%, 0.10), transparent 60%),
+    linear-gradient(135deg, hsl(0, 100%, 50%, 0.06), hsl(0, 80%, 30%, 0.04), hsl(0, 100%, 50%, 0.06));
   animation: owner-glow 3s ease-in-out infinite;
+  position: relative;
 }
 
 @keyframes owner-glow {
-  0%, 100% { box-shadow: 0 0 30px hsl(0, 100%, 50%, 0.25), 0 0 60px hsl(0, 100%, 50%, 0.1); }
-  50% { box-shadow: 0 0 50px hsl(0, 100%, 50%, 0.4), 0 0 100px hsl(0, 100%, 50%, 0.2), 0 0 150px hsl(0, 100%, 50%, 0.1); }
+  0%, 100% { box-shadow: 0 0 40px hsl(0, 100%, 50%, 0.35), 0 0 80px hsl(0, 100%, 50%, 0.15), inset 0 0 60px hsl(0, 100%, 50%, 0.08); }
+  50% { box-shadow: 0 0 60px hsl(0, 100%, 50%, 0.5), 0 0 120px hsl(0, 100%, 50%, 0.25), 0 0 180px hsl(0, 100%, 50%, 0.1), inset 0 0 80px hsl(0, 100%, 50%, 0.12); }
 }
 
+/* Owner name — bright red with intense glow */
+.owner-name {
+  color: hsl(0, 100%, 50%) !important;
+  text-shadow:
+    0 0 10px hsl(0, 100%, 50%, 0.8),
+    0 0 25px hsl(0, 100%, 50%, 0.5),
+    0 0 50px hsl(0, 100%, 50%, 0.3);
+  font-weight: 800 !important;
+}
+
+/* Owner metallic badge — shimmer gradient */
 .owner-badge {
-  background: linear-gradient(135deg, hsl(0, 100%, 50%), hsl(0, 100%, 35%)) !important;
+  background: linear-gradient(
+    145deg,
+    hsl(0, 80%, 20%),
+    hsl(0, 100%, 45%),
+    hsl(0, 100%, 60%),
+    hsl(0, 100%, 45%),
+    hsl(0, 80%, 20%)
+  ) !important;
+  background-size: 300% 100%;
+  animation: ownerBadgeShimmer 3s ease-in-out infinite;
   color: white !important;
-  border: none !important;
-  box-shadow: 0 0 15px hsl(0, 100%, 50%, 0.6), 0 0 30px hsl(0, 100%, 50%, 0.3);
-  animation: owner-badge-pulse 2s ease-in-out infinite;
-  text-shadow: 0 0 8px hsl(0, 0%, 100%, 0.5);
+  border: 1px solid hsl(0, 100%, 70%, 0.5) !important;
+  box-shadow:
+    0 0 15px hsl(0, 100%, 50%, 0.6),
+    0 0 30px hsl(0, 100%, 50%, 0.3),
+    inset 0 1px 2px hsl(0, 0%, 100%, 0.25);
+  text-shadow: 0 1px 3px hsl(0, 0%, 0%, 0.5);
+  font-weight: 700 !important;
+  letter-spacing: 0.05em;
 }
 
-@keyframes owner-badge-pulse {
-  0%, 100% { box-shadow: 0 0 15px hsl(0, 100%, 50%, 0.6), 0 0 30px hsl(0, 100%, 50%, 0.3); }
-  50% { box-shadow: 0 0 25px hsl(0, 100%, 50%, 0.8), 0 0 50px hsl(0, 100%, 50%, 0.5), 0 0 80px hsl(0, 100%, 50%, 0.2); }
+@keyframes ownerBadgeShimmer {
+  0% { background-position: 100% 50%; }
+  50% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Owner inner cards — red tint bg + red borders */
+.owner-card-inner {
+  border: 1px solid hsl(0, 100%, 50%, 0.3) !important;
+  background:
+    linear-gradient(135deg, hsl(0, 100%, 50%, 0.06), hsl(0, 80%, 40%, 0.03), transparent) !important;
+  box-shadow: 0 0 20px hsl(0, 100%, 50%, 0.08), inset 0 0 15px hsl(0, 100%, 50%, 0.04);
+}
+
+.owner-card-inner:hover {
+  border-color: hsl(0, 100%, 50%, 0.5) !important;
+  box-shadow: 0 0 30px hsl(0, 100%, 50%, 0.15), inset 0 0 20px hsl(0, 100%, 50%, 0.06);
+}
+
+/* Owner social proof cards */
+.owner-stat-card {
+  border: 1px solid hsl(0, 100%, 50%, 0.25) !important;
+  background: linear-gradient(135deg, hsl(0, 100%, 50%, 0.08), transparent) !important;
+  box-shadow: 0 0 15px hsl(0, 100%, 50%, 0.1);
+}
+
+.owner-stat-card .text-xl,
+.owner-stat-card .text-foreground {
+  color: hsl(0, 100%, 55%) !important;
+}
+
+.owner-stat-card .text-muted-foreground {
+  color: hsl(0, 70%, 70%) !important;
+}
+
+/* Owner progress bar */
+.owner-progress [data-slot="indicator"] {
+  background: linear-gradient(90deg, hsl(0, 100%, 40%), hsl(0, 100%, 55%), hsl(0, 100%, 40%)) !important;
+  box-shadow: 0 0 10px hsl(0, 100%, 50%, 0.5);
 }
 
 .owner-message {
@@ -543,13 +607,22 @@
 
 .owner-avatar-ring {
   ring-color: hsl(0, 100%, 50%);
-  box-shadow: 0 0 20px hsl(0, 100%, 50%, 0.5), 0 0 40px hsl(0, 100%, 50%, 0.2);
+  box-shadow:
+    0 0 25px hsl(0, 100%, 50%, 0.6),
+    0 0 50px hsl(0, 100%, 50%, 0.3),
+    0 0 80px hsl(0, 100%, 50%, 0.15);
+  animation: ownerAvatarPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ownerAvatarPulse {
+  0%, 100% { box-shadow: 0 0 25px hsl(0, 100%, 50%, 0.6), 0 0 50px hsl(0, 100%, 50%, 0.3); }
+  50% { box-shadow: 0 0 35px hsl(0, 100%, 50%, 0.8), 0 0 70px hsl(0, 100%, 50%, 0.4), 0 0 100px hsl(0, 100%, 50%, 0.2); }
 }
 
 .owner-card {
   border: 2px solid hsl(0, 100%, 50%, 0.5) !important;
   box-shadow: 0 0 20px hsl(0, 100%, 50%, 0.15), 0 0 40px hsl(0, 100%, 50%, 0.05);
-  background: linear-gradient(135deg, hsl(0, 100%, 50%, 0.03), transparent) !important;
+  background: linear-gradient(135deg, hsl(0, 100%, 50%, 0.05), transparent) !important;
 }
 
 @keyframes shimmerOwner {
