@@ -369,7 +369,7 @@ export default function FounderFeed() {
         {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar fundadores..." className="pl-10" />
+          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por nome ou @username..." className="pl-10" />
         </div>
 
         {/* Advanced Filters */}
