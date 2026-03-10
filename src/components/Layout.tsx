@@ -8,7 +8,7 @@ import FloatingNotification from "@/components/FloatingNotification";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
@@ -70,11 +70,9 @@ export default function Layout() {
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <DevelopmentBanner />
-            <AnimatePresence mode="wait">
-              <PageTransition key={location.pathname}>
-                <Outlet />
-              </PageTransition>
-            </AnimatePresence>
+            <PageTransition key={location.pathname}>
+              <Outlet />
+            </PageTransition>
           </main>
           <div className="hidden md:block">
             <Footer />

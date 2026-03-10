@@ -140,8 +140,9 @@
   /* ====== Glassmorphism cards ====== */
   .glass-card {
     @apply bg-card/50 border border-border/20 rounded-[16px];
-    backdrop-filter: blur(16px) saturate(1.2);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(10px) saturate(1.15);
+    -webkit-backdrop-filter: blur(10px) saturate(1.15);
+    content-visibility: auto;
     box-shadow: 
       0 8px 32px -8px hsla(0, 0%, 10%, 0.08),
       inset 0 1px 0 0 hsla(0, 0%, 100%, 0.06);
@@ -149,7 +150,7 @@
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-500 ease-out;
+    @apply glass-card transition-all duration-200 ease-out;
   }
 
   .glass-card-hover:hover {
@@ -197,6 +198,16 @@
     from { --shine-angle: 0deg; }
     to { --shine-angle: 360deg; }
   }
+
+  /* ====== Ticker scroll ====== */
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-scroll {
+    animation: ticker-scroll linear infinite;
+  }
+
 
   @property --shine-angle {
     syntax: "<angle>";
