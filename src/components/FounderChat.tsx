@@ -47,7 +47,7 @@ function getWeekStart(): string {
   return monday.toISOString().split("T")[0];
 }
 
-export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation, isOtherOwner, isMeOwner }: FounderChatProps) {
+export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation, isOtherOwner, isMeOwner, otherUserAvatar }: FounderChatProps) {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
   const navigate = useNavigate();
@@ -56,6 +56,7 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
   const [sending, setSending] = useState(false);
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [reportOpen, setReportOpen] = useState(false);
+  const [myAvatar, setMyAvatar] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const isFounder = !canAccess("pro");
