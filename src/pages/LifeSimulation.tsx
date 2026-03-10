@@ -28,7 +28,7 @@ export default function LifeSimulation() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "life-simulation",
           messages: [
             { role: "system", content: `You are a strategic life simulator. Analyze the scenario and generate 3 possible future outcomes: Best Case, Most Likely, Worst Case.
 

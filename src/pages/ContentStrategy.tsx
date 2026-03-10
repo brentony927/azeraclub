@@ -28,7 +28,7 @@ export default function ContentStrategy() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "content-strategy",
           messages: [
             { role: "system", content: `You are a content strategist. Generate 10 creative content ideas for the described audience. For each idea include: title, format (video/post/article/carousel), brief description, and hook line.
 

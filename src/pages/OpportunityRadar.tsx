@@ -33,7 +33,7 @@ export default function OpportunityRadar() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "opportunity-radar",
           newsContext: true,
           newsQuery: `${area} ${city}`,
           messages: [

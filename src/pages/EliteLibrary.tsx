@@ -36,7 +36,7 @@ export default function EliteLibrary() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "elite-library",
           messages: [
             { role: "system", content: `You are an elite business educator. Write a deep, insightful article about ${cat.prompt}. Include frameworks, case studies, and actionable takeaways. 600-1000 words.
 

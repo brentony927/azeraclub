@@ -39,7 +39,7 @@ export default function WeeklyReview() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "weekly-review",
           messages: [
             { role: "system", content: `You are a performance coach. Create a weekly review report.
 

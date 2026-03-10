@@ -30,7 +30,7 @@ export default function WealthPlanner() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "wealth-planner",
           messages: [
             { role: "system", content: `You are a wealth management advisor. Create a comprehensive wealth growth plan.
 

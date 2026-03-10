@@ -30,7 +30,7 @@ export default function GoalBreakdown() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "goal-breakdown",
           messages: [
             { role: "system", content: `You are a strategic goal planner. Break down the user's goal into: 1) Milestones (major checkpoints), 2) Specific tasks for each milestone, 3) Weekly targets.
 

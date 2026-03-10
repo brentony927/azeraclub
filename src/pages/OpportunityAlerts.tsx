@@ -60,7 +60,7 @@ export default function OpportunityAlerts() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "opportunity-alerts",
           newsContext: true, newsQuery: industries.join(", "),
           messages: [
             { role: "system", content: `You are an opportunity scanner. Based on current news and the user's industries of interest, identify 5 strategic opportunities.

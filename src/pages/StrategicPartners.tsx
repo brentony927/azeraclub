@@ -31,7 +31,7 @@ export default function StrategicPartners() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "strategic-partners",
           messages: [
             { role: "system", content: `You are a strategic business advisor. Based on the industry and business stage, suggest potential strategic partner profiles.
 

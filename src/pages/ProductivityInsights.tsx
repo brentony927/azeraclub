@@ -43,7 +43,7 @@ export default function ProductivityInsights() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "productivity-insights",
           messages: [
             { role: "system", content: `You are a productivity coach. Analyze the user's stats and give actionable advice to improve.
 
