@@ -37,7 +37,7 @@ interface Props {
 }
 
 export default function FounderPostCard({
-  post, authorName, authorAvatar, authorUsername, likesCount, commentsCount, isLiked, comments, onRefresh,
+  post, authorName, authorAvatar, authorUsername, likesCount, commentsCount, isLiked, comments, onRefresh, myName,
 }: Props) {
   const { user } = useAuth();
   const navigate = useNavigate();
