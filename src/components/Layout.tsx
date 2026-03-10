@@ -42,10 +42,10 @@ export default function Layout() {
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header
-            className={`h-14 flex items-center justify-between border-b border-border/30 px-4 shrink-0 ${
+            className={`h-12 flex items-center justify-between px-4 shrink-0 relative ${
               isPremium
                 ? "elite-header"
-                : "backdrop-blur-xl bg-background/50"
+                : "backdrop-blur-xl bg-background/60"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export default function Layout() {
                   }`}
                   aria-label="Voltar"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4" />
                 </button>
               )}
               <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" />
@@ -67,6 +67,8 @@ export default function Layout() {
               {isPremium && <BackgroundToggle mode={bgMode} onToggle={setBgMode} />}
               <ThemeToggle />
             </div>
+            {/* Gradient line instead of solid border */}
+            <div className="absolute bottom-0 left-0 right-0 header-gradient-line" />
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <DevelopmentBanner />

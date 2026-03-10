@@ -17,24 +17,27 @@ export default function DevelopmentBanner() {
   };
 
   return (
-    <div className="relative rounded-lg border-2 border-destructive bg-destructive/15 p-4 mb-4 dev-banner-pulse">
+    <div className="relative rounded-lg border border-border/30 bg-card/40 backdrop-blur-sm p-3 mb-4">
       <button
         onClick={handleDismiss}
-        className="absolute top-2 right-2 p-1 rounded-md text-destructive hover:bg-destructive/20 transition-colors"
+        className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground/40 hover:text-foreground transition-colors"
         aria-label="Fechar aviso"
       >
-        <X className="w-4 h-4" />
+        <X className="w-3.5 h-3.5" />
       </button>
-      <p className="text-sm font-bold text-destructive text-center pr-6">
-        🚧 Este site ainda é apenas um projeto em desenvolvimento. Podem ocorrer erros e instabilidades.
-      </p>
-      <p className="text-xs text-destructive/80 text-center mt-1">
-        Sua opinião é essencial! Deixe seu feedback, ideias e sugestões para nos ajudar a melhorar.
-      </p>
-      <div className="flex justify-center mt-2">
-        <Button size="sm" variant="destructive" onClick={() => navigate("/sugestoes")} className="text-xs">
-          💡 Deixar Feedback
-        </Button>
+      <div className="flex items-center gap-3 pr-6">
+        <div className="w-1 h-8 rounded-full bg-amber-500/40 shrink-0" />
+        <div>
+          <p className="text-xs font-medium text-foreground/70">
+            Projeto em desenvolvimento — podem ocorrer erros e instabilidades.
+          </p>
+          <button
+            onClick={() => navigate("/sugestoes")}
+            className="text-[11px] text-muted-foreground/40 hover:text-foreground transition-colors mt-0.5 font-medium tracking-wide"
+          >
+            Deixar feedback →
+          </button>
+        </div>
       </div>
     </div>
   );

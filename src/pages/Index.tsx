@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb, Radar, Users, Flame } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,14 +48,14 @@ interface Notification {
   action_url: string | null;
 }
 
-const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
+const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
+const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
 
-function getGreeting(): { text: string; emoji: string; motivational: string } {
+function getGreeting(): { text: string; motivational: string } {
   const h = new Date().getHours();
-  if (h < 12) return { text: "Bom dia", emoji: "☀️", motivational: "Comece o dia com foco." };
-  if (h < 18) return { text: "Boa tarde", emoji: "🌤️", motivational: "Mantenha o momentum." };
-  return { text: "Boa noite", emoji: "🌙", motivational: "Reflita sobre as conquistas de hoje." };
+  if (h < 12) return { text: "Bom dia", motivational: "Comece o dia com foco." };
+  if (h < 18) return { text: "Boa tarde", motivational: "Mantenha o momentum." };
+  return { text: "Boa noite", motivational: "Reflita sobre as conquistas de hoje." };
 }
 
 const AI_TIPS = [
@@ -67,11 +67,11 @@ const AI_TIPS = [
 ];
 
 const DAILY_INSIGHTS = [
-  "💡 Networking não é colecionar contatos. É criar valor antes de pedir algo.",
-  "💡 Produtividade real é fazer menos coisas, mas as certas.",
-  "💡 Um CEO não faz tudo — ele decide o que importa.",
-  "💡 Seu maior ativo é a capacidade de tomar decisões rápidas.",
-  "💡 Consistência supera intensidade em todos os campos.",
+  "Networking não é colecionar contatos. É criar valor antes de pedir algo.",
+  "Produtividade real é fazer menos coisas, mas as certas.",
+  "Um CEO não faz tudo — ele decide o que importa.",
+  "Seu maior ativo é a capacidade de tomar decisões rápidas.",
+  "Consistência supera intensidade em todos os campos.",
 ];
 
 export default function Index() {
@@ -87,9 +87,7 @@ export default function Index() {
 
   useEffect(() => {
     if (!user) return;
-    // Fast cache check
     if (localStorage.getItem(`onboarding-tutorial-${user.id}`)) return;
-    // Confirm with DB
     supabase.from("profiles").select("has_seen_onboarding").eq("user_id", user.id).single()
       .then(({ data }) => {
         if (data && !data.has_seen_onboarding) {
@@ -175,18 +173,16 @@ export default function Index() {
       {showTutorial && user && (
         <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
       )}
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
-      {/* Greeting + Notification Bell */}
-      <motion.div variants={item} className="space-y-2">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
-          {greeting.emoji} {greeting.text}, {displayName.split(" ")[0]}.
-        </h1>
-        <p className="text-xs text-muted-foreground/70 italic">{greeting.motivational}</p>
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20 md:pb-0">
+      {/* Greeting */}
+      <motion.div variants={item} className="space-y-1">
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            📅 Hoje: {pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}
-            {doneCount > 0 && ` · ${doneCount} concluída${doneCount > 1 ? "s" : ""}`}
-          </p>
+          <div>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground tracking-tight">
+              {greeting.text}, {displayName.split(" ")[0]}.
+            </h1>
+            <p className="text-sm text-muted-foreground/60 mt-1">{greeting.motivational}</p>
+          </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -244,53 +240,69 @@ export default function Index() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        <div className="flex items-center gap-3 text-xs text-muted-foreground/50">
+          <span>{pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}</span>
+          {doneCount > 0 && (
+            <>
+              <span className="w-px h-3 bg-border" />
+              <span>{doneCount} concluída{doneCount > 1 ? "s" : ""}</span>
+            </>
+          )}
+        </div>
       </motion.div>
 
-      {/* Quick Actions Bento Grid */}
-      <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Quick Actions — Asymmetric Grid */}
+      <motion.div variants={item} className="grid grid-cols-4 gap-2.5 md:gap-3">
+        {/* Featured AI card — spans 2 cols on mobile */}
+        <Card
+          className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.01] transition-all group col-span-2 md:col-span-1"
+          onClick={() => navigate("/ia")}
+        >
+          <CardContent className="p-5 flex flex-col items-center justify-center text-center gap-3 min-h-[100px]">
+            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Brain className="h-5 w-5 text-primary" />
+            </div>
+            <p className="text-xs font-semibold tracking-wide">AZERA IA</p>
+          </CardContent>
+        </Card>
+
         {[
-          { icon: Brain, label: "AZERA IA", desc: "Conversar", url: "/ia", accent: "bg-primary/10" },
-          { icon: CalendarDays, label: "Agenda", desc: "Planear o dia", url: "/agenda", accent: "bg-primary/10" },
-          { icon: Users, label: "Founders", desc: "Networking", url: "/founder-match", accent: "bg-primary/10" },
-          { icon: Radar, label: "Radar", desc: "Oportunidades", url: "/radar-oportunidades", accent: "bg-primary/10" },
+          { icon: CalendarDays, label: "Agenda", url: "/agenda" },
+          { icon: Users, label: "Founders", url: "/founder-match" },
+          { icon: Radar, label: "Radar", url: "/radar-oportunidades" },
         ].map((action) => (
           <Card
             key={action.label}
-            className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.02] transition-all group"
+            className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.01] transition-all group col-span-1"
             onClick={() => navigate(action.url)}
           >
-            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
-              <div className={`w-12 h-12 rounded-xl ${action.accent} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                <action.icon className="h-6 w-6 text-primary" />
+            <CardContent className="p-4 flex flex-col items-center justify-center text-center gap-2.5 min-h-[100px]">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <action.icon className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-sm font-semibold">{action.label}</p>
-              <p className="text-[10px] text-muted-foreground">{action.desc}</p>
+              <p className="text-[11px] font-semibold tracking-wide">{action.label}</p>
             </CardContent>
           </Card>
         ))}
       </motion.div>
 
       {/* Activity Ticker */}
-      <motion.div variants={item} className="rounded-xl overflow-hidden border border-border/20">
+      <motion.div variants={item} className="rounded-xl overflow-hidden border border-border/10">
         <ActivityTicker />
       </motion.div>
 
-      {/* AZERA Score + AI Tip row */}
+      {/* AZERA Score + AI Tip */}
       <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Card className="gradient-border overflow-hidden">
           <CardContent className="p-5 relative">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center moss-gradient shadow-lg shadow-primary/20">
-                <Trophy className="h-4 w-4 text-white" />
-              </div>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">AZERA SCORE</p>
+            <p className="section-label mb-4">AZERA SCORE</p>
+            <div className="flex items-baseline gap-1.5 mb-3">
+              <span className="text-5xl font-serif font-bold text-foreground tracking-tighter">{score}</span>
+              <span className="text-sm text-muted-foreground/40 font-light">/ 100</span>
             </div>
-            <div className="flex items-end gap-2 mb-2">
-              <span className="text-4xl font-bold font-serif text-foreground">{score}</span>
-              <span className="text-lg text-muted-foreground mb-1">/ 100</span>
-            </div>
-            <Progress value={score} className="h-2 mb-2" />
-            <p className="text-xs text-muted-foreground">
+            <Progress value={score} className="h-1.5 mb-2" />
+            <p className="text-[11px] text-muted-foreground/50">
               {weekDone}/{weekTotal} tarefas esta semana
             </p>
           </CardContent>
@@ -299,50 +311,27 @@ export default function Index() {
         <Card className="glass-card card-shine overflow-hidden border-border/20">
           <CardContent className="p-5 flex flex-col justify-between h-full relative">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10">
-                  <Brain className="h-4 w-4 text-primary" />
-                </div>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">AZERA AI sugere</p>
-              </div>
+              <p className="section-label mb-3">AZERA AI</p>
               <div className="relative pl-4">
-                <span className="absolute -left-1 top-0 text-3xl font-serif text-primary/20 leading-none">"</span>
-                <p className="text-sm text-foreground/90 italic leading-relaxed">{aiTip}</p>
+                <span className="absolute -left-0.5 top-0 text-2xl font-serif text-primary/15 leading-none select-none">"</span>
+                <p className="text-sm text-foreground/80 italic leading-relaxed">{aiTip}</p>
               </div>
             </div>
-            <button onClick={() => navigate("/ia")} className="text-xs text-primary hover:text-foreground transition-colors mt-3 self-start font-medium">
+            <button onClick={() => navigate("/ia")} className="text-xs text-muted-foreground/50 hover:text-foreground transition-colors mt-4 self-start font-medium tracking-wide">
               Conversar →
             </button>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Suggestions CTA */}
-      <motion.div variants={item}>
-        <Card className="glass-card card-shine border-primary/20 cursor-pointer hover:border-primary/30 transition-all group" onClick={() => navigate("/sugestoes")}>
-          <CardContent className="p-5 flex items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
-              <Lightbulb className="h-5 w-5 text-primary animate-float" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold">Tem uma ideia para melhorar o Azera?</p>
-              <p className="text-xs text-muted-foreground">Deixe sua sugestão e ajude a construir a plataforma!</p>
-            </div>
-            <Button size="sm" variant="outline" className="shrink-0 border-primary/20 text-primary hover:bg-primary/10">
-              Sugerir
-            </Button>
-          </CardContent>
-        </Card>
-      </motion.div>
-
       {/* Daily Insight */}
       <motion.div variants={item}>
-        <Card className="glass-card border-border/20 overflow-hidden">
+        <Card className="glass-card border-border/10 overflow-hidden">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary/10 shrink-0">
-              <Zap className="h-4 w-4 text-primary" />
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-primary/5 shrink-0">
+              <Zap className="h-3.5 w-3.5 text-primary/60" />
             </div>
-            <p className="text-sm text-foreground/80">{insight}</p>
+            <p className="text-sm text-foreground/60 leading-relaxed">{insight}</p>
           </CardContent>
         </Card>
       </motion.div>
@@ -350,36 +339,36 @@ export default function Index() {
       {/* Today's Agenda */}
       <motion.div variants={item} className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <CalendarDays className="h-4 w-4 text-primary" /> Sua Agenda
-          </h2>
-          <button onClick={() => navigate("/agenda")} className="text-xs text-primary hover:text-foreground flex items-center gap-1 transition-colors font-medium">
+          <p className="section-label flex items-center gap-2">
+            <CalendarDays className="h-3.5 w-3.5" /> Agenda de Hoje
+          </p>
+          <button onClick={() => navigate("/agenda")} className="text-[11px] text-muted-foreground/40 hover:text-foreground flex items-center gap-1 transition-colors font-medium tracking-wide">
             Ver tudo <ArrowRight className="h-3 w-3" />
           </button>
         </div>
 
         {todayTasks.length === 0 ? (
-          <Card className="glass-card border-border/20 p-8 text-center space-y-2">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
-              <CalendarDays className="h-5 w-5 text-primary" />
+          <Card className="glass-card border-border/10 p-8 text-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-2">
+              <CalendarDays className="h-4 w-4 text-primary/50" />
             </div>
-            <p className="text-muted-foreground text-sm">Nenhuma tarefa para hoje.</p>
-            <button onClick={() => navigate("/agenda")} className="text-xs text-primary hover:underline font-medium">Adicionar tarefa</button>
+            <p className="text-muted-foreground/50 text-sm">Nenhuma tarefa para hoje.</p>
+            <button onClick={() => navigate("/agenda")} className="text-xs text-muted-foreground/40 hover:text-foreground font-medium tracking-wide">Adicionar tarefa</button>
           </Card>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {todayTasks.map((t) => (
-              <Card key={t.id} className={`glass-card border-border/20 transition-all group ${t.status === "done" ? "opacity-50" : "hover:border-primary/20"}`}>
+              <Card key={t.id} className={`glass-card border-border/10 transition-all group ${t.status === "done" ? "opacity-40" : "hover:border-primary/15"}`}>
                 <CardContent className="p-3 flex items-center gap-3">
-                  <div className={`w-1.5 h-8 rounded-full shrink-0 ${
-                    t.type === "meeting" ? "bg-blue-500/60" : 
-                    t.type === "health" ? "bg-red-500/60" : "bg-primary/40"
+                  <div className={`w-1 h-7 rounded-full shrink-0 ${
+                    t.type === "meeting" ? "bg-blue-500/50" : 
+                    t.type === "health" ? "bg-red-500/50" : "bg-primary/25"
                   }`} />
                   <Checkbox checked={t.status === "done"} onCheckedChange={() => toggleTask(t)} />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm ${t.status === "done" ? "line-through text-muted-foreground" : "font-medium"}`}>{t.title}</p>
+                    <p className={`text-sm ${t.status === "done" ? "line-through text-muted-foreground/50" : "font-medium"}`}>{t.title}</p>
                   </div>
-                  {t.time && <span className="text-xs text-muted-foreground font-mono">{t.time.slice(0, 5)}</span>}
+                  {t.time && <span className="text-[11px] text-muted-foreground/40 font-mono">{t.time.slice(0, 5)}</span>}
                 </CardContent>
               </Card>
             ))}
@@ -389,30 +378,30 @@ export default function Index() {
 
       {/* Upcoming Events */}
       <motion.div variants={item} className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-          <Handshake className="h-4 w-4 text-primary" /> Eventos no Radar
-        </h2>
+        <p className="section-label flex items-center gap-2">
+          <Handshake className="h-3.5 w-3.5" /> Eventos no Radar
+        </p>
 
         {upcomingEvents.length === 0 ? (
-          <Card className="glass-card border-border/20 p-8 text-center space-y-2">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
-              <Handshake className="h-5 w-5 text-primary" />
+          <Card className="glass-card border-border/10 p-8 text-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mx-auto mb-2">
+              <Handshake className="h-4 w-4 text-primary/50" />
             </div>
-            <p className="text-muted-foreground text-sm">Nenhum evento próximo.</p>
+            <p className="text-muted-foreground/50 text-sm">Nenhum evento próximo.</p>
           </Card>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {upcomingEvents.map((ev) => (
-              <Card key={ev.id} className="glass-card border-border/20 hover:border-primary/20 transition-all">
+              <Card key={ev.id} className="glass-card border-border/10 hover:border-primary/15 transition-all">
                 <CardContent className="p-3 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <CalendarDays className="h-4 w-4 text-primary" />
+                  <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
+                    <CalendarDays className="h-3.5 w-3.5 text-primary/50" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{ev.title}</p>
-                    {ev.location && <p className="text-xs text-muted-foreground truncate">{ev.location}</p>}
+                    {ev.location && <p className="text-[11px] text-muted-foreground/40 truncate">{ev.location}</p>}
                   </div>
-                  {ev.date && <span className="text-xs text-muted-foreground font-mono">{format(new Date(ev.date + "T12:00:00"), "dd MMM", { locale: ptBR })}</span>}
+                  {ev.date && <span className="text-[11px] text-muted-foreground/40 font-mono">{format(new Date(ev.date + "T12:00:00"), "dd MMM", { locale: ptBR })}</span>}
                 </CardContent>
               </Card>
             ))}
