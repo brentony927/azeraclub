@@ -59,7 +59,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <p className="text-[10px] text-muted-foreground/25 text-center mt-4">© 2026 Azera Club</p>
+        <p className="text-[10px] text-muted-foreground text-center mt-4">© 2026 Azera Club</p>
       </div>
     </footer>
   );
