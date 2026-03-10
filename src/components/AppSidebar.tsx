@@ -316,7 +316,7 @@ export function AppSidebar() {
               <navItem.icon className="h-4 w-4 sidebar-nav-icon" />
               {!collapsed && <span className="text-sm font-medium flex-1">{navItem.title}</span>}
               {showBadge && (
-                <span className="ml-auto w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                <span className={`w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center ${collapsed ? "absolute -top-1 -right-1" : "ml-auto"}`}>
                   {unreadMessages > 9 ? "9+" : unreadMessages}
                 </span>
               )}
