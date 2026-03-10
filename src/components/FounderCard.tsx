@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
