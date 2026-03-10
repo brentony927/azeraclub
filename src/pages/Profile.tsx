@@ -110,12 +110,14 @@ export default function Profile() {
 
     if (profileRes.data) {
       const p = profileRes.data;
-      setDisplayName(p.display_name || "");
       setAge(p.age?.toString() || "");
       setLocation(p.location || "");
       setProfession(p.profession || "");
       setBio(p.bio || "");
       setAvatarUrl(p.avatar_url || null);
+      // Use founder name as fallback if display_name is empty
+      const founderName = founderRes.data?.name || "";
+      setDisplayName(p.display_name || founderName || "");
     }
 
     if (founderRes.data) {
