@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BADGE_DEFINITIONS } from "@/lib/badges";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Lock } from "lucide-react";
+import { Lock, Trophy } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 
 interface BadgeShowcaseProps {
   userId: string;
