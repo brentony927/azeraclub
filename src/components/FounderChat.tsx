@@ -34,6 +34,7 @@ interface FounderChatProps {
   onDeleteConversation?: (userId: string) => void;
   isOtherOwner?: boolean;
   isMeOwner?: boolean;
+  otherUserAvatar?: string | null;
 }
 
 const WEEKLY_LIMIT = 10;
