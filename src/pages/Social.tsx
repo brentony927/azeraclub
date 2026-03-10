@@ -45,6 +45,7 @@ export default function Social() {
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : events.length === 0 ? (
         <EmptyState icon="💎" title="Nenhum evento social" description="Adicione eventos de networking, conferências e galas ao seu radar social." actionLabel="Adicionar Evento" onAction={() => setDialogOpen(true)} />
+
       ) : (
         <div className="space-y-4">
           {events.map((ev) => (
