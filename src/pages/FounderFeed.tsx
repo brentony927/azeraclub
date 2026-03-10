@@ -426,8 +426,9 @@ export default function FounderFeed() {
 
         {/* Tabs: Posts / Founders */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-2 max-w-xs">
+          <TabsList className="grid w-full grid-cols-3 max-w-md">
             <TabsTrigger value="posts">Publicações</TabsTrigger>
+            <TabsTrigger value="my-posts">Minhas</TabsTrigger>
             <TabsTrigger value="founders">Founders</TabsTrigger>
           </TabsList>
 
