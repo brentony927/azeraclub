@@ -44,7 +44,7 @@ function getWeekStart(): string {
   return monday.toISOString().split("T")[0];
 }
 
-export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation }: FounderChatProps) {
+export default function FounderChat({ otherUserId, otherUserName, onBlock, onDeleteConversation, isOtherOwner, isMeOwner }: FounderChatProps) {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
   const navigate = useNavigate();
