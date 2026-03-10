@@ -203,7 +203,7 @@ export default function FounderMessages() {
       <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <MessageCircle className="h-6 w-6" /> Mensagens
+          <MessageCircle className="h-6 w-6" /> Conversas
         </h1>
         <MessageGroupDialog onGroupCreated={() => window.location.reload()} connections={connectedUsers} />
       </div>

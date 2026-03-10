@@ -208,9 +208,9 @@ export default function TermsOfService() {
             </p>
           </section>
 
-          {/* 10 — Aceitação */}
+          {/* 13 — Aceitação */}
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">10. Aceitação dos Termos</h2>
+            <h2 className="text-lg font-serif font-semibold">13. Aceitação dos Termos</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Ao criar uma conta no AZERA CLUB, o utilizador confirma que leu, compreendeu e aceita estes Termos de Uso na sua totalidade, bem como a nossa Política de Privacidade.
             </p>

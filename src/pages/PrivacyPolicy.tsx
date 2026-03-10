@@ -123,7 +123,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">8. Alterações a Esta Política</h2>
+            <h2 className="text-lg font-serif font-semibold">10. Alterações a Esta Política</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Esta Política de Privacidade pode ser atualizada periodicamente. Os utilizadores serão notificados sobre alterações significativas. A utilização contínua da plataforma constitui aceitação da política atualizada.
             </p>
