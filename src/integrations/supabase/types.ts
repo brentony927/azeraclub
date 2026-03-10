@@ -1513,6 +1513,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_moderation: {
+        Row: {
+          action: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          moderator_id: string
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          moderator_id: string
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          moderator_id?: string
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_plans: {
         Row: {
           created_at: string
@@ -1794,6 +1824,7 @@ export type Database = {
           longitude: number
         }[]
       }
+      is_site_owner: { Args: { p_user_id: string }; Returns: boolean }
       is_venture_member: {
         Args: { p_user_id: string; p_venture_id: string }
         Returns: boolean
