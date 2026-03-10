@@ -1,9 +1,10 @@
+import { type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
-  icon: string;
+  icon: ReactNode;
   title: string;
   description: string;
   actionLabel: string;
@@ -17,7 +18,7 @@ export default function EmptyState({ icon, title, description, actionLabel, onAc
       animate={{ opacity: 1, y: 0 }}
       className="glass-card p-12 text-center space-y-4"
     >
-      <div className="text-5xl mx-auto">{icon}</div>
+      <div className="flex justify-center">{icon}</div>
       <h3 className="text-lg font-serif font-semibold">{title}</h3>
       <p className="text-sm text-muted-foreground max-w-sm mx-auto">{description}</p>
       <Button onClick={onAction} className="gold-gradient text-primary-foreground border-0">
