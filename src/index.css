@@ -2010,7 +2010,8 @@
 
   /* Disable heavy animations on mobile */
   .pro-particle,
-  .business-particle {
+  .business-particle,
+  .owner-particle {
     animation: none !important;
     display: none !important;
   }
