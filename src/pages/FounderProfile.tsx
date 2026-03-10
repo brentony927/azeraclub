@@ -447,27 +447,39 @@ export default function FounderProfile() {
         </Card>
       )}
 
-      {/* === 10. ACTIVITY FEED === */}
-      {activity.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Atividade</h3>
-            <div className="space-y-2.5">
-              {activity.map((a, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  {a.icon === "connection" && <Users className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
-                  {a.icon === "venture" && <Rocket className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
-                  {a.icon === "opportunity" && <Lightbulb className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
-                  <div>
-                    <p className="text-xs text-foreground">{a.text}</p>
-                    <p className="text-[10px] text-muted-foreground">{new Date(a.date).toLocaleDateString("pt-BR")}</p>
-                  </div>
+      {/* === 10. TABS: Activity & Publications === */}
+      <Tabs defaultValue="activity">
+        <TabsList className="grid w-full grid-cols-2 max-w-xs">
+          <TabsTrigger value="activity">Atividade</TabsTrigger>
+          <TabsTrigger value="posts">Publicações</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="activity">
+          {activity.length > 0 && (
+            <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+              <CardContent className="p-6">
+                <div className="space-y-2.5">
+                  {activity.map((a, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      {a.icon === "connection" && <Users className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
+                      {a.icon === "venture" && <Rocket className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
+                      {a.icon === "opportunity" && <Lightbulb className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
+                      <div>
+                        <p className="text-xs text-foreground">{a.text}</p>
+                        <p className="text-[10px] text-muted-foreground">{new Date(a.date).toLocaleDateString("pt-BR")}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="posts">
+          <FounderProfilePosts userId={profile.user_id} />
+        </TabsContent>
+      </Tabs>
 
       {/* === 11. ACTION BUTTONS === */}
       {!isOwn && (
@@ -504,12 +516,85 @@ export default function FounderProfile() {
         </Card>
       )}
 
-      {/* Legal disclaimer */}
       {!isOwn && (
         <p className="text-[10px] text-muted-foreground text-center px-4">
           ⚠️ A AZERA não verifica identidades nem garante a veracidade das informações dos perfis. Interaja com cautela.
         </p>
       )}
+    </div>
+  );
+}
+
+/* === Publications sub-component for profile === */
+function FounderProfilePosts({ userId }: { userId: string }) {
+  const { user } = useAuth();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [authors, setAuthors] = useState<Record<string, any>>({});
+  const [likes, setLikes] = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
+  const [comments, setComments] = useState<Record<string, any[]>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase.from("founder_posts" as any).select("*").eq("user_id", userId).order("created_at", { ascending: false });
+    const postsList = (data || []) as unknown as any[];
+    setPosts(postsList);
+
+    if (postsList.length === 0) { setLoading(false); return; }
+
+    const postIds = postsList.map(p => p.id);
+    const { data: profile } = await supabase.from("founder_profiles").select("user_id, name, avatar_url, username").eq("user_id", userId).maybeSingle();
+    if (profile) setAuthors({ [userId]: { name: profile.name, avatar: profile.avatar_url, username: profile.username } });
+
+    const [likesRes, myLikesRes, commentsRes] = await Promise.all([
+      supabase.from("founder_post_likes" as any).select("post_id").in("post_id", postIds),
+      user ? supabase.from("founder_post_likes" as any).select("post_id").eq("user_id", user.id).in("post_id", postIds) : Promise.resolve({ data: [] }),
+      supabase.from("founder_post_comments" as any).select("*").in("post_id", postIds).order("created_at", { ascending: true }),
+    ]);
+
+    const lc: Record<string, number> = {};
+    ((likesRes.data || []) as unknown as any[]).forEach((l: any) => { lc[l.post_id] = (lc[l.post_id] || 0) + 1; });
+    setLikes(lc);
+
+    const ml = new Set<string>();
+    ((myLikesRes.data || []) as unknown as any[]).forEach((l: any) => ml.add(l.post_id));
+    setMyLikes(ml);
+
+    const cm: Record<string, any[]> = {};
+    const cc: Record<string, number> = {};
+    ((commentsRes.data || []) as unknown as any[]).forEach((c: any) => {
+      if (!cm[c.post_id]) cm[c.post_id] = [];
+      cm[c.post_id].push(c);
+      cc[c.post_id] = (cc[c.post_id] || 0) + 1;
+    });
+    setComments(cm);
+    setCommentCounts(cc);
+    setLoading(false);
+  }, [userId, user]);
+
+  useEffect(() => { fetchPosts(); }, [fetchPosts]);
+
+  if (loading) return <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
+  if (posts.length === 0) return <p className="text-center py-8 text-sm text-muted-foreground">Nenhuma publicação ainda.</p>;
+
+  return (
+    <div className="space-y-4">
+      {posts.map(post => (
+        <FounderPostCard
+          key={post.id}
+          post={post}
+          authorName={authors[post.user_id]?.name || "Founder"}
+          authorAvatar={authors[post.user_id]?.avatar || null}
+          authorUsername={authors[post.user_id]?.username || null}
+          likesCount={likes[post.id] || 0}
+          commentsCount={commentCounts[post.id] || 0}
+          isLiked={myLikes.has(post.id)}
+          comments={comments[post.id] || []}
+          onRefresh={fetchPosts}
+        />
+      ))}
     </div>
   );
 }
