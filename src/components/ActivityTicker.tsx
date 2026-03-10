@@ -1,17 +1,20 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Rocket, Handshake, Lightbulb, Globe, TrendingUp } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 
 interface TickerItem {
   id: string;
+  icon: ReactNode;
   text: string;
 }
 
 const FALLBACK_ITEMS: TickerItem[] = [
-  { id: "f1", text: "🚀 Novo venture criado na comunidade" },
-  { id: "f2", text: "🤝 2 founders conectaram-se hoje" },
-  { id: "f3", text: "💡 Nova oportunidade publicada" },
-  { id: "f4", text: "🌍 Founder de Lisboa entrou no ecossistema" },
-  { id: "f5", text: "📈 Venture atingiu score 85" },
+  { id: "f1", icon: <Icon3D icon={Rocket} color="gold" size="xs" animated />, text: "Novo venture criado na comunidade" },
+  { id: "f2", icon: <Icon3D icon={Handshake} color="green" size="xs" animated />, text: "2 founders conectaram-se hoje" },
+  { id: "f3", icon: <Icon3D icon={Lightbulb} color="gold" size="xs" animated />, text: "Nova oportunidade publicada" },
+  { id: "f4", icon: <Icon3D icon={Globe} color="blue" size="xs" animated />, text: "Founder de Lisboa entrou no ecossistema" },
+  { id: "f5", icon: <Icon3D icon={TrendingUp} color="green" size="xs" animated />, text: "Venture atingiu score 85" },
 ];
 
 export default function ActivityTicker() {
@@ -25,8 +28,8 @@ export default function ActivityTicker() {
       ]);
 
       const live: TickerItem[] = [];
-      ventures.data?.forEach((v) => live.push({ id: `v-${v.id}`, text: `🚀 "${v.name}" foi criado` }));
-      profiles.data?.forEach((p) => live.push({ id: `p-${p.id}`, text: `🌍 ${p.name}${p.city ? ` de ${p.city}` : ""} entrou no ecossistema` }));
+      ventures.data?.forEach((v) => live.push({ id: `v-${v.id}`, icon: <Icon3D icon={Rocket} color="gold" size="xs" animated />, text: `"${v.name}" foi criado` }));
+      profiles.data?.forEach((p) => live.push({ id: `p-${p.id}`, icon: <Icon3D icon={Globe} color="blue" size="xs" animated />, text: `${p.name}${p.city ? ` de ${p.city}` : ""} entrou no ecossistema` }));
 
       if (live.length > 0) setItems([...live, ...FALLBACK_ITEMS.slice(0, 3)]);
     };
@@ -44,6 +47,7 @@ export default function ActivityTicker() {
       >
         {doubled.map((item, i) => (
           <span key={`${item.id}-${i}`} className="text-sm text-muted-foreground flex items-center gap-2 shrink-0">
+            {item.icon}
             {item.text}
             <span className="text-border/40">·</span>
           </span>

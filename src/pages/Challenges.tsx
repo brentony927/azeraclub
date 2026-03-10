@@ -159,7 +159,7 @@ export default function Challenges() {
           )}
           {completed.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Concluídos 🎉 ({completed.length})</h3>
+              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">Concluídos <Icon3D icon={Sparkles} color="gold" size="xs" animated /> ({completed.length})</h3>
               {completed.map((ch) => (
                 <Card key={ch.id} className="opacity-60">
                   <CardContent className="p-4 flex items-center gap-3">
