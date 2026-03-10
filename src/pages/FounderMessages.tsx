@@ -111,6 +111,7 @@ export default function FounderMessages() {
           convList.push({
             userId: odId,
             name: nameMap.get(odId) || "Fundador",
+            avatarUrl: avatarMap.get(odId) || null,
             lastMessage: val.lastMsg,
             lastAt: val.lastAt,
             unread: val.unread,
