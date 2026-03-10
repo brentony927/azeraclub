@@ -64,6 +64,15 @@ export default function FounderPostCard({
       await supabase.from("founder_post_likes" as any).insert({ post_id: post.id, user_id: user.id });
       setLiked(true);
       setLikes(prev => prev + 1);
+      // Notify post author
+      if (post.user_id !== user.id) {
+        sendNotification({
+          user_id: post.user_id,
+          type: "post_like",
+          title: `${myName || "Alguém"} curtiu sua publicação ❤️`,
+          action_url: "/founder-feed",
+        });
+      }
     }
   };
 
