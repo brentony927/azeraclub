@@ -340,7 +340,7 @@ export default function FounderProfile() {
 
       {/* === 3. BIO === */}
       {profile.building && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Bio</h3>
             <p className="text-sm text-foreground leading-relaxed">{profile.building}</p>
