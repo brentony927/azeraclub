@@ -24,6 +24,7 @@ import ReportUserDialog from "@/components/ReportUserDialog";
 import { sendNotification } from "@/lib/sendNotification";
 import FounderPostCard from "@/components/FounderPostCard";
 import BadgeShowcase from "@/components/BadgeShowcase";
+import OwnerModPanel from "@/components/OwnerModPanel";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {

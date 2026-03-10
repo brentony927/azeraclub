@@ -158,7 +158,7 @@ const FounderCard = memo(function FounderCard({
           <Button
             size="sm"
             variant="outline"
-            className={`flex-1 text-xs transition-transform duration-200 ${isSiteOwner ? "owner-card-btn" : ""}`}
+            className={`flex-1 text-xs transition-transform duration-200 min-h-[44px] ${isSiteOwner ? "owner-card-btn" : ""}`}
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             onClick={() => navigate(`/founder-profile/${username || id}`)}
           >
@@ -166,7 +166,7 @@ const FounderCard = memo(function FounderCard({
           </Button>
           <Button
             size="sm"
-            className={`flex-1 text-xs transition-transform duration-200 ${isSiteOwner ? "owner-card-btn-primary" : ""}`}
+            className={`flex-1 text-xs transition-transform duration-200 min-h-[44px] ${isSiteOwner ? "owner-card-btn-primary" : ""}`}
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             disabled={isConnected || isPending}
             onClick={() => onConnect?.(userId)}

@@ -38,8 +38,8 @@ export default function BadgeShowcase({ userId, showLocked = false }: BadgeShowc
   };
 
   useEffect(() => {
-    if (user?.id === userId) recalculate();
-  }, [user?.id, userId]);
+    if (user?.id === userId && !isSiteOwner) recalculate();
+  }, [user?.id, userId, isSiteOwner]);
 
   if (loading) return null;
 
