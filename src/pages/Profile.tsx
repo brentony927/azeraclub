@@ -15,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
+import BadgeShowcase from "@/components/BadgeShowcase";
 import {
   AlertDialog,
   AlertDialogAction,
