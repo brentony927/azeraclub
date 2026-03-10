@@ -72,7 +72,29 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">5. Cookies</h2>
+            <h2 className="text-lg font-serif font-semibold">5. Dados de Conteúdo Social</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">A plataforma armazena dados relacionados com a atividade social dos utilizadores, incluindo:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Publicações, fotografias, comentários e reações (likes)</li>
+              <li>Participação em grupos e conversas</li>
+              <li>Conexões e interações com outros membros</li>
+            </ul>
+            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 mt-2">
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                O AZERA CLUB não é responsável pelo conteúdo publicado por utilizadores nem pelas interações resultantes. Cada utilizador é o único responsável pelo que publica e partilha.
+              </p>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">6. Dados de Localização</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Para funcionalidades como o Mapa Global de Founders, podemos recolher coordenadas geográficas aproximadas. As coordenadas precisas nunca são partilhadas com outros utilizadores ou terceiros — apenas versões arredondadas são exibidas no mapa.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">7. Cookies</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Utilizamos cookies para melhorar a experiência de navegação, memorizar preferências e analisar o uso da plataforma. Para mais detalhes, consulte a nossa <Link to="/cookies" className="text-primary hover:underline">Política de Cookies</Link>.
             </p>
