@@ -87,7 +87,7 @@ export default function FounderNotifications() {
       .order("created_at", { ascending: false })
       .limit(20)
       .then(({ data }) => {
-        if (data) setNotifications(data as Notification[]);
+        if (data) setNotifications((data as Notification[]).filter(n => n.type !== "message"));
       });
 
     const channel = supabase
