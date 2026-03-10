@@ -456,6 +456,7 @@ export default function FounderFeed() {
                   isLiked={postMyLikes.has(post.id)}
                   comments={postComments[post.id] || []}
                   onRefresh={fetchPosts}
+                  myName={myProfile?.name}
                 />
               ))
             )}

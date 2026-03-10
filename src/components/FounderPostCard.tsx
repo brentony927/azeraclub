@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, MessageCircle, Share2, Trash2, Send, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/lib/sendNotification";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 
@@ -33,10 +34,11 @@ interface Props {
   isLiked: boolean;
   comments: Comment[];
   onRefresh: () => void;
+  myName?: string;
 }
 
 export default function FounderPostCard({
-  post, authorName, authorAvatar, authorUsername, likesCount, commentsCount, isLiked, comments, onRefresh,
+  post, authorName, authorAvatar, authorUsername, likesCount, commentsCount, isLiked, comments, onRefresh, myName,
 }: Props) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -46,6 +48,7 @@ export default function FounderPostCard({
   const [commentText, setCommentText] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
   const isOwn = user?.id === post.user_id;
   const initials = authorName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
@@ -61,6 +64,15 @@ export default function FounderPostCard({
       await supabase.from("founder_post_likes" as any).insert({ post_id: post.id, user_id: user.id });
       setLiked(true);
       setLikes(prev => prev + 1);
+      // Notify post author
+      if (post.user_id !== user.id) {
+        sendNotification({
+          user_id: post.user_id,
+          type: "post_like",
+          title: `${myName || "Alguém"} curtiu sua publicação ❤️`,
+          action_url: "/founder-feed",
+        });
+      }
     }
   };
 
@@ -75,7 +87,17 @@ export default function FounderPostCard({
     setSendingComment(false);
     if (!error) {
       setCommentText("");
+      setLocalCommentsCount(prev => prev + 1);
       onRefresh();
+      // Notify post author
+      if (post.user_id !== user.id) {
+        sendNotification({
+          user_id: post.user_id,
+          type: "post_comment",
+          title: `${myName || "Alguém"} comentou na sua publicação 💬`,
+          action_url: "/founder-feed",
+        });
+      }
     }
   };
 
@@ -162,7 +184,7 @@ export default function FounderPostCard({
         </button>
         <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <MessageCircle className="h-4 w-4" />
-          {commentsCount > 0 && <span>{commentsCount}</span>}
+          {localCommentsCount > 0 && <span>{localCommentsCount}</span>}
         </button>
         <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <Share2 className="h-4 w-4" />

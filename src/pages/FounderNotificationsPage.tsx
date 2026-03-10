@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   Bell, UserPlus, MessageCircle, Eye, Briefcase, Sparkles,
   Lightbulb, Rocket, TrendingUp, Users, FileText, Trophy, BarChart3, Loader2,
-  Check, X,
+  Check, X, Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,6 +39,9 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   new_founders: UserPlus,
   trending_industry: BarChart3,
   ai_opportunity: Sparkles,
+  post_like: Heart,
+  post_comment: MessageCircle,
+  opportunity_reply: Briefcase,
 };
 
 const TYPE_ROUTES: Record<string, string> = {
@@ -56,6 +59,9 @@ const TYPE_ROUTES: Record<string, string> = {
   new_founders: "/founder-feed",
   trending_industry: "/trend-scanner",
   ai_opportunity: "/opportunity-radar",
+  post_like: "/founder-feed",
+  post_comment: "/founder-feed",
+  opportunity_reply: "/founder-messages",
 };
 
 export default function FounderNotificationsPage() {

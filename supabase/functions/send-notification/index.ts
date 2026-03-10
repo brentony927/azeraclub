@@ -57,6 +57,7 @@ Deno.serve(async (req) => {
     const allowedTypes = [
       "connection", "profile_view", "venture_activity", "team_invitation",
       "new_founders", "ranking_change", "trending_industry", "ai_opportunity",
+      "post_like", "post_comment", "message", "opportunity_reply",
     ];
     if (type && !allowedTypes.includes(type)) {
       return new Response(JSON.stringify({ error: "Invalid notification type" }), {
