@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Logo + Brand */}
           <div className="flex items-center gap-2.5">
             <img src={azeraLogo} alt="AZERA" className="w-6 h-6 rounded-md object-contain opacity-60" />
-            <span className="font-serif font-semibold text-sm text-muted-foreground/50 tracking-widest uppercase">Azera Club</span>
+            <span className="font-serif font-semibold text-sm text-muted-foreground tracking-widest uppercase">Azera Club</span>
           </div>
 
           {/* Nav */}
