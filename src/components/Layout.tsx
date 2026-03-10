@@ -8,7 +8,7 @@ import FloatingNotification from "@/components/FloatingNotification";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+
 import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
