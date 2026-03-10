@@ -58,7 +58,7 @@ export default function Challenges() {
     });
     setTitle(""); setDescription(""); setDuration("7"); setDialogOpen(false);
     fetchChallenges();
-    toast.success("Desafio iniciado! 🔥");
+    toast.success("Desafio iniciado!");
   };
 
   const advanceDay = async (ch: Challenge) => {
