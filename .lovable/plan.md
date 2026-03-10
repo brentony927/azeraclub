@@ -1,38 +1,37 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Corrigir Vulnerabilidades de Segurança
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+O scan identificou 6 problemas. Vou corrigir os que são actionáveis via código/SQL.
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+### 1. `get_rounded_coordinates` — Leak de localização (do print)
+A função SECURITY DEFINER retorna coordenadas de qualquer user_id sem verificar se o perfil é publicado.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+**Fix:** Adicionar `JOIN founder_profiles` com check `is_published = true` dentro da função.
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 2. `founder_connections` — Self-accept de conexões
+O sender pode auto-aceitar a própria solicitação porque a policy UPDATE permite ambos os participantes.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**Fix:** Restringir UPDATE para apenas o `to_user_id` (destinatário) poder alterar status.
+
+### 3. `is_venture_member` — Membros pending/rejected com acesso
+A função não filtra por `status = 'accepted'`.
+
+**Fix:** Adicionar `AND status = 'accepted'` na query da função.
+
+### 4. `is_site_owner` trigger — Já corrigido
+O trigger `guard_site_owner_change` já foi criado. O scanner pode não detectar triggers. Vou marcar como resolvido.
+
+### 5. Email hardcoded em migração
+Não é possível remover migrações já aplicadas. Vou marcar com dificuldade alta e nota explicativa.
+
+### 6. Políticas RESTRICTIVE
+Todas as policies foram criadas como RESTRICTIVE. Em PostgreSQL, sem pelo menos uma PERMISSIVE policy, o acesso é negado. Se o app funciona, pode ser que o Supabase trate isso diferentemente, mas o correto é converter para PERMISSIVE. Porém isso envolve recriar ~130 policies — risco alto de breaking change. Vou marcar para análise mas **não alterar agora** para evitar downtime.
+
+### Ficheiros/Migrações
+- **1 migração SQL** com 3 statements:
+  1. `CREATE OR REPLACE FUNCTION get_rounded_coordinates` — adicionar JOIN com `is_published = true`
+  2. `DROP POLICY` + `CREATE POLICY` em `founder_connections` — restringir UPDATE ao destinatário
+  3. `CREATE OR REPLACE FUNCTION is_venture_member` — adicionar `AND status = 'accepted'`
+- **Atualizar findings** no scanner de segurança
+
