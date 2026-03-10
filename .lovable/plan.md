@@ -1,59 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Owner Vermelho Intenso Metálico + Mobile 100% + Fluidez
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Resumo
-Intensificar o vermelho metálico brilhante do owner (sem mudar fundo branco/preto), aplicar vermelho no "AZERA CLUB" da sidebar para o owner, tornar o FounderCard do owner mais intenso com efeito metálico, e otimizar fluidez/performance mobile.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### 1. CSS — Intensificar Owner Red Metallic (`src/index.css`)
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**Owner Card** — upgrade para vermelho metálico brilhante (estilo similar ao `badge-gold-metallic` mas em vermelho):
-```css
-.owner-card {
-  border: 2px solid transparent;
-  background-image: linear-gradient(var(--card), var(--card)),
-    linear-gradient(145deg, #8b0000, #ff0000, #ff4444, #ff0000, #8b0000);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  box-shadow: 0 0 30px hsl(0,100%,50%,0.4), 0 0 60px hsl(0,100%,50%,0.15);
-}
-```
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**Owner Theme** — intensificar cores sem mudar fundo:
-- `--primary` mais saturado/vibrante
-- Header gradient line mais intenso
-- Sidebar accent com tint vermelho mais forte
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**"AZERA CLUB" vermelho para owner** — nova classe `.owner-theme .azera-brand-text`:
-```css
-.owner-theme .azera-brand-text {
-  background: linear-gradient(145deg, #8b0000, #ff0000, #ff4444, #ff0000, #8b0000);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ownerBadgeShimmer 3s ease-in-out infinite;
-}
-```
-
-**Mobile performance** — adicionar `will-change: transform` nos cards, reduzir animações pesadas em mobile, usar `transform: translateZ(0)` para GPU acceleration.
-
-### 2. FounderCard — Metallic red intenso (`src/components/FounderCard.tsx`)
-
-Já usa `owner-card` class. Apenas garantir que o CSS `.owner-card` é suficientemente intenso (feito no passo 1). Nenhuma mudança no componente necessária.
-
-### 3. AppSidebar — "AZERA CLUB" vermelho (`src/components/AppSidebar.tsx`)
-
-Nenhuma mudança no componente — o CSS `.owner-theme .azera-brand-text` herdará automaticamente pois o `.owner-theme` está no wrapper do Layout e o `azera-brand-text` já existe na sidebar.
-
-### 4. Fluidez e leveza
-
-- Adicionar `content-visibility: auto` em cards para lazy rendering
-- Reduzir `animation-duration` em mobile
-- Simplificar box-shadows em mobile para owner elements
-- Usar `@media (prefers-reduced-motion)` para respeitar preferências do usuário
-
-### Ficheiros a editar
-- `src/index.css` (owner card metallic intenso, AZERA CLUB vermelho, mobile perf)
-
-Apenas 1 ficheiro precisa ser editado — todas as mudanças são CSS.
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
