@@ -95,6 +95,8 @@ export default function FounderFeed() {
   const [postsLoading, setPostsLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("posts");
+  const [myPostsSort, setMyPostsSort] = useState<"recent" | "oldest">("recent");
+  const [myPostsType, setMyPostsType] = useState<"all" | "photo" | "text">("all");
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -424,8 +426,9 @@ export default function FounderFeed() {
 
         {/* Tabs: Posts / Founders */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-2 max-w-xs">
+          <TabsList className="grid w-full grid-cols-3 max-w-md">
             <TabsTrigger value="posts">Publicações</TabsTrigger>
+            <TabsTrigger value="my-posts">Minhas</TabsTrigger>
             <TabsTrigger value="founders">Founders</TabsTrigger>
           </TabsList>
 
@@ -460,6 +463,67 @@ export default function FounderFeed() {
                 />
               ))
             )}
+          </TabsContent>
+
+          {/* My Posts Tab */}
+          <TabsContent value="my-posts" className="space-y-4 mt-4">
+            {(() => {
+              let myPosts = posts.filter(p => p.user_id === user?.id);
+              if (myPostsType === "photo") myPosts = myPosts.filter(p => p.media_urls && p.media_urls.length > 0);
+              if (myPostsType === "text") myPosts = myPosts.filter(p => !p.media_urls || p.media_urls.length === 0);
+              if (myPostsSort === "oldest") myPosts = [...myPosts].reverse();
+
+              return (
+                <>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs text-muted-foreground mr-1">Ordenar:</span>
+                    {(["recent", "oldest"] as const).map(s => (
+                      <button key={s} onClick={() => setMyPostsSort(s)}
+                        className={`px-3 py-1 rounded-full text-xs transition-all ${myPostsSort === s ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
+                        {s === "recent" ? "Recente" : "Mais antiga"}
+                      </button>
+                    ))}
+                    <span className="text-xs text-muted-foreground ml-3 mr-1">Tipo:</span>
+                    {(["all", "photo", "text"] as const).map(t => (
+                      <button key={t} onClick={() => setMyPostsType(t)}
+                        className={`px-3 py-1 rounded-full text-xs transition-all ${myPostsType === t ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
+                        {t === "all" ? "Todas" : t === "photo" ? "Com foto" : "Só texto"}
+                      </button>
+                    ))}
+                  </div>
+
+                  {postsLoading ? (
+                    <div className="space-y-4">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="bg-card/80 border border-border/50 rounded-xl p-4 animate-pulse h-32" />
+                      ))}
+                    </div>
+                  ) : myPosts.length === 0 ? (
+                    <div className="text-center py-12">
+                      <p className="text-muted-foreground text-sm">
+                        {myPostsType !== "all" ? "Nenhuma publicação com esse filtro." : "Você ainda não publicou nada."}
+                      </p>
+                    </div>
+                  ) : (
+                    myPosts.map(post => (
+                      <FounderPostCard
+                        key={post.id}
+                        post={post}
+                        authorName={postAuthors[post.user_id]?.name || myProfile?.name || "Eu"}
+                        authorAvatar={postAuthors[post.user_id]?.avatar || myProfile?.avatar_url || null}
+                        authorUsername={postAuthors[post.user_id]?.username || myProfile?.username || null}
+                        likesCount={postLikes[post.id] || 0}
+                        commentsCount={postCommentCounts[post.id] || 0}
+                        isLiked={postMyLikes.has(post.id)}
+                        comments={postComments[post.id] || []}
+                        onRefresh={fetchPosts}
+                        myName={myProfile?.name}
+                      />
+                    ))
+                  )}
+                </>
+              );
+            })()}
           </TabsContent>
 
           {/* Founders Tab */}

@@ -1,30 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Aba "Minhas Publicações" no Founder Feed
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### O que será feito
-Adicionar uma terceira aba no Founder Feed chamada **"Minhas Publicações"** onde o utilizador pode ver, filtrar e excluir as suas próprias publicações.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### Filtros disponíveis
-- **Ordenação**: Mais recente / Mais antiga
-- **Tipo**: Todas / Com foto / Só texto
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-### Implementação
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**Ficheiro**: `src/pages/FounderFeed.tsx`
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-1. Alterar `TabsList` de `grid-cols-2` para `grid-cols-3` e adicionar tab `"my-posts"` com label "Minhas Publicações"
-2. Adicionar estados para os filtros:
-   - `myPostsSort`: `"recent"` | `"oldest"`
-   - `myPostsType`: `"all"` | `"photo"` | `"text"`
-3. Criar `TabsContent value="my-posts"` que:
-   - Filtra `posts` onde `post.user_id === user.id`
-   - Aplica filtro de tipo (com media_urls vs sem)
-   - Ordena por `created_at` conforme o sort escolhido
-   - Mostra barra de filtros com botões chip (Recente/Antiga, Todas/Com Foto/Só Texto)
-   - Renderiza cada post com `FounderPostCard` (que já tem botão de excluir para posts próprios)
-   - Mostra estado vazio se não houver publicações
-
-### Ficheiros a editar
-- `src/pages/FounderFeed.tsx` — adicionar aba + filtros + conteúdo
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
