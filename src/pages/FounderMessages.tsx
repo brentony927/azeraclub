@@ -300,6 +300,7 @@ export default function FounderMessages() {
               <FounderChat
                 otherUserId={selectedUser.userId}
                 otherUserName={selectedUser.name}
+                otherUserAvatar={conversations.find(c => c.userId === selectedUser.userId)?.avatarUrl}
                 onBlock={handleBlock}
                 onDeleteConversation={handleDeleteConversation}
                 isOtherOwner={ownerUserId === selectedUser.userId}
