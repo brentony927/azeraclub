@@ -116,7 +116,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">7. Retenção de Dados</h2>
+            <h2 className="text-lg font-serif font-semibold">9. Retenção de Dados</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Os dados pessoais são mantidos enquanto a conta estiver ativa ou conforme necessário para cumprir obrigações legais. Após a eliminação da conta, os dados serão removidos num prazo razoável.
             </p>
