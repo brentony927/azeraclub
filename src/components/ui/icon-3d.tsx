@@ -8,6 +8,7 @@ interface Icon3DProps {
   icon: LucideIcon;
   color?: Icon3DColor;
   size?: Icon3DSize;
+  animated?: boolean;
   className?: string;
 }
 
