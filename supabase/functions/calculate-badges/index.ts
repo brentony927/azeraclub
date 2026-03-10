@@ -42,6 +42,7 @@ const ALL_BADGE_KEYS = [
   "ten_challenges","thirty_posts","streak_14","streak_90","score_50","ten_projects",
   "first_idea","first_objective","first_challenge","journal_master","five_opportunities",
   "early_adopter","profile_complete","mentor","diamond_founder",
+  "growth_partner","azera_ambassador","top_connector",
 ];
 
 const BADGE_RULES: BadgeRule[] = [
