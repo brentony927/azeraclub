@@ -111,7 +111,18 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
       } catch {}
     }
 
-    onSubmit({ ...form, avatar_url, ...(latitude != null && longitude != null ? { latitude, longitude } : {}) } as any);
+    // Save GPS to founder_locations separately for privacy
+    if (latitude != null && longitude != null) {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (currentUser) {
+        await supabase.from("founder_locations" as any).upsert({
+          user_id: currentUser.id,
+          latitude,
+          longitude,
+        }, { onConflict: "user_id" });
+      }
+    }
+    onSubmit({ ...form, avatar_url } as any);
   };
 
   const renderMultiSelect = (label: string, field: "skills" | "industry" | "looking_for", options: string[]) => (

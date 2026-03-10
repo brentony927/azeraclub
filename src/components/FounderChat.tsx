@@ -154,12 +154,12 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
 
   const handleDeleteConversation = async () => {
     if (!user) return;
-    // Delete own sent messages from this conversation
+    // Delete only own sent messages TO this specific user
     await supabase
       .from("founder_messages")
       .delete()
       .eq("from_user_id", user.id)
-      .or(`to_user_id.eq.${otherUserId}`);
+      .eq("to_user_id", otherUserId);
 
     setMessages([]);
     toast({ title: "Conversa apagada", description: "As suas mensagens foram removidas." });
@@ -277,15 +277,10 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
       <ReportUserDialog
         reportedUserId={otherUserId}
         reportedUserName={otherUserName}
+        open={reportOpen}
+        onOpenChange={setReportOpen}
         trigger={<span className="hidden" />}
       />
-      {reportOpen && (
-        <ReportUserDialog
-          reportedUserId={otherUserId}
-          reportedUserName={otherUserName}
-          trigger={<span ref={el => { if (el) { el.click(); setReportOpen(false); }}} />}
-        />
-      )}
     </div>
   );
 }

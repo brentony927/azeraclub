@@ -172,6 +172,7 @@ export default function GroupChat({ groupId, groupName }: Props) {
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="Mensagem..."
+          maxLength={2000}
           onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleSend()}
         />
         <Button size="icon" onClick={handleSend} disabled={sending || !input.trim()}>

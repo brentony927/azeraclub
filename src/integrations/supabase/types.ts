@@ -305,6 +305,30 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_locations: {
+        Row: {
+          id: string
+          latitude: number | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       founder_messages: {
         Row: {
           content: string

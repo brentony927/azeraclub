@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,10 @@ export default function FounderPostCard({
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
+
+  useEffect(() => { setLiked(isLiked); }, [isLiked]);
+  useEffect(() => { setLikes(likesCount); }, [likesCount]);
+  useEffect(() => { setLocalCommentsCount(commentsCount); }, [commentsCount]);
 
   const isOwn = user?.id === post.user_id;
   const initials = authorName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();

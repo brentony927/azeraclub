@@ -26,11 +26,15 @@ interface ReportUserDialogProps {
   reportedUserId: string;
   reportedUserName: string;
   trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function ReportUserDialog({ reportedUserId, reportedUserName, trigger }: ReportUserDialogProps) {
+export default function ReportUserDialog({ reportedUserId, reportedUserName, trigger, open: controlledOpen, onOpenChange }: ReportUserDialogProps) {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = (v: boolean) => { onOpenChange?.(v); setInternalOpen(v); };
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
   const [sending, setSending] = useState(false);

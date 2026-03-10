@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -29,9 +29,14 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
   };
 
   const removeFile = (i: number) => {
+    URL.revokeObjectURL(previews[i]);
     setFiles(prev => prev.filter((_, idx) => idx !== i));
     setPreviews(prev => prev.filter((_, idx) => idx !== i));
   };
+
+  useEffect(() => {
+    return () => { previews.forEach(p => URL.revokeObjectURL(p)); };
+  }, []);
 
   const handleSubmit = async () => {
     if (!user || !content.trim()) return;

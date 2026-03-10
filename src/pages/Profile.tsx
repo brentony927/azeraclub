@@ -222,7 +222,6 @@ export default function Profile() {
         avatar_url: avatarUrl,
         is_published: true,
         username: username || null,
-        ...(latitude != null && longitude != null ? { latitude, longitude } : {}),
       };
 
       if (hasFounderProfile) {
@@ -232,6 +231,15 @@ export default function Profile() {
         const { error } = await supabase.from("founder_profiles").insert(founderData);
         if (error) throw error;
         setHasFounderProfile(true);
+      }
+
+      // Save GPS to founder_locations (separate table for privacy)
+      if (latitude != null && longitude != null) {
+        await supabase.from("founder_locations" as any).upsert({
+          user_id: user.id,
+          latitude,
+          longitude,
+        }, { onConflict: "user_id" });
       }
 
       toast.success("Perfil salvo!");
