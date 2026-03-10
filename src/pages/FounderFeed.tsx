@@ -17,7 +17,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
+import { Search, Users, Filter, X, Lock, RefreshCw, HeartHandshake } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
 import { calculateMatchScore, calculateProfileScore } from "@/lib/founderMatch";
