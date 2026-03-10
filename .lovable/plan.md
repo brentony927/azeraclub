@@ -1,38 +1,52 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: 30 Novas Insígnias + Owner Desbloqueio Total + Busca por Username + Perfil Verificado
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### 1. Adicionar 30 novas insígnias — `src/lib/badges.ts`
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Expandir de 12 para 42 insígnias com critérios variados usando as cores existentes. Exemplos:
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+| Badge | Cor | Critério |
+|---|---|---|
+| `first_post` | Branco | 1º post no feed |
+| `journal_writer` | Azul | 5+ entradas no diário |
+| `streak_7` | Verde | Streak 7 dias em hábitos |
+| `streak_60` | Dourado | Streak 60 dias |
+| `ten_ventures` | Laranja | 10+ ventures |
+| `fifty_connections` | Rosa | 50+ conexões |
+| `hundred_ideas` | Roxo | 100+ ideias |
+| `investor_ready` | Amarelo | 3+ oportunidades criadas |
+| `community_leader` | Preto | 50+ posts |
+| `globe_trotter` | Azul | 5+ países em conexões |
+| ... +20 mais variações |
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 2. Owner desbloqueia TODAS — `src/components/BadgeShowcase.tsx` + `supabase/functions/calculate-badges/index.ts`
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+- No `BadgeShowcase`, se o user é site_owner (checar `founder_profiles.is_site_owner`), marcar todas as insígnias como earned
+- Na edge function `calculate-badges`, se o user for site_owner, conceder automaticamente TODAS as badges
+
+### 3. Busca por username no Feed — `src/pages/FounderFeed.tsx`
+
+A busca já filtra por `username` (linha 278). Está funcional. Verificar que o placeholder indica "Buscar por nome ou @username".
+
+### 4. Perfil preenchido com informações atualizadas — `src/pages/Profile.tsx`
+
+O perfil já carrega dados de `profiles` e `founder_profiles`. Garantir que `displayName` usa fallback do `founder_profiles.name` se `profiles.display_name` estiver vazio.
+
+### 5. Insígnia "Verificado" visível para o criador — `src/pages/FounderProfile.tsx` + edge function
+
+- Na edge function, se `is_site_owner = true`, conceder `verified_founder` automaticamente
+- No `FounderProfile.tsx`, o ícone de verificação já aparece quando `is_verified = true`
+
+### 6. Todas as insígnias no banco de dados
+
+- A tabela `user_badges` já existe. As insígnias são inseridas automaticamente pela edge function
+- Atualizar a edge function para suportar os 30 novos critérios
+
+### Ficheiros a editar
+- `src/lib/badges.ts` (adicionar 30 insígnias)
+- `src/components/BadgeShowcase.tsx` (owner = todas desbloqueadas)
+- `supabase/functions/calculate-badges/index.ts` (30 novos critérios + owner = all)
+- `src/pages/FounderFeed.tsx` (placeholder do search)
+- `src/pages/Profile.tsx` (fallback nome do founder_profiles)
+
