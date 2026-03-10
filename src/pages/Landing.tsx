@@ -74,7 +74,7 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="flex items-center justify-center gap-3"
           >
-            <img src={azeraLogo} alt="AZERA" className="w-10 h-10 rounded-xl object-contain" />
+            <img src={azeraLogo} alt="AZERA" className="w-10 h-10 rounded-xl object-contain" width={40} height={40} fetchPriority="high" />
             <span className="font-serif font-bold text-xl moss-text tracking-widest uppercase">
               AZERA
             </span>
