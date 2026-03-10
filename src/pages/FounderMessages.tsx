@@ -284,7 +284,7 @@ export default function FounderMessages() {
                   <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
                 </Button>
               </div>
-              <GroupChat groupId={selectedGroup.id} groupName={selectedGroup.name} />
+              <GroupChat groupId={selectedGroup.id} groupName={selectedGroup.name} ownerUserId={ownerUserId || undefined} />
             </>
           ) : selectedUser ? (
             <>
