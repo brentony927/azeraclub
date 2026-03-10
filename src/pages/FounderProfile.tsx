@@ -225,7 +225,7 @@ export default function FounderProfile() {
       <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
         <CardContent className="p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-primary/20">
+            <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
               ) : (
