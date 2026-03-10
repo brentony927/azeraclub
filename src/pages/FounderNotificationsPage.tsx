@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   Bell, UserPlus, MessageCircle, Eye, Briefcase, Sparkles,
   Lightbulb, Rocket, TrendingUp, Users, FileText, Trophy, BarChart3, Loader2,
-  Check, X,
+  Check, X, Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
