@@ -1,52 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Cache React Query + Lazy Loading
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Diagnóstico
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-1. **Sem cache global** — `QueryClient` é criado sem `defaultOptions`. Cada query refaz fetch ao montar o componente (staleTime = 0 por defeito).
-2. **Dashboard (Index.tsx) usa `useState` + `useEffect`** para 4 queries diretas ao Supabase, sem qualquer cache — cada visita ao dashboard = 4 requests.
-3. **Hooks existentes (`useUserData.ts`)** já usam `useQuery` mas sem `staleTime` — dados ficam stale imediatamente.
-4. **Imagens sem lazy loading** — avatares em FounderCard, FounderPostCard, FounderProfile, GlobalFounderMap, AppSidebar não têm `loading="lazy"`. Só Experiences/Travel/Properties têm.
-5. **Componentes pesados** como `GlobalFounderMap` (Leaflet), `VentureBuilder`, e `FounderFeed` carregam tudo de uma vez sem skeleton/suspense interno.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-### Correções
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**1. `src/App.tsx` — Cache global no QueryClient**
-- Configurar `defaultOptions.queries.staleTime: 2 * 60 * 1000` (2 min)
-- `gcTime: 5 * 60 * 1000` (5 min garbage collection)
-- `refetchOnWindowFocus: false` (evitar refetch desnecessário ao alt-tab)
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**2. `src/hooks/useUserData.ts` — staleTime por hook**
-- Adicionar `staleTime: 3 * 60 * 1000` em cada query (dados pessoais mudam pouco)
-
-**3. `src/hooks/useDashboardData.ts` — Novo ficheiro, migrar Index.tsx para React Query**
-- Criar hooks: `useTodayTasks`, `useWeekTasks`, `useUpcomingEvents`, `useDashboardNotifications`
-- Cada um com `staleTime: 60_000` (1 min, dashboard deve ser mais fresco)
-- Index.tsx deixa de usar `useState`/`useEffect` para fetch, usa os hooks
-
-**4. `src/pages/Index.tsx` — Consumir novos hooks**
-- Substituir os 4 `useEffect` fetches pelos hooks de `useDashboardData`
-- Manter mutations (toggleTask, deleteNotification) com `invalidateQueries`
-
-**5. Lazy loading em imagens — Adicionar `loading="lazy"` em:**
-- `src/components/FounderCard.tsx` — avatar img
-- `src/components/FounderPostCard.tsx` — avatar img + comment avatars
-- `src/pages/FounderProfile.tsx` — avatar img
-- `src/pages/GlobalFounderMap.tsx` — avatar imgs no popup/marker
-- `src/components/AppSidebar.tsx` — avatar img
-
-**6. `src/components/FounderCard.tsx` — Otimizar re-renders**
-- Envolver com `React.memo` (recebe muitas props, renderizado em lista)
-
-### Ficheiros a editar
-- `src/App.tsx`
-- `src/hooks/useUserData.ts`
-- `src/hooks/useDashboardData.ts` (novo)
-- `src/pages/Index.tsx`
-- `src/components/FounderCard.tsx`
-- `src/components/FounderPostCard.tsx`
-- `src/pages/FounderProfile.tsx`
-- `src/pages/GlobalFounderMap.tsx`
-- `src/components/AppSidebar.tsx`
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

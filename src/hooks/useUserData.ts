@@ -15,6 +15,7 @@ export function useExperiences() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }
@@ -31,6 +32,7 @@ export function useTrips() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }
@@ -47,6 +49,7 @@ export function useProperties() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }
@@ -63,6 +66,7 @@ export function useSocialEvents() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }
@@ -79,6 +83,7 @@ export function useHealthAppointments() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }

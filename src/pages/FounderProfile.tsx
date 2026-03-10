@@ -226,7 +226,7 @@ export default function FounderProfile() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-primary/20">
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" />
+                <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
               ) : (
                 <span className="text-2xl font-bold text-foreground">{initials}</span>
               )}

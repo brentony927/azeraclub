@@ -87,7 +87,15 @@ const FounderNotificationsPage = lazy(() => import("./pages/FounderNotifications
 const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
 const HowToUse = lazy(() => import("./pages/HowToUse"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 2 * 60 * 1000,
+      gcTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

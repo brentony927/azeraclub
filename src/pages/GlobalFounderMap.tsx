@@ -502,7 +502,7 @@ function FounderPopupCard({ founder, tier, connectionStatus, onConnect, onViewPr
           tier === "business" ? "border-amber-500" : tier === "pro" ? "border-emerald-500" : "border-border"
         }`}>
           {founder.avatar_url ? (
-            <img src={founder.avatar_url} alt={founder.name} className="w-full h-full object-cover" />
+            <img src={founder.avatar_url} alt={founder.name} className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center text-xs font-bold">
               {founder.name.charAt(0)}

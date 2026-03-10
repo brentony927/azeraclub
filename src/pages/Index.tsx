@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -17,36 +17,19 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { format, startOfWeek, endOfWeek, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { toast } from "sonner";
 import OnboardingTutorial from "@/components/OnboardingTutorial";
-
-interface Task {
-  id: string;
-  title: string;
-  time: string | null;
-  type: string;
-  status: string;
-  date: string | null;
-}
-
-interface SocialEvent {
-  id: string;
-  title: string;
-  date: string | null;
-  location: string | null;
-}
-
-interface Notification {
-  id: string;
-  title: string;
-  body: string | null;
-  type: string;
-  read: boolean;
-  created_at: string;
-  action_url: string | null;
-}
+import {
+  useTodayTasks,
+  useWeekTasks,
+  useUpcomingEvents,
+  useDashboardNotifications,
+  useToggleTask,
+  useDeleteNotification,
+  useDeleteAllNotifications,
+  useMarkNotificationRead,
+} from "@/hooks/useDashboardData";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -77,13 +60,19 @@ const DAILY_INSIGHTS = [
 export default function Index() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [todayTasks, setTodayTasks] = useState<Task[]>([]);
-  const [weekTasks, setWeekTasks] = useState<Task[]>([]);
-  const [upcomingEvents, setUpcomingEvents] = useState<SocialEvent[]>([]);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [aiTip] = useState(() => AI_TIPS[Math.floor(Math.random() * AI_TIPS.length)]);
   const [insight] = useState(() => DAILY_INSIGHTS[Math.floor(Math.random() * DAILY_INSIGHTS.length)]);
   const [showTutorial, setShowTutorial] = useState(false);
+
+  const { data: todayTasks = [] } = useTodayTasks();
+  const { data: weekTasks = [] } = useWeekTasks();
+  const { data: upcomingEvents = [] } = useUpcomingEvents();
+  const { data: notifications = [] } = useDashboardNotifications();
+
+  const toggleTaskMutation = useToggleTask();
+  const deleteNotifMutation = useDeleteNotification();
+  const deleteAllNotifMutation = useDeleteAllNotifications();
+  const markReadMutation = useMarkNotificationRead();
 
   useEffect(() => {
     if (!user) return;
@@ -104,65 +93,16 @@ export default function Index() {
     user?.email?.split("@")[0] ||
     "Usuário";
 
-  const today = format(new Date(), "yyyy-MM-dd");
-  const weekStart = format(startOfWeek(new Date(), { weekStartsOn: 1 }), "yyyy-MM-dd");
-  const weekEnd = format(endOfWeek(new Date(), { weekStartsOn: 1 }), "yyyy-MM-dd");
-
-  useEffect(() => {
-    if (!user) return;
-
-    supabase.from("tasks").select("*").eq("user_id", user.id).eq("date", today)
-      .order("time", { ascending: true, nullsFirst: false })
-      .then(({ data }) => { if (data) setTodayTasks(data as Task[]); });
-
-    supabase.from("tasks").select("*").eq("user_id", user.id)
-      .gte("date", weekStart).lte("date", weekEnd)
-      .then(({ data }) => { if (data) setWeekTasks(data as Task[]); });
-
-    supabase.from("social_events").select("*").eq("user_id", user.id)
-      .gte("date", today).order("date", { ascending: true }).limit(3)
-      .then(({ data }) => { if (data) setUpcomingEvents(data as SocialEvent[]); });
-
-    supabase.from("founder_notifications").select("*").eq("user_id", user.id)
-      .order("created_at", { ascending: false }).limit(20)
-      .then(({ data }) => { if (data) setNotifications(data as Notification[]); });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  const toggleTask = async (task: Task) => {
-    const newStatus = task.status === "done" ? "pending" : "done";
-    await supabase.from("tasks").update({ status: newStatus }).eq("id", task.id);
-    setTodayTasks((prev) => prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)));
-    setWeekTasks((prev) => prev.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)));
-  };
-
-  const deleteNotification = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    await supabase.from("founder_notifications").delete().eq("id", id);
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-    toast.success("Notificação removida");
-  };
-
-  const deleteAllNotifications = async () => {
-    if (!user) return;
-    await supabase.from("founder_notifications").delete().eq("user_id", user.id);
-    setNotifications([]);
-    toast.success("Todas as notificações removidas");
-  };
-
-  const handleNotificationClick = async (n: Notification) => {
-    if (!n.read) {
-      await supabase.from("founder_notifications").update({ read: true }).eq("id", n.id);
-      setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
-    }
+  const handleNotificationClick = (n: any) => {
+    if (!n.read) markReadMutation.mutate(n.id);
     if (n.action_url) navigate(n.action_url);
   };
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
-  const pendingCount = todayTasks.filter((t) => t.status === "pending").length;
-  const doneCount = todayTasks.filter((t) => t.status === "done").length;
+  const unreadCount = notifications.filter((n: any) => !n.read).length;
+  const pendingCount = todayTasks.filter((t: any) => t.status === "pending").length;
+  const doneCount = todayTasks.filter((t: any) => t.status === "done").length;
 
-  const weekDone = weekTasks.filter((t) => t.status === "done").length;
+  const weekDone = weekTasks.filter((t: any) => t.status === "done").length;
   const weekTotal = weekTasks.length;
   const score = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
 
@@ -199,7 +139,7 @@ export default function Index() {
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-sm font-semibold">Notificações</span>
                 {notifications.length > 0 && (
-                  <button onClick={deleteAllNotifications} className="text-xs text-destructive hover:underline">
+                  <button onClick={() => deleteAllNotifMutation.mutate()} className="text-xs text-destructive hover:underline">
                     Apagar todas
                   </button>
                 )}
@@ -210,7 +150,7 @@ export default function Index() {
                   Nenhuma notificação
                 </div>
               ) : (
-                notifications.map((n) => (
+                notifications.map((n: any) => (
                   <DropdownMenuItem
                     key={n.id}
                     className="flex items-start gap-3 px-3 py-2.5 cursor-pointer"
@@ -229,7 +169,7 @@ export default function Index() {
                       </p>
                     </div>
                     <button
-                      onClick={(e) => deleteNotification(n.id, e)}
+                      onClick={(e) => { e.stopPropagation(); deleteNotifMutation.mutate(n.id); }}
                       className="shrink-0 p-1 text-muted-foreground hover:text-destructive transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -254,7 +194,6 @@ export default function Index() {
 
       {/* Quick Actions — Asymmetric Grid */}
       <motion.div variants={item} className="grid grid-cols-4 gap-2.5 md:gap-3">
-        {/* Featured AI card — spans 2 cols on mobile */}
         <Card
           className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.01] transition-all group col-span-2 md:col-span-1"
           onClick={() => navigate("/ia")}
@@ -357,14 +296,14 @@ export default function Index() {
           </Card>
         ) : (
           <div className="space-y-1.5">
-            {todayTasks.map((t) => (
+            {todayTasks.map((t: any) => (
               <Card key={t.id} className={`glass-card border-border/10 transition-all group ${t.status === "done" ? "opacity-40" : "hover:border-primary/15"}`}>
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className={`w-1 h-7 rounded-full shrink-0 ${
                     t.type === "meeting" ? "bg-blue-500/50" : 
                     t.type === "health" ? "bg-red-500/50" : "bg-primary/25"
                   }`} />
-                  <Checkbox checked={t.status === "done"} onCheckedChange={() => toggleTask(t)} />
+                  <Checkbox checked={t.status === "done"} onCheckedChange={() => toggleTaskMutation.mutate({ id: t.id, currentStatus: t.status })} />
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm ${t.status === "done" ? "line-through text-muted-foreground/50" : "font-medium"}`}>{t.title}</p>
                   </div>
@@ -391,7 +330,7 @@ export default function Index() {
           </Card>
         ) : (
           <div className="space-y-1.5">
-            {upcomingEvents.map((ev) => (
+            {upcomingEvents.map((ev: any) => (
               <Card key={ev.id} className="glass-card border-border/10 hover:border-primary/15 transition-all">
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">

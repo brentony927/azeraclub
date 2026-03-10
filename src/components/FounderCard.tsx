@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { MapPin, Eye, UserPlus, Sparkles } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ interface FounderCardProps {
   founderLevel?: string | null;
 }
 
-export default function FounderCard({
+const FounderCard = memo(function FounderCard({
   id, userId, name, avatarUrl, skills, lookingFor, country, building,
   commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username, founderLevel,
 }: FounderCardProps) {
@@ -98,7 +98,7 @@ export default function FounderCard({
             }`}
           >
             {avatarUrl ? (
-              <img src={avatarUrl} alt={name} className="w-12 h-12 rounded-full object-cover" />
+              <img src={avatarUrl} alt={name} className="w-12 h-12 rounded-full object-cover" loading="lazy" />
             ) : (
               <span className="text-sm font-bold text-foreground">{initials}</span>
             )}
@@ -166,4 +166,6 @@ export default function FounderCard({
       </CardContent>
     </Card>
   );
-}
+});
+
+export default FounderCard;
