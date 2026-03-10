@@ -98,7 +98,7 @@ export default function FounderCard({
             }`}
           >
             {avatarUrl ? (
-              <img src={avatarUrl} alt={name} className="w-12 h-12 rounded-full object-cover" />
+              <img src={avatarUrl} alt={name} className="w-12 h-12 rounded-full object-cover" loading="lazy" />
             ) : (
               <span className="text-sm font-bold text-foreground">{initials}</span>
             )}
