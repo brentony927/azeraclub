@@ -28,7 +28,7 @@ export default function TrendsRadar() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "trends-radar",
           newsContext: true,
           newsQuery: topic,
           messages: [

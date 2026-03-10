@@ -54,7 +54,7 @@ export default function ProjectOrganizer() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "project-organizer",
           messages: [
             { role: "system", content: `You are a project management expert. Organize this project into phases, tasks, and timeline.
 

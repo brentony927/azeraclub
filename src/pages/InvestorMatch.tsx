@@ -30,7 +30,7 @@ export default function InvestorMatch() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "investor-match",
           messages: [
             { role: "system", content: `You are a startup fundraising advisor. Based on the startup profile, identify investor types, investment stages, and suggest how to approach each type.
 

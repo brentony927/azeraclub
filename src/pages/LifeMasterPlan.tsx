@@ -30,7 +30,7 @@ export default function LifeMasterPlan() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "life-master-plan",
           messages: [
             { role: "system", content: `You are a life strategist. Create a comprehensive long-term life plan connecting 1-year, 5-year, and 10-year goals.
 

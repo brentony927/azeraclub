@@ -33,7 +33,7 @@ export default function DailyFocus() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "daily-focus",
           messages: [
             { role: "system", content: `You are a productivity coach. Based on the user's current tasks and goals, identify the TOP 3 priorities for today. Explain why each is important and suggest a time-blocked schedule.
 

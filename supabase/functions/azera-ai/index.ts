@@ -414,7 +414,7 @@ serve(async (req) => {
     const userId = userData.user.id;
     const userEmail = userData.user.email ?? "";
     const body = await req.json();
-    const { messages, requireTier, newsContext, newsQuery, includeContext, extractMemories, conversation, conversationId } = body;
+    const { messages, featureId, newsContext, newsQuery, includeContext, extractMemories, conversation, conversationId } = body;
 
     // --- MEMORY EXTRACTION ENDPOINT ---
     if (extractMemories && conversation) {
@@ -424,10 +424,37 @@ serve(async (req) => {
       });
     }
 
+    // --- SERVER-SIDE FEATURE TIER MAP (prevents client-side bypass) ---
+    const FEATURE_TIERS: Record<string, string> = {
+      "ai-advisor": "business",
+      "investment-radar": "business",
+      "life-master-plan": "business",
+      "opportunity-alerts": "business",
+      "strategic-partners": "business",
+      "wealth-planner": "business",
+      "elite-library": "business",
+      "life-simulation": "business",
+      "investor-match": "business",
+      "skill-growth": "pro",
+      "weekly-review": "pro",
+      "trends-radar": "pro",
+      "content-strategy": "pro",
+      "opportunity-radar": "pro",
+      "productivity-insights": "pro",
+      "goal-breakdown": "pro",
+      "project-organizer": "pro",
+      "daily-focus": "pro",
+      "weekly-report": "pro",
+      "trend-scanner": "pro",
+      "venture-chat": "pro",
+      "startup-rankings": "pro",
+    };
+
     // --- SUBSCRIPTION CHECK ---
     const plan = await getUserPlan(userId, userEmail);
 
-    if (requireTier && tierIndex(plan) < tierIndex(requireTier)) {
+    const requiredTier = featureId ? FEATURE_TIERS[featureId] : null;
+    if (requiredTier && tierIndex(plan) < tierIndex(requiredTier)) {
       return new Response(JSON.stringify({ error: "Upgrade required to access this feature." }), {
         status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

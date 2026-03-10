@@ -32,7 +32,7 @@ export default function SkillGrowth() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "pro",
+          featureId: "skill-growth",
           messages: [
             { role: "system", content: `You are a skill development coach. Create a detailed weekly learning plan for the skill the user wants to develop. Structure it in weeks (Week 1, Week 2, etc.) with specific daily activities, resources, and milestones. Plan should cover 4-8 weeks.
 

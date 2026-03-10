@@ -28,7 +28,7 @@ export default function InvestmentRadar() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "investment-radar",
           newsContext: true, newsQuery: `investment opportunities ${sector}`,
           messages: [
             { role: "system", content: `You are an elite investment analyst. Scan current opportunities in the ${sector} sector.

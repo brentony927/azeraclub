@@ -28,7 +28,7 @@ export default function AIAdvisor() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          requireTier: "business",
+          featureId: "ai-advisor",
           messages: [
             { role: "system", content: `You are a world-class strategic advisor with expertise in business, investments, leadership, and life planning. Provide deep, nuanced analysis with frameworks, pros/cons, and actionable next steps.
 
