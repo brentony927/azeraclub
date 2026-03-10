@@ -30,6 +30,8 @@ interface FounderChatProps {
   otherUserName: string;
   onBlock?: (userId: string) => void;
   onDeleteConversation?: (userId: string) => void;
+  isOtherOwner?: boolean;
+  isMeOwner?: boolean;
 }
 
 const WEEKLY_LIMIT = 10;
