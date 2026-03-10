@@ -119,9 +119,60 @@ export default function TermsOfService() {
             </div>
           </section>
 
-          {/* 7 — Propriedade Intelectual */}
+          {/* 7 — Conteúdo Gerado por Utilizadores */}
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">7. Propriedade Intelectual</h2>
+            <h2 className="text-lg font-serif font-semibold">7. Conteúdo Gerado por Utilizadores</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Todo o conteúdo publicado pelos utilizadores — incluindo publicações, fotografias, comentários, partilhas e qualquer outro material — é da exclusiva responsabilidade de quem o publica.
+            </p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>O AZERA CLUB não modera, verifica nem aprova previamente o conteúdo publicado</li>
+              <li>Os utilizadores são os únicos responsáveis pela veracidade e legalidade do que publicam</li>
+              <li>A plataforma reserva-se o direito de remover conteúdo que viole estes termos ou as Diretrizes da Comunidade</li>
+            </ul>
+          </section>
+
+          {/* 8 — Conversas e Grupos */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">8. Conversas e Grupos</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              As comunicações entre utilizadores — incluindo conversas privadas, mensagens em grupos e qualquer troca de informações — são da inteira responsabilidade das partes envolvidas.
+            </p>
+            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                O AZERA CLUB não monitoriza, lê nem se responsabiliza pelo conteúdo das conversas entre utilizadores. Qualquer acordo, negócio ou compromisso estabelecido através de conversas na plataforma é de responsabilidade exclusiva dos participantes.
+              </p>
+            </div>
+          </section>
+
+          {/* 9 — Isenção Total de Responsabilidade */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">9. Isenção Total de Responsabilidade</h2>
+            <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 space-y-3">
+              <p className="text-sm text-muted-foreground leading-relaxed font-bold">
+                O AZERA CLUB NÃO SE RESPONSABILIZA POR QUALQUER AÇÃO, INTERAÇÃO, ACORDO, PERDA, DANO OU CONSEQUÊNCIA — DIRETA OU INDIRETA — DECORRENTE DA UTILIZAÇÃO DA PLATAFORMA.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Isto inclui, sem limitação:
+              </p>
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+                <li>Conteúdo publicado por utilizadores (textos, imagens, vídeos, comentários)</li>
+                <li>Conversas privadas e em grupo entre membros</li>
+                <li>Qualquer interação, negócio ou acordo entre utilizadores</li>
+                <li>Perdas financeiras, danos materiais ou morais</li>
+                <li>Informações falsas ou enganosas publicadas por terceiros</li>
+                <li>Decisões tomadas com base em qualquer informação obtida na plataforma</li>
+                <li>Atividades realizadas fora da plataforma mas originadas através dela</li>
+              </ul>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Ao utilizar o AZERA CLUB, o utilizador reconhece e aceita que a plataforma é um meio de conexão e que toda a responsabilidade sobre as suas ações e interações recai exclusivamente sobre si.
+            </p>
+          </section>
+
+          {/* 10 — Propriedade Intelectual */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">10. Propriedade Intelectual</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">Todo o conteúdo da plataforma pertence ao AZERA CLUB, incluindo:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
               <li>Marca e identidade visual</li>
