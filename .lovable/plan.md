@@ -1,38 +1,90 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Sistema de Insígnias Colecionáveis
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### Visão Geral
+Sistema de insígnias (badges) que os usuários conquistam automaticamente com base em progresso, projetos concluídos, atividade e plano de assinatura. As insígnias têm cores temáticas e são exibidas no perfil do founder.
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+### 1. Migração SQL — Tabela `user_badges`
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+Criar tabela para armazenar insígnias conquistadas:
+```sql
+CREATE TABLE public.user_badges (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  badge_key TEXT NOT NULL,
+  earned_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(user_id, badge_key)
+);
+ALTER TABLE public.user_badges ENABLE ROW LEVEL SECURITY;
+-- SELECT: qualquer autenticado pode ver (para exibir no perfil de outros)
+-- INSERT/UPDATE/DELETE: apenas service_role (sistema concede automaticamente)
+```
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 2. Definição das Insígnias — `src/lib/badges.ts`
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+Arquivo com todas as insígnias, suas cores, ícones e critérios:
+
+| Badge Key | Nome | Cor | Critério |
+|---|---|---|---|
+| `first_venture` | Primeiro Venture | Branco | Criar 1 venture |
+| `networker` | Networker | Preto | 5+ conexões aceitas |
+| `builder` | Builder | Verde | 3+ projetos criados |
+| `goal_crusher` | Esmagador de Metas | Amarelo | 5+ objetivos concluídos |
+| `idea_machine` | Máquina de Ideias | Azul | 10+ ideias no cofre |
+| `challenger` | Desafiante | Laranja | 3+ desafios concluídos |
+| `social_butterfly` | Borboleta Social | Rosa | 10+ posts no feed |
+| `habit_master` | Mestre dos Hábitos | Roxo | Streak 30+ em hábitos |
+| `elite_achiever` | Elite Achiever | Dourado Metálico | Score 80+ |
+| `trusted_pro` | Confiança Pro | Verde (gradiente) | Plano PRO ativo |
+| `trusted_business` | Confiança Business | Dourado (gradiente) | Plano BUSINESS ativo |
+| `verified_founder` | Fundador Verificado | Branco/Prata | Perfil verificado |
+
+Cores com estilos CSS distintos (dourado metálico com shimmer para `elite_achiever`, gradientes para planos).
+
+### 3. Edge Function — `calculate-badges`
+
+Nova edge function que:
+1. Consulta contagens do usuário (ventures, conexões, projetos, objetivos concluídos, ideias, desafios concluídos, posts, hábitos, score, plano)
+2. Compara com critérios de cada insígnia
+3. Insere novas insígnias conquistadas em `user_badges` (ON CONFLICT DO NOTHING)
+4. Retorna lista completa de insígnias do usuário
+
+Chamada automaticamente junto com `calculate-founder-score`.
+
+### 4. Componente — `src/components/BadgeShowcase.tsx`
+
+Componente reutilizável que:
+- Recebe `userId` e busca insígnias de `user_badges`
+- Exibe em grid com ícones estilizados por cor
+- Insígnias não conquistadas ficam em cinza/bloqueadas (apenas no próprio perfil)
+- Insígnias de plano (Pro/Business) têm shimmer animado
+- Insígnia dourada metálica tem animação de brilho
+
+### 5. Integração nos Perfis
+
+**`src/pages/FounderProfile.tsx`**: Seção "Insígnias" após o Founder Score, mostrando apenas as conquistadas.
+
+**`src/pages/Profile.tsx`**: Seção "Minhas Insígnias" com todas (conquistadas brilhantes, não conquistadas em cinza com dica do critério).
+
+### 6. CSS — `src/index.css`
+
+Classes para cada cor de insígnia:
+- `.badge-white`, `.badge-black`, `.badge-green`, `.badge-yellow`, `.badge-blue`, `.badge-orange`, `.badge-pink`, `.badge-purple`
+- `.badge-gold-metallic` com gradiente metálico + shimmer animation
+- `.badge-trust-pro` / `.badge-trust-business` com gradiente de confiança
+
+### 7. Pricing — Adicionar menção às insígnias
+
+Atualizar `includes` dos planos Pro e Business em `src/pages/Pricing.tsx` para mencionar "Insígnia de Confiança Pro/Business".
+
+### Ficheiros a criar/editar
+- Nova migração SQL (tabela `user_badges`)
+- `supabase/functions/calculate-badges/index.ts` (edge function)
+- `src/lib/badges.ts` (definições)
+- `src/components/BadgeShowcase.tsx` (componente)
+- `src/index.css` (estilos das insígnias)
+- `src/pages/FounderProfile.tsx` (integração)
+- `src/pages/Profile.tsx` (integração)
+- `src/pages/Pricing.tsx` (menção nos planos)
+
