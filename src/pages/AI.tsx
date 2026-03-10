@@ -250,7 +250,7 @@ export default function AI() {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
+    <div className="flex h-[calc(100dvh-3.5rem)] pb-16 md:pb-0 overflow-hidden">
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (

@@ -217,7 +217,7 @@ export default function FounderMessages() {
         <MessageGroupDialog onGroupCreated={() => window.location.reload()} connections={connectedUsers} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[70vh]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100dvh-14rem)] md:h-[70vh]">
         {/* Sidebar */}
         <Card className={`border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden flex flex-col ${showChatOnMobile ? "hidden md:flex" : ""}`}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">

@@ -193,7 +193,7 @@ export default function Index() {
       </motion.div>
 
       {/* Quick Actions — Asymmetric Grid */}
-      <motion.div variants={item} className="grid grid-cols-4 gap-2.5 md:gap-3">
+      <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 md:gap-3">
         <Card
           className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.01] transition-all group col-span-2 md:col-span-1"
           onClick={() => navigate("/ia")}

@@ -127,7 +127,7 @@ export default function Agenda() {
       {/* Header */}
       <motion.div variants={item} className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-serif font-bold">Agenda</h1>
+          <h1 className="text-2xl md:text-3xl font-serif font-bold">Agenda</h1>
           <p className="text-muted-foreground text-sm mt-1">Tarefas, eventos e metas</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
