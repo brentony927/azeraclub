@@ -246,6 +246,35 @@ export default function Index() {
         </div>
       </motion.div>
 
+      {/* Quick Actions Bento Grid */}
+      <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { icon: Brain, label: "AZERA IA", desc: "Conversar", url: "/ia", accent: "bg-primary/10" },
+          { icon: CalendarDays, label: "Agenda", desc: "Planear o dia", url: "/agenda", accent: "bg-primary/10" },
+          { icon: Users, label: "Founders", desc: "Networking", url: "/founder-match", accent: "bg-primary/10" },
+          { icon: Radar, label: "Radar", desc: "Oportunidades", url: "/radar-oportunidades", accent: "bg-primary/10" },
+        ].map((action) => (
+          <Card
+            key={action.label}
+            className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.02] transition-all group"
+            onClick={() => navigate(action.url)}
+          >
+            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+              <div className={`w-12 h-12 rounded-xl ${action.accent} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <action.icon className="h-6 w-6 text-primary" />
+              </div>
+              <p className="text-sm font-semibold">{action.label}</p>
+              <p className="text-[10px] text-muted-foreground">{action.desc}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </motion.div>
+
+      {/* Activity Ticker */}
+      <motion.div variants={item} className="rounded-xl overflow-hidden border border-border/20">
+        <ActivityTicker />
+      </motion.div>
+
       {/* AZERA Score + AI Tip row */}
       <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Card className="gradient-border overflow-hidden">
