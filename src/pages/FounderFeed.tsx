@@ -360,10 +360,10 @@ export default function FounderFeed() {
           <div className="flex items-center gap-2">
             <FounderNotifications />
             <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
-              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Atualizar
+              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} /> <span className="hidden sm:inline">Atualizar</span>
             </Button>
             <Button variant={showFilters ? "default" : "outline"} size="sm" onClick={() => setShowFilters(!showFilters)}>
-              <Filter className="h-4 w-4 mr-1" /> Filtros
+              <Filter className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Filtros</span>
             </Button>
           </div>
         </div>
@@ -429,7 +429,7 @@ export default function FounderFeed() {
 
         {/* Tabs: Posts / Founders */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="posts">Publicações</TabsTrigger>
             <TabsTrigger value="my-posts">Minhas</TabsTrigger>
             <TabsTrigger value="founders">Founders</TabsTrigger>

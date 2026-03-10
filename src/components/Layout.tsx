@@ -78,7 +78,7 @@ export default function Layout() {
                   <ArrowLeft className="w-4 h-4" />
                 </button>
               )}
-              <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" />
+              <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] hidden md:flex items-center justify-center" />
             </div>
             <div className="flex items-center gap-1">
               <CommandPalette />
