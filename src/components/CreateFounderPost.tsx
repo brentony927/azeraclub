@@ -122,7 +122,7 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
 
     setContent(prev => prev ? `${prev}\n\n${formatted}` : formatted);
     setToolDialog(null);
-    toast({ title: `${cfg.label} adicionado ao post! ✨` });
+    toast({ title: `${cfg.label} adicionado ao post!` });
   };
 
   const handleSubmit = async () => {
