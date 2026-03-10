@@ -111,13 +111,13 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
     let formatted = "";
 
     if (toolDialog === "journal") {
-      formatted = `${cfg.emoji} **Do meu Diário:**\n\n${item.extra || item.title}${item.description ? `\n\n${item.description}` : ""}`;
+      formatted = `${cfg.tag} **Do meu Diário:**\n\n${item.extra || item.title}${item.description ? `\n\n${item.description}` : ""}`;
     } else if (toolDialog === "ideas") {
-      formatted = `${cfg.emoji} **Ideia: ${item.title}**${item.description ? `\n\n${item.description}` : ""}${item.extra ? `\n\n📂 Categoria: ${item.extra}` : ""}`;
+      formatted = `${cfg.tag} **Ideia: ${item.title}**${item.description ? `\n\n${item.description}` : ""}${item.extra ? `\n\nCategoria: ${item.extra}` : ""}`;
     } else if (toolDialog === "objectives") {
-      formatted = `${cfg.emoji} **Objetivo: ${item.title}**\n\n📊 ${item.description || ""}${item.extra ? `\n📂 ${item.extra}` : ""}`;
+      formatted = `${cfg.tag} **Objetivo: ${item.title}**\n\n${item.description || ""}${item.extra ? `\n${item.extra}` : ""}`;
     } else if (toolDialog === "challenges") {
-      formatted = `${cfg.emoji} **Desafio: ${item.title}**\n\n⏱️ ${item.description || ""}`;
+      formatted = `${cfg.tag} **Desafio: ${item.title}**\n\n${item.description || ""}`;
     }
 
     setContent(prev => prev ? `${prev}\n\n${formatted}` : formatted);
