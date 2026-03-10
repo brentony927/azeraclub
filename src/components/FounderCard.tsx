@@ -24,6 +24,7 @@ interface FounderCardProps {
   matchScore?: number;
   username?: string | null;
   founderLevel?: string | null;
+  isSiteOwner?: boolean;
 }
 
 const FounderCard = memo(function FounderCard({
