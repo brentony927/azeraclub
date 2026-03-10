@@ -44,8 +44,8 @@ export default function GroupChat({ groupId, groupName }: Props) {
       supabase.from("message_group_members" as any).select("*").eq("group_id", groupId),
     ]);
 
-    const msgs = (msgsRes.data || []) as GroupMessage[];
-    const mems = (membersRes.data || []) as GroupMember[];
+    const msgs = (msgsRes.data || []) as unknown as GroupMessage[];
+    const mems = (membersRes.data || []) as unknown as GroupMember[];
     setMessages(msgs);
     setMembers(mems);
 
