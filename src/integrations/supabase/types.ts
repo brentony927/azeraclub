@@ -311,6 +311,7 @@ export type Database = {
           created_at: string
           from_user_id: string
           id: string
+          opportunity_id: string | null
           read: boolean | null
           to_user_id: string
         }
@@ -319,6 +320,7 @@ export type Database = {
           created_at?: string
           from_user_id: string
           id?: string
+          opportunity_id?: string | null
           read?: boolean | null
           to_user_id: string
         }
@@ -327,10 +329,19 @@ export type Database = {
           created_at?: string
           from_user_id?: string
           id?: string
+          opportunity_id?: string | null
           read?: boolean | null
           to_user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "founder_messages_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "founder_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       founder_notifications: {
         Row: {
@@ -403,6 +414,91 @@ export type Database = {
           media_urls?: string[] | null
           project?: string | null
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      founder_post_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "founder_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      founder_post_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "founder_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      founder_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          media_urls: string[] | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          media_urls?: string[] | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          media_urls?: string[] | null
           user_id?: string
         }
         Relationships: []
@@ -550,6 +646,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      group_messages: {
+        Row: {
+          content: string
+          created_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "message_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       habits: {
         Row: {
@@ -731,6 +859,68 @@ export type Database = {
         }
         Relationships: []
       }
+      message_group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "message_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          photo_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          photo_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          photo_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       objectives: {
         Row: {
           category: string | null
@@ -793,6 +983,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      pinned_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          pinned_group_id: string | null
+          pinned_user_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pinned_group_id?: string | null
+          pinned_user_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pinned_group_id?: string | null
+          pinned_user_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pinned_conversations_pinned_group_id_fkey"
+            columns: ["pinned_group_id"]
+            isOneToOne: false
+            referencedRelation: "message_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profile_visits: {
         Row: {
