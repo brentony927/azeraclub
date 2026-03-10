@@ -106,7 +106,7 @@ const FounderCard = memo(function FounderCard({
         <div className="flex items-start gap-4">
           <div 
             className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${
-              isSiteOwner ? "ring-2 ring-[hsl(0,100%,50%)] owner-avatar-ring" : isHighlighted ? "ring-2 ring-[hsl(51,100%,50%)]/50 shadow-[0_0_14px_hsl(51,100%,50%,0.3)]" : "bg-secondary"
+              isSiteOwner ? "ring-3 ring-[hsl(0,100%,50%)] owner-avatar-ring" : isHighlighted ? "ring-2 ring-[hsl(51,100%,50%)]/50 shadow-[0_0_14px_hsl(51,100%,50%,0.3)]" : "bg-secondary"
             }`}
           >
             {avatarUrl ? (
@@ -117,7 +117,7 @@ const FounderCard = memo(function FounderCard({
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-foreground truncate">{name}</h3>
+              <h3 className={`font-semibold truncate ${isSiteOwner ? "owner-card-name" : "text-foreground"}`}>{name}</h3>
               {founderLevel && (
                 <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0">{founderLevel}</Badge>
               )}
@@ -135,7 +135,7 @@ const FounderCard = memo(function FounderCard({
         {skills.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3">
             {skills.slice(0, 4).map(skill => (
-              <Badge key={skill} variant="secondary" className="text-[10px] px-2 py-0.5">{skill}</Badge>
+              <Badge key={skill} variant="secondary" className={`text-[10px] px-2 py-0.5 ${isSiteOwner ? "owner-card-skill" : ""}`}>{skill}</Badge>
             ))}
             {skills.length > 4 && (
               <Badge variant="outline" className="text-[10px] px-2 py-0.5">+{skills.length - 4}</Badge>
@@ -158,7 +158,7 @@ const FounderCard = memo(function FounderCard({
           <Button
             size="sm"
             variant="outline"
-            className="flex-1 text-xs transition-transform duration-200"
+            className={`flex-1 text-xs transition-transform duration-200 ${isSiteOwner ? "owner-card-btn" : ""}`}
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             onClick={() => navigate(`/founder-profile/${username || id}`)}
           >
@@ -166,7 +166,7 @@ const FounderCard = memo(function FounderCard({
           </Button>
           <Button
             size="sm"
-            className="flex-1 text-xs transition-transform duration-200"
+            className={`flex-1 text-xs transition-transform duration-200 ${isSiteOwner ? "owner-card-btn-primary" : ""}`}
             style={{ transform: `translate(${magnet.x}px, ${magnet.y}px)` }}
             disabled={isConnected || isPending}
             onClick={() => onConnect?.(userId)}
