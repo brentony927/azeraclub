@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ActivityTicker from "@/components/ActivityTicker";
 import {
   DropdownMenu,
   DropdownMenuContent,
