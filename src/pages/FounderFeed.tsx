@@ -45,6 +45,7 @@ interface FounderProfile {
   reputation_score: number | null;
   is_verified: boolean | null;
   username: string | null;
+  is_site_owner?: boolean;
 }
 
 interface PostData {
