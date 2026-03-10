@@ -1,38 +1,39 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Nomes nas Notificações + Badge de Conversas na Sidebar
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### 3 Mudanças
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+#### 1. Profile view → Mostrar nome/username em vez de "Alguém"
+Em `src/pages/FounderProfile.tsx` linha 107, o `sendNotification` envia `"Alguém visualizou seu perfil"`. O `myProfile` já está carregado na linha 115 com todos os campos. Mudar para:
+```
+title: `${myProfile?.name || myProfile?.username || "Alguém"} visualizou seu perfil 👀`
+```
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+#### 2. Conexão → Já usa nome mas com fallback "Alguém" — manter consistente
+- `FounderProfile.tsx` linha 169: já usa `myProfile?.name || "Alguém"` — adicionar username como fallback
+- `FounderFeed.tsx` linha 251: mesma coisa
+- `GlobalFounderMap.tsx` linha 168: mesma coisa
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+#### 3. Remover notificações de mensagem do sino + Adicionar badge de não-lidas em "Conversas" na sidebar
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**Sino (FounderNotifications.tsx + FounderNotificationsPage.tsx):**
+- Filtrar notificações de type `"message"` da lista exibida (não mostrá-las no dropdown nem na página)
+
+**Sidebar (AppSidebar.tsx):**
+- Buscar contagem de mensagens não lidas de `founder_messages` onde `to_user_id = user.id` e `read = false`
+- Escutar realtime para INSERT em `founder_messages`
+- Mostrar badge numérico ao lado de "Conversas" (estilo WhatsApp — bolinha verde com número)
+
+**FloatingNotification.tsx:**
+- Também filtrar type `"message"` para não mostrar floating notifications de mensagens
+
+### Ficheiros a editar
+- `src/pages/FounderProfile.tsx` — username na notificação de profile_view e conexão
+- `src/pages/FounderFeed.tsx` — username no fallback de conexão
+- `src/pages/GlobalFounderMap.tsx` — username no fallback de conexão
+- `src/components/AppSidebar.tsx` — badge de não-lidas no item "Conversas"
+- `src/components/FounderNotifications.tsx` — filtrar type "message"
+- `src/pages/FounderNotificationsPage.tsx` — filtrar type "message"
+- `src/components/FloatingNotification.tsx` — filtrar type "message"
+
