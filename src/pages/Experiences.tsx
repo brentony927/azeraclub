@@ -54,7 +54,7 @@ export default function Experiences() {
                   {exp.image ? (
                     <img src={exp.image} alt={exp.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-3xl">🍷</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Wine} color="red" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
                   <Badge className="absolute top-3 left-3 bg-card/60 backdrop-blur text-xs text-foreground border-border/30">{exp.category}</Badge>

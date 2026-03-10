@@ -47,7 +47,7 @@ export default function Travel() {
                   {trip.image ? (
                     <img src={trip.image} alt={trip.destination} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-4xl">✈️</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Plane} color="blue" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card/60 hidden md:block" />
                 </div>

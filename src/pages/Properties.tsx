@@ -51,7 +51,7 @@ export default function Properties() {
                   {prop.image ? (
                     <img src={prop.image} alt={prop.name} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-4xl">🏠</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Home} color="silver" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
                   <div className="absolute bottom-4 left-4">
