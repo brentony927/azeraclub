@@ -175,12 +175,13 @@ export default function Index() {
       {showTutorial && user && (
         <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
       )}
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
           {greeting.emoji} {greeting.text}, {displayName.split(" ")[0]}.
         </h1>
+        <p className="text-xs text-muted-foreground/70 italic">{greeting.motivational}</p>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
             📅 Hoje: {pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}
