@@ -36,7 +36,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-xs text-muted-foreground/40 hover:text-foreground transition-colors duration-200"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
               </Link>
