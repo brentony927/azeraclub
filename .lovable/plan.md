@@ -1,55 +1,38 @@
-## Plano: Elevar a Identidade Visual — De Genérico para Exclusivo
 
-### Diagnóstico
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Analisando o screenshot e o código, o site tem uma aparência de "SaaS template" por estes motivos:
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-- Greeting com emojis textuais (☀️, 📅) parece amador
-- Cards do bento grid são todos iguais (ícone + texto centralizado) — layout previsível
-- Falta hierarquia visual — tudo tem o mesmo peso
-- Header e footer sem personalidade
-- Ausência de texturas e profundidade — tudo é flat com blur
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### Mudanças Propostas
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**1. `src/index.css` — Textura e profundidade premium**
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-- Adicionar textura de noise/grain sutil sobre o fundo (via pseudo-element no body) para eliminar o aspecto "flat digital"
-- Refinar `.glass-card` com bordas mais finas, sombra interna mais suave e micro-brilho no topo
-- Novo estilo `.section-heading` com letter-spacing amplo e weight refinado
-- Header com gradient line sutil no bottom em vez de border sólido
-- Footer mais minimal com opacidade reduzida e espaçamento refinado
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**2. `src/pages/Index.tsx` — Dashboard premium**
-
-- Remover emojis textuais do greeting (☀️ → nada, usar apenas texto elegante)
-- Greeting em formato "Bom dia, [nome]." com subtítulo menor sem emoji
-- Quick actions: layout assimétrico — 1 card grande (IA) + 3 menores, com ícones maiores e descrições removidas
-- AZERA Score: número grande com tipografia display, sem card wrapper redundante
-- Remover card de "Sugestões" (CTA genérico)
-- Sections com label uppercase tracking-widest mais discreto
-
-**3. `src/components/Layout.tsx` — Header refinado**
-
-- Substituir border-b por gradient line (transparent → border → transparent)
-- Reduzir altura do header de h-14 para h-12 — mais compacto e elegante
-
-**4. `src/components/Footer.tsx` — Minimal e sofisticado**
-
-- Remover "Built with ♥" — não profissional
-- Layout horizontal single-line no desktop
-- Separador com · entre links legais
-
-**5. `src/components/DevelopmentBanner.tsx` — Tom profissional**
-
-- Trocar estilo vermelho agressivo por banner sutil com borda amarela/amber
-- Remover emojis (🚧, 💡)  
-- Tom mais discreto mas visível
-
-### Ficheiros a editar
-
-- `src/index.css`
-- `src/pages/Index.tsx`
-- `src/components/Layout.tsx`
-- `src/components/Footer.tsx`
-- `src/components/DevelopmentBanner.tsx`
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

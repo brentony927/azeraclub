@@ -8,7 +8,7 @@ const navLinks = [
 ];
 
 const legalLinks = [
-  { label: "Termos de Uso", href: "/terms" },
+  { label: "Termos", href: "/terms" },
   { label: "Privacidade", href: "/privacy" },
   { label: "Diretrizes", href: "/community-guidelines" },
   { label: "Pagamentos", href: "/payments-policy" },
@@ -19,45 +19,47 @@ const legalLinks = [
 export default function Footer() {
   const azeraLogo = useAzeraLogo();
   return (
-    <footer className="relative border-t border-border/20 bg-card/20 backdrop-blur-xl">
-      {/* Top gradient fade */}
-      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    <footer className="relative border-t border-transparent bg-transparent">
+      <div className="header-gradient-line" />
       
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        <div className="flex flex-col items-center gap-5">
-          <div className="flex items-center gap-3">
-            <img src={azeraLogo} alt="AZERA" className="w-8 h-8 rounded-lg object-contain" />
-            <span className="font-serif font-bold text-lg moss-text tracking-wider">AZERA CLUB</span>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Logo + Brand */}
+          <div className="flex items-center gap-2.5">
+            <img src={azeraLogo} alt="AZERA" className="w-6 h-6 rounded-md object-contain opacity-60" />
+            <span className="font-serif font-semibold text-sm text-muted-foreground/50 tracking-widest uppercase">Azera Club</span>
           </div>
-          <nav className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+
+          {/* Nav */}
+          <nav className="flex items-center gap-5">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 py-1 px-1 min-h-[44px] flex items-center relative group"
+                className="text-xs text-muted-foreground/40 hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
           </nav>
-          <nav className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
-            {legalLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="text-xs text-muted-foreground/70 hover:text-foreground transition-colors duration-300 py-1 px-1 relative group"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-px bg-primary/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-              </Link>
+
+          {/* Legal */}
+          <nav className="flex items-center gap-1 flex-wrap justify-center">
+            {legalLinks.map((link, i) => (
+              <span key={link.href} className="flex items-center">
+                <Link
+                  to={link.href}
+                  className="text-[10px] text-muted-foreground/30 hover:text-foreground transition-colors duration-200 px-1"
+                >
+                  {link.label}
+                </Link>
+                {i < legalLinks.length - 1 && <span className="text-muted-foreground/15 text-[10px]">·</span>}
+              </span>
             ))}
           </nav>
-          <p className="text-xs text-muted-foreground/60 text-center">
-            Built with ♥ for ambitious minds
-          </p>
-          <p className="text-xs text-muted-foreground text-center">© 2026 Azera Club. Todos os direitos reservados.</p>
         </div>
+
+        <p className="text-[10px] text-muted-foreground/25 text-center mt-4">© 2026 Azera Club</p>
       </div>
     </footer>
   );
