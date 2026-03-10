@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plane, Hotel, MapPin, Plus } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTrips } from "@/hooks/useUserData";
