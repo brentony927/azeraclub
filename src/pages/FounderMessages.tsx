@@ -57,8 +57,8 @@ export default function FounderMessages() {
     if (!user) return;
     const fetchData = async () => {
       // Fetch owner
-      const ownerRes = await supabase.from("founder_profiles").select("user_id").eq("is_site_owner" as any, true).limit(1);
-      if (ownerRes.data && ownerRes.data.length > 0) setOwnerUserId(ownerRes.data[0].user_id);
+      const { data: ownerData } = await (supabase.from("founder_profiles") as any).select("user_id").eq("is_site_owner", true).limit(1);
+      if (ownerData && ownerData.length > 0) setOwnerUserId(ownerData[0].user_id);
 
       // Fetch blocked users, pins, messages, groups in parallel
       const [blocksRes, pinsRes, msgsRes, groupMembersRes] = await Promise.all([
