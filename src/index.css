@@ -2021,3 +2021,71 @@
   color: hsl(0 0% 10%);
   box-shadow: 0 0 12px hsl(43 74% 49% / 0.5);
 }
+
+/* ====== OWNER THEME — Red interface for site owner ====== */
+.owner-theme {
+  --primary: 0 84% 60%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 0 72% 50%;
+  --accent-foreground: 0 0% 100%;
+  --ring: 0 84% 60%;
+  --sidebar-primary: 0 84% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 84% 95%;
+  --sidebar-accent-foreground: 0 84% 30%;
+}
+
+.dark .owner-theme {
+  --primary: 0 84% 60%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 0 72% 45%;
+  --accent-foreground: 0 0% 100%;
+  --ring: 0 84% 55%;
+  --sidebar-primary: 0 84% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 60% 15%;
+  --sidebar-accent-foreground: 0 84% 70%;
+}
+
+.owner-theme .header-gradient-line {
+  background: linear-gradient(90deg, transparent, hsl(0 84% 60%) 30%, hsl(0 84% 60%) 70%, transparent);
+}
+
+.owner-theme .elite-header {
+  background: linear-gradient(135deg, hsl(0 84% 60% / 0.08), transparent);
+  border-bottom: 1px solid hsl(0 84% 60% / 0.2);
+}
+
+/* ====== Mobile optimizations ====== */
+@media (max-width: 768px) {
+  /* Hide scrollbar on mobile */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Global touch targets */
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+  }
+
+  /* Safe area for bottom nav overlap */
+  main {
+    padding-bottom: 6rem !important;
+  }
+}
+
+/* Banned overlay */
+.banned-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background));
+}
+
