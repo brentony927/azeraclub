@@ -39,6 +39,9 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   new_founders: UserPlus,
   trending_industry: BarChart3,
   ai_opportunity: Sparkles,
+  post_like: Heart,
+  post_comment: MessageCircle,
+  opportunity_reply: Briefcase,
 };
 
 const TYPE_ROUTES: Record<string, string> = {
