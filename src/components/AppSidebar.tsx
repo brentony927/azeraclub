@@ -52,6 +52,7 @@ import { useAzeraLogo } from "@/hooks/useAzeraLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useTheme } from "next-themes";
 import { supabase } from "@/integrations/supabase/client";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
