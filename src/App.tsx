@@ -97,6 +97,20 @@ const queryClient = new QueryClient({
   },
 });
 
+// Capture referral param on mount
+function ReferralCapture() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  if (ref) {
+    const existing = localStorage.getItem("azera_ref");
+    if (!existing) {
+      localStorage.setItem("azera_ref", ref);
+      localStorage.setItem("azera_ref_ts", Date.now().toString());
+    }
+  }
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
