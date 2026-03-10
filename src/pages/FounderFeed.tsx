@@ -45,6 +45,7 @@ interface FounderProfile {
   reputation_score: number | null;
   is_verified: boolean | null;
   username: string | null;
+  is_site_owner?: boolean;
 }
 
 interface PostData {
@@ -558,6 +559,7 @@ export default function FounderFeed() {
                       matchScore={p.matchScore}
                       username={p.username}
                       founderLevel={founderLevels[p.user_id] || null}
+                      isSiteOwner={!!(p as any).is_site_owner}
                     />
                   ))}
                 </div>

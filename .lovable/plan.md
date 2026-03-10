@@ -1,51 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Perfil de Dono (Owner) com Tema Vermelho Brilhante
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Abordagem
-Adicionar um campo `is_site_owner` na tabela `founder_profiles` para identificar o dono do site. Usar esse flag para aplicar estilos vermelhos exagerados no perfil, mensagens e badges.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### Mudanças
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**1. Migração de Base de Dados**
-- Adicionar coluna `is_site_owner` (boolean, default false) à tabela `founder_profiles`
-- Definir `true` para o user com email `brentonybss2025@gmail.com` via subquery em `auth.users`
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**2. `src/index.css` — Estilos Owner**
-- Classe `.owner-profile-wrapper` com border vermelho brilhante, box-shadow vermelho com glow, background com tint vermelho
-- Classe `.owner-badge` com animação de pulso vermelho brilhante
-- Classe `.owner-message` para mensagens vermelhas com glow
-- Classe `.owner-card` para card vermelho no feed
-- Keyframe `owner-glow` com pulso de sombra vermelha
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**3. `src/pages/FounderProfile.tsx` — Perfil Vermelho**
-- Ler `is_site_owner` do profile
-- Se owner: envolver toda a página num wrapper com classe `.owner-profile-wrapper`
-- Trocar ring do avatar para vermelho brilhante com glow
-- Badge "DONO · AZERA" em vermelho brilhante ao lado do nome
-- Cards com border vermelho, accent vermelho em todo o layout
-
-**4. `src/components/FounderChat.tsx` — Mensagens Vermelhas**
-- Receber prop `isOwner` (ou verificar via user_id)
-- Quando `otherUserId` é o owner, as mensagens RECEBIDAS dele ficam com fundo vermelho brilhante
-- Quando o user logado é o owner, as mensagens ENVIADAS ficam com fundo vermelho
-
-**5. `src/components/GroupChat.tsx` — Mensagens de Grupo Vermelhas**
-- Verificar se o `user_id` da mensagem é o owner
-- Aplicar classe `.owner-message` nas mensagens do owner
-
-**6. `src/components/FounderCard.tsx` — Badge no Feed**
-- Receber prop `isSiteOwner`
-- Mostrar badge vermelho "OWNER" no card do feed
-
-**7. Páginas que listam founders (FounderMatch, FounderFeed, etc.)**
-- Passar `is_site_owner` do profile data para os cards
-
-### Ficheiros a editar
-- Migração SQL (nova)
-- `src/index.css`
-- `src/pages/FounderProfile.tsx`
-- `src/components/FounderChat.tsx`
-- `src/components/GroupChat.tsx`
-- `src/components/FounderCard.tsx`
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

@@ -51,10 +51,15 @@ export default function FounderMessages() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [connectedUsers, setConnectedUsers] = useState<{ userId: string; name: string }[]>([]);
+  const [ownerUserId, setOwnerUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
+      // Fetch owner
+      const { data: ownerData } = await (supabase.from("founder_profiles") as any).select("user_id").eq("is_site_owner", true).limit(1);
+      if (ownerData && ownerData.length > 0) setOwnerUserId(ownerData[0].user_id);
+
       // Fetch blocked users, pins, messages, groups in parallel
       const [blocksRes, pinsRes, msgsRes, groupMembersRes] = await Promise.all([
         supabase.from("user_blocks").select("blocked_id").eq("blocker_id", user.id),
@@ -280,7 +285,7 @@ export default function FounderMessages() {
                   <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
                 </Button>
               </div>
-              <GroupChat groupId={selectedGroup.id} groupName={selectedGroup.name} />
+              <GroupChat groupId={selectedGroup.id} groupName={selectedGroup.name} ownerUserId={ownerUserId || undefined} />
             </>
           ) : selectedUser ? (
             <>
@@ -294,6 +299,8 @@ export default function FounderMessages() {
                 otherUserName={selectedUser.name}
                 onBlock={handleBlock}
                 onDeleteConversation={handleDeleteConversation}
+                isOtherOwner={ownerUserId === selectedUser.userId}
+                isMeOwner={ownerUserId === user?.id}
               />
             </>
           ) : (

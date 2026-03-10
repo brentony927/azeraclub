@@ -205,6 +205,7 @@ export default function FounderProfile() {
   const matchScore = myProfile && !isOwn ? calculateMatchScore(myProfile, profile) : null;
   const repScore = Math.min(100, profile.reputation_score || 0);
   const founderBadge = getFounderBadge(profile);
+  const isSiteOwner = !!(profile as any).is_site_owner;
 
   // shared interests
   const myInterests: string[] = myProfile?.interests || [];
@@ -214,7 +215,7 @@ export default function FounderProfile() {
   const stageLabel: Record<string, string> = { idea: "Ideia", prototype: "Protótipo", mvp: "MVP", building: "Startup Inicial", active: "Crescimento", scaling: "Escalando" };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 relative space-y-6">
+    <div className={`max-w-3xl mx-auto px-4 py-8 relative space-y-6 ${isSiteOwner ? "owner-profile-wrapper p-6" : ""}`}>
       <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Voltar
@@ -224,7 +225,7 @@ export default function FounderProfile() {
       <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
         <CardContent className="p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-primary/20">
+            <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
               ) : (
@@ -235,6 +236,9 @@ export default function FounderProfile() {
               <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                 <h1 className="text-2xl font-bold text-foreground">{profile.name}</h1>
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
+                {isSiteOwner && (
+                  <Badge className="owner-badge text-[10px] font-bold">👑 DONO · AZERA</Badge>
+                )}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>
               {profile.username && (

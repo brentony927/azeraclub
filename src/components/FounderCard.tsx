@@ -24,11 +24,12 @@ interface FounderCardProps {
   matchScore?: number;
   username?: string | null;
   founderLevel?: string | null;
+  isSiteOwner?: boolean;
 }
 
 const FounderCard = memo(function FounderCard({
   id, userId, name, avatarUrl, skills, lookingFor, country, building,
-  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username, founderLevel,
+  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username, founderLevel, isSiteOwner,
 }: FounderCardProps) {
   const navigate = useNavigate();
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
@@ -51,11 +52,13 @@ const FounderCard = memo(function FounderCard({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl ${
-        isHighlighted
+        isSiteOwner
+          ? "owner-card"
+          : isHighlighted
           ? "border-[hsl(42,50%,56%)]/40 bg-gradient-to-br from-[hsl(42,50%,56%)]/5 to-transparent shadow-[0_0_20px_hsl(42,50%,56%,0.1)]"
           : "border-border/50 bg-card/80 backdrop-blur-sm"
       }`}
-      style={isHighlighted ? {
+      style={isHighlighted && !isSiteOwner ? {
         borderImage: "linear-gradient(135deg, hsla(51,100%,50%,0.4), hsla(35,80%,50%,0.3), hsla(20,70%,50%,0.2)) 1",
       } : undefined}
     >
@@ -66,8 +69,17 @@ const FounderCard = memo(function FounderCard({
         )}
       </div>
 
+      {/* Owner badge */}
+      {isSiteOwner && (
+        <div className="absolute top-2 left-2">
+          <Badge className="owner-badge text-[9px] font-bold">
+            👑 OWNER
+          </Badge>
+        </div>
+      )}
+
       {/* Business Founder badge with shimmer */}
-      {isHighlighted && (
+      {isHighlighted && !isSiteOwner && (
         <div className="absolute top-2 left-2">
           <Badge 
             className="text-[hsl(0,0%,4%)] text-[9px] font-bold border-0"
@@ -94,7 +106,7 @@ const FounderCard = memo(function FounderCard({
         <div className="flex items-start gap-4">
           <div 
             className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${
-              isHighlighted ? "ring-2 ring-[hsl(51,100%,50%)]/50 shadow-[0_0_14px_hsl(51,100%,50%,0.3)]" : "bg-secondary"
+              isSiteOwner ? "ring-2 ring-[hsl(0,100%,50%)] owner-avatar-ring" : isHighlighted ? "ring-2 ring-[hsl(51,100%,50%)]/50 shadow-[0_0_14px_hsl(51,100%,50%,0.3)]" : "bg-secondary"
             }`}
           >
             {avatarUrl ? (

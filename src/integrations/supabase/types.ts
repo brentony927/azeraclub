@@ -541,6 +541,7 @@ export type Database = {
           industry: string[] | null
           interests: string[] | null
           is_published: boolean | null
+          is_site_owner: boolean
           is_verified: boolean | null
           latitude: number | null
           longitude: number | null
@@ -566,6 +567,7 @@ export type Database = {
           industry?: string[] | null
           interests?: string[] | null
           is_published?: boolean | null
+          is_site_owner?: boolean
           is_verified?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -591,6 +593,7 @@ export type Database = {
           industry?: string[] | null
           interests?: string[] | null
           is_published?: boolean | null
+          is_site_owner?: boolean
           is_verified?: boolean | null
           latitude?: number | null
           longitude?: number | null

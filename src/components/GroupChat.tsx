@@ -25,9 +25,10 @@ interface GroupMember {
 interface Props {
   groupId: string;
   groupName: string;
+  ownerUserId?: string;
 }
 
-export default function GroupChat({ groupId, groupName }: Props) {
+export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [members, setMembers] = useState<GroupMember[]>([]);
@@ -151,12 +152,17 @@ export default function GroupChat({ groupId, groupName }: Props) {
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map(m => {
           const isMe = m.user_id === user?.id;
+          const isOwnerMsg = ownerUserId && m.user_id === ownerUserId;
           return (
             <div key={m.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${isMe ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"}`}>
-                {!isMe && <p className="text-[10px] font-medium opacity-70 mb-0.5">{names[m.user_id] || "Founder"}</p>}
+              <div className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${
+                isOwnerMsg
+                  ? "owner-message"
+                  : isMe ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
+              }`}>
+                {!isMe && <p className={`text-[10px] font-medium mb-0.5 ${isOwnerMsg ? "text-white/70" : "opacity-70"}`}>{names[m.user_id] || "Founder"}</p>}
                 <p>{m.content}</p>
-                <p className={`text-[9px] mt-0.5 ${isMe ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+                <p className={`text-[9px] mt-0.5 ${isOwnerMsg ? "text-white/60" : isMe ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
                   {new Date(m.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
