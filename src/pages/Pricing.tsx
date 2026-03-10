@@ -211,6 +211,11 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-16">
+      <div className="w-full max-w-4xl mb-4">
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
+        </Button>
+      </div>
       <PricingSection
         plans={plans}
         onSubscribe={handleSubscribe}
