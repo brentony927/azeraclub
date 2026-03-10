@@ -321,6 +321,13 @@ export default function FounderProfile() {
         </CardContent>
       </Card>
 
+      {/* === BADGE SHOWCASE === */}
+      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <CardContent className="p-6">
+          <BadgeShowcase userId={profile.user_id} showLocked={isOwn} />
+        </CardContent>
+      </Card>
+
       {/* === 2. SOCIAL PROOF === */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[

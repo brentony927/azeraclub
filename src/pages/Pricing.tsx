@@ -95,6 +95,7 @@ const plans: PricingPlan[] = [
       "Relatórios estratégicos mensais",
       "Life Strategy AI",
       "Oportunidades premium",
+      "🛡️ Insígnia de Confiança Business",
     ],
   },
 ];
