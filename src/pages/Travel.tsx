@@ -37,7 +37,7 @@ export default function Travel() {
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : trips.length === 0 ? (
-        <EmptyState icon="✈️" title="Nenhuma viagem planejada" description="Comece a planejar suas viagens exclusivas e gerencie seus itinerários." actionLabel="Adicionar Viagem" onAction={() => setDialogOpen(true)} />
+        <EmptyState icon={<Icon3D icon={Plane} color="blue" size="lg" animated />} title="Nenhuma viagem planejada" description="Comece a planejar suas viagens exclusivas e gerencie seus itinerários." actionLabel="Adicionar Viagem" onAction={() => setDialogOpen(true)} />
       ) : (
         <div className="space-y-5">
           {trips.map((trip) => (
