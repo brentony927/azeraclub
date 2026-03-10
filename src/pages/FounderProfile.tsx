@@ -11,8 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck,
   Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send, Check, X,
-  RefreshCw, TrendingUp,
+  RefreshCw, TrendingUp, Crown,
 } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { toast } from "@/hooks/use-toast";
 import { COMMITMENT_LABELS } from "@/data/founderConstants";
 import { calculateMatchScore, getMatchColor } from "@/lib/founderMatch";
