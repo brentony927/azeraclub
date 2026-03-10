@@ -298,6 +298,7 @@ export default function FounderFeed() {
   }));
 
   withScores.sort((a, b) => {
+    if (sortByMatch) return b.matchScore - a.matchScore;
     if (b.profileScore !== a.profileScore) return b.profileScore - a.profileScore;
     return b.matchScore - a.matchScore;
   });
