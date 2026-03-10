@@ -57,10 +57,12 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
 
     const userIds = [...new Set([...msgs.map(m => m.user_id), ...mems.map(m => m.user_id)])];
     if (userIds.length > 0) {
-      const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name").in("user_id", userIds);
-      const map: Record<string, string> = {};
-      profiles?.forEach(p => { map[p.user_id] = p.name; });
-      setNames(map);
+      const { data: profiles } = await supabase.from("founder_profiles").select("user_id, name, avatar_url").in("user_id", userIds);
+      const nameMap: Record<string, string> = {};
+      const avatarMap: Record<string, string | null> = {};
+      profiles?.forEach(p => { nameMap[p.user_id] = p.name; avatarMap[p.user_id] = p.avatar_url; });
+      setNames(nameMap);
+      setAvatars(avatarMap);
     }
     setLoading(false);
   };
