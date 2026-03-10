@@ -104,7 +104,7 @@ export default function FounderProfile() {
           .maybeSingle();
         if (!recentView) {
           await supabase.from("founder_profiles").update({ profile_views: (prof.profile_views || 0) + 1 }).eq("id", prof.id);
-          await sendNotification({ user_id: prof.user_id, type: "profile_view", title: "Alguém visualizou seu perfil" });
+          await sendNotification({ user_id: prof.user_id, type: "profile_view", title: `${myRes.data?.name || myRes.data?.username || "Alguém"} visualizou seu perfil 👀`, related_user_id: user.id });
         }
       }
 
