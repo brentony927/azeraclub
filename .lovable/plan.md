@@ -1,38 +1,61 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Corrigir 3 Vulnerabilidades de Segurança
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### 1. `requireTier` bypass no `azera-ai` — `supabase/functions/azera-ai/index.ts`
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+O problema: o cliente envia `requireTier` no body. Se omitido, o check é ignorado.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+**Fix**: Criar um mapa server-side que associa o system prompt (ou um `featureId`) ao tier mínimo. Adicionar um campo `featureId` no body (ex: `"ai-advisor"`, `"trends-radar"`) e validar server-side:
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+```ts
+const FEATURE_TIERS: Record<string, string> = {
+  "ai-advisor": "business",
+  "investment-radar": "business", 
+  "life-master-plan": "business",
+  "opportunity-alerts": "business",
+  "strategic-partners": "business",
+  "wealth-planner": "business",
+  "elite-library": "business",
+  "life-simulation": "business",
+  "investor-match": "business",
+  "skill-growth": "pro",
+  "weekly-review": "pro",
+  "trends-radar": "pro",
+  "content-strategy": "pro",
+  "opportunity-radar": "pro",
+  "productivity-insights": "pro",
+  "goal-breakdown": "pro",
+  "project-organizer": "pro",
+  "daily-focus": "pro",
+  "weekly-report": "pro",
+  "trend-scanner": "pro",
+  "venture-chat": "pro",
+  "startup-rankings": "pro",
+};
+```
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+- Ler `featureId` do body em vez de `requireTier`
+- Se `featureId` existe no mapa, validar tier server-side
+- Se não existe no mapa, permitir (chatbot geral sem gate)
+- Atualizar todas as ~19 páginas client-side para enviar `featureId` em vez de `requireTier`
+
+### 2. Coordenadas GPS expostas em `founder_profiles` — Migração SQL
+
+Remover as colunas `latitude` e `longitude` da tabela `founder_profiles` (já existem em `founder_locations` que tem RLS restritiva). O mapa já usa `get_rounded_coordinates()`.
+
+- Migração: `ALTER TABLE founder_profiles DROP COLUMN latitude, DROP COLUMN longitude;`
+- Atualizar código que referencia essas colunas diretamente (Profile.tsx no geocoding — salvar em `founder_locations` apenas)
+
+### 3. Erros internos expostos em `send-notification` — `supabase/functions/send-notification/index.ts`
+
+- Linha 87: `error.message` → `"Internal server error"` + `console.error`
+- Linha 97: `String(error)` → `"Internal server error"` + `console.error`
+
+### Ficheiros a editar
+- `supabase/functions/azera-ai/index.ts` (feature tier map server-side)
+- `supabase/functions/send-notification/index.ts` (erros genéricos)
+- Migração SQL (drop lat/lon de founder_profiles)
+- ~19 páginas client-side (`requireTier` → `featureId`)
+- `src/pages/Profile.tsx` (remover referências a lat/lon de founder_profiles)
+
