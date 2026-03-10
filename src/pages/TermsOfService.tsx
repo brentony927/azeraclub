@@ -200,9 +200,9 @@ export default function TermsOfService() {
             </p>
           </section>
 
-          {/* 9 — Modificação dos Termos */}
+          {/* 12 — Modificação dos Termos */}
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">9. Modificação dos Termos</h2>
+            <h2 className="text-lg font-serif font-semibold">12. Modificação dos Termos</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               O AZERA CLUB pode atualizar estes Termos de Uso a qualquer momento. Os utilizadores serão notificados em caso de alterações significativas. A continuação da utilização do serviço após quaisquer alterações constitui aceitação dos termos atualizados.
             </p>
