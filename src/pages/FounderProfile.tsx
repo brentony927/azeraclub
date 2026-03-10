@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, UserPlus, MessageCircle, ArrowLeft, Loader2, Eye, ShieldCheck,
   Sparkles, Rocket, Users, Briefcase, Lightbulb, Bookmark, Send, Check, X,
@@ -21,6 +22,7 @@ const FounderParticlesBackground = lazy(() => import("@/components/FounderPartic
 import BookmarkButton from "@/components/BookmarkButton";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { sendNotification } from "@/lib/sendNotification";
+import FounderPostCard from "@/components/FounderPostCard";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
