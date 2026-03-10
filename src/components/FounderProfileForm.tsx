@@ -113,8 +113,6 @@ export default function FounderProfileForm({ initialData, onSubmit, loading, sub
 
     // Save GPS to founder_locations separately for privacy
     if (latitude != null && longitude != null) {
-      const { useAuth } = await import("@/contexts/AuthContext");
-      // We can't use hooks here, so use supabase auth directly
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (currentUser) {
         await supabase.from("founder_locations" as any).upsert({
