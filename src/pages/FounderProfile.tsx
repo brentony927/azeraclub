@@ -372,7 +372,7 @@ export default function FounderProfile() {
 
       {/* === 5. LOOKING FOR === */}
       {profile.looking_for?.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Procurando</h3>
             <div className="flex flex-wrap gap-2">
