@@ -29,7 +29,7 @@ interface FounderCardProps {
 
 const FounderCard = memo(function FounderCard({
   id, userId, name, avatarUrl, skills, lookingFor, country, building,
-  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username, founderLevel,
+  commitment, isHighlighted, onConnect, isConnected, isPending, matchScore, username, founderLevel, isSiteOwner,
 }: FounderCardProps) {
   const navigate = useNavigate();
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
