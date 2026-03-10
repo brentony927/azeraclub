@@ -65,7 +65,7 @@ export default function Challenges() {
     const newDay = ch.current_day + 1;
     const status = newDay >= ch.duration_days ? "concluido" : "ativo";
     await supabase.from("challenges").update({ current_day: newDay, status }).eq("id", ch.id);
-    if (status === "concluido") toast.success("Desafio concluído! 🎉");
+    if (status === "concluido") toast.success("Desafio concluído!");
     fetchChallenges();
   };
 
