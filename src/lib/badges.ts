@@ -5,6 +5,7 @@ import {
   Eye, Clock, Coffee, Briefcase, PenTool, Mountain, Puzzle,
   Megaphone, HandshakeIcon, MapPin, BarChart3, Layers, Wallet,
   Swords, GraduationCap, Telescope, FileText, CircleDot, Wand2,
+  Sprout, BadgeCheck, Network,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
