@@ -129,7 +129,7 @@ export default function FounderPostCard({
         >
           <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0">
             {authorAvatar ? (
-              <img src={authorAvatar} alt={authorName} className="w-10 h-10 rounded-full object-cover" />
+              <img src={authorAvatar} alt={authorName} className="w-10 h-10 rounded-full object-cover" loading="lazy" />
             ) : (
               <span className="text-xs font-bold text-foreground">{initials}</span>
             )}
