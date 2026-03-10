@@ -32,6 +32,7 @@ export function useTrips() {
       if (error) throw error;
       return data;
     },
+    staleTime: 3 * 60 * 1000,
     enabled: !!user,
   });
 }
