@@ -466,7 +466,7 @@ export default function AI() {
                           : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
-                      {mood.emoji} {mood.label}
+                      <Icon3D icon={mood.icon} color={mood.color} size="xs" /> {mood.label}
                       {locked && <Lock className="h-3 w-3 ml-0.5" />}
                     </button>
                   );
