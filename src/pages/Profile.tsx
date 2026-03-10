@@ -145,7 +145,7 @@ export default function Profile() {
     setOpportunitiesCount(oppRes.count || 0);
 
     // Fetch profile visit count
-    const { count: vc } = await supabase.from("profile_visits" as any)
+    const { count: vc } = await supabase.from("profile_visits")
       .select("id", { count: "exact", head: true })
       .eq("profile_user_id", user!.id);
     setVisitCount(vc || 0);
@@ -165,7 +165,7 @@ export default function Profile() {
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       setAvatarUrl(newUrl);
-      await supabase.from("profiles").update({ avatar_url: newUrl } as any).eq("user_id", user.id);
+      await supabase.from("profiles").update({ avatar_url: newUrl }).eq("user_id", user.id);
       if (hasFounderProfile) {
         await supabase.from("founder_profiles").update({ avatar_url: newUrl }).eq("user_id", user.id);
       }
@@ -189,7 +189,7 @@ export default function Profile() {
         profession: profession || null,
         bio: bio || null,
         interests: interests.length ? interests : null,
-      } as any).eq("user_id", user.id);
+      }).eq("user_id", user.id);
       if (profileError) throw profileError;
 
       // Geocode city/country
@@ -239,7 +239,7 @@ export default function Profile() {
 
       // Save GPS to founder_locations (separate table for privacy)
       if (latitude != null && longitude != null) {
-        await supabase.from("founder_locations" as any).upsert({
+        await supabase.from("founder_locations").upsert({
           user_id: user.id,
           latitude,
           longitude,
@@ -467,7 +467,7 @@ export default function Profile() {
                     onBlur={async () => {
                       if (!username || username.length < 3) return;
                       setCheckingUsername(true);
-                      const { data } = await (supabase.from("founder_profiles") as any).select("id").eq("username", username).neq("user_id", user!.id).maybeSingle();
+                      const { data } = await supabase.from("founder_profiles").select("id").eq("username", username).neq("user_id", user!.id).maybeSingle();
                       if (data) setUsernameError("Nome já em uso");
                       setCheckingUsername(false);
                     }}
