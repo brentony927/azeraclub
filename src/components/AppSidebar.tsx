@@ -456,7 +456,7 @@ export function AppSidebar() {
         <div className="flex items-center gap-3">
           <div className={`w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0 ${isPremium ? "avatar-ring" : ""}`}>
             {user?.user_metadata?.avatar_url ?
-            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" /> :
+            <img src={user.user_metadata.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" loading="lazy" /> :
 
             <span className="text-xs font-medium text-foreground">{initials}</span>
             }
