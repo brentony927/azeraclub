@@ -21,6 +21,7 @@ interface Conversation {
   unread: number;
   isPinned?: boolean;
   opportunityTitle?: string;
+  avatarUrl?: string | null;
 }
 
 interface GroupConversation {
