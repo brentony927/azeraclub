@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bookmark, MapPin, Calendar, Filter, Plus } from "lucide-react";
+import { Bookmark, MapPin, Calendar, Filter, Plus, Wine } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { useExperiences, useToggleExperienceSaved } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
@@ -44,7 +45,7 @@ export default function Experiences() {
         {isLoading ? (
           <div className="text-center py-12 text-muted-foreground">Carregando...</div>
         ) : filtered.length === 0 ? (
-          <EmptyState icon="🍷" title="Nenhuma experiência ainda" description="Adicione suas primeiras experiências exclusivas e comece a personalizar sua agenda." actionLabel="Adicionar Experiência" onAction={() => setDialogOpen(true)} />
+          <EmptyState icon={<Icon3D icon={Wine} color="red" size="lg" animated />} title="Nenhuma experiência ainda" description="Adicione suas primeiras experiências exclusivas e comece a personalizar sua agenda." actionLabel="Adicionar Experiência" onAction={() => setDialogOpen(true)} />
         ) : (
           <motion.div variants={item} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((exp) => (
@@ -53,7 +54,7 @@ export default function Experiences() {
                   {exp.image ? (
                     <img src={exp.image} alt={exp.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-3xl">🍷</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Wine} color="red" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
                   <Badge className="absolute top-3 left-3 bg-card/60 backdrop-blur text-xs text-foreground border-border/30">{exp.category}</Badge>

@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Play, Newspaper } from "lucide-react";
+import { Loader2, Play, Newspaper, Briefcase, Handshake, Monitor, Brain, Zap, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import AIArticleRenderer from "@/components/AIArticleRenderer";
+import Icon3D from "@/components/ui/icon-3d";
 import { toast } from "sonner";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/azera-ai`;
 
 const CATEGORIES = [
-  { id: "negocios", label: "💼 Negócios", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje no mundo dos negócios, empreendedorismo e economia." },
-  { id: "networking", label: "🤝 Networking", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em networking, eventos corporativos e conexões profissionais." },
-  { id: "tecnologia", label: "🖥️ Tecnologia", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em tecnologia, startups e inteligência artificial." },
-  { id: "mentalidade", label: "🧠 Mentalidade", prompt: "Escreva um artigo editorial sobre lições de mentalidade de alta performance, psicologia do sucesso e crescimento pessoal baseado em tendências atuais." },
-  { id: "produtividade", label: "⚡ Produtividade", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em produtividade, gestão de tempo e métodos de trabalho." },
-  { id: "financas", label: "💰 Finanças", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em finanças pessoais, investimentos e mercado financeiro." },
+  { id: "negocios", icon: <Icon3D icon={Briefcase} color="gold" size="xs" />, label: "Negócios", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje no mundo dos negócios, empreendedorismo e economia." },
+  { id: "networking", icon: <Icon3D icon={Handshake} color="green" size="xs" />, label: "Networking", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em networking, eventos corporativos e conexões profissionais." },
+  { id: "tecnologia", icon: <Icon3D icon={Monitor} color="blue" size="xs" />, label: "Tecnologia", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em tecnologia, startups e inteligência artificial." },
+  { id: "mentalidade", icon: <Icon3D icon={Brain} color="silver" size="xs" />, label: "Mentalidade", prompt: "Escreva um artigo editorial sobre lições de mentalidade de alta performance, psicologia do sucesso e crescimento pessoal baseado em tendências atuais." },
+  { id: "produtividade", icon: <Icon3D icon={Zap} color="gold" size="xs" />, label: "Produtividade", prompt: "Escreva um artigo editorial sobre as tendências mais relevantes de hoje em produtividade, gestão de tempo e métodos de trabalho." },
+  { id: "financas", icon: <Icon3D icon={Wallet} color="gold" size="xs" />, label: "Finanças", prompt: "Escreva um artigo editorial sobre as notícias mais relevantes de hoje em finanças pessoais, investimentos e mercado financeiro." },
 ];
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
@@ -39,7 +40,7 @@ export default function KnowledgeLibrary() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           newsContext: true,
-          newsQuery: cat.label.split(" ").slice(1).join(" "),
+          newsQuery: cat.label,
           messages: [
             { role: "system", content: `Você é um jornalista e curador editorial de alto nível. Hoje é ${today}.
 
@@ -49,9 +50,9 @@ FORMATTING RULES (OBRIGATÓRIO):
 - Use **negrito** para dados, nomes e destaques
 - Use > blockquote para insights estratégicos e reflexões
 - Prefira parágrafos narrativos longos, não listas excessivas
-- Inclua uma seção final "🎯 Insight do Dia" com reflexão estratégica em blockquote
+- Inclua uma seção final "Insight do Dia" com reflexão estratégica em blockquote
 - Use --- entre seções
-- No final, adicione "📚 Fontes e Referências" com fontes de notícias consultadas
+- No final, adicione "Fontes e Referências" com fontes de notícias consultadas
 - Escreva entre 600-900 palavras em Português (BR) elegante e profissional` },
             { role: "user", content: cat.prompt },
           ],
@@ -96,9 +97,9 @@ FORMATTING RULES (OBRIGATÓRIO):
             onClick={() => loadContent(cat)}
           >
             <CardContent className="p-4 flex items-center gap-3">
-              <span className="text-2xl">{cat.label.split(" ")[0]}</span>
+              {cat.icon}
               <div className="flex-1">
-                <p className="text-sm font-medium">{cat.label.split(" ").slice(1).join(" ")}</p>
+                <p className="text-sm font-medium">{cat.label}</p>
                 <p className="text-xs text-muted-foreground">Artigo editorial do dia</p>
               </div>
               <Play className="h-4 w-4 text-muted-foreground" />

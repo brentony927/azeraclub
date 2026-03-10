@@ -21,11 +21,11 @@ interface ToolItem {
   extra?: string;
 }
 
-const toolConfig: Record<ToolType, { icon: typeof BookOpen; label: string; emoji: string; table: string }> = {
-  journal: { icon: BookOpen, label: "Diário", emoji: "📝", table: "journal_entries" },
-  ideas: { icon: Lightbulb, label: "Ideias", emoji: "💡", table: "ideas" },
-  objectives: { icon: Target, label: "Objetivos", emoji: "🎯", table: "objectives" },
-  challenges: { icon: Trophy, label: "Desafios", emoji: "🏆", table: "challenges" },
+const toolConfig: Record<ToolType, { icon: typeof BookOpen; label: string; tag: string; table: string }> = {
+  journal: { icon: BookOpen, label: "Diário", tag: "[Diário]", table: "journal_entries" },
+  ideas: { icon: Lightbulb, label: "Ideias", tag: "[Ideia]", table: "ideas" },
+  objectives: { icon: Target, label: "Objetivos", tag: "[Objetivo]", table: "objectives" },
+  challenges: { icon: Trophy, label: "Desafios", tag: "[Desafio]", table: "challenges" },
 };
 
 export default function CreateFounderPost({ onPostCreated }: Props) {
@@ -111,18 +111,18 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
     let formatted = "";
 
     if (toolDialog === "journal") {
-      formatted = `${cfg.emoji} **Do meu Diário:**\n\n${item.extra || item.title}${item.description ? `\n\n${item.description}` : ""}`;
+      formatted = `${cfg.tag} **Do meu Diário:**\n\n${item.extra || item.title}${item.description ? `\n\n${item.description}` : ""}`;
     } else if (toolDialog === "ideas") {
-      formatted = `${cfg.emoji} **Ideia: ${item.title}**${item.description ? `\n\n${item.description}` : ""}${item.extra ? `\n\n📂 Categoria: ${item.extra}` : ""}`;
+      formatted = `${cfg.tag} **Ideia: ${item.title}**${item.description ? `\n\n${item.description}` : ""}${item.extra ? `\n\nCategoria: ${item.extra}` : ""}`;
     } else if (toolDialog === "objectives") {
-      formatted = `${cfg.emoji} **Objetivo: ${item.title}**\n\n📊 ${item.description || ""}${item.extra ? `\n📂 ${item.extra}` : ""}`;
+      formatted = `${cfg.tag} **Objetivo: ${item.title}**\n\n${item.description || ""}${item.extra ? `\n${item.extra}` : ""}`;
     } else if (toolDialog === "challenges") {
-      formatted = `${cfg.emoji} **Desafio: ${item.title}**\n\n⏱️ ${item.description || ""}`;
+      formatted = `${cfg.tag} **Desafio: ${item.title}**\n\n${item.description || ""}`;
     }
 
     setContent(prev => prev ? `${prev}\n\n${formatted}` : formatted);
     setToolDialog(null);
-    toast({ title: `${cfg.label} adicionado ao post! ✨` });
+    toast({ title: `${cfg.label} adicionado ao post!` });
   };
 
   const handleSubmit = async () => {
@@ -154,7 +154,7 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
       setFiles([]);
       setPreviews([]);
       onPostCreated();
-      toast({ title: "Publicado! ✨" });
+      toast({ title: "Publicado!" });
     }
   };
 

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import BookmarkButton from "@/components/BookmarkButton";
+import Icon3D from "@/components/ui/icon-3d";
 
 type RankedVenture = {
   id: string; name: string; industry: string | null; goal: string | null;
@@ -12,7 +13,11 @@ type RankedVenture = {
   member_count?: number;
 };
 
-const MEDALS = ["🥇", "🥈", "🥉"];
+const MEDALS = [
+  <Icon3D icon={Trophy} color="gold" size="sm" animated />,
+  <Icon3D icon={Trophy} color="silver" size="sm" animated />,
+  <Icon3D icon={Trophy} color="red" size="sm" animated />,
+];
 
 export default function StartupRankings() {
   const [ventures, setVentures] = useState<RankedVenture[]>([]);

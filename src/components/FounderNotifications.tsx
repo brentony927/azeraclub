@@ -125,9 +125,9 @@ export default function FounderNotifications() {
       await sendNotification({
         user_id: n.related_user_id!,
         type: "connection",
-        title: `${myProfile?.name || "Alguém"} aceitou sua conexão! 🎉`,
+        title: `${myProfile?.name || "Alguém"} aceitou sua conexão!`,
       });
-      toast({ title: "Conexão aceita! 🤝" });
+      toast({ title: "Conexão aceita!" });
     }
     setActionLoading(null);
   };

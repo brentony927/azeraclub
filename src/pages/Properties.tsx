@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Building2, Users, Plus } from "lucide-react";
+import { Building2, Users, Plus, Home } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Button } from "@/components/ui/button";
 import { useProperties } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
@@ -34,7 +35,7 @@ export default function Properties() {
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : properties.length === 0 ? (
-        <EmptyState icon="🏠" title="Nenhuma propriedade cadastrada" description="Adicione suas propriedades para gerenciar seu portfólio imobiliário." actionLabel="Adicionar Propriedade" onAction={() => setDialogOpen(true)} />
+        <EmptyState icon={<Icon3D icon={Home} color="silver" size="lg" animated />} title="Nenhuma propriedade cadastrada" description="Adicione suas propriedades para gerenciar seu portfólio imobiliário." actionLabel="Adicionar Propriedade" onAction={() => setDialogOpen(true)} />
       ) : (
         <>
           <motion.div variants={item} className="grid sm:grid-cols-3 gap-4">
@@ -50,7 +51,7 @@ export default function Properties() {
                   {prop.image ? (
                     <img src={prop.image} alt={prop.name} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-4xl">🏠</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Home} color="silver" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
                   <div className="absolute bottom-4 left-4">

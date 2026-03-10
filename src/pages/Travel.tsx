@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plane, Hotel, MapPin, Plus } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTrips } from "@/hooks/useUserData";
@@ -36,7 +37,7 @@ export default function Travel() {
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : trips.length === 0 ? (
-        <EmptyState icon="✈️" title="Nenhuma viagem planejada" description="Comece a planejar suas viagens exclusivas e gerencie seus itinerários." actionLabel="Adicionar Viagem" onAction={() => setDialogOpen(true)} />
+        <EmptyState icon={<Icon3D icon={Plane} color="blue" size="lg" animated />} title="Nenhuma viagem planejada" description="Comece a planejar suas viagens exclusivas e gerencie seus itinerários." actionLabel="Adicionar Viagem" onAction={() => setDialogOpen(true)} />
       ) : (
         <div className="space-y-5">
           {trips.map((trip) => (
@@ -46,7 +47,7 @@ export default function Travel() {
                   {trip.image ? (
                     <img src={trip.image} alt={trip.destination} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full bg-secondary flex items-center justify-center text-4xl">✈️</div>
+                    <div className="w-full h-full bg-secondary flex items-center justify-center"><Icon3D icon={Plane} color="blue" size="lg" animated /></div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card/60 hidden md:block" />
                 </div>

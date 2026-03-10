@@ -8,6 +8,7 @@ interface Icon3DProps {
   icon: LucideIcon;
   color?: Icon3DColor;
   size?: Icon3DSize;
+  animated?: boolean;
   className?: string;
 }
 
@@ -41,7 +42,7 @@ const SIZE_MAP: Record<Icon3DSize, { container: string; icon: number }> = {
   lg: { container: "w-10 h-10", icon: 22 },
 };
 
-export default function Icon3D({ icon: IconComponent, color = "gold", size = "sm", className }: Icon3DProps) {
+export default function Icon3D({ icon: IconComponent, color = "gold", size = "sm", animated = false, className }: Icon3DProps) {
   const c = COLOR_MAP[color];
   const s = SIZE_MAP[size];
 
@@ -51,9 +52,10 @@ export default function Icon3D({ icon: IconComponent, color = "gold", size = "sm
         "inline-flex items-center justify-center rounded-full shrink-0",
         c.bg,
         s.container,
+        animated && "animate-icon3d-float",
         className
       )}
-      style={{ transform: "perspective(80px) rotateX(-4deg) translateZ(0)" }}
+      style={!animated ? { transform: "perspective(80px) rotateX(-4deg) translateZ(0)" } : undefined}
     >
       <IconComponent size={s.icon} className={c.icon} strokeWidth={2.5} />
     </span>

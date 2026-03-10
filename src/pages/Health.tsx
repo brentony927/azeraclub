@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, MapPin, Clock, Dumbbell, Stethoscope, Sparkles, Leaf, Plus } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useHealthAppointments } from "@/hooks/useUserData";
@@ -36,7 +37,7 @@ export default function Health() {
       {isLoading ? (
         <div className="text-center py-12 text-muted-foreground">Carregando...</div>
       ) : appointments.length === 0 ? (
-        <EmptyState icon="💪" title="Nenhuma consulta agendada" description="Organize suas consultas médicas, treinos e sessões de bem-estar." actionLabel="Adicionar Consulta" onAction={() => setDialogOpen(true)} />
+        <EmptyState icon={<Icon3D icon={Dumbbell} color="green" size="lg" animated />} title="Nenhuma consulta agendada" description="Organize suas consultas médicas, treinos e sessões de bem-estar." actionLabel="Adicionar Consulta" onAction={() => setDialogOpen(true)} />
       ) : (
         <div className="space-y-3">
           {appointments.map((apt) => {

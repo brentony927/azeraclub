@@ -475,6 +475,15 @@
   }
 }
 
+/* 3D icon float animation */
+@keyframes icon3dFloat {
+  0%, 100% { transform: perspective(80px) rotateX(-4deg) translateY(0); }
+  50% { transform: perspective(80px) rotateX(-2deg) translateY(-2px); }
+}
+.animate-icon3d-float {
+  animation: icon3dFloat 3s ease-in-out infinite;
+}
+
 /* Dev banner pulsing border */
 .dev-banner-pulse {
   animation: devBorderPulse 2s ease-in-out infinite;

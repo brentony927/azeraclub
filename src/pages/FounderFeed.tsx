@@ -255,7 +255,7 @@ export default function FounderFeed() {
         title: `${myProfile?.name || myProfile?.username || "Alguém"} quer se conectar com você`,
         body: myProfile?.building || null,
       });
-      toast({ title: "Solicitação enviada! 🤝" });
+      toast({ title: "Solicitação enviada!" });
     }
   };
 

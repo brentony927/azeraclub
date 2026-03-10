@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Flame, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { Flame, Plus, Trash2, CheckCircle2, Sparkles } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,14 +58,14 @@ export default function Challenges() {
     });
     setTitle(""); setDescription(""); setDuration("7"); setDialogOpen(false);
     fetchChallenges();
-    toast.success("Desafio iniciado! 🔥");
+    toast.success("Desafio iniciado!");
   };
 
   const advanceDay = async (ch: Challenge) => {
     const newDay = ch.current_day + 1;
     const status = newDay >= ch.duration_days ? "concluido" : "ativo";
     await supabase.from("challenges").update({ current_day: newDay, status }).eq("id", ch.id);
-    if (status === "concluido") toast.success("Desafio concluído! 🎉");
+    if (status === "concluido") toast.success("Desafio concluído!");
     fetchChallenges();
   };
 
@@ -136,7 +137,7 @@ export default function Challenges() {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-sm font-medium flex items-center gap-2">🔥 {ch.title}</p>
+                          <p className="text-sm font-medium flex items-center gap-2"><Icon3D icon={Flame} color="red" size="xs" animated /> {ch.title}</p>
                           {ch.description && <p className="text-xs text-muted-foreground mt-0.5">{ch.description}</p>}
                         </div>
                         <button onClick={() => deleteChallenge(ch.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
@@ -158,7 +159,7 @@ export default function Challenges() {
           )}
           {completed.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Concluídos 🎉 ({completed.length})</h3>
+              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">Concluídos <Icon3D icon={Sparkles} color="gold" size="xs" animated /> ({completed.length})</h3>
               {completed.map((ch) => (
                 <Card key={ch.id} className="opacity-60">
                   <CardContent className="p-4 flex items-center gap-3">
