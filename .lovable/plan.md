@@ -1,38 +1,31 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+## Plano: Corrigir 6 Problemas de Performance
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+### Problemas e Soluções
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+**1. Melhorar entrega de imagens (136 KiB)**
+- Adicionar `width`, `height` e `loading="lazy"` nas tags `<img>` da Landing e outros componentes
+- Adicionar `fetchpriority="high"` no logo do hero (LCP element)
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+**2. Árvore de dependência de rede + Renderizar solicitações de bloqueio (40ms)**
+- O Google Fonts já usa preload async — está correto
+- Adicionar `<link rel="dns-prefetch">` para o domínio Supabase no `index.html`
+- Adicionar `<link rel="modulepreload">` não é viável (Vite gera hashes), mas podemos melhorar o chunking
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+**3. Reduzir CSS não utilizado (20 KiB)**
+- Economia pequena (20 KiB). Tailwind já faz purge. Sem ação significativa possível.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**4. Reduzir JavaScript não utilizado (156 KiB)**
+- Configurar `build.rollupOptions.output.manualChunks` no Vite para separar vendor libs grandes (framer-motion, recharts, lucide, etc.) em chunks separados
+- Isso permite lazy loading efetivo dos chunks não usados na landing
+
+**5. Cache eficiente (567 KiB)**
+- Problema de headers do servidor (CDN/hosting). Não controlável via código.
+- Porém, o chunking melhor (item 4) já melhora o cache — chunks de vendor mudam menos que o app code.
+
+### Ficheiros a editar
+- `vite.config.ts` — manual chunks para code splitting
+- `index.html` — dns-prefetch para Supabase
+- `src/pages/Landing.tsx` — atributos de imagem (width/height/loading/fetchpriority)
+
