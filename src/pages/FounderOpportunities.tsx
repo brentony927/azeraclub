@@ -128,7 +128,7 @@ export default function FounderOpportunities() {
       setMediaFiles([]);
       setMediaPreviews([]);
       setDialogOpen(false);
-      toast({ title: "Oportunidade publicada! 🎯" });
+      toast({ title: "Oportunidade publicada!" });
     }
   };
 

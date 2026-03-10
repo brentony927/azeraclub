@@ -186,7 +186,7 @@ export default function FounderProfile() {
         type: "connection",
         title: `${myProfile?.name || myProfile?.username || "Alguém"} aceitou sua conexão!`,
       });
-      toast({ title: "Conexão aceita! 🤝" });
+      toast({ title: "Conexão aceita!" });
     }
   };
 

@@ -75,7 +75,7 @@ export default function FounderMatch() {
         }).catch(() => {});
       }
       setShowConfetti(true);
-      toast({ title: "Perfil publicado! 🚀" });
+      toast({ title: "Perfil publicado!" });
       setTimeout(() => navigate("/founder-feed"), 2000);
     }
   };

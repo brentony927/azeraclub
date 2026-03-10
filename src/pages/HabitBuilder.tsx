@@ -43,7 +43,7 @@ export default function HabitBuilder() {
     if (h.last_checked === today) { toast.info("Já registrado hoje!"); return; }
     const newStreak = h.last_checked === new Date(Date.now() - 86400000).toISOString().split("T")[0] ? h.streak + 1 : 1;
     await (supabase.from("habits" as any).update as any)({ streak: newStreak, last_checked: today }).eq("id", h.id);
-    fetch_(); toast.success(`🔥 Streak: ${newStreak} dias!`);
+    fetch_(); toast.success(`Streak: ${newStreak} dias!`);
   };
 
   const del = async (id: string) => {

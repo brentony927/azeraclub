@@ -82,7 +82,7 @@ export default function MessageGroupDialog({ onGroupCreated, connections }: Prop
     setPhotoFile(null);
     setPhotoPreview(null);
     onGroupCreated();
-    toast({ title: "Grupo criado! 🎉" });
+    toast({ title: "Grupo criado!" });
   };
 
   return (

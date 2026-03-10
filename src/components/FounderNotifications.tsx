@@ -127,7 +127,7 @@ export default function FounderNotifications() {
         type: "connection",
         title: `${myProfile?.name || "Alguém"} aceitou sua conexão!`,
       });
-      toast({ title: "Conexão aceita! 🤝" });
+      toast({ title: "Conexão aceita!" });
     }
     setActionLoading(null);
   };

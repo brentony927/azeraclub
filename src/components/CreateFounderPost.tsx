@@ -154,7 +154,7 @@ export default function CreateFounderPost({ onPostCreated }: Props) {
       setFiles([]);
       setPreviews([]);
       onPostCreated();
-      toast({ title: "Publicado! ✨" });
+      toast({ title: "Publicado!" });
     }
   };
 
