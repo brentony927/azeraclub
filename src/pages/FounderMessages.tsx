@@ -56,16 +56,17 @@ export default function FounderMessages() {
   useEffect(() => {
     if (!user) return;
     const fetchData = async () => {
-      // Fetch blocked users, pins, messages, groups, owner in parallel
-      const [blocksRes, pinsRes, msgsRes, groupMembersRes, ownerRes] = await Promise.all([
+      // Fetch owner
+      const ownerRes = await supabase.from("founder_profiles").select("user_id").eq("is_site_owner" as any, true).limit(1);
+      if (ownerRes.data && ownerRes.data.length > 0) setOwnerUserId(ownerRes.data[0].user_id);
+
+      // Fetch blocked users, pins, messages, groups in parallel
+      const [blocksRes, pinsRes, msgsRes, groupMembersRes] = await Promise.all([
         supabase.from("user_blocks").select("blocked_id").eq("blocker_id", user.id),
         supabase.from("pinned_conversations" as any).select("*").eq("user_id", user.id),
         supabase.from("founder_messages").select("*").or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`).order("created_at", { ascending: false }),
         supabase.from("message_group_members" as any).select("group_id").eq("user_id", user.id),
-        supabase.from("founder_profiles").select("user_id").eq("is_site_owner" as any, true).maybeSingle(),
       ]);
-
-      if (ownerRes.data) setOwnerUserId((ownerRes.data as any).user_id);
 
       const blocked = new Set<string>(blocksRes.data?.map((b: any) => b.blocked_id) || []);
       setBlockedIds(blocked);
