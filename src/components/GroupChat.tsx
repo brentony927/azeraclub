@@ -28,7 +28,7 @@ interface Props {
   ownerUserId?: string;
 }
 
-export default function GroupChat({ groupId, groupName }: Props) {
+export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<GroupMessage[]>([]);
   const [members, setMembers] = useState<GroupMember[]>([]);
