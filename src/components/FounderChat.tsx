@@ -246,8 +246,16 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
         {messages.map(msg => {
           const isMine = msg.from_user_id === user?.id;
           const isOwnerMsg = isMine ? isMeOwner : isOtherOwner;
+          const avatar = isMine ? myAvatar : otherUserAvatar;
+          const initials = isMine ? "Eu" : otherUserName?.charAt(0)?.toUpperCase() || "?";
           return (
-            <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+            <div key={msg.id} className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
+              {!isMine && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatar ? <AvatarImage src={avatar} /> : null}
+                  <AvatarFallback className="text-[9px]">{initials}</AvatarFallback>
+                </Avatar>
+              )}
               <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
                 isOwnerMsg
                   ? "owner-message rounded-br-md"
@@ -260,6 +268,12 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
                   {format(new Date(msg.created_at), "HH:mm")}
                 </p>
               </div>
+              {isMine && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatar ? <AvatarImage src={avatar} /> : null}
+                  <AvatarFallback className="text-[9px]">Eu</AvatarFallback>
+                </Avatar>
+              )}
             </div>
           );
         })}

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import PricingSection, { type PricingPlan } from "@/components/ui/pricing-section";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle } from "lucide-react";
+import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const tiers = {

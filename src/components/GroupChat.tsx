@@ -158,7 +158,13 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
           const isMe = m.user_id === user?.id;
           const isOwnerMsg = ownerUserId && m.user_id === ownerUserId;
           return (
-            <div key={m.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+            <div key={m.id} className={`flex items-end gap-2 ${isMe ? "justify-end" : "justify-start"}`}>
+              {!isMe && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatars[m.user_id] ? <AvatarImage src={avatars[m.user_id]!} /> : null}
+                  <AvatarFallback className="text-[9px]">{(names[m.user_id] || "?").charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+              )}
               <div className={`max-w-[75%] px-3 py-2 rounded-xl text-sm ${
                 isOwnerMsg
                   ? "owner-message"
@@ -170,6 +176,12 @@ export default function GroupChat({ groupId, groupName, ownerUserId }: Props) {
                   {new Date(m.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
+              {isMe && (
+                <Avatar className="h-6 w-6 shrink-0">
+                  {avatars[m.user_id] ? <AvatarImage src={avatars[m.user_id]!} /> : null}
+                  <AvatarFallback className="text-[9px]">Eu</AvatarFallback>
+                </Avatar>
+              )}
             </div>
           );
         })}

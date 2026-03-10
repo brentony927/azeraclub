@@ -531,6 +531,19 @@ export default function FounderFeed() {
 
           {/* Founders Tab */}
           <TabsContent value="founders" className="mt-4">
+            {myProfile && (
+              <div className="mb-4">
+                <Button
+                  variant={sortByMatch ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSortByMatch(!sortByMatch)}
+                  className="text-xs"
+                >
+                  <HeartHandshake className="h-4 w-4 mr-1" />
+                  Mais Parecidos Comigo
+                </Button>
+              </div>
+            )}
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (<FounderCardSkeleton key={i} />))}

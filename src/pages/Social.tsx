@@ -51,8 +51,12 @@ export default function Social() {
           {events.map((ev) => (
             <motion.div key={ev.id} variants={item} className="glass-card-hover p-6">
               <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-xl shrink-0">
-                  {typeIcons[ev.type || ""] || "📅"}
+                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  {typeIconMap[ev.type || ""] ? (
+                    <Icon3D icon={typeIconMap[ev.type!].icon} color={typeIconMap[ev.type!].color} size="md" />
+                  ) : (
+                    <Icon3D icon={CalendarDays} color="silver" size="md" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="flex items-start justify-between gap-2">

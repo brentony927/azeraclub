@@ -326,7 +326,11 @@ function ConversationItem({ conv, isSelected, onSelect, onTogglePin }: {
     <div className={`flex items-center border-b border-border/30 hover:bg-secondary/50 transition-colors ${isSelected ? "bg-secondary/70" : ""}`}>
       <button onClick={onSelect} className="flex-1 text-left p-4">
         <div className="flex justify-between items-start">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-7 w-7 shrink-0">
+              {conv.avatarUrl ? <AvatarImage src={conv.avatarUrl} /> : null}
+              <AvatarFallback className="text-[10px]">{conv.name?.charAt(0)?.toUpperCase() || "?"}</AvatarFallback>
+            </Avatar>
             {conv.isPinned && <Pin className="h-3 w-3 text-primary shrink-0" />}
             <p className="font-medium text-sm text-foreground">{conv.name}</p>
           </div>

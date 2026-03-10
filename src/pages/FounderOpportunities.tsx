@@ -265,8 +265,9 @@ export default function FounderOpportunities() {
         )}
       </div>
 
-      <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30">
-        <p className="text-[10px] text-muted-foreground">⚠️ As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
+      <div className="mb-4 p-3 rounded-lg bg-muted/30 border border-border/30 flex items-start gap-2">
+        <Icon3D icon={AlertTriangle} color="gold" size="xs" className="mt-0.5 shrink-0" />
+        <p className="text-[10px] text-muted-foreground">As oportunidades publicadas não são verificadas pela AZERA. Avalie cuidadosamente antes de participar ou investir.</p>
       </div>
 
       {opps.length === 0 ? (
