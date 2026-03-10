@@ -48,6 +48,7 @@ export default function FounderPostCard({
   const [commentText, setCommentText] = useState("");
   const [sendingComment, setSendingComment] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
   const isOwn = user?.id === post.user_id;
   const initials = authorName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
