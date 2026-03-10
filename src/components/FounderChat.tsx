@@ -62,6 +62,13 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
   const isFounder = !canAccess("pro");
   const remaining = Math.max(0, WEEKLY_LIMIT - weeklyCount);
 
+  // Load my avatar
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("founder_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => { if (data?.avatar_url) setMyAvatar(data.avatar_url); });
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
 
