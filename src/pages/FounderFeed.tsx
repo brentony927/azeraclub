@@ -95,6 +95,8 @@ export default function FounderFeed() {
   const [postsLoading, setPostsLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("posts");
+  const [myPostsSort, setMyPostsSort] = useState<"recent" | "oldest">("recent");
+  const [myPostsType, setMyPostsType] = useState<"all" | "photo" | "text">("all");
 
   const fetchData = useCallback(async () => {
     if (!user) return;
