@@ -222,10 +222,10 @@ export default function FounderProfile() {
       </button>
 
       {/* === 1. HEADER === */}
-      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+      <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
         <CardContent className="p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-2 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
+            <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden shrink-0 ring-3 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
               ) : (
@@ -234,7 +234,7 @@ export default function FounderProfile() {
             </div>
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-                <h1 className="text-2xl font-bold text-foreground">{profile.name}</h1>
+                <h1 className={`text-2xl font-bold ${isSiteOwner ? "owner-name" : "text-foreground"}`}>{profile.name}</h1>
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
                 {isSiteOwner && (
                   <Badge className="owner-badge text-[10px] font-bold">👑 DONO · AZERA</Badge>
@@ -268,18 +268,18 @@ export default function FounderProfile() {
                 <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {profile.profile_views || 0} visualizações</span>
               </div>
               {/* Founder Score */}
-              <div className="pt-2">
+              <div className={`pt-2 ${isSiteOwner ? "owner-progress" : ""}`}>
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" /> Founder Score
                   </h3>
                   <div className="flex items-center gap-2">
                     {founderScore && (
-                      <span className={`text-xs font-bold ${LEVEL_COLORS[founderScore.level] || "text-foreground"}`}>
+                      <span className={`text-xs font-bold ${isSiteOwner ? "text-[hsl(0,100%,50%)]" : LEVEL_COLORS[founderScore.level] || "text-foreground"}`}>
                         {founderScore.level}
                       </span>
                     )}
-                    <span className="text-xs font-semibold text-foreground">{founderScore?.total_score ?? repScore}/100</span>
+                    <span className={`text-xs font-semibold ${isSiteOwner ? "text-[hsl(0,100%,55%)]" : "text-foreground"}`}>{founderScore?.total_score ?? repScore}/100</span>
                   </div>
                 </div>
                 <Progress value={founderScore?.total_score ?? repScore} className="h-2" />
@@ -328,9 +328,9 @@ export default function FounderProfile() {
           { label: "Projetos", value: projectsJoined, icon: Briefcase },
           { label: "Oportunidades", value: oppsCount, icon: Lightbulb },
         ].map(s => (
-          <Card key={s.label} className="border-border/50 bg-card/80 backdrop-blur-sm">
+          <Card key={s.label} className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-stat-card" : ""}`}>
             <CardContent className="p-4 flex flex-col items-center gap-1">
-              <s.icon className="h-4 w-4 text-muted-foreground" />
+              <s.icon className={`h-4 w-4 ${isSiteOwner ? "text-[hsl(0,100%,55%)]" : "text-muted-foreground"}`} />
               <span className="text-xl font-bold text-foreground">{s.value}</span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
             </CardContent>
@@ -340,7 +340,7 @@ export default function FounderProfile() {
 
       {/* === 3. BIO === */}
       {profile.building && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Bio</h3>
             <p className="text-sm text-foreground leading-relaxed">{profile.building}</p>
@@ -349,7 +349,7 @@ export default function FounderProfile() {
       )}
 
       {/* === 4. CURRENT VENTURE === */}
-      <Card className="border-primary/20 bg-card/80 backdrop-blur-sm">
+      <Card className={`border-primary/20 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
         <CardContent className="p-6">
           <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
             <Rocket className="h-3.5 w-3.5" /> Venture Atual
@@ -372,7 +372,7 @@ export default function FounderProfile() {
 
       {/* === 5. LOOKING FOR === */}
       {profile.looking_for?.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Procurando</h3>
             <div className="flex flex-wrap gap-2">
@@ -384,7 +384,7 @@ export default function FounderProfile() {
 
       {/* === 6. SKILLS === */}
       {profile.skills?.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Habilidades</h3>
             <div className="flex flex-wrap gap-2">
@@ -396,7 +396,7 @@ export default function FounderProfile() {
 
       {/* === 7. INTERESTS === */}
       {profile.interests?.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Interesses</h3>
             <div className="flex flex-wrap gap-1.5">
@@ -410,7 +410,7 @@ export default function FounderProfile() {
 
       {/* === 8. VENTURES PORTFOLIO === */}
       {ventures.length > 0 && (
-        <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
           <CardContent className="p-6">
             <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Ventures</h3>
             <div className="space-y-3">
