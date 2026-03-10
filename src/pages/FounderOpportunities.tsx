@@ -296,13 +296,21 @@ export default function FounderOpportunities() {
                         variant="outline"
                         size="sm"
                         className="h-7 text-xs"
-                        onClick={() => navigate("/founder-messages", {
-                          state: {
-                            selectedUser: opp.user_id,
-                            selectedUserName: authorNames[opp.user_id] || "Founder",
-                            opportunityContext: opp.title,
-                          }
-                        })}
+                        onClick={() => {
+                          sendNotification({
+                            user_id: opp.user_id,
+                            type: "opportunity_reply",
+                            title: `Alguém respondeu à sua oportunidade "${opp.title.slice(0, 50)}" 🎯`,
+                            action_url: "/founder-messages",
+                          });
+                          navigate("/founder-messages", {
+                            state: {
+                              selectedUser: opp.user_id,
+                              selectedUserName: authorNames[opp.user_id] || "Founder",
+                              opportunityContext: opp.title,
+                            }
+                          });
+                        }}
                       >
                         <MessageCircle className="h-3 w-3 mr-1" /> Responder
                       </Button>

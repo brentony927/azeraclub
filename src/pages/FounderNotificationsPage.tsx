@@ -59,6 +59,9 @@ const TYPE_ROUTES: Record<string, string> = {
   new_founders: "/founder-feed",
   trending_industry: "/trend-scanner",
   ai_opportunity: "/opportunity-radar",
+  post_like: "/founder-feed",
+  post_comment: "/founder-feed",
+  opportunity_reply: "/founder-messages",
 };
 
 export default function FounderNotificationsPage() {

@@ -132,6 +132,23 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Notify the recipient
+    try {
+      const { data: senderProfile } = await serviceClient
+        .from("founder_profiles")
+        .select("name")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const senderName = senderProfile?.name || "Alguém";
+      await serviceClient.from("founder_notifications").insert({
+        user_id: to_user_id,
+        type: "message",
+        title: `${senderName} enviou uma mensagem 💬`,
+        action_url: "/founder-messages",
+        related_user_id: userId,
+      });
+    } catch (_) { /* non-critical */ }
+
     return new Response(JSON.stringify({ message: inserted }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

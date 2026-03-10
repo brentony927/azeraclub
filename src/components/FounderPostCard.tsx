@@ -184,7 +184,7 @@ export default function FounderPostCard({
         </button>
         <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <MessageCircle className="h-4 w-4" />
-          {commentsCount > 0 && <span>{commentsCount}</span>}
+          {localCommentsCount > 0 && <span>{localCommentsCount}</span>}
         </button>
         <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <Share2 className="h-4 w-4" />
