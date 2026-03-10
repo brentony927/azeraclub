@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">6. Direitos do Utilizador</h2>
+            <h2 className="text-lg font-serif font-semibold">8. Direitos do Utilizador</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">Os utilizadores têm o direito de:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
               <li>Aceder aos seus dados pessoais</li>
