@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, MapPin, Clock, Dumbbell, Stethoscope, Sparkles, Leaf, Plus } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useHealthAppointments } from "@/hooks/useUserData";
