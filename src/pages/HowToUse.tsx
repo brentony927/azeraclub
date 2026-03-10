@@ -59,10 +59,10 @@ const sections: GuideSection[] = [
   },
   {
     icon: MessageCircle,
-    title: "Mensagens",
+    title: "Conversas",
     description: "Comunique-se em privado com outros founders da plataforma.",
     steps: [
-      "Aceda a 'Mensagens' no menu Founder Alignment",
+      "Aceda a 'Conversas' no menu Founder Alignment",
       "Selecione uma conversa ou inicie uma nova a partir de um perfil",
       "Use o menu ⋮ para bloquear ou denunciar utilizadores",
       "Plano gratuito: 10 mensagens/semana — upgrade para ilimitado",
