@@ -69,8 +69,17 @@ const FounderCard = memo(function FounderCard({
         )}
       </div>
 
+      {/* Owner badge */}
+      {isSiteOwner && (
+        <div className="absolute top-2 left-2">
+          <Badge className="owner-badge text-[9px] font-bold">
+            👑 OWNER
+          </Badge>
+        </div>
+      )}
+
       {/* Business Founder badge with shimmer */}
-      {isHighlighted && (
+      {isHighlighted && !isSiteOwner && (
         <div className="absolute top-2 left-2">
           <Badge 
             className="text-[hsl(0,0%,4%)] text-[9px] font-bold border-0"
