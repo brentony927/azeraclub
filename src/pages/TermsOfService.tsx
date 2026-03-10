@@ -185,9 +185,9 @@ export default function TermsOfService() {
             </p>
           </section>
 
-          {/* 8 — Suspensão de Contas */}
+          {/* 11 — Suspensão de Contas */}
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">8. Suspensão e Encerramento de Contas</h2>
+            <h2 className="text-lg font-serif font-semibold">11. Suspensão e Encerramento de Contas</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">O AZERA CLUB reserva-se o direito de suspender ou encerrar contas que:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
               <li>Violem estes Termos de Uso</li>
