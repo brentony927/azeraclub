@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Logo + Brand */}
           <div className="flex items-center gap-2.5">
             <img src={azeraLogo} alt="AZERA" className="w-6 h-6 rounded-md object-contain opacity-60" />
-            <span className="font-serif font-semibold text-sm text-muted-foreground/50 tracking-widest uppercase">Azera Club</span>
+            <span className="font-serif font-semibold text-sm text-muted-foreground tracking-widest uppercase">Azera Club</span>
           </div>
 
           {/* Nav */}
@@ -36,7 +36,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-xs text-muted-foreground/40 hover:text-foreground transition-colors duration-200"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
               </Link>
@@ -49,7 +49,7 @@ export default function Footer() {
               <span key={link.href} className="flex items-center">
                 <Link
                   to={link.href}
-                  className="text-[10px] text-muted-foreground/30 hover:text-foreground transition-colors duration-200 px-1"
+                  className="text-[10px] text-muted-foreground hover:text-foreground transition-colors duration-200 px-1"
                 >
                   {link.label}
                 </Link>
@@ -59,7 +59,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <p className="text-[10px] text-muted-foreground/25 text-center mt-4">© 2026 Azera Club</p>
+        <p className="text-[10px] text-muted-foreground text-center mt-4">© 2026 Azera Club</p>
       </div>
     </footer>
   );
