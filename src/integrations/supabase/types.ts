@@ -1773,6 +1773,14 @@ export type Database = {
           longitude: number
         }[]
       }
+      is_venture_member: {
+        Args: { p_user_id: string; p_venture_id: string }
+        Returns: boolean
+      }
+      is_venture_owner: {
+        Args: { p_user_id: string; p_venture_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

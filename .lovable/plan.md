@@ -1,32 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-## Plano: Corrigir Problemas Identificados
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-### Problema Principal: Recursão Infinita nas Policies de `ventures`
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-A tabela `ventures` tem policies SELECT que referenciam `venture_members`, e `venture_members` tem policies SELECT que referenciam `ventures`. Isto cria um loop infinito.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**Erro:** `"infinite recursion detected in policy for relation "ventures""`
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**Causa:** Existem 6 policies sobrepostas na tabela `ventures`:
-1. `Users manage own ventures` (ALL) — referencia `venture_members`
-2. `Owners and members can view ventures` (SELECT) — referencia `venture_members`
-3. `venture_select` (SELECT) — referencia `venture_members`
-4. `venture_insert` (INSERT)
-5. `venture_update` (UPDATE) — referencia `venture_members`
-6. `venture_delete` (DELETE)
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-E `venture_members` tem policies que referenciam `ventures` de volta.
-
-### Solução
-
-1. **Migração SQL** para:
-   - Criar uma função `SECURITY DEFINER` `is_venture_member(user_id, venture_id)` que consulta `venture_members` sem passar por RLS
-   - Criar uma função `SECURITY DEFINER` `is_venture_owner(user_id, venture_id)` que consulta `ventures` sem passar por RLS
-   - Remover TODAS as 6 policies existentes da tabela `ventures`
-   - Remover as policies problemáticas de `venture_members`
-   - Recriar policies simples usando as funções SECURITY DEFINER (quebrando o ciclo)
-
-### Ficheiros a editar
-- Nova migração SQL (corrigir RLS recursivo)
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
