@@ -1942,11 +1942,20 @@
 
 /* ============ MOBILE PERFORMANCE OPTIMIZATIONS ============ */
 @media (max-width: 768px) {
+  /* GPU acceleration for smooth scrolling */
+  .owner-card,
+  .glass-card,
+  .glass-card-hover {
+    will-change: transform;
+    transform: translateZ(0);
+    contain: layout style paint;
+  }
+
   /* Reduce blur intensity on mobile */
   .glass-card,
   .glass-card-hover {
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
   }
 
   /* Disable heavy animations on mobile */
@@ -1961,6 +1970,12 @@
     filter: blur(60px) !important;
   }
 
+  /* Simplify owner card glow on mobile */
+  .owner-card {
+    animation: none !important;
+    box-shadow: 0 0 20px hsl(0 100% 50% / 0.3) !important;
+  }
+
   /* Disable heavy keyframe animations */
   .azera-brand-text::after {
     animation: none !important;
@@ -1972,6 +1987,12 @@
   .glass-card-hover::before,
   .glass-card-hover::after {
     box-shadow: none !important;
+  }
+
+  /* Lazy render off-screen cards */
+  .founder-card-wrap {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 320px;
   }
 }
 
