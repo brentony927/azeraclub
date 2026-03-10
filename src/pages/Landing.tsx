@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3 } from "lucide-react";
+import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { lazy, Suspense } from "react";
@@ -8,6 +8,8 @@ const ParticlesBackground = lazy(() => import("@/components/ParticlesBackground"
 import ScrollReveal from "@/components/ScrollReveal";
 import Footer from "@/components/Footer";
 import { usePublicLogo } from "@/hooks/useAzeraLogo";
+import ActivityTicker from "@/components/ActivityTicker";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 const features = [
   {
@@ -184,6 +186,46 @@ export default function Landing() {
             </div>
           </motion.div>
         </div>
+      </section>
+
+      {/* ===== ACTIVITY TICKER ===== */}
+      <ActivityTicker />
+
+      {/* ===== STATS ANIMADOS ===== */}
+      <section className="py-16 sm:py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 gap-8">
+            <AnimatedCounter value={250} suffix="+" label="Founders Ativos" />
+            <AnimatedCounter value={12} suffix="+" label="Países" />
+            <AnimatedCounter value={45} suffix="" label="Ventures Criados" />
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CLUBE EXCLUSIVO ===== */}
+      <section className="py-16 sm:py-20 px-4">
+        <ScrollReveal className="max-w-3xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
+            <Shield className="h-4 w-4 text-primary" />
+            <span className="text-sm font-semibold text-foreground">Comunidade Curada</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold">
+            Não é uma ferramenta. <span className="moss-text">É um clube.</span>
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            A AZERA reúne uma comunidade curada de mentes ambiciosas — empreendedores, criadores e estrategistas que partilham objetivos, oportunidades e visão de futuro.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="flex -space-x-2">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                  {String.fromCharCode(65 + i)}
+                </div>
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">+250 membros activos</span>
+          </div>
+        </ScrollReveal>
       </section>
 
       {/* ===== COMO FUNCIONA ===== */}

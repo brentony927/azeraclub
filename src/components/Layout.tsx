@@ -13,6 +13,7 @@ import EliteBackground from "@/components/EliteBackground";
 import PageTransition from "@/components/PageTransition";
 import DevelopmentBanner from "@/components/DevelopmentBanner";
 import BackgroundToggle, { useBackgroundMode } from "@/components/BackgroundToggle";
+import CommandPalette from "@/components/CommandPalette";
 
 export default function Layout() {
   const { plan } = useSubscription();
@@ -62,6 +63,7 @@ export default function Layout() {
               <SidebarTrigger className="text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" />
             </div>
             <div className="flex items-center gap-1">
+              <CommandPalette />
               {isPremium && <BackgroundToggle mode={bgMode} onToggle={setBgMode} />}
               <ThemeToggle />
             </div>

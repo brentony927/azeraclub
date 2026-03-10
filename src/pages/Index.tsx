@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb } from "lucide-react";
+import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Lightbulb, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ActivityTicker from "@/components/ActivityTicker";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,11 +51,11 @@ interface Notification {
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
-function getGreeting(): { text: string; emoji: string } {
+function getGreeting(): { text: string; emoji: string; motivational: string } {
   const h = new Date().getHours();
-  if (h < 12) return { text: "Bom dia", emoji: "☀️" };
-  if (h < 18) return { text: "Boa tarde", emoji: "🌤️" };
-  return { text: "Boa noite", emoji: "🌙" };
+  if (h < 12) return { text: "Bom dia", emoji: "☀️", motivational: "Comece o dia com foco." };
+  if (h < 18) return { text: "Boa tarde", emoji: "🌤️", motivational: "Mantenha o momentum." };
+  return { text: "Boa noite", emoji: "🌙", motivational: "Reflita sobre as conquistas de hoje." };
 }
 
 const AI_TIPS = [
@@ -174,12 +175,13 @@ export default function Index() {
       {showTutorial && user && (
         <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
       )}
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-5 md:space-y-8 pb-20 md:pb-0">
       {/* Greeting + Notification Bell */}
       <motion.div variants={item} className="space-y-2">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold greeting-gradient-text">
           {greeting.emoji} {greeting.text}, {displayName.split(" ")[0]}.
         </h1>
+        <p className="text-xs text-muted-foreground/70 italic">{greeting.motivational}</p>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
             📅 Hoje: {pendingCount} {pendingCount === 1 ? "tarefa pendente" : "tarefas pendentes"}
@@ -242,6 +244,35 @@ export default function Index() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+      </motion.div>
+
+      {/* Quick Actions Bento Grid */}
+      <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { icon: Brain, label: "AZERA IA", desc: "Conversar", url: "/ia", accent: "bg-primary/10" },
+          { icon: CalendarDays, label: "Agenda", desc: "Planear o dia", url: "/agenda", accent: "bg-primary/10" },
+          { icon: Users, label: "Founders", desc: "Networking", url: "/founder-match", accent: "bg-primary/10" },
+          { icon: Radar, label: "Radar", desc: "Oportunidades", url: "/radar-oportunidades", accent: "bg-primary/10" },
+        ].map((action) => (
+          <Card
+            key={action.label}
+            className="glass-card card-shine border-border/20 cursor-pointer hover:border-primary/30 hover:scale-[1.02] transition-all group"
+            onClick={() => navigate(action.url)}
+          >
+            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+              <div className={`w-12 h-12 rounded-xl ${action.accent} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <action.icon className="h-6 w-6 text-primary" />
+              </div>
+              <p className="text-sm font-semibold">{action.label}</p>
+              <p className="text-[10px] text-muted-foreground">{action.desc}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </motion.div>
+
+      {/* Activity Ticker */}
+      <motion.div variants={item} className="rounded-xl overflow-hidden border border-border/20">
+        <ActivityTicker />
       </motion.div>
 
       {/* AZERA Score + AI Tip row */}
