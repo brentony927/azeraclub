@@ -205,6 +205,7 @@ export default function FounderProfile() {
   const matchScore = myProfile && !isOwn ? calculateMatchScore(myProfile, profile) : null;
   const repScore = Math.min(100, profile.reputation_score || 0);
   const founderBadge = getFounderBadge(profile);
+  const isSiteOwner = !!(profile as any).is_site_owner;
 
   // shared interests
   const myInterests: string[] = myProfile?.interests || [];
