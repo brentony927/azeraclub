@@ -51,11 +51,11 @@ interface Notification {
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
-function getGreeting(): { text: string; emoji: string } {
+function getGreeting(): { text: string; emoji: string; motivational: string } {
   const h = new Date().getHours();
-  if (h < 12) return { text: "Bom dia", emoji: "☀️" };
-  if (h < 18) return { text: "Boa tarde", emoji: "🌤️" };
-  return { text: "Boa noite", emoji: "🌙" };
+  if (h < 12) return { text: "Bom dia", emoji: "☀️", motivational: "Comece o dia com foco." };
+  if (h < 18) return { text: "Boa tarde", emoji: "🌤️", motivational: "Mantenha o momentum." };
+  return { text: "Boa noite", emoji: "🌙", motivational: "Reflita sobre as conquistas de hoje." };
 }
 
 const AI_TIPS = [
