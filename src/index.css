@@ -620,9 +620,54 @@
 }
 
 .owner-card {
-  border: 2px solid hsl(0, 100%, 50%, 0.5) !important;
-  box-shadow: 0 0 20px hsl(0, 100%, 50%, 0.15), 0 0 40px hsl(0, 100%, 50%, 0.05);
-  background: linear-gradient(135deg, hsl(0, 100%, 50%, 0.05), transparent) !important;
+  border: 2px solid hsl(0, 100%, 50%, 0.6) !important;
+  box-shadow: 0 0 25px hsl(0, 100%, 50%, 0.25), 0 0 50px hsl(0, 100%, 50%, 0.1);
+  background:
+    radial-gradient(ellipse at top right, hsl(0, 100%, 50%, 0.15), transparent 60%),
+    radial-gradient(ellipse at bottom left, hsl(0, 100%, 40%, 0.1), transparent 60%),
+    linear-gradient(135deg, hsl(0, 100%, 50%, 0.08), transparent) !important;
+  animation: ownerCardGlow 3s ease-in-out infinite;
+}
+
+.owner-card:hover {
+  border-color: hsl(0, 100%, 50%, 0.8) !important;
+  box-shadow: 0 0 35px hsl(0, 100%, 50%, 0.35), 0 0 60px hsl(0, 100%, 50%, 0.15);
+}
+
+/* Owner card name — red glow */
+.owner-card .owner-card-name {
+  color: hsl(0, 100%, 50%) !important;
+  text-shadow: 0 0 8px hsl(0, 100%, 50%, 0.6), 0 0 20px hsl(0, 100%, 50%, 0.3);
+  font-weight: 700;
+}
+
+/* Owner card badges — red tint */
+.owner-card .owner-card-skill {
+  background: hsl(0, 100%, 50%, 0.12) !important;
+  border-color: hsl(0, 100%, 50%, 0.3) !important;
+  color: hsl(0, 80%, 65%) !important;
+}
+
+/* Owner card buttons */
+.owner-card .owner-card-btn {
+  border-color: hsl(0, 100%, 50%, 0.4) !important;
+  color: hsl(0, 100%, 60%) !important;
+}
+.owner-card .owner-card-btn:hover {
+  background: hsl(0, 100%, 50%, 0.1) !important;
+}
+.owner-card .owner-card-btn-primary {
+  background: linear-gradient(135deg, hsl(0, 100%, 45%), hsl(0, 100%, 35%)) !important;
+  border: none !important;
+  color: white !important;
+}
+.owner-card .owner-card-btn-primary:hover {
+  background: linear-gradient(135deg, hsl(0, 100%, 50%), hsl(0, 100%, 40%)) !important;
+}
+
+@keyframes ownerCardGlow {
+  0%, 100% { box-shadow: 0 0 25px hsl(0, 100%, 50%, 0.25), 0 0 50px hsl(0, 100%, 50%, 0.1); }
+  50% { box-shadow: 0 0 35px hsl(0, 100%, 50%, 0.35), 0 0 65px hsl(0, 100%, 50%, 0.18); }
 }
 
 @keyframes shimmerOwner {
