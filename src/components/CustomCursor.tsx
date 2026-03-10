@@ -1,39 +1,36 @@
 import { useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const rafRef = useRef<number>(0);
+  const posRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (isMobile) return;
     const cursor = cursorRef.current;
     if (!cursor) return;
 
     const move = (e: MouseEvent) => {
-      cursor.style.left = `${e.clientX}px`;
-      cursor.style.top = `${e.clientY}px`;
+      posRef.current.x = e.clientX;
+      posRef.current.y = e.clientY;
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          cursor.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0)`;
+          rafRef.current = 0;
+        });
+      }
     };
 
-    const addHover = () => cursor.classList.add("cursor-hover");
-    const removeHover = () => cursor.classList.remove("cursor-hover");
-
-    document.addEventListener("mousemove", move);
-
-    const observe = () => {
-      const interactives = document.querySelectorAll("a, button, input, textarea, select, [role='button'], .glass-card-hover, .btn-premium");
-      interactives.forEach((el) => {
-        el.addEventListener("mouseenter", addHover);
-        el.addEventListener("mouseleave", removeHover);
-      });
-    };
-
-    observe();
-    const observer = new MutationObserver(observe);
-    observer.observe(document.body, { childList: true, subtree: true });
-
+    document.addEventListener("mousemove", move, { passive: true });
     return () => {
       document.removeEventListener("mousemove", move);
-      observer.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return <div ref={cursorRef} id="custom-cursor" />;
 }

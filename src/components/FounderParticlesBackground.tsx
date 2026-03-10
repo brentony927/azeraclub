@@ -16,27 +16,23 @@ export default function FounderParticlesBackground() {
       options={{
         fullScreen: false,
         background: { color: { value: "transparent" } },
-        fpsLimit: 60,
+        fpsLimit: 30,
         particles: {
           color: { value: ["#6366f1", "#8b5cf6", "#a78bfa"] },
           links: {
-            color: "#6366f1",
-            distance: 150,
-            enable: true,
-            opacity: 0.12,
-            width: 1,
+            enable: false,
           },
           move: {
             enable: true,
-            speed: 0.6,
+            speed: 0.4,
             direction: "none",
             outModes: { default: "bounce" },
           },
           number: {
-            density: { enable: true, area: 1000 },
-            value: 70,
+            density: { enable: true, area: 1200 },
+            value: 30,
           },
-          opacity: { value: 0.25 },
+          opacity: { value: 0.2 },
           shape: { type: "circle" },
           size: { value: { min: 1, max: 3 } },
         },

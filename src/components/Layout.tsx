@@ -70,11 +70,9 @@ export default function Layout() {
           </header>
           <main className="flex-1 overflow-auto p-3 sm:p-6 lg:p-8 pb-20 md:pb-8 relative z-10">
             <DevelopmentBanner />
-            <AnimatePresence mode="wait">
-              <PageTransition key={location.pathname}>
-                <Outlet />
-              </PageTransition>
-            </AnimatePresence>
+            <PageTransition key={location.pathname}>
+              <Outlet />
+            </PageTransition>
           </main>
           <div className="hidden md:block">
             <Footer />
