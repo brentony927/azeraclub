@@ -145,7 +145,7 @@ export default function Profile() {
     setOpportunitiesCount(oppRes.count || 0);
 
     // Fetch profile visit count
-    const { count: vc } = await supabase.from("profile_visits" as any)
+    const { count: vc } = await supabase.from("profile_visits")
       .select("id", { count: "exact", head: true })
       .eq("profile_user_id", user!.id);
     setVisitCount(vc || 0);
