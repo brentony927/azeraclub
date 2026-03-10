@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3 } from "lucide-react";
+import { Brain, Radar, Users, ArrowRight, Sparkles, Target, BarChart3, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { lazy, Suspense } from "react";
@@ -8,6 +8,8 @@ const ParticlesBackground = lazy(() => import("@/components/ParticlesBackground"
 import ScrollReveal from "@/components/ScrollReveal";
 import Footer from "@/components/Footer";
 import { usePublicLogo } from "@/hooks/useAzeraLogo";
+import ActivityTicker from "@/components/ActivityTicker";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 const features = [
   {
