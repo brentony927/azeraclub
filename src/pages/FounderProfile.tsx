@@ -236,6 +236,9 @@ export default function FounderProfile() {
               <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                 <h1 className="text-2xl font-bold text-foreground">{profile.name}</h1>
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
+                {isSiteOwner && (
+                  <Badge className="owner-badge text-[10px] font-bold">👑 DONO · AZERA</Badge>
+                )}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>
               {profile.username && (

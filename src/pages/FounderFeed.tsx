@@ -559,6 +559,7 @@ export default function FounderFeed() {
                       matchScore={p.matchScore}
                       username={p.username}
                       founderLevel={founderLevels[p.user_id] || null}
+                      isSiteOwner={!!(p as any).is_site_owner}
                     />
                   ))}
                 </div>
