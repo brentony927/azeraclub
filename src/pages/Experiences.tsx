@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bookmark, MapPin, Calendar, Filter, Plus } from "lucide-react";
+import { Bookmark, MapPin, Calendar, Filter, Plus, Wine } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Icon3D from "@/components/ui/icon-3d";
 import { Badge } from "@/components/ui/badge";
 import { useExperiences, useToggleExperienceSaved } from "@/hooks/useUserData";
 import EmptyState from "@/components/EmptyState";
