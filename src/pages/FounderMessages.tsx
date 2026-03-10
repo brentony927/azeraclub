@@ -298,6 +298,8 @@ export default function FounderMessages() {
                 otherUserName={selectedUser.name}
                 onBlock={handleBlock}
                 onDeleteConversation={handleDeleteConversation}
+                isOtherOwner={ownerUserId === selectedUser.userId}
+                isMeOwner={ownerUserId === user?.id}
               />
             </>
           ) : (
