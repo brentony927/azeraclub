@@ -6,6 +6,8 @@ import FounderCard from "@/components/FounderCard";
 import FounderCardSkeleton from "@/components/FounderCardSkeleton";
 import FounderNotifications from "@/components/FounderNotifications";
 import FounderActivityFeed from "@/components/FounderActivityFeed";
+import CreateFounderPost from "@/components/CreateFounderPost";
+import FounderPostCard from "@/components/FounderPostCard";
 import { lazy, Suspense } from "react";
 const FounderParticlesBackground = lazy(() => import("@/components/FounderParticlesBackground"));
 import UpgradeTrigger from "@/components/UpgradeTrigger";
@@ -14,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Users, Filter, X, Lock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/sendNotification";
@@ -44,6 +47,24 @@ interface FounderProfile {
   username: string | null;
 }
 
+interface PostData {
+  id: string;
+  user_id: string;
+  content: string;
+  media_urls: string[];
+  created_at: string;
+}
+
+interface CommentData {
+  id: string;
+  post_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  author_name?: string;
+  author_avatar?: string;
+}
+
 export default function FounderFeed() {
   const { user } = useAuth();
   const { plan, canAccess } = useSubscription();
@@ -62,8 +83,18 @@ export default function FounderFeed() {
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [userPlans, setUserPlans] = useState<Record<string, string>>({});
   const [founderLevels, setFounderLevels] = useState<Record<string, string>>({});
+
+  // Posts state
+  const [posts, setPosts] = useState<PostData[]>([]);
+  const [postAuthors, setPostAuthors] = useState<Record<string, { name: string; avatar: string | null; username: string | null }>>({});
+  const [postLikes, setPostLikes] = useState<Record<string, number>>({});
+  const [postMyLikes, setPostMyLikes] = useState<Set<string>>(new Set());
+  const [postComments, setPostComments] = useState<Record<string, CommentData[]>>({});
+  const [postCommentCounts, setPostCommentCounts] = useState<Record<string, number>>({});
+  const [postsLoading, setPostsLoading] = useState(true);
+
+  const [activeTab, setActiveTab] = useState("posts");
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -97,36 +128,110 @@ export default function FounderFeed() {
     setRefreshing(false);
   }, [user]);
 
+  const fetchPosts = useCallback(async () => {
+    if (!user) return;
+    setPostsLoading(true);
+
+    const { data: postsData } = await supabase
+      .from("founder_posts" as any)
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    const postsList = (postsData || []) as unknown as PostData[];
+    setPosts(postsList);
+
+    if (postsList.length === 0) { setPostsLoading(false); return; }
+
+    const userIds = [...new Set(postsList.map(p => p.user_id))];
+    const postIds = postsList.map(p => p.id);
+
+    const [authorsRes, likesRes, myLikesRes, commentsRes] = await Promise.all([
+      supabase.from("founder_profiles").select("user_id, name, avatar_url, username").in("user_id", userIds),
+      supabase.from("founder_post_likes" as any).select("post_id").in("post_id", postIds),
+      supabase.from("founder_post_likes" as any).select("post_id").eq("user_id", user.id).in("post_id", postIds),
+      supabase.from("founder_post_comments" as any).select("*").in("post_id", postIds).order("created_at", { ascending: true }),
+    ]);
+
+    // Authors
+    const authMap: Record<string, { name: string; avatar: string | null; username: string | null }> = {};
+    (authorsRes.data || []).forEach((p: any) => { authMap[p.user_id] = { name: p.name, avatar: p.avatar_url, username: p.username }; });
+    setPostAuthors(authMap);
+
+    // Likes count
+    const likeCounts: Record<string, number> = {};
+    ((likesRes.data || []) as unknown as { post_id: string }[]).forEach(l => { likeCounts[l.post_id] = (likeCounts[l.post_id] || 0) + 1; });
+    setPostLikes(likeCounts);
+
+    // My likes
+    const myLikes = new Set<string>();
+    ((myLikesRes.data || []) as unknown as { post_id: string }[]).forEach(l => myLikes.add(l.post_id));
+    setPostMyLikes(myLikes);
+
+    // Comments
+    const commentsMap: Record<string, CommentData[]> = {};
+    const commentCountMap: Record<string, number> = {};
+    const commentUserIds = new Set<string>();
+    ((commentsRes.data || []) as unknown as CommentData[]).forEach(c => {
+      if (!commentsMap[c.post_id]) commentsMap[c.post_id] = [];
+      commentsMap[c.post_id].push(c);
+      commentCountMap[c.post_id] = (commentCountMap[c.post_id] || 0) + 1;
+      commentUserIds.add(c.user_id);
+    });
+
+    // Fetch comment author names
+    if (commentUserIds.size > 0) {
+      const { data: commentProfiles } = await supabase.from("founder_profiles").select("user_id, name, avatar_url").in("user_id", Array.from(commentUserIds));
+      const cpMap: Record<string, { name: string; avatar: string | null }> = {};
+      (commentProfiles || []).forEach((p: any) => { cpMap[p.user_id] = { name: p.name, avatar: p.avatar_url }; });
+      Object.values(commentsMap).forEach(arr => {
+        arr.forEach(c => {
+          c.author_name = cpMap[c.user_id]?.name;
+          c.author_avatar = cpMap[c.user_id]?.avatar || undefined;
+        });
+      });
+    }
+
+    setPostComments(commentsMap);
+    setPostCommentCounts(commentCountMap);
+    setPostsLoading(false);
+  }, [user]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchPosts();
+  }, [fetchData, fetchPosts]);
 
-  // Realtime subscription for new/updated profiles
+  // Realtime for posts
+  useEffect(() => {
+    const channel = supabase
+      .channel("founder-posts-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "founder_posts" }, () => { fetchPosts(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchPosts]);
+
+  // Realtime for profiles
   useEffect(() => {
     const channel = supabase
       .channel("founder-profiles-realtime")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "founder_profiles" },
-        () => { fetchData(); }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "founder_profiles" }, () => { fetchData(); })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [fetchData]);
 
-  // Auto-refresh when tab regains focus
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.visibilityState === "visible") fetchData();
+      if (document.visibilityState === "visible") { fetchData(); fetchPosts(); }
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [fetchData]);
+  }, [fetchData, fetchPosts]);
 
   const handleRefresh = () => {
     setRefreshing(true);
     fetchData();
+    fetchPosts();
   };
 
   const handleConnect = async (targetUserId: string) => {
@@ -168,13 +273,11 @@ export default function FounderFeed() {
 
   let filtered = profiles.filter(p => {
     if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.building?.toLowerCase().includes(search.toLowerCase()) && !p.username?.toLowerCase().includes(search.toLowerCase())) return false;
-    // Founder: only city + interests filters work
     if (!isPro) {
       if (countryFilter && !p.country?.toLowerCase().includes(countryFilter.toLowerCase())) return false;
       if (interestFilter.length && !interestFilter.some(i => p.interests?.includes(i))) return false;
       return true;
     }
-    // PRO+ filters
     if (skillFilter.length && !skillFilter.some(s => p.skills?.includes(s))) return false;
     if (lookingFilter.length && !lookingFilter.some(l => p.looking_for?.includes(l))) return false;
     if (continentFilter && p.continent !== continentFilter) return false;
@@ -195,7 +298,6 @@ export default function FounderFeed() {
     return b.matchScore - a.matchScore;
   });
 
-  // For Founder: cap at 5
   const FOUNDER_LIMIT = 5;
   const totalResults = withScores.length;
   const displayResults = isPro ? withScores : withScores.slice(0, FOUNDER_LIMIT);
@@ -252,19 +354,10 @@ export default function FounderFeed() {
           </div>
           <div className="flex items-center gap-2">
             <FounderNotifications />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={refreshing}
-            >
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
               <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Atualizar
             </Button>
-            <Button
-              variant={showFilters ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-            >
+            <Button variant={showFilters ? "default" : "outline"} size="sm" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-1" /> Filtros
             </Button>
           </div>
@@ -273,12 +366,7 @@ export default function FounderFeed() {
         {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar fundadores..."
-            className="pl-10"
-          />
+          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar fundadores..." className="pl-10" />
         </div>
 
         {/* Advanced Filters */}
@@ -292,8 +380,6 @@ export default function FounderFeed() {
                 </Button>
               )}
             </div>
-
-            {/* Founder: only country + interests. PRO+: all */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {isPro ? (
                 <div>
@@ -302,9 +388,7 @@ export default function FounderFeed() {
                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos</SelectItem>
-                      {CONTINENT_OPTIONS.map(c => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
+                      {CONTINENT_OPTIONS.map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -316,34 +400,19 @@ export default function FounderFeed() {
               {isPro ? (
                 <div>
                   <Label className="text-xs text-muted-foreground">Faixa Etária: {ageRange[0]} — {ageRange[1]}{ageRange[1] >= 65 ? "+" : ""}</Label>
-                  <Slider
-                    value={ageRange}
-                    onValueChange={v => setAgeRange(v as [number, number])}
-                    min={18}
-                    max={65}
-                    step={1}
-                    className="mt-2"
-                  />
+                  <Slider value={ageRange} onValueChange={v => setAgeRange(v as [number, number])} min={18} max={65} step={1} className="mt-2" />
                 </div>
               ) : renderLockedFilter("Faixa Etária")}
             </div>
-
             {isPro ? renderChipFilter("Skills", SKILL_OPTIONS, skillFilter, setSkillFilter) : renderLockedFilter("Skills")}
             {isPro ? renderChipFilter("Procurando", LOOKING_FOR_OPTIONS, lookingFilter, setLookingFilter) : renderLockedFilter("Procurando")}
-
             <div>
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Interesses</p>
               <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
                 {BUSINESS_INTERESTS.slice(0, 20).map(i => (
-                  <button
-                    key={i}
-                    onClick={() => toggleFilter(interestFilter, setInterestFilter, i)}
-                    className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${
-                      interestFilter.includes(i) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {i}
-                  </button>
+                  <button key={i} onClick={() => toggleFilter(interestFilter, setInterestFilter, i)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] transition-all ${interestFilter.includes(i) ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                  >{i}</button>
                 ))}
                 {BUSINESS_INTERESTS.length > 20 && !interestFilter.length && (
                   <span className="text-[10px] text-muted-foreground self-center">+{BUSINESS_INTERESTS.length - 20} mais</span>
@@ -353,57 +422,91 @@ export default function FounderFeed() {
           </div>
         )}
 
-        {/* Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <FounderCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : displayResults.length === 0 ? (
-          <div className="text-center py-16">
-            <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {displayResults.map(p => (
-                <FounderCard
-                  key={p.id}
-                  id={p.id}
-                  userId={p.user_id}
-                  name={p.name}
-                  avatarUrl={p.avatar_url}
-                  skills={p.skills || []}
-                  lookingFor={p.looking_for || []}
-                  country={p.country}
-                  building={p.building}
-                  commitment={p.commitment}
-                  onConnect={handleConnect}
-                  isConnected={connections[p.user_id] === "accepted"}
-                  isPending={connections[p.user_id] === "pending"}
-                  matchScore={p.matchScore}
-                  username={p.username}
-                  founderLevel={founderLevels[p.user_id] || null}
-                />
-              ))}
-            </div>
+        {/* Tabs: Posts / Founders */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="grid w-full grid-cols-2 max-w-xs">
+            <TabsTrigger value="posts">Publicações</TabsTrigger>
+            <TabsTrigger value="founders">Founders</TabsTrigger>
+          </TabsList>
 
-            {/* Founder radar limit upgrade trigger */}
-            {hiddenCount > 0 && (
-              <div className="mt-6">
-                <UpgradeTrigger
-                  stat={`+${hiddenCount}`}
-                  message={`mais ${hiddenCount} founders combinam com os teus interesses. Desbloqueie o radar completo com PRO.`}
-                  targetPlan="pro"
-                />
+          {/* Posts Tab */}
+          <TabsContent value="posts" className="space-y-4 mt-4">
+            <CreateFounderPost onPostCreated={fetchPosts} />
+
+            {postsLoading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-card/80 border border-border/50 rounded-xl p-4 animate-pulse h-32" />
+                ))}
               </div>
+            ) : posts.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-sm">Nenhuma publicação ainda. Seja o primeiro!</p>
+              </div>
+            ) : (
+              posts.map(post => (
+                <FounderPostCard
+                  key={post.id}
+                  post={post}
+                  authorName={postAuthors[post.user_id]?.name || "Founder"}
+                  authorAvatar={postAuthors[post.user_id]?.avatar || null}
+                  authorUsername={postAuthors[post.user_id]?.username || null}
+                  likesCount={postLikes[post.id] || 0}
+                  commentsCount={postCommentCounts[post.id] || 0}
+                  isLiked={postMyLikes.has(post.id)}
+                  comments={postComments[post.id] || []}
+                  onRefresh={fetchPosts}
+                />
+              ))
             )}
-          </>
-        )}
+          </TabsContent>
 
-        {!loading && displayResults.length > 0 && (
+          {/* Founders Tab */}
+          <TabsContent value="founders" className="mt-4">
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (<FounderCardSkeleton key={i} />))}
+              </div>
+            ) : displayResults.length === 0 ? (
+              <div className="text-center py-16">
+                <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-muted-foreground">Nenhum fundador encontrado.</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {displayResults.map(p => (
+                    <FounderCard
+                      key={p.id}
+                      id={p.id}
+                      userId={p.user_id}
+                      name={p.name}
+                      avatarUrl={p.avatar_url}
+                      skills={p.skills || []}
+                      lookingFor={p.looking_for || []}
+                      country={p.country}
+                      building={p.building}
+                      commitment={p.commitment}
+                      onConnect={handleConnect}
+                      isConnected={connections[p.user_id] === "accepted"}
+                      isPending={connections[p.user_id] === "pending"}
+                      matchScore={p.matchScore}
+                      username={p.username}
+                      founderLevel={founderLevels[p.user_id] || null}
+                    />
+                  ))}
+                </div>
+                {hiddenCount > 0 && (
+                  <div className="mt-6">
+                    <UpgradeTrigger stat={`+${hiddenCount}`} message={`mais ${hiddenCount} founders combinam com os teus interesses. Desbloqueie o radar completo com PRO.`} targetPlan="pro" />
+                  </div>
+                )}
+              </>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {!loading && displayResults.length > 0 && activeTab === "founders" && (
           <div className="mt-8 p-4 bg-card/60 border border-border/50 rounded-xl">
             <FounderActivityFeed />
           </div>
