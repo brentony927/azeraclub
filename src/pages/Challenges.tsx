@@ -137,7 +137,7 @@ export default function Challenges() {
                     <CardContent className="p-4 space-y-3">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-sm font-medium flex items-center gap-2">🔥 {ch.title}</p>
+                          <p className="text-sm font-medium flex items-center gap-2"><Icon3D icon={Flame} color="red" size="xs" animated /> {ch.title}</p>
                           {ch.description && <p className="text-xs text-muted-foreground mt-0.5">{ch.description}</p>}
                         </div>
                         <button onClick={() => deleteChallenge(ch.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
