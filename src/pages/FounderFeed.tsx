@@ -83,6 +83,7 @@ export default function FounderFeed() {
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 65]);
   const [interestFilter, setInterestFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortByMatch, setSortByMatch] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [founderLevels, setFounderLevels] = useState<Record<string, string>>({});
 
