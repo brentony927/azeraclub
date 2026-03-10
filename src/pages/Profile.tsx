@@ -189,7 +189,7 @@ export default function Profile() {
         profession: profession || null,
         bio: bio || null,
         interests: interests.length ? interests : null,
-      } as any).eq("user_id", user.id);
+      }).eq("user_id", user.id);
       if (profileError) throw profileError;
 
       // Geocode city/country
