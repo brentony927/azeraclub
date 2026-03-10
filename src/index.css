@@ -1194,6 +1194,7 @@
   .elite-orb,
   .pro-particle,
   .business-particle,
+  .owner-particle,
   .pro-theme .stat-card,
   .business-theme .stat-card {
     animation: none !important;
