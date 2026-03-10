@@ -224,8 +224,9 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
         </DropdownMenu>
       </div>
 
-      <div className="px-4 py-2 bg-muted/30 border-b border-border/30">
-        <p className="text-[10px] text-muted-foreground">⚠️ Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
+      <div className="px-4 py-2 bg-muted/30 border-b border-border/30 flex items-start gap-2">
+        <Icon3D icon={AlertTriangle} color="silver" size="xs" className="mt-0.5 shrink-0" />
+        <p className="text-[10px] text-muted-foreground">Cuidado com informações pessoais. A AZERA não verifica identidades nem se responsabiliza por interações entre utilizadores.</p>
       </div>
 
       {isFounder && (
