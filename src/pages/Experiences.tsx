@@ -45,7 +45,7 @@ export default function Experiences() {
         {isLoading ? (
           <div className="text-center py-12 text-muted-foreground">Carregando...</div>
         ) : filtered.length === 0 ? (
-          <EmptyState icon="🍷" title="Nenhuma experiência ainda" description="Adicione suas primeiras experiências exclusivas e comece a personalizar sua agenda." actionLabel="Adicionar Experiência" onAction={() => setDialogOpen(true)} />
+          <EmptyState icon={<Icon3D icon={Wine} color="red" size="lg" animated />} title="Nenhuma experiência ainda" description="Adicione suas primeiras experiências exclusivas e comece a personalizar sua agenda." actionLabel="Adicionar Experiência" onAction={() => setDialogOpen(true)} />
         ) : (
           <motion.div variants={item} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((exp) => (
