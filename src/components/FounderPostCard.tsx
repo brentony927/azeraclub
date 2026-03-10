@@ -50,6 +50,10 @@ export default function FounderPostCard({
   const [deleting, setDeleting] = useState(false);
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
+  useEffect(() => { setLiked(isLiked); }, [isLiked]);
+  useEffect(() => { setLikes(likesCount); }, [likesCount]);
+  useEffect(() => { setLocalCommentsCount(commentsCount); }, [commentsCount]);
+
   const isOwn = user?.id === post.user_id;
   const initials = authorName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
   const timeAgo = getTimeAgo(post.created_at);

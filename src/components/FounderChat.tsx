@@ -277,15 +277,10 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
       <ReportUserDialog
         reportedUserId={otherUserId}
         reportedUserName={otherUserName}
+        open={reportOpen}
+        onOpenChange={setReportOpen}
         trigger={<span className="hidden" />}
       />
-      {reportOpen && (
-        <ReportUserDialog
-          reportedUserId={otherUserId}
-          reportedUserName={otherUserName}
-          trigger={<span ref={el => { if (el) { el.click(); setReportOpen(false); }}} />}
-        />
-      )}
     </div>
   );
 }
