@@ -336,8 +336,15 @@ export default function Profile() {
               <div className="flex-1 text-center sm:text-left space-y-2">
                 <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                   <h2 className="text-xl font-bold text-foreground">{displayName || "Seu Nome"}</h2>
-                  {isVerified && <Shield className="h-4 w-4 text-primary" />}
-                  <Badge variant="secondary" className="text-xs">{badge}</Badge>
+                   {isVerified && <Shield className="h-4 w-4 text-primary" />}
+                   {isOwner ? (
+                     <Badge className="owner-profile-badge px-3 py-1 gap-1.5 text-sm">
+                       <Crown className="w-4 h-4 fill-current" />
+                       <span className="font-bold tracking-wider">BRENTONY OWNER</span>
+                     </Badge>
+                   ) : (
+                     <Badge variant="secondary" className="text-xs">{badge}</Badge>
+                   )}
                 </div>
                 {(city || country) && (
                   <p className="text-sm text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
