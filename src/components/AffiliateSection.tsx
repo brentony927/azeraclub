@@ -183,6 +183,22 @@ export default function AffiliateSection() {
 
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
 
+  const renderContent = () => {
+    // Gate: must be PRO or BUSINESS
+    if (!isPro) {
+      return (
+        <CardContent className="p-8 text-center space-y-4">
+          <Icon3D icon={Lock} color="silver" size="lg" animated />
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            Para participar do Programa de Afiliados é necessário possuir o plano PRO ou BUSINESS.
+          </p>
+          <Button onClick={() => window.location.href = "/planos"} className="gold-gradient text-primary-foreground font-semibold">
+            Fazer upgrade
+          </Button>
+        </CardContent>
+      );
+    }
+
   // Gate: must be PRO or BUSINESS
   if (!isPro) {
     return (
