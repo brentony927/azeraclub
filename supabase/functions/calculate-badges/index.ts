@@ -32,6 +32,7 @@ interface Stats {
   profileComplete: boolean;
   referralConversions: number;
   userPosition: number;
+  approvedSuggestions: number;
 }
 
 const ALL_BADGE_KEYS = [
@@ -44,6 +45,7 @@ const ALL_BADGE_KEYS = [
   "first_idea","first_objective","first_challenge","journal_master","five_opportunities",
   "early_adopter","profile_complete","mentor","diamond_founder",
   "growth_partner","azera_ambassador","top_connector",
+  "fertile_mind",
 ];
 
 const BADGE_RULES: BadgeRule[] = [
@@ -95,6 +97,8 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "growth_partner", check: s => s.referralConversions >= 1 },
   { key: "azera_ambassador", check: s => s.referralConversions >= 10 },
   { key: "top_connector", check: s => s.referralConversions >= 50 },
+  // Suggestion badge
+  { key: "fertile_mind", check: s => s.approvedSuggestions >= 5 },
 ];
 
 Deno.serve(async (req) => {
@@ -116,7 +120,7 @@ Deno.serve(async (req) => {
     const [
       venturesRes, connectionsRes, projectsRes, objectivesCompletedRes, objectivesTotalRes,
       ideasRes, challengesCompletedRes, challengesTotalRes, postsRes, habitsRes,
-      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes, partnerRes,
+      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes, partnerRes, suggestionsRes,
     ] = await Promise.all([
       supabaseAdmin.from("ventures").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_connections").select("id", { count: "exact", head: true })
@@ -136,6 +140,7 @@ Deno.serve(async (req) => {
       supabaseAdmin.from("trips").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_opportunities").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("partner_profiles").select("partner_id").eq("user_id", userId).maybeSingle(),
+      supabaseAdmin.from("suggestions").select("id", { count: "exact", head: true }).eq("user_id", userId).eq("status", "implementado"),
     ]);
 
     const fp = profileRes.data;
@@ -184,6 +189,7 @@ Deno.serve(async (req) => {
       profileComplete,
       referralConversions,
       userPosition,
+      approvedSuggestions: suggestionsRes.count || 0,
     };
 
     // Site owner gets ALL badges

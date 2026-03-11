@@ -1,61 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Plano: Segurança, Limpeza, Sugestões com Recompensa e Painel Owner Organizado
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## 1. Segurança: Impedir auto-promoção a owner
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-Os triggers `prevent_site_owner_change` e `force_site_owner_false_on_insert` já existem no banco e protegem `is_site_owner` e `is_verified`. A leitura do campo `is_site_owner` via client-side (Profile.tsx, Layout.tsx, FounderProfile.tsx) é apenas para exibir UI condicional — não há risco pois o banco impede alterações. **Nenhuma mudança necessária aqui.**
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-## 2. Limpeza: Excluir arquivo residual
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-`src/components/AffiliateRequestsPanel.tsx` não é importado em nenhum lugar (foi substituído por `AffiliateManagerPanel`). Será excluído.
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-## 3. Sistema de Sugestões com Recompensa
-
-### Banco de dados (migração SQL)
-- Adicionar policy RLS para site owner poder SELECT e UPDATE todas as sugestões
-- A tabela `suggestions` já tem coluna `status` (pendente/implementado/recusado)
-
-### Nova badge "Mente Fértil"
-- Adicionar ao `src/lib/badges.ts`: key `fertile_mind`, ícone `Brain`, critério "5+ sugestões aprovadas"
-- Adicionar ao `supabase/functions/calculate-badges/index.ts`: contar sugestões com `status = 'implementado'` para o user, regra `approvedSuggestions >= 5`
-- Bónus de score: quando owner aprova sugestão, o calculate-founder-score pode considerar sugestões aprovadas
-
-### Painel de review no perfil do owner
-- Novo componente `SuggestionsManagerPanel.tsx`:
-  - Collapsible como os outros painéis owner
-  - Tabs: Pendentes | Analisadas
-  - Cada sugestão mostra título, descrição, categoria, autor, data
-  - Botões: Aprovar (muda status para `implementado`) | Recusar (muda para `recusado`)
-  - Ao aprovar, recalcula badges do autor automaticamente
-
-## 4. Painel Owner colapsável unificado
-
-Em vez de ter `AffiliateManagerPanel` e `SuggestionsManagerPanel` soltos, criar uma seção "Painel do Dono" colapsável que agrupa tudo:
-
-```text
-┌─────────────────────────────────────────┐
-│ 👑 Painel do Dono                  [▼]  │
-├─────────────────────────────────────────┤
-│ ┌─ Gerenciar Afiliados ──────────────┐  │
-│ │ (AffiliateManagerPanel existente)  │  │
-│ └────────────────────────────────────┘  │
-│ ┌─ Caixa de Sugestões ──────────────┐  │
-│ │ Pendentes | Analisadas             │  │
-│ │ [Aprovar] [Recusar] cada sugestão  │  │
-│ └────────────────────────────────────┘  │
-└─────────────────────────────────────────┘
-```
-
-## Ficheiros
-
-| Ficheiro | Ação |
-|---|---|
-| `src/components/AffiliateRequestsPanel.tsx` | Excluir (residual) |
-| `src/components/SuggestionsManagerPanel.tsx` | Criar — review de sugestões |
-| `src/components/OwnerDashboardPanel.tsx` | Criar — painel colapsável que agrupa tudo |
-| `src/pages/Profile.tsx` | Substituir `{isOwner && <AffiliateManagerPanel />}` por `{isOwner && <OwnerDashboardPanel />}` |
-| `src/lib/badges.ts` | Adicionar badge `fertile_mind` |
-| `supabase/functions/calculate-badges/index.ts` | Adicionar stat `approvedSuggestions` + regra |
-| SQL Migration | RLS policies para owner ver/update todas as sugestões |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
