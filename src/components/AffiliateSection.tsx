@@ -72,7 +72,7 @@ export default function AffiliateSection() {
     setLoading(true);
 
     const { data: req } = await supabase
-      .from("affiliate_requests" as any)
+      .from("affiliate_requests")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
