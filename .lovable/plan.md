@@ -1,38 +1,51 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Security Audit Results & Fix Plan
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Audit Summary
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+### Resolved Findings (5 — all info level, already fixed)
+- GPS Location leak — fixed
+- Connection self-accept — fixed  
+- Admin email in migration — acknowledged (historical, no runtime risk)
+- is_site_owner UPDATE trigger — confirmed active
+- plan_price client trust — fixed (Stripe server-side verification)
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+### Edge Function Test: `process-referral-commission`
+- Authenticated correctly (returned 400 "No Stripe customer found" for the test user, which is expected since your account has a manual plan override, not a Stripe subscription)
+- Auth gate works: unauthenticated requests would be rejected with 401
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### New Finding: INSERT Gap on `is_site_owner`
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+The `guard_site_owner_change` and `prevent_site_owner_change` triggers only fire on **UPDATE** (tgtype=19). A user who deletes their `founder_profiles` row (allowed by RLS) and re-inserts it with `is_site_owner = true` would bypass the trigger and gain full moderation access.
+
+**Severity:** High — same privilege escalation vector, different attack path.
+
+## Fix
+
+Single migration to add a `BEFORE INSERT` trigger on `founder_profiles` that forces `is_site_owner = false` on any new row:
+
+```sql
+CREATE OR REPLACE FUNCTION public.force_site_owner_false_on_insert()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $$
+BEGIN
+  NEW.is_site_owner := false;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER enforce_site_owner_on_insert
+  BEFORE INSERT ON public.founder_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.force_site_owner_false_on_insert();
+```
+
+This silently forces `is_site_owner = false` on every INSERT, regardless of what the user passes. Combined with the existing UPDATE trigger, the column is fully locked down.
+
+## Files
+- 1 database migration (INSERT trigger)
+
