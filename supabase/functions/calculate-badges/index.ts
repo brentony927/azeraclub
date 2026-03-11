@@ -32,6 +32,7 @@ interface Stats {
   profileComplete: boolean;
   referralConversions: number;
   userPosition: number;
+  approvedSuggestions: number;
 }
 
 const ALL_BADGE_KEYS = [
