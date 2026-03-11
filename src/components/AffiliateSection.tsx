@@ -12,10 +12,11 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Copy, Check, Users, TrendingUp, Loader2, Gift,
   Lock, Clock, XCircle, BarChart3, DollarSign,
-  Activity, Star, ExternalLink, CreditCard, CheckCircle,
+  Activity, Star, ExternalLink, CreditCard, CheckCircle, ChevronDown,
 } from "lucide-react";
 import Icon3D from "@/components/ui/icon-3d";
 import AnimatedCounter from "@/components/AnimatedCounter";
