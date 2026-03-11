@@ -398,7 +398,7 @@ export default function AffiliateSection() {
                 {[...leads.slice(0, 3).map(l => ({
                   text: `Novo lead: ${l.user_name || "Usuário"}`,
                   date: l.created_at,
-                  icon: <Users className="h-3 w-3 text-blue-400" />,
+                  icon: <Users className="h-3 w-3 text-primary" />,
                 })), ...commissions.slice(0, 3).map(c => ({
                   text: `Comissão R$${Number(c.amount).toFixed(2)} — ${c.status}`,
                   date: c.created_at,
