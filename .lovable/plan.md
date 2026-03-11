@@ -1,38 +1,33 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Fix: Profile Data Not Persisting + Code Cleanup
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Problem
+When you save your name, age, country, city etc on the Profile page and leave, the data disappears. The root cause is that `handleSave` uses `.update()` on the `profiles` table, which silently does nothing if no row exists (returns success with 0 rows affected). Additionally, the `founder_profiles` save uses separate insert/update paths that can fail in edge cases.
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+## Fix 1: Profile Save — Use `upsert` Instead of `update`
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+**File: `src/pages/Profile.tsx`**
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### Change `profiles` table save (line ~185-194)
+Replace `.update()` with `.upsert({ ... }, { onConflict: "user_id" })`. This guarantees the row is created if it doesn't exist, or updated if it does. Also sync the `location` field from city/country.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+### Change `founder_profiles` save (line ~232-239)
+Replace the `if (hasFounderProfile) update else insert` pattern with a single `.upsert(founderData, { onConflict: "user_id" })`. This eliminates race conditions and simplifies the logic.
+
+### Remove unused state variable
+Remove the `location` state variable (line 64) since location is now derived from `city` + `country`.
+
+## Fix 2: Code Cleanup
+
+**File: `src/pages/Profile.tsx`**
+- Remove unused `location` state (was never displayed in the form UI)
+- Remove the `hasFounderProfile` branching logic (upsert handles both cases)
+
+**File: `src/components/AffiliateSection.tsx`**
+- Remove unnecessary `as any` type casts on Supabase queries where types exist
+
+## Files Modified
+1. `src/pages/Profile.tsx` — Fix save logic, remove unused state
+2. `src/components/AffiliateSection.tsx` — Minor cleanup of type casts
+
