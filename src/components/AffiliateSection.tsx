@@ -184,10 +184,9 @@ export default function AffiliateSection() {
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
 
   const renderContent = () => {
-    // Gate: must be PRO or BUSINESS
     if (!isPro) {
       return (
-        <CardContent className="p-8 text-center space-y-4">
+        <div className="p-8 text-center space-y-4">
           <Icon3D icon={Lock} color="silver" size="lg" animated />
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
             Para participar do Programa de Afiliados é necessário possuir o plano PRO ou BUSINESS.
@@ -195,38 +194,13 @@ export default function AffiliateSection() {
           <Button onClick={() => window.location.href = "/planos"} className="gold-gradient text-primary-foreground font-semibold">
             Fazer upgrade
           </Button>
-        </CardContent>
+        </div>
       );
     }
 
-  // Gate: must be PRO or BUSINESS
-  if (!isPro) {
-    return (
-      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-        <CardContent className="p-8 text-center space-y-4">
-          <Icon3D icon={Lock} color="silver" size="lg" animated />
-          <h3 className="text-lg font-semibold text-foreground">Programa de Afiliados</h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Para participar do Programa de Afiliados é necessário possuir o plano PRO ou BUSINESS.
-          </p>
-          <Button onClick={() => window.location.href = "/planos"} className="gold-gradient text-primary-foreground font-semibold">
-            Fazer upgrade
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Application form
-  if (status === "none") {
-    return (
-      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Icon3D icon={Star} color="gold" size="sm" animated /> Programa de Afiliados
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    if (status === "none") {
+      return (
+        <div className="space-y-4 p-4">
           <p className="text-sm text-muted-foreground">
             Ganhe comissões indicando o Azera Club. Preencha o formulário para solicitar participação.
           </p>
@@ -272,16 +246,13 @@ export default function AffiliateSection() {
             {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
             Solicitar participação
           </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+        </div>
+      );
+    }
 
-  // Pending
-  if (status === "pending") {
-    return (
-      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-        <CardContent className="p-8 text-center space-y-4">
+    if (status === "pending") {
+      return (
+        <div className="p-8 text-center space-y-4">
           <Icon3D icon={Clock} color="gold" size="lg" animated />
           <h3 className="text-lg font-semibold text-foreground">Solicitação em análise</h3>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
@@ -290,16 +261,13 @@ export default function AffiliateSection() {
           <Badge variant="secondary" className="text-xs">
             <Clock className="h-3 w-3 mr-1" /> Aguardando aprovação
           </Badge>
-        </CardContent>
-      </Card>
-    );
-  }
+        </div>
+      );
+    }
 
-  // Rejected
-  if (status === "rejected") {
-    return (
-      <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-        <CardContent className="p-8 text-center space-y-4">
+    if (status === "rejected") {
+      return (
+        <div className="p-8 text-center space-y-4">
           <Icon3D icon={XCircle} color="silver" size="lg" animated />
           <h3 className="text-lg font-semibold text-foreground">Solicitação não aprovada</h3>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
@@ -308,46 +276,41 @@ export default function AffiliateSection() {
           <Button onClick={() => setStatus("none")} variant="outline">
             Tentar novamente
           </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Approved — full dashboard
-  const leadsCount = leads.length;
-  const salesCount = commissions.length;
-  const conversionRate = leadsCount > 0 ? ((salesCount / leadsCount) * 100).toFixed(1) : "0";
-  const totalCommission = commissions.reduce((a, c) => a + Number(c.amount), 0);
-  const levelLabel = { starter: "Starter", partner: "Partner", ambassador: "Ambassador", legend: "Legend" }[affiliateProfile?.level || "starter"] || "Starter";
-  const ratePercent = ((affiliateProfile?.commission_rate || 0.25) * 100).toFixed(0);
-  const isStripeConnected = affiliateProfile?.stripe_onboarding_complete === true;
-
-  // Chart data — leads per day (last 14 days)
-  const chartData = (() => {
-    const days: Record<string, number> = {};
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      days[format(d, "dd/MM")] = 0;
+        </div>
+      );
     }
-    leads.forEach(l => {
-      const k = format(new Date(l.created_at), "dd/MM");
-      if (days[k] !== undefined) days[k]++;
-    });
-    return Object.entries(days).map(([date, count]) => ({ date, leads: count }));
-  })();
 
-  return (
-    <Card className="border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Icon3D icon={Star} color="gold" size="sm" animated /> Programa de Afiliados
-          <Badge variant="secondary" className="text-[10px] ml-auto">
+    // Approved — full dashboard
+    const leadsCount = leads.length;
+    const salesCount = commissions.length;
+    const conversionRate = leadsCount > 0 ? ((salesCount / leadsCount) * 100).toFixed(1) : "0";
+    const totalCommission = commissions.reduce((a, c) => a + Number(c.amount), 0);
+    const levelLabel = { starter: "Starter", partner: "Partner", ambassador: "Ambassador", legend: "Legend" }[affiliateProfile?.level || "starter"] || "Starter";
+    const ratePercent = ((affiliateProfile?.commission_rate || 0.25) * 100).toFixed(0);
+    const isStripeConnected = affiliateProfile?.stripe_onboarding_complete === true;
+
+    const chartData = (() => {
+      const days: Record<string, number> = {};
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        days[format(d, "dd/MM")] = 0;
+      }
+      leads.forEach(l => {
+        const k = format(new Date(l.created_at), "dd/MM");
+        if (days[k] !== undefined) days[k]++;
+      });
+      return Object.entries(days).map(([date, count]) => ({ date, leads: count }));
+    })();
+
+    return (
+      <div className="space-y-4 p-4">
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary" className="text-[10px]">
             {levelLabel} · {ratePercent}%
           </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </div>
+
         {/* Link */}
         <div className="flex gap-2">
           <Input readOnly value={`${window.location.origin}/join?ref=${affiliateProfile?.affiliate_id}`} className="text-xs font-mono" />
@@ -420,11 +383,11 @@ export default function AffiliateSection() {
                   <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground p-1.5 rounded bg-secondary/20">
                     {item.icon}
                     <span className="flex-1 truncate">{item.text}</span>
-                    <span className="text-[10px] shrink-0">{format(new Date(item.date), "dd/MM")}</span>
+                    <span className="text-[10px]">{format(new Date(item.date), "dd/MM")}</span>
                   </div>
                 ))}
                 {leads.length === 0 && commissions.length === 0 && (
-                  <p className="text-xs text-muted-foreground text-center py-3">Nenhuma atividade ainda</p>
+                  <p className="text-xs text-muted-foreground text-center py-2">Nenhuma atividade ainda.</p>
                 )}
               </div>
             </div>
@@ -432,48 +395,55 @@ export default function AffiliateSection() {
 
           {/* LEADS TAB */}
           <TabsContent value="leads" className="mt-3">
-            {leads.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-6">Nenhum lead registrado ainda.</p>
-            ) : (
-              <div className="overflow-x-auto max-h-64 overflow-y-auto">
+            <div className="space-y-3">
+              <div className="rounded-lg border border-border/30 overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-xs">Nome</TableHead>
                       <TableHead className="text-xs">Plano</TableHead>
-                      <TableHead className="text-xs">Cadastro</TableHead>
-                      <TableHead className="text-xs">Compra</TableHead>
+                      <TableHead className="text-xs">Data</TableHead>
+                      <TableHead className="text-xs">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {leads.map(l => (
-                      <TableRow key={l.id}>
-                        <TableCell className="text-xs">{l.user_name || "—"}</TableCell>
-                        <TableCell className="text-xs">
-                          <Badge variant="outline" className="text-[10px]">{l.user_plan || "free"}</Badge>
+                    {leads.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-xs text-muted-foreground py-6">
+                          Nenhum lead registrado ainda.
                         </TableCell>
-                        <TableCell className="text-xs">{format(new Date(l.signed_up_at), "dd/MM/yy")}</TableCell>
-                        <TableCell className="text-xs">{l.purchased_at ? format(new Date(l.purchased_at), "dd/MM/yy") : "—"}</TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      leads.slice(0, 20).map(lead => (
+                        <TableRow key={lead.id}>
+                          <TableCell className="text-xs font-medium">{lead.user_name || "—"}</TableCell>
+                          <TableCell className="text-xs">{lead.user_plan || "Free"}</TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {lead.created_at ? format(new Date(lead.created_at), "dd/MM/yy") : "—"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={lead.purchased_at ? "default" : "secondary"} className="text-[10px]">
+                              {lead.purchased_at ? "Convertido" : "Lead"}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            )}
+            </div>
           </TabsContent>
 
           {/* PERFORMANCE TAB */}
-          <TabsContent value="performance" className="mt-3">
-            <h4 className="text-xs font-semibold text-muted-foreground mb-2">Leads nos últimos 14 dias</h4>
-            <div className="h-48 w-full">
+          <TabsContent value="performance" className="mt-3 space-y-4">
+            <h4 className="text-xs font-semibold text-muted-foreground">Leads nos últimos 14 dias</h4>
+            <div className="h-40 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                  <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" allowDecimals={false} />
-                  <Tooltip
-                    contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-                    labelStyle={{ color: "hsl(var(--foreground))" }}
-                  />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                  <Tooltip contentStyle={{ fontSize: 12, background: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }} />
                   <Line type="monotone" dataKey="leads" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
@@ -481,51 +451,20 @@ export default function AffiliateSection() {
           </TabsContent>
 
           {/* FINANCE TAB */}
-          <TabsContent value="finance" className="space-y-4 mt-3">
-            {/* Stripe Connect status */}
-            {isStripeConnected ? (
-              <div className="space-y-2 p-4 rounded-lg bg-accent/5 border border-accent/20">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-accent-foreground" />
-                  <span className="text-sm font-semibold text-foreground">Pagamentos automáticos ativos</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Suas comissões são transferidas automaticamente para sua conta bancária via Stripe Connect.
-                  Não é necessário solicitar saques — o Stripe cuida de tudo.
-                </p>
-                <div className="flex items-center gap-2 mt-2 p-2 rounded bg-secondary/20">
-                  <DollarSign className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold text-foreground">
-                    Total ganho: R${totalCommission.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3 p-4 rounded-lg border border-primary/30 bg-primary/5">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-semibold text-foreground">Conecte sua conta Stripe</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Para receber suas comissões automaticamente, conecte sua conta bancária via Stripe.
-                  O processo leva apenas alguns minutos e seus ganhos serão transferidos diretamente.
-                </p>
-                <Button onClick={handleConnectStripe} disabled={connectingStripe} className="gold-gradient text-primary-foreground font-semibold">
-                  {connectingStripe ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ExternalLink className="h-4 w-4 mr-2" />}
+          <TabsContent value="finance" className="mt-3 space-y-4">
+            <div className="space-y-3">
+              {!isStripeConnected && (
+                <Button onClick={handleConnectStripe} disabled={connectingStripe} className="w-full gap-2" variant="outline">
+                  {connectingStripe ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
                   Conectar conta Stripe
                 </Button>
-              </div>
-            )}
-
-            <Separator />
-
-            {/* Commission history */}
-            <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-foreground">Histórico de comissões</h4>
+              )}
+              <Separator />
+              <h4 className="text-xs font-semibold text-muted-foreground">Comissões</h4>
               {commissions.length === 0 ? (
-                <p className="text-xs text-muted-foreground text-center py-3">Nenhuma comissão registrada ainda.</p>
+                <p className="text-xs text-muted-foreground text-center py-4">Nenhuma comissão registrada.</p>
               ) : (
-                <div className="space-y-1 max-h-40 overflow-y-auto">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                   {commissions.map(c => (
                     <div key={c.id} className="flex items-center justify-between text-xs p-2 rounded bg-secondary/20">
                       <span className="font-medium text-foreground">R${Number(c.amount).toFixed(2)}</span>
@@ -540,7 +479,28 @@ export default function AffiliateSection() {
             </div>
           </TabsContent>
         </Tabs>
-      </CardContent>
-    </Card>
+      </div>
+    );
+  };
+
+  return (
+    <Collapsible open={sectionOpen} onOpenChange={setSectionOpen}>
+      <Card className="border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden">
+        <CollapsibleTrigger asChild>
+          <button className="w-full flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
+            <div className="flex items-center gap-2">
+              <Icon3D icon={Star} color="gold" size="sm" animated />
+              <span className="font-semibold text-foreground text-sm">Programa de Afiliados</span>
+              {status === "pending" && <Badge variant="secondary" className="text-[10px]">Pendente</Badge>}
+              {status === "approved" && <Badge className="text-[10px]">Ativo</Badge>}
+            </div>
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${sectionOpen ? "rotate-180" : ""}`} />
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          {renderContent()}
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 }
