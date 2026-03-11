@@ -139,6 +139,8 @@ const App = () => (
             <Route path="/community-guidelines" element={<CommunityGuidelines />} />
             <Route path="/payments-policy" element={<PaymentsPolicy />} />
             <Route path="/security-policy" element={<SecurityPolicy />} />
+            <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+            <Route path="/ai-disclaimer" element={<AIDisclaimer />} />
             <Route path="/earn" element={<Earn />} />
             <Route path="/join" element={<Earn />} />
             <Route path="/faq" element={<FAQ />} />
