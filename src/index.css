@@ -866,13 +866,13 @@
   --card-foreground: 0 0% 96%;
   --popover: 35 6% 8.5%;
   --popover-foreground: 0 0% 96%;
-  --primary: 51 100% 50%;
+  --primary: 51 85% 50%;
   --primary-foreground: 0 0% 4%;
   --secondary: 42 12% 10%;
   --secondary-foreground: 0 0% 96%;
   --muted: 42 10% 12%;
   --muted-foreground: 0 0% 55%;
-  --accent: 51 100% 50%;
+  --accent: 51 85% 50%;
   --accent-foreground: 0 0% 4%;
   --border: 42 25% 18%;
   --input: 42 8% 12%;
