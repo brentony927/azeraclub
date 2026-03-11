@@ -1,38 +1,51 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Redesign da Página de Planos — Premium & Profissional
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Visão Geral
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Redesenhar a página de pricing para transmitir confiança, profissionalismo e fluidez, com melhorias visuais significativas nos cards, layout, tipografia e elementos de confiança.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+## Alterações
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 1. `src/components/ui/pricing-section.tsx` — Redesign completo
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**Header melhorado:**
+- Adicionar subtítulo com ícone de escudo (ShieldCheck) + "Pagamento seguro via Stripe"
+- Badge de "Economize 17%" ao selecionar plano anual
+- Tipografia mais impactante no título
+
+**Cards redesenhados:**
+- Card Pro com `scale-[1.03]` e `md:scale-105` para destaque visual (card central maior)
+- Separador visual entre preço e features
+- Ícones por categoria de feature (agrupar features com mini-headers)
+- Hover com `translate-y` suave nos cards
+- Remover emojis (🛡️) das features — usar ícone Check consistente
+- Adicionar divisor sutil entre o botão e a lista de features
+
+**Seção de confiança (trust bar):**
+- Adicionar barra abaixo dos cards: "256-bit SSL · Cancele a qualquer momento · Sem taxas ocultas"
+- Ícones: Lock, RefreshCw, Eye
+
+**Yearly savings badge:**
+- Quando anual selecionado, mostrar badge verde "Economize £X" em cada card pago
+
+### 2. `src/pages/Pricing.tsx` — Polish do layout
+
+- Adicionar padding superior mais generoso
+- Garantia de devolução (texto sutil abaixo dos cards)
+- FAQ compacto (2-3 perguntas) abaixo da trust bar: "Posso cancelar?", "Como funciona o upgrade?", "Meus dados são seguros?"
+
+### 3. `src/index.css` — Novos estilos
+
+- `.pricing-card-hover` com transform translateY(-4px) no hover
+- `.trust-bar` estilo sutil com ícones e separadores
+
+## Ficheiros
+
+| Ficheiro | Ação |
+|---|---|
+| `src/components/ui/pricing-section.tsx` | Redesign visual completo |
+| `src/pages/Pricing.tsx` | Trust bar + FAQ compacto + layout polish |
+| `src/index.css` | Novos estilos de hover e trust bar |
+
