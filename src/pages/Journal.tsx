@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Plus, Send, Loader2, Trash2 } from "lucide-react";
+import { BookOpen, Plus, Send, Loader2, Trash2, Smile, Minus, Brain, Moon, AlertTriangle, Lightbulb } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
