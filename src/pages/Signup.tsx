@@ -52,6 +52,12 @@ export default function Signup() {
 
       if (refId && userId && (Date.now() - refTs < thirtyDays)) {
         await supabase.from("referrals" as any).insert({ referrer_id: refId, user_id: userId });
+        // Also register as affiliate lead
+        await supabase.from("affiliate_leads" as any).insert({
+          referrer_id: refId,
+          user_id: userId,
+          user_name: name,
+        });
         localStorage.removeItem("azera_ref");
         localStorage.removeItem("azera_ref_ts");
       }

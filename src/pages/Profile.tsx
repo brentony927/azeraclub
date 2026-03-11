@@ -595,8 +595,8 @@ export default function Profile() {
           </CardContent>
         </Card>
 
-        {/* Partner Section */}
-        <PartnerSection />
+        {/* Affiliate Section */}
+        <AffiliateSection />
 
         {/* Save */}
         <Button onClick={handleSave} disabled={saving} className="w-full h-12 font-semibold uppercase tracking-wider text-xs">
