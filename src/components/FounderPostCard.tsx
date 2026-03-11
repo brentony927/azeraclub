@@ -61,11 +61,11 @@ export default function FounderPostCard({
   const toggleLike = async () => {
     if (!user) return;
     if (liked) {
-      await supabase.from("founder_post_likes" as any).delete().eq("post_id", post.id).eq("user_id", user.id);
+      await supabase.from("founder_post_likes").delete().eq("post_id", post.id).eq("user_id", user.id);
       setLiked(false);
       setLikes(prev => Math.max(0, prev - 1));
     } else {
-      await supabase.from("founder_post_likes" as any).insert({ post_id: post.id, user_id: user.id });
+      await supabase.from("founder_post_likes").insert({ post_id: post.id, user_id: user.id });
       setLiked(true);
       setLikes(prev => prev + 1);
       // Notify post author
