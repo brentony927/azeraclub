@@ -585,7 +585,7 @@ export default function Profile() {
             <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-1">
               {filteredInterests.map(interest => (
                 <button key={interest} type="button" onClick={() => toggleArray(setInterests, interest)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                  className={`px-2.5 py-1 min-h-[44px] rounded-full text-[11px] font-medium transition-all flex items-center ${
                     interests.includes(interest)
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
