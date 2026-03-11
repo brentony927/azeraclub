@@ -1,78 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Plan: Professional Visual Refinement
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Overview
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-Make the platform look more serious and trustworthy by refining 3D icons, badges, and the owner profile. Remove generic pulsing glows from badges, add metallic texture details, create a prominent animated 3D owner badge, and add a minimalist metallic animated background to the owner profile.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-## 1. Badges — Remove Pulsing Glow, Add Metallic Detail
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-**File: `src/index.css`**
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-- Remove `badge-pulse` animation from `.badge-earned` class — replace with a subtle metallic inner shadow (no pulsing glow behind badges)
-- Update all badge color classes to use metallic gradients instead of flat colors with glowing box-shadows
-- Each badge gets a `background: linear-gradient(...)` with metallic highlights (light reflection at top, darker at bottom) and `inset` shadows for depth instead of outer glow
-
-Example transformation:
-```css
-/* Before */
-.badge-green {
-  background: hsl(142 70% 45%);
-  box-shadow: 0 0 8px hsl(142 70% 45% / 0.5);
-}
-
-/* After — metallic, no pulse */
-.badge-green {
-  background: linear-gradient(165deg, hsl(142 50% 60%), hsl(142 70% 40%), hsl(142 80% 25%));
-  box-shadow: inset 0 1px 2px hsl(0 0% 100% / 0.3), inset 0 -1px 2px hsl(0 0% 0% / 0.3), 0 1px 3px hsl(0 0% 0% / 0.2);
-}
-```
-
-Apply this metallic treatment to: `badge-white`, `badge-black`, `badge-green`, `badge-yellow`, `badge-blue`, `badge-orange`, `badge-pink`, `badge-purple`, `badge-gold-metallic`, `badge-trust-pro`, `badge-trust-business`.
-
-## 2. Icon3D — More Serious, Less Generic
-
-**File: `src/components/ui/icon-3d.tsx`**
-
-- Deepen gradients — use darker base tones with sharper highlight (less candy, more brushed metal)
-- Add a subtle 1px metallic border ring (`ring-1 ring-white/10`)
-- Reduce outer glow shadow intensity
-- Make the perspective transform slightly more pronounced for depth
-
-## 3. Owner Profile — Prominent 3D Metallic Badge
-
-**File: `src/pages/FounderProfile.tsx`**
-
-Replace the current small `owner-badge` inline Badge with a larger, standalone 3D metallic component:
-- Larger size (not inline text badge — a dedicated medallion element)
-- Red metallic gradient with brushed steel highlights
-- CSS 3D perspective + slow rotation animation
-- Crown icon centered, with metallic text "DONO · AZERA CLUB"
-
-**File: `src/index.css`**
-
-Add new class `.owner-badge-3d-medallion` with:
-- `width: 48px; height: 48px` rounded medallion
-- Red-to-dark-red metallic gradient
-- `perspective(200px) rotateY()` slow oscillation keyframe
-- Inset metallic highlights (top-left light, bottom-right shadow)
-- Subtle red outer glow (not pulsing — static or very slow fade)
-
-## 4. Owner Profile — Minimalist Metallic Animated Background
-
-**File: `src/index.css`**
-
-Update `.owner-profile-wrapper::before` to use a metallic sheen animation:
-- Replace current red tint with a brushed-metal sweep effect (linear gradient that shifts horizontally)
-- Very subtle — dark metallic base with a slow-moving light reflection band
-- Colors: dark gunmetal red (`hsl(0 30% 12%)`) with a traveling highlight (`hsl(0 60% 30% / 0.15)`)
-- Animation: `owner-metallic-sheen 8s ease-in-out infinite` — a slow left-to-right light sweep
-
-## Files to Modify
-
-1. `src/index.css` — Badge metallic styles, remove pulse, owner medallion, metallic background
-2. `src/components/ui/icon-3d.tsx` — Refined metallic gradients
-3. `src/pages/FounderProfile.tsx` — Owner 3D medallion badge in header
-4. `src/components/BadgeShowcase.tsx` — Remove `badge-earned` class usage (no more pulse)
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

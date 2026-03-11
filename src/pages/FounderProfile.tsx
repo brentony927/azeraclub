@@ -228,21 +228,28 @@ export default function FounderProfile() {
       <Card className={`border-border/50 bg-card/80 backdrop-blur-sm ${isSiteOwner ? "owner-card-inner" : ""}`}>
         <CardContent className="p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <div className={`relative shrink-0 ${isSiteOwner ? "owner-avatar-3d-ring" : ""}`}>
-              <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden ring-3 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
-                {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
-                ) : (
-                  <span className="text-2xl font-bold text-foreground">{initials}</span>
-                )}
+            <div className="flex items-end gap-3 shrink-0">
+              <div className={`relative ${isSiteOwner ? "owner-avatar-3d-ring" : ""}`}>
+                <div className={`w-24 h-24 rounded-full bg-secondary flex items-center justify-center overflow-hidden ring-3 ${isSiteOwner ? "ring-[hsl(0,100%,50%)] owner-avatar-ring" : "ring-primary/20"}`}>
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} alt={profile.name} className="w-24 h-24 rounded-full object-cover" loading="lazy" />
+                  ) : (
+                    <span className="text-2xl font-bold text-foreground">{initials}</span>
+                  )}
+                </div>
               </div>
+              {isSiteOwner && (
+                <div className="owner-badge-3d-medallion -ml-4 -mb-1">
+                  <Crown className="h-5 w-5 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" strokeWidth={2.5} />
+                </div>
+              )}
             </div>
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                 <h1 className={`text-2xl font-bold ${isSiteOwner ? "owner-name" : "text-foreground"}`}>{profile.name}</h1>
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
                 {isSiteOwner && (
-                  <Badge className="owner-badge text-[10px] font-bold flex items-center gap-1"><Icon3D icon={Crown} color="gold" size="xs" animated /> DONO · AZERA</Badge>
+                  <span className="owner-medallion-text px-2 py-0.5 rounded-full bg-gradient-to-r from-red-900 via-red-700 to-red-900 border border-red-500/30">DONO · AZERA CLUB</span>
                 )}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>

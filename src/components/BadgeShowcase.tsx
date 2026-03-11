@@ -71,7 +71,7 @@ export default function BadgeShowcase({ userId, showLocked = false }: BadgeShowc
                   <div
                     className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-all ${
                       earned
-                        ? `${badge.colorClass} badge-earned`
+                        ? badge.colorClass
                         : "bg-muted/50 opacity-40 grayscale"
                     }`}
                   >
