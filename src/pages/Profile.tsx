@@ -61,7 +61,6 @@ export default function Profile() {
   // profiles table
   const [displayName, setDisplayName] = useState("");
   const [age, setAge] = useState("");
-  const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -112,7 +111,6 @@ export default function Profile() {
     if (profileRes.data) {
       const p = profileRes.data;
       setAge(p.age?.toString() || "");
-      setLocation(p.location || "");
       setProfession(p.profession || "");
       setBio(p.bio || "");
       setAvatarUrl(p.avatar_url || null);
@@ -182,15 +180,16 @@ export default function Profile() {
     if (!user) return;
     setSaving(true);
     try {
-      // Update profiles table
-      const { error: profileError } = await supabase.from("profiles").update({
+      // Upsert profiles table
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        user_id: user.id,
         display_name: displayName,
         age: age ? parseInt(age) : null,
-        location: location || null,
+        location: [city, country].filter(Boolean).join(", ") || null,
         profession: profession || null,
         bio: bio || null,
         interests: interests.length ? interests : null,
-      }).eq("user_id", user.id);
+      }, { onConflict: "user_id" });
       if (profileError) throw profileError;
 
       // Geocode city/country
@@ -229,14 +228,9 @@ export default function Profile() {
         username: username || null,
       };
 
-      if (hasFounderProfile) {
-        const { error } = await supabase.from("founder_profiles").update(founderData).eq("user_id", user.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("founder_profiles").insert(founderData);
-        if (error) throw error;
-        setHasFounderProfile(true);
-      }
+      const { error: founderError } = await supabase.from("founder_profiles").upsert(founderData, { onConflict: "user_id" });
+      if (founderError) throw founderError;
+      setHasFounderProfile(true);
 
       // Save GPS to founder_locations (separate table for privacy)
       if (latitude != null && longitude != null) {
