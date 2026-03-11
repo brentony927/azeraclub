@@ -180,15 +180,16 @@ export default function Profile() {
     if (!user) return;
     setSaving(true);
     try {
-      // Update profiles table
-      const { error: profileError } = await supabase.from("profiles").update({
+      // Upsert profiles table
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        user_id: user.id,
         display_name: displayName,
         age: age ? parseInt(age) : null,
-        location: location || null,
+        location: [city, country].filter(Boolean).join(", ") || null,
         profession: profession || null,
         bio: bio || null,
         interests: interests.length ? interests : null,
-      }).eq("user_id", user.id);
+      }, { onConflict: "user_id" });
       if (profileError) throw profileError;
 
       // Geocode city/country
