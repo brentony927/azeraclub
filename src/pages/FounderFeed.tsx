@@ -137,7 +137,7 @@ export default function FounderFeed() {
     setPostsLoading(true);
 
     const { data: postsData } = await supabase
-      .from("founder_posts" as any)
+      .from("founder_posts")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(50);
