@@ -61,7 +61,6 @@ export default function Profile() {
   // profiles table
   const [displayName, setDisplayName] = useState("");
   const [age, setAge] = useState("");
-  const [location, setLocation] = useState("");
   const [profession, setProfession] = useState("");
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
