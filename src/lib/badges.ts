@@ -73,6 +73,9 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   // ── Affiliate badges ──
   { key: "influencer_azera", name: "Influencer Azera", description: "Afiliado aprovado do Azera Club", criterion: "Aprovado como afiliado", icon: Star, colorClass: "badge-gold-metallic" },
   { key: "affiliate_legend", name: "Affiliate Legend", description: "Lenda dos afiliados", criterion: "100+ vendas como afiliado", icon: Crown, colorClass: "badge-gold-metallic" },
+
+  // ── Suggestion badge ──
+  { key: "fertile_mind", name: "Mente Fértil", description: "Contribuiu com ideias valiosas para a plataforma", criterion: "5+ sugestões aprovadas", icon: Brain, colorClass: "badge-purple" },
 ];
 
 export function getBadgeByKey(key: string): BadgeDefinition | undefined {
