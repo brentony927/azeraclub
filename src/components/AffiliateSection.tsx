@@ -128,6 +128,25 @@ export default function AffiliateSection() {
     else {
       toast.success("Solicitação enviada! Aguarde aprovação.");
       setStatus("pending");
+
+      // Notify site owner
+      try {
+        const { data: ownerProfile } = await supabase
+          .from("founder_profiles")
+          .select("user_id")
+          .eq("is_site_owner", true)
+          .maybeSingle();
+        if (ownerProfile && ownerProfile.user_id !== user.id) {
+          const { sendNotification } = await import("@/lib/sendNotification");
+          await sendNotification({
+            user_id: ownerProfile.user_id,
+            type: "connection",
+            title: `Nova solicitação de afiliação de ${formName}`,
+            body: `Estratégia: ${formStrategy.slice(0, 100)}`,
+            action_url: "/profile",
+          });
+        }
+      } catch {}
     }
     setSubmitting(false);
   };

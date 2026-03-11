@@ -625,6 +625,9 @@ export default function Profile() {
           </CardContent>
         </Card>
 
+        {/* Affiliate Requests Panel (owner only) */}
+        {isOwner && <AffiliateRequestsPanel />}
+
         {/* Affiliate Section */}
         <AffiliateSection />
 
