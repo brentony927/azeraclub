@@ -162,6 +162,12 @@ export default function Profile() {
       .maybeSingle();
     if (bgData) setActiveBackground((bgData as any).active_background || "none");
 
+    // Fetch earned badges count
+    const { count: badgeCount } = await supabase.from("user_badges")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user!.id);
+    setEarnedBadgesCount(badgeCount || 0);
+
     setLoading(false);
   };
 
