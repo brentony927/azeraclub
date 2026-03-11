@@ -67,6 +67,7 @@ export default function FounderProfile() {
   const [currentVenture, setCurrentVenture] = useState<any>(null);
   const [currentVentureTeamSize, setCurrentVentureTeamSize] = useState(0);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [activeBackground, setActiveBackground] = useState<string | null>(null);
 
   // Founder Score hook — we'll set userId once profile loads
   const [profileUserId, setProfileUserId] = useState<string | undefined>();
