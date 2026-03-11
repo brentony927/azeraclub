@@ -72,7 +72,7 @@ const plans: PricingPlan[] = [
       "Insights semanais",
       "Modo foco (deep work planner)",
       "Weekly Intelligence Report",
-      "🛡️ Insígnia Pro",
+      "Insígnia Pro",
     ],
   },
   {
