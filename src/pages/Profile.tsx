@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import AffiliateSection from "@/components/AffiliateSection";
+import ProfileBackgroundPicker from "@/components/ProfileBackgroundPicker";
+import ProfileBackgroundRenderer from "@/components/ProfileBackgroundRenderer";
 import {
   AlertDialog,
   AlertDialogAction,
