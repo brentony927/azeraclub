@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,15 +32,42 @@ Deno.serve(async (req) => {
       });
     }
 
-    const user_id = userData.user.id;
-    const { plan_price } = await req.json();
+    const user = userData.user;
+    const user_id = user.id;
 
-    if (typeof plan_price !== "number" || plan_price <= 0) {
-      return new Response(JSON.stringify({ error: "Invalid plan_price" }), {
+    // Verify price from Stripe instead of trusting client input
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      return new Response(JSON.stringify({ error: "Stripe not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+
+    const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
+    if (customers.data.length === 0) {
+      return new Response(JSON.stringify({ error: "No Stripe customer found" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customers.data[0].id,
+      status: "active",
+      limit: 1,
+    });
+
+    if (subscriptions.data.length === 0) {
+      return new Response(JSON.stringify({ error: "No active subscription" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const plan_price = subscriptions.data[0].items.data[0].price.unit_amount! / 100;
 
     const supabaseAdmin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
