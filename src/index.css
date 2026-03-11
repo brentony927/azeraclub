@@ -814,13 +814,13 @@
   --card-foreground: 0 0% 96%;
   --popover: 152 6% 8%;
   --popover-foreground: 0 0% 96%;
-  --primary: 152 100% 50%;
+  --primary: 152 85% 50%;
   --primary-foreground: 0 0% 4%;
   --secondary: 152 12% 12%;
   --secondary-foreground: 0 0% 96%;
   --muted: 152 10% 14%;
   --muted-foreground: 0 0% 55%;
-  --accent: 152 100% 50%;
+  --accent: 152 85% 50%;
   --accent-foreground: 0 0% 4%;
   --border: 152 25% 18%;
   --input: 152 8% 12%;
