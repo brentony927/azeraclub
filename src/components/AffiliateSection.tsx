@@ -13,9 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-  Copy, Check, Users, TrendingUp, Wallet, Loader2, Gift, Save,
-  Lock, Clock, CheckCircle, XCircle, BarChart3, ArrowUpRight, DollarSign,
-  Activity, Star,
+  Copy, Check, Users, TrendingUp, Wallet, Loader2, Gift,
+  Lock, Clock, XCircle, BarChart3, DollarSign,
+  Activity, Star, ExternalLink, CreditCard, CheckCircle,
 } from "lucide-react";
 import Icon3D from "@/components/ui/icon-3d";
 import AnimatedCounter from "@/components/AnimatedCounter";
@@ -48,18 +48,8 @@ export default function AffiliateSection() {
   const [commissions, setCommissions] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>(null);
 
-  // Payout info
-  const [payoutInfo, setPayoutInfo] = useState<any>(null);
-  const [payFullName, setPayFullName] = useState("");
-  const [payCpf, setPayCpf] = useState("");
-  const [payPix, setPayPix] = useState("");
-  const [payPaypal, setPayPaypal] = useState("");
-  const [savingPayout, setSavingPayout] = useState(false);
-
-  // Withdrawal
-  const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawals, setWithdrawals] = useState<any[]>([]);
-  const [withdrawing, setWithdrawing] = useState(false);
+  // Stripe Connect
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   const isPro = canAccess("pro");
 
@@ -68,11 +58,22 @@ export default function AffiliateSection() {
     loadAll();
   }, [user]);
 
+  // Check for stripe onboarding return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("stripe_onboarding") === "complete") {
+      toast.success("Conta Stripe conectada com sucesso!");
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+      // Reload to get updated status
+      if (user) loadAll();
+    }
+  }, []);
+
   const loadAll = async () => {
     if (!user) return;
     setLoading(true);
 
-    // Check affiliate request
     const { data: req } = await supabase
       .from("affiliate_requests" as any)
       .select("*")
@@ -86,7 +87,6 @@ export default function AffiliateSection() {
       setStatus(r.status as AffiliateStatus);
     }
 
-    // Check affiliate profile (approved)
     const { data: prof } = await supabase
       .from("affiliate_profiles" as any)
       .select("*")
@@ -99,28 +99,15 @@ export default function AffiliateSection() {
 
       const affId = (prof as any).affiliate_id;
 
-      // Load leads, commissions, wallet, payout info, withdrawals in parallel
-      const [leadsRes, commRes, walletRes, payoutRes, withdrawRes] = await Promise.all([
+      const [leadsRes, commRes, walletRes] = await Promise.all([
         supabase.from("affiliate_leads" as any).select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
         supabase.from("affiliate_commissions" as any).select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
         supabase.from("affiliate_wallet" as any).select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("affiliate_payout_info" as any).select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("affiliate_withdrawals" as any).select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
 
       setLeads((leadsRes as any).data || []);
       setCommissions((commRes as any).data || []);
       setWallet((walletRes as any).data);
-      setWithdrawals((withdrawRes as any).data || []);
-
-      const pi = (payoutRes as any).data;
-      if (pi) {
-        setPayoutInfo(pi);
-        setPayFullName(pi.full_name || "");
-        setPayCpf(pi.cpf || "");
-        setPayPix(pi.pix_key || "");
-        setPayPaypal(pi.paypal_email || "");
-      }
     }
 
     setLoading(false);
@@ -158,48 +145,24 @@ export default function AffiliateSection() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSavePayout = async () => {
+  const handleConnectStripe = async () => {
     if (!user) return;
-    setSavingPayout(true);
-    const payload = {
-      user_id: user.id,
-      full_name: payFullName || null,
-      cpf: payCpf || null,
-      pix_key: payPix || null,
-      paypal_email: payPaypal || null,
-      updated_at: new Date().toISOString(),
-    };
-    if (payoutInfo) {
-      await supabase.from("affiliate_payout_info" as any).update(payload).eq("user_id", user.id);
-    } else {
-      await supabase.from("affiliate_payout_info" as any).insert(payload);
+    setConnectingStripe(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-connect-account", {
+        headers: { Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.already_complete) {
+        toast.success("Sua conta Stripe já está conectada!");
+        await loadAll();
+      } else if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      toast.error("Erro ao conectar Stripe: " + (err.message || "Tente novamente."));
     }
-    toast.success("Dados de pagamento salvos!");
-    setSavingPayout(false);
-  };
-
-  const handleWithdraw = async () => {
-    const amt = parseFloat(withdrawAmount);
-    if (!user || isNaN(amt) || amt < 50) {
-      toast.error("Valor mínimo para saque: R$50");
-      return;
-    }
-    if (wallet && amt > Number(wallet.balance_available)) {
-      toast.error("Saldo insuficiente.");
-      return;
-    }
-    setWithdrawing(true);
-    const { error } = await supabase.from("affiliate_withdrawals" as any).insert({
-      user_id: user.id,
-      amount: amt,
-    });
-    if (error) toast.error(error.message);
-    else {
-      toast.success("Saque solicitado! Processamento em até 24h.");
-      setWithdrawAmount("");
-      await loadAll();
-    }
-    setWithdrawing(false);
+    setConnectingStripe(false);
   };
 
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
@@ -325,6 +288,7 @@ export default function AffiliateSection() {
   const totalCommission = commissions.reduce((a, c) => a + Number(c.amount), 0);
   const levelLabel = { starter: "Starter", partner: "Partner", ambassador: "Ambassador", legend: "Legend" }[affiliateProfile?.level || "starter"] || "Starter";
   const ratePercent = ((affiliateProfile?.commission_rate || 0.25) * 100).toFixed(0);
+  const isStripeConnected = affiliateProfile?.stripe_onboarding_complete === true;
 
   // Chart data — leads per day (last 14 days)
   const chartData = (() => {
@@ -360,6 +324,30 @@ export default function AffiliateSection() {
           </Button>
         </div>
 
+        {/* Stripe Connect Status */}
+        {!isStripeConnected && (
+          <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 space-y-2">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">Conecte sua conta Stripe</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Para receber suas comissões automaticamente via PIX/transferência bancária, conecte sua conta Stripe.
+            </p>
+            <Button onClick={handleConnectStripe} disabled={connectingStripe} size="sm" className="gold-gradient text-primary-foreground font-semibold">
+              {connectingStripe ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
+              Conectar Stripe
+            </Button>
+          </div>
+        )}
+
+        {isStripeConnected && (
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-accent/10 border border-accent/20">
+            <CheckCircle className="h-4 w-4 text-accent-foreground" />
+            <span className="text-xs text-foreground">Conta Stripe conectada — pagamentos automáticos ativos</span>
+          </div>
+        )}
+
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full grid grid-cols-4 h-8">
             <TabsTrigger value="overview" className="text-[10px] sm:text-xs">Visão Geral</TabsTrigger>
@@ -370,7 +358,6 @@ export default function AffiliateSection() {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview" className="space-y-4 mt-3">
-            {/* Stat cards */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {[
                 { label: "Leads", value: leadsCount, icon: Users, color: "blue" as const },
@@ -485,68 +472,54 @@ export default function AffiliateSection() {
               </div>
             </div>
 
-            {/* Withdrawal */}
-            <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-foreground">Solicitar saque</h4>
-              <p className="text-[10px] text-muted-foreground">Valor mínimo: R$50. Os saques são processados em até 24 horas.</p>
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  placeholder="R$ Valor"
-                  value={withdrawAmount}
-                  onChange={e => setWithdrawAmount(e.target.value)}
-                  className="max-w-[160px]"
-                />
-                <Button onClick={handleWithdraw} disabled={withdrawing} size="sm" variant="outline">
-                  {withdrawing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <ArrowUpRight className="h-3 w-3 mr-1" />}
-                  Sacar
-                </Button>
-              </div>
-            </div>
-
-            {/* Withdrawal history */}
-            {withdrawals.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-foreground">Histórico de saques</h4>
-                <div className="space-y-1 max-h-32 overflow-y-auto">
-                  {withdrawals.map(w => (
-                    <div key={w.id} className="flex items-center justify-between text-xs p-2 rounded bg-secondary/20">
-                      <span>R${Number(w.amount).toFixed(2)}</span>
-                      <Badge variant="outline" className="text-[10px]">{w.status}</Badge>
-                      <span className="text-muted-foreground">{format(new Date(w.created_at), "dd/MM/yy")}</span>
-                    </div>
-                  ))}
+            {/* Stripe Connect status */}
+            {isStripeConnected ? (
+              <div className="space-y-2 p-3 rounded-lg bg-accent/5 border border-accent/20">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-accent-foreground" />
+                  <span className="text-sm font-medium text-foreground">Pagamentos automáticos</span>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Suas comissões são transferidas automaticamente para sua conta bancária via Stripe após o período de 7 dias de carência. Não é necessário solicitar saques manualmente.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2 p-3 rounded-lg border border-primary/30 bg-primary/5">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">Configure seus pagamentos</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Conecte sua conta Stripe para receber comissões automaticamente via PIX ou transferência bancária. 
+                  Sem taxas adicionais — o Stripe processa tudo.
+                </p>
+                <Button onClick={handleConnectStripe} disabled={connectingStripe} size="sm" className="gold-gradient text-primary-foreground font-semibold">
+                  {connectingStripe ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
+                  Conectar conta Stripe
+                </Button>
               </div>
             )}
 
             <Separator />
 
-            {/* Payout info */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-foreground">Dados de pagamento</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Nome completo</Label>
-                  <Input value={payFullName} onChange={e => setPayFullName(e.target.value)} placeholder="Seu nome" />
+            {/* Commission history */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-semibold text-foreground">Histórico de comissões</h4>
+              {commissions.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-3">Nenhuma comissão registrada ainda.</p>
+              ) : (
+                <div className="space-y-1 max-h-40 overflow-y-auto">
+                  {commissions.map(c => (
+                    <div key={c.id} className="flex items-center justify-between text-xs p-2 rounded bg-secondary/20">
+                      <span className="font-medium text-foreground">R${Number(c.amount).toFixed(2)}</span>
+                      <Badge variant="outline" className="text-[10px]">
+                        {c.status === "paid" ? "Pago" : c.status === "pending" ? "Pendente" : c.status}
+                      </Badge>
+                      <span className="text-muted-foreground">{format(new Date(c.created_at), "dd/MM/yy")}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">CPF</Label>
-                  <Input value={payCpf} onChange={e => setPayCpf(e.target.value)} placeholder="000.000.000-00" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">Chave PIX</Label>
-                  <Input value={payPix} onChange={e => setPayPix(e.target.value)} placeholder="Chave PIX" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">PayPal (opcional)</Label>
-                  <Input value={payPaypal} onChange={e => setPayPaypal(e.target.value)} placeholder="email@paypal.com" />
-                </div>
-              </div>
-              <Button onClick={handleSavePayout} disabled={savingPayout} size="sm" variant="outline">
-                {savingPayout ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Save className="h-3 w-3 mr-1" />}
-                Salvar dados
-              </Button>
+              )}
             </div>
           </TabsContent>
         </Tabs>

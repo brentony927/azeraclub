@@ -118,6 +118,8 @@ export type Database = {
           enabled: boolean | null
           id: string
           level: string | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean | null
           user_id: string
         }
         Insert: {
@@ -127,6 +129,8 @@ export type Database = {
           enabled?: boolean | null
           id?: string
           level?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           user_id: string
         }
         Update: {
@@ -136,6 +140,8 @@ export type Database = {
           enabled?: boolean | null
           id?: string
           level?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
           user_id?: string
         }
         Relationships: []
