@@ -190,7 +190,7 @@ export default function Journal() {
                   <p className="text-sm text-foreground/90 whitespace-pre-wrap">{entry.content}</p>
                   {entry.ai_response && (
                     <div className="border-t border-border/40 pt-3 mt-3">
-                      <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1.5">💡 Análise AZR AI</p>
+                      <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1.5 flex items-center gap-1"><Icon3D icon={Lightbulb} color="gold" size="xs" animated /> Análise AZR AI</p>
                       <div className="text-sm text-foreground/80 prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown>{entry.ai_response}</ReactMarkdown>
                       </div>

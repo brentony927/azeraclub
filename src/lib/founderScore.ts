@@ -20,10 +20,10 @@ export const LEVEL_COLORS: Record<string, string> = {
 };
 
 export const SCORE_BADGES = [
-  { key: "top_networker", label: "Top Networker", check: (s: FounderScore) => s.network_points >= 20, icon: "🤝" },
-  { key: "startup_creator", label: "Startup Creator", check: (s: FounderScore) => s.project_points >= 20, icon: "🚀" },
-  { key: "opportunity_hunter", label: "Opportunity Hunter", check: (s: FounderScore) => s.activity_points >= 15, icon: "🎯" },
-  { key: "elite_founder", label: "Elite Founder", check: (s: FounderScore) => s.total_score >= 81, icon: "👑" },
+  { key: "top_networker", label: "Top Networker", check: (s: FounderScore) => s.network_points >= 20, iconName: "Handshake" as const },
+  { key: "startup_creator", label: "Startup Creator", check: (s: FounderScore) => s.project_points >= 20, iconName: "Rocket" as const },
+  { key: "opportunity_hunter", label: "Opportunity Hunter", check: (s: FounderScore) => s.activity_points >= 15, iconName: "Target" as const },
+  { key: "elite_founder", label: "Elite Founder", check: (s: FounderScore) => s.total_score >= 81, iconName: "Crown" as const },
 ];
 
 export function useFounderScore(userId: string | undefined) {
