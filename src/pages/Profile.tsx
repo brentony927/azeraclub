@@ -111,7 +111,6 @@ export default function Profile() {
     if (profileRes.data) {
       const p = profileRes.data;
       setAge(p.age?.toString() || "");
-      setLocation(p.location || "");
       setProfession(p.profession || "");
       setBio(p.bio || "");
       setAvatarUrl(p.avatar_url || null);
