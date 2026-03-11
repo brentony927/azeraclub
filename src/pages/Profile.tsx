@@ -447,6 +447,8 @@ export default function Profile() {
           currentBackground={activeBackground}
           founderScore={founderScore}
           onSelect={setActiveBackground}
+          isOwner={isOwner}
+          earnedBadgesCount={earnedBadgesCount}
         />
 
         {/* Current Venture (read-only) */}
