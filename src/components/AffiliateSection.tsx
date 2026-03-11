@@ -344,29 +344,14 @@ export default function AffiliateSection() {
           </Button>
         </div>
 
-        {/* Stripe Connect Status */}
-        {!isStripeConnected && (
-          <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 space-y-2">
-            <div className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Conecte sua conta Stripe</span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Para receber suas comissões automaticamente via PIX/transferência bancária, conecte sua conta Stripe.
-            </p>
-            <Button onClick={handleConnectStripe} disabled={connectingStripe} size="sm" className="gold-gradient text-primary-foreground font-semibold">
-              {connectingStripe ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
-              Conectar Stripe
-            </Button>
-          </div>
-        )}
-
-        {isStripeConnected && (
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-accent/10 border border-accent/20">
-            <CheckCircle className="h-4 w-4 text-accent-foreground" />
-            <span className="text-xs text-foreground">Conta Stripe conectada — pagamentos automáticos ativos</span>
-          </div>
-        )}
+        {/* Payout method hint */}
+        <div className="flex items-center gap-2 p-2 rounded-lg bg-secondary/10 border border-border/30">
+          <Wallet className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">
+            Método de pagamento: <strong className="text-foreground">{payoutMethod === "stripe" && isStripeConnected ? "Stripe (automático)" : "PIX (manual)"}</strong>
+            {" · "}Configure na aba Financeiro
+          </span>
+        </div>
 
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="w-full grid grid-cols-4 h-8">
