@@ -1986,6 +1986,18 @@ export type Database = {
           longitude: number
         }[]
       }
+      is_group_admin: {
+        Args: { p_group_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      is_group_creator: {
+        Args: { p_group_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { p_group_id: string; p_user_id: string }
+        Returns: boolean
+      }
       is_site_owner: { Args: { p_user_id: string }; Returns: boolean }
       is_venture_member: {
         Args: { p_user_id: string; p_venture_id: string }
