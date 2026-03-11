@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Lock, Check, ChevronDown, Palette } from "lucide-react";
+import { useState, useRef } from "react";
+import { Lock, Check, ChevronDown, Palette, Upload, ImageIcon, Film } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -13,13 +14,19 @@ interface Props {
   currentBackground: string;
   founderScore: number;
   onSelect: (key: string) => void;
+  isOwner?: boolean;
+  earnedBadgesCount?: number;
 }
 
-export default function ProfileBackgroundPicker({ currentBackground, founderScore, onSelect }: Props) {
+export default function ProfileBackgroundPicker({ currentBackground, founderScore, onSelect, isOwner, earnedBadgesCount = 0 }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(currentBackground);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const canUploadCustom = isOwner || earnedBadgesCount >= 25;
 
   const handleApply = async () => {
     if (!user) return;
@@ -49,6 +56,63 @@ export default function ProfileBackgroundPicker({ currentBackground, founderScor
     setSaving(false);
   };
 
+  const handleCustomUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error("Arquivo muito grande (máx 10MB)");
+      return;
+    }
+
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "video/mp4", "video/webm"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Formato inválido. Use JPG, PNG, WebP, MP4 ou WebM.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/bg-custom.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("profile-bg-media")
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("profile-bg-media")
+        .getPublicUrl(path);
+
+      const customKey = `custom:${urlData.publicUrl}?t=${Date.now()}`;
+      setSelected(customKey);
+
+      // Auto-save
+      const { data: existing } = await supabase
+        .from("profile_backgrounds" as any)
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("profile_backgrounds" as any)
+          .update({ active_background: customKey, updated_at: new Date().toISOString() } as any)
+          .eq("user_id", user.id);
+      } else {
+        await supabase
+          .from("profile_backgrounds" as any)
+          .insert({ user_id: user.id, active_background: customKey } as any);
+      }
+      onSelect(customKey);
+      toast.success("Fundo personalizado aplicado!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao enviar arquivo");
+    }
+    setUploading(false);
+  };
+
   const tiers = [
     { label: "Básico", range: [0, 10] },
     { label: "Avançado", range: [11, 25] },
@@ -65,9 +129,9 @@ export default function ProfileBackgroundPicker({ currentBackground, founderScor
           <CardHeader className="cursor-pointer hover:bg-secondary/30 transition-colors pb-3">
             <CardTitle className="text-sm flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Palette className="h-4 w-4 text-primary" />
+                <Icon3D icon={Palette} color="blue" size="xs" animated />
                 Fundos de Perfil
-                <Badge variant="secondary" className="text-[10px]">{PROFILE_BACKGROUNDS.filter(b => founderScore >= b.minScore).length}/{PROFILE_BACKGROUNDS.length}</Badge>
+                <Badge variant="secondary" className="text-[10px]">{PROFILE_BACKGROUNDS.filter(b => isOwner || founderScore >= b.minScore).length}/{PROFILE_BACKGROUNDS.length}</Badge>
               </span>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
             </CardTitle>
@@ -97,7 +161,7 @@ export default function ProfileBackgroundPicker({ currentBackground, founderScor
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">{tier.label}</p>
                   <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                     {backgrounds.map(bg => {
-                      const unlocked = founderScore >= bg.minScore;
+                      const unlocked = isOwner || founderScore >= bg.minScore;
                       const isSelected = selected === bg.key;
 
                       return (
@@ -140,7 +204,51 @@ export default function ProfileBackgroundPicker({ currentBackground, founderScor
               );
             })}
 
-            {selected !== currentBackground && (
+            {/* Custom media upload section */}
+            {canUploadCustom ? (
+              <div className="border-t border-border/30 pt-4">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1">
+                  <Icon3D icon={ImageIcon} color="gold" size="xs" animated /> Fundo Personalizado
+                </p>
+                <p className="text-[10px] text-muted-foreground mb-3">Envie uma imagem ou vídeo (loop) como fundo do seu perfil.</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+                  className="hidden"
+                  onChange={handleCustomUpload}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2 text-xs"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>Enviando...</>
+                  ) : (
+                    <>
+                      <Upload className="h-3.5 w-3.5" />
+                      Enviar Imagem ou Vídeo
+                    </>
+                  )}
+                </Button>
+                {selected.startsWith("custom:") && (
+                  <p className="text-[10px] text-primary mt-2 flex items-center gap-1">
+                    <Check className="h-3 w-3" /> Fundo personalizado ativo
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="border-t border-border/30 pt-4">
+                <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <Lock className="h-3 w-3" /> Desbloqueie 25+ insígnias para usar foto/vídeo como fundo
+                </p>
+              </div>
+            )}
+
+            {selected !== currentBackground && !selected.startsWith("custom:") && (
               <Button
                 onClick={handleApply}
                 disabled={saving}

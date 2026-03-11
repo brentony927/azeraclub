@@ -324,11 +324,15 @@ export default function FounderProfile() {
                 {/* Badges */}
                 {founderScore && (
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {SCORE_BADGES.filter(b => b.check(founderScore)).map(b => (
-                      <Badge key={b.key} variant="secondary" className="text-[10px] gap-1">
-                        {b.icon} {b.label}
-                      </Badge>
-                    ))}
+                    {SCORE_BADGES.filter(b => b.check(founderScore)).map(b => {
+                      const iconMap: Record<string, any> = { Handshake: Users, Rocket, Target: Sparkles, Crown };
+                      const IconComp = iconMap[b.iconName] || Sparkles;
+                      return (
+                        <Badge key={b.key} variant="secondary" className="text-[10px] gap-1">
+                          <Icon3D icon={IconComp} color="gold" size="xs" animated /> {b.label}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 )}
                 {isOwn && (

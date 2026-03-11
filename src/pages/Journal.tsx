@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, Plus, Send, Loader2, Trash2 } from "lucide-react";
+import { BookOpen, Plus, Send, Loader2, Trash2, Smile, Minus, Brain, Moon, AlertTriangle, Lightbulb } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,11 +27,11 @@ const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { st
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 const MOOD_OPTIONS = [
-  { id: "otimo", label: "Ótimo", emoji: "😊" },
-  { id: "neutro", label: "Neutro", emoji: "😐" },
-  { id: "reflexivo", label: "Reflexivo", emoji: "🤔" },
-  { id: "cansado", label: "Cansado", emoji: "😴" },
-  { id: "ansioso", label: "Ansioso", emoji: "😰" },
+  { id: "otimo", label: "Ótimo", icon: Smile, color: "green" as const },
+  { id: "neutro", label: "Neutro", icon: Minus, color: "silver" as const },
+  { id: "reflexivo", label: "Reflexivo", icon: Brain, color: "blue" as const },
+  { id: "cansado", label: "Cansado", icon: Moon, color: "silver" as const },
+  { id: "ansioso", label: "Ansioso", icon: AlertTriangle, color: "gold" as const },
 ];
 
 export default function Journal() {
@@ -140,9 +141,9 @@ export default function Journal() {
                   <button
                     key={m.id}
                     onClick={() => setMood(mood === m.id ? null : m.id)}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-all ${mood === m.id ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                    className={`text-xs px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${mood === m.id ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
                   >
-                    {m.emoji} {m.label}
+                    <Icon3D icon={m.icon} color={m.color} size="xs" animated /> {m.label}
                   </button>
                 ))}
               </div>
@@ -173,11 +174,14 @@ export default function Journal() {
                       <span className="text-xs text-muted-foreground">
                         {format(new Date(entry.created_at), "dd MMM yyyy · HH:mm", { locale: ptBR })}
                       </span>
-                      {entry.mood && (
-                        <span className="text-xs bg-secondary px-2 py-0.5 rounded-full">
-                          {MOOD_OPTIONS.find((m) => m.id === entry.mood)?.emoji} {MOOD_OPTIONS.find((m) => m.id === entry.mood)?.label}
-                        </span>
-                      )}
+                      {entry.mood && (() => {
+                        const moodOpt = MOOD_OPTIONS.find((m) => m.id === entry.mood);
+                        return moodOpt ? (
+                          <span className="text-xs bg-secondary px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Icon3D icon={moodOpt.icon} color={moodOpt.color} size="xs" /> {moodOpt.label}
+                          </span>
+                        ) : null;
+                      })()}
                     </div>
                     <button onClick={() => deleteEntry(entry.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                       <Trash2 className="h-3.5 w-3.5" />
@@ -186,7 +190,7 @@ export default function Journal() {
                   <p className="text-sm text-foreground/90 whitespace-pre-wrap">{entry.content}</p>
                   {entry.ai_response && (
                     <div className="border-t border-border/40 pt-3 mt-3">
-                      <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1.5">💡 Análise AZR AI</p>
+                      <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1.5 flex items-center gap-1"><Icon3D icon={Lightbulb} color="gold" size="xs" animated /> Análise AZR AI</p>
                       <div className="text-sm text-foreground/80 prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown>{entry.ai_response}</ReactMarkdown>
                       </div>

@@ -17,6 +17,34 @@ export default function ProfileBackgroundRenderer({ backgroundKey, isOwner }: Pr
 
   if (!backgroundKey || backgroundKey === "none") return null;
 
+  // Custom image/video background
+  if (backgroundKey.startsWith("custom:")) {
+    const url = backgroundKey.replace("custom:", "").split("?")[0];
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
+
+    return (
+      <div className="absolute inset-0 z-0 rounded-[inherit] overflow-hidden pointer-events-none">
+        {isVideo ? (
+          <video
+            src={backgroundKey.replace("custom:", "")}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        ) : (
+          <img
+            src={backgroundKey.replace("custom:", "")}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
+      </div>
+    );
+  }
+
   const bg = PROFILE_BACKGROUNDS.find(b => b.key === backgroundKey);
   if (!bg) return null;
 

@@ -75,7 +75,7 @@ export default function EarlyBirdBanner() {
           <div className="flex-1 min-w-0 space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-serif font-bold text-responsive-lg">
-                🚀 Early Bird — 50% OFF
+                <Icon3D icon={Zap} color="gold" size="xs" animated /> Early Bird — 50% OFF
               </h3>
               <motion.span
                 animate={{ scale: [1, 1.05, 1] }}

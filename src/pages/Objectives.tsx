@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Target, Plus, Trash2 } from "lucide-react";
+import { Target, Plus, Trash2, Wallet, Briefcase, Heart, Sprout, BookOpen } from "lucide-react";
+import Icon3D from "@/components/ui/icon-3d";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,11 +26,11 @@ interface Objective {
 }
 
 const CATEGORIES = [
-  { value: "financeira", label: "💰 Financeira" },
-  { value: "carreira", label: "💼 Carreira" },
-  { value: "saude", label: "🏃 Saúde" },
-  { value: "pessoal", label: "🌱 Pessoal" },
-  { value: "educacao", label: "📚 Educação" },
+  { value: "financeira", label: "Financeira", icon: Wallet, color: "gold" as const },
+  { value: "carreira", label: "Carreira", icon: Briefcase, color: "blue" as const },
+  { value: "saude", label: "Saúde", icon: Heart, color: "green" as const },
+  { value: "pessoal", label: "Pessoal", icon: Sprout, color: "green" as const },
+  { value: "educacao", label: "Educação", icon: BookOpen, color: "blue" as const },
 ];
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } };
@@ -73,6 +74,17 @@ export default function Objectives() {
   const active = objectives.filter((o) => o.status === "ativo");
   const completed = objectives.filter((o) => o.status === "concluido");
 
+  const getCategoryDisplay = (catValue: string) => {
+    const cat = CATEGORIES.find((c) => c.value === catValue);
+    if (!cat) return <span>{catValue}</span>;
+    return (
+      <span className="inline-flex items-center gap-1">
+        <Icon3D icon={cat.icon} color={cat.color} size="xs" animated />
+        {cat.label}
+      </span>
+    );
+  };
+
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto space-y-6">
       <motion.div variants={item} className="flex items-center justify-between">
@@ -91,7 +103,13 @@ export default function Objectives() {
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                  {CATEGORIES.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      <span className="flex items-center gap-2">
+                        <Icon3D icon={c.icon} color={c.color} size="xs" /> {c.label}
+                      </span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} />
@@ -121,8 +139,8 @@ export default function Objectives() {
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-sm font-medium">{obj.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {CATEGORIES.find((c) => c.value === obj.category)?.label || obj.category}
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            {getCategoryDisplay(obj.category)}
                             {obj.target_date && ` · Meta: ${format(new Date(obj.target_date + "T12:00:00"), "dd MMM yyyy", { locale: ptBR })}`}
                           </p>
                         </div>
