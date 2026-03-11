@@ -14,6 +14,228 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_commissions: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          approved_at: string | null
+          created_at: string | null
+          id: string
+          paid_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          approved_at?: string | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          approved_at?: string | null
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_leads: {
+        Row: {
+          created_at: string | null
+          id: string
+          purchased_at: string | null
+          referrer_id: string
+          signed_up_at: string | null
+          user_id: string
+          user_name: string | null
+          user_plan: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          purchased_at?: string | null
+          referrer_id: string
+          signed_up_at?: string | null
+          user_id: string
+          user_name?: string | null
+          user_plan?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          purchased_at?: string | null
+          referrer_id?: string
+          signed_up_at?: string | null
+          user_id?: string
+          user_name?: string | null
+          user_plan?: string | null
+        }
+        Relationships: []
+      }
+      affiliate_payout_info: {
+        Row: {
+          cpf: string | null
+          full_name: string | null
+          id: string
+          paypal_email: string | null
+          pix_key: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cpf?: string | null
+          full_name?: string | null
+          id?: string
+          paypal_email?: string | null
+          pix_key?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cpf?: string | null
+          full_name?: string | null
+          id?: string
+          paypal_email?: string | null
+          pix_key?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_profiles: {
+        Row: {
+          affiliate_id: string
+          commission_rate: number | null
+          created_at: string | null
+          enabled: boolean | null
+          id: string
+          level: string | null
+          user_id: string
+        }
+        Insert: {
+          affiliate_id: string
+          commission_rate?: number | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          level?: string | null
+          user_id: string
+        }
+        Update: {
+          affiliate_id?: string
+          commission_rate?: number | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          level?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_requests: {
+        Row: {
+          audience: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          instagram: string | null
+          status: string
+          strategy: string | null
+          tiktok: string | null
+          twitter: string | null
+          updated_at: string | null
+          user_id: string
+          youtube: string | null
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          instagram?: string | null
+          status?: string
+          strategy?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+          user_id: string
+          youtube?: string | null
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          instagram?: string | null
+          status?: string
+          strategy?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          updated_at?: string | null
+          user_id?: string
+          youtube?: string | null
+        }
+        Relationships: []
+      }
+      affiliate_wallet: {
+        Row: {
+          balance_available: number | null
+          balance_pending: number | null
+          id: string
+          total_paid: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_available?: number | null
+          balance_pending?: number | null
+          id?: string
+          total_paid?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_available?: number | null
+          balance_pending?: number | null
+          id?: string
+          total_paid?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_withdrawals: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_conversations: {
         Row: {
           created_at: string

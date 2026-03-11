@@ -69,6 +69,10 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   { key: "growth_partner", name: "Growth Partner", description: "Primeira conversão como parceiro", criterion: "1+ referral convertido", icon: Sprout, colorClass: "badge-green" },
   { key: "azera_ambassador", name: "Azera Ambassador", description: "Embaixador oficial da plataforma", criterion: "10+ referrals convertidos", icon: BadgeCheck, colorClass: "badge-gold-metallic" },
   { key: "top_connector", name: "Top Connector", description: "Conector de elite", criterion: "50+ referrals convertidos", icon: Network, colorClass: "badge-purple" },
+
+  // ── Affiliate badges ──
+  { key: "influencer_azera", name: "Influencer Azera", description: "Afiliado aprovado do Azera Club", criterion: "Aprovado como afiliado", icon: Star, colorClass: "badge-gold-metallic" },
+  { key: "affiliate_legend", name: "Affiliate Legend", description: "Lenda dos afiliados", criterion: "100+ vendas como afiliado", icon: Crown, colorClass: "badge-gold-metallic" },
 ];
 
 export function getBadgeByKey(key: string): BadgeDefinition | undefined {
