@@ -107,7 +107,7 @@ export default function FounderPostCard({
 
   const handleDelete = async () => {
     setDeleting(true);
-    await supabase.from("founder_posts" as any).delete().eq("id", post.id);
+    await supabase.from("founder_posts").delete().eq("id", post.id);
     setDeleting(false);
     onRefresh();
     toast({ title: "Post excluído ✓" });

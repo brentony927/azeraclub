@@ -13,7 +13,7 @@ export default function ProtectedLayout() {
 
   useEffect(() => {
     if (!user) { setCheckingBan(false); return; }
-    supabase.from("user_moderation" as any)
+    supabase.from("user_moderation")
       .select("id, action, expires_at")
       .eq("user_id", user.id)
       .eq("action", "ban")

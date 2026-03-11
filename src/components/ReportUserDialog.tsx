@@ -42,12 +42,12 @@ export default function ReportUserDialog({ reportedUserId, reportedUserName, tri
   const handleSubmit = async () => {
     if (!user || !reason) return;
     setSending(true);
-    const { error } = await supabase.from("user_reports" as any).insert({
+    const { error } = await supabase.from("user_reports").insert({
       reporter_id: user.id,
       reported_user_id: reportedUserId,
       reason,
       details: details.trim() || null,
-    } as any);
+    });
     setSending(false);
     if (error) {
       toast({ title: "Erro ao enviar denúncia", variant: "destructive" });

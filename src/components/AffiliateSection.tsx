@@ -114,7 +114,7 @@ export default function AffiliateSection() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("affiliate_requests" as any).insert({
+    const { error } = await supabase.from("affiliate_requests").insert({
       user_id: user.id,
       full_name: formName,
       instagram: formInstagram || null,

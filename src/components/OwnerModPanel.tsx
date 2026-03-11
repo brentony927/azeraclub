@@ -48,7 +48,7 @@ export default function OwnerModPanel({ targetUserId, targetName }: OwnerModPane
         ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
-      const { error } = await supabase.from("user_moderation" as any).insert({
+      const { error } = await supabase.from("user_moderation").insert({
         user_id: targetUserId,
         action,
         reason: reason || null,
