@@ -51,6 +51,15 @@ export default function AffiliateSection() {
   // Stripe Connect
   const [connectingStripe, setConnectingStripe] = useState(false);
 
+  // Payout method
+  const [payoutMethod, setPayoutMethod] = useState<"pix" | "stripe">("pix");
+  const [pixName, setPixName] = useState("");
+  const [pixCpf, setPixCpf] = useState("");
+  const [pixKey, setPixKey] = useState("");
+  const [savingPayout, setSavingPayout] = useState(false);
+  const [requestingWithdraw, setRequestingWithdraw] = useState(false);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
+
   const isPro = canAccess("pro");
 
   useEffect(() => {
