@@ -7,6 +7,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const EARLY_BIRD_COUPON_ID = "pIVpHHsI";
+const EARLY_BIRD_LIMIT = 100;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -35,6 +38,14 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    // Check if user is eligible for early bird discount (first 100 users)
+    const { count: userCount } = await supabaseClient
+      .from("profiles")
+      .select("id", { count: "exact", head: true });
+
+    const isEarlyBird = (userCount || 0) <= EARLY_BIRD_LIMIT;
+    console.log(`[create-checkout] User count: ${userCount}, Early bird eligible: ${isEarlyBird}`);
+
     // Check for referral — find affiliate with connected Stripe
     let transferData: Record<string, any> | undefined;
     let applicationFeePercent: number | undefined;
@@ -56,12 +67,8 @@ serve(async (req) => {
         .maybeSingle();
 
       if (affiliate && affiliate.stripe_onboarding_complete && affiliate.stripe_account_id) {
-        // Anti-fraud: ensure affiliate is not the buyer
         if (affiliate.user_id !== user.id) {
-          transferData = {
-            destination: affiliate.stripe_account_id,
-          };
-          // Platform keeps (1 - commission_rate), e.g. 75%
+          transferData = { destination: affiliate.stripe_account_id };
           const commissionRate = affiliate.commission_rate || 0.25;
           applicationFeePercent = Math.round((1 - commissionRate) * 100);
           affiliateId = affiliate.affiliate_id;
@@ -82,6 +89,12 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/planos`,
     };
 
+    // Apply early bird coupon
+    if (isEarlyBird) {
+      sessionParams.discounts = [{ coupon: EARLY_BIRD_COUPON_ID }];
+      console.log(`[create-checkout] Applied early bird coupon: ${EARLY_BIRD_COUPON_ID}`);
+    }
+
     // Add Stripe Connect destination charges for subscriptions
     if (transferData) {
       sessionParams.subscription_data = {
@@ -92,10 +105,8 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
-    // If affiliate split was applied, record commission as paid (Stripe handles transfer)
+    // If affiliate split was applied, record commission
     if (affiliateId && transferData) {
-      // We'll record this after the subscription is actually created
-      // For now, update the lead purchase date
       await supabaseClient
         .from("affiliate_leads")
         .update({ purchased_at: new Date().toISOString(), user_plan: "pro" })
