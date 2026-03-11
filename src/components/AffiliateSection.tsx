@@ -97,8 +97,8 @@ export default function AffiliateSection() {
       const affId = (prof as any).affiliate_id;
 
       const [leadsRes, commRes] = await Promise.all([
-        supabase.from("affiliate_leads" as any).select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
-        supabase.from("affiliate_commissions" as any).select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
+        supabase.from("affiliate_leads").select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
+        supabase.from("affiliate_commissions").select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
       ]);
 
       setLeads((leadsRes as any).data || []);
