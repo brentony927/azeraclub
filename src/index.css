@@ -318,7 +318,7 @@
 
   /* ====== Gradients ====== */
   .moss-gradient {
-    background: linear-gradient(135deg, hsl(0 0% 18%), hsl(0 0% 28%), hsl(0 0% 14%));
+    background: linear-gradient(135deg, hsl(0 0% 14%), hsl(0 0% 24%), hsl(0 0% 32%), hsl(0 0% 24%), hsl(0 0% 14%));
     @apply rounded-[14px];
   }
 
