@@ -87,6 +87,9 @@ export default function Profile() {
   const [profileViews, setProfileViews] = useState(0);
   const [hasFounderProfile, setHasFounderProfile] = useState(false);
 
+  // profile background
+  const [activeBackground, setActiveBackground] = useState("none");
+
   // social proof
   const [connectionsCount, setConnectionsCount] = useState(0);
   const [venturesCount, setVenturesCount] = useState(0);
