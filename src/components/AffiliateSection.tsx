@@ -402,7 +402,7 @@ export default function AffiliateSection() {
                 })), ...commissions.slice(0, 3).map(c => ({
                   text: `Comissão R$${Number(c.amount).toFixed(2)} — ${c.status}`,
                   date: c.created_at,
-                  icon: <DollarSign className="h-3 w-3 text-emerald-400" />,
+                  icon: <DollarSign className="h-3 w-3 text-accent-foreground" />,
                 }))].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5).map((item, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground p-1.5 rounded bg-secondary/20">
                     {item.icon}
