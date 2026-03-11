@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import AffiliateSection from "@/components/AffiliateSection";
+import ProfileBackgroundPicker from "@/components/ProfileBackgroundPicker";
+import ProfileBackgroundRenderer from "@/components/ProfileBackgroundRenderer";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -85,6 +87,9 @@ export default function Profile() {
   const [profileViews, setProfileViews] = useState(0);
   const [hasFounderProfile, setHasFounderProfile] = useState(false);
 
+  // profile background
+  const [activeBackground, setActiveBackground] = useState("none");
+
   // social proof
   const [connectionsCount, setConnectionsCount] = useState(0);
   const [venturesCount, setVenturesCount] = useState(0);
@@ -148,6 +153,13 @@ export default function Profile() {
       .select("id", { count: "exact", head: true })
       .eq("profile_user_id", user!.id);
     setVisitCount(vc || 0);
+
+    // Fetch active background
+    const { data: bgData } = await supabase.from("profile_backgrounds" as any)
+      .select("active_background")
+      .eq("user_id", user!.id)
+      .maybeSingle();
+    if (bgData) setActiveBackground((bgData as any).active_background || "none");
 
     setLoading(false);
   };
@@ -422,6 +434,13 @@ export default function Profile() {
             </CardContent>
           </Card>
         )}
+
+        {/* Profile Background Picker */}
+        <ProfileBackgroundPicker
+          currentBackground={activeBackground}
+          founderScore={founderScore}
+          onSelect={setActiveBackground}
+        />
 
         {/* Current Venture (read-only) */}
         {currentVenture && (

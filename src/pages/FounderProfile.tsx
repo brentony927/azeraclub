@@ -26,6 +26,7 @@ import { sendNotification } from "@/lib/sendNotification";
 import FounderPostCard from "@/components/FounderPostCard";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import OwnerModPanel from "@/components/OwnerModPanel";
+import ProfileBackgroundRenderer from "@/components/ProfileBackgroundRenderer";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
@@ -66,6 +67,7 @@ export default function FounderProfile() {
   const [currentVenture, setCurrentVenture] = useState<any>(null);
   const [currentVentureTeamSize, setCurrentVentureTeamSize] = useState(0);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [activeBackground, setActiveBackground] = useState<string | null>(null);
 
   // Founder Score hook — we'll set userId once profile loads
   const [profileUserId, setProfileUserId] = useState<string | undefined>();
@@ -160,6 +162,13 @@ export default function FounderProfile() {
       acts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       setActivity(acts.slice(0, 5));
 
+      // Fetch active background
+      const { data: bgData } = await supabase.from("profile_backgrounds" as any)
+        .select("active_background")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (bgData) setActiveBackground((bgData as any).active_background || null);
+
       setLoading(false);
     };
     load();
@@ -219,6 +228,7 @@ export default function FounderProfile() {
 
   return (
     <div className={`max-w-3xl mx-auto px-4 py-8 relative space-y-6 ${isSiteOwner ? "owner-profile-wrapper p-6" : ""}`}>
+      <ProfileBackgroundRenderer backgroundKey={activeBackground} isOwner={isSiteOwner} />
       <Suspense fallback={null}><FounderParticlesBackground /></Suspense>
       <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" /> Voltar
