@@ -242,7 +242,7 @@ export default function FounderProfile() {
                 <h1 className={`text-2xl font-bold ${isSiteOwner ? "owner-name" : "text-foreground"}`}>{profile.name}</h1>
                 {profile.is_verified && <ShieldCheck className="h-5 w-5 text-primary" />}
                 {isSiteOwner && (
-                  <Badge className="owner-badge text-[10px] font-bold flex items-center gap-1"><Icon3D icon={Crown} color="gold" size="xs" animated /> DONO · AZERA</Badge>
+                  <Badge className="owner-badge text-[10px] font-bold flex items-center gap-1"><Icon3D icon={Crown} color="red" size="xs" /> DONO · AZERA</Badge>
                 )}
                 <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">{founderBadge}</Badge>
               </div>

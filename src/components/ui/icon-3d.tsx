@@ -14,24 +14,24 @@ interface Icon3DProps {
 
 const COLOR_MAP: Record<Icon3DColor, { bg: string; icon: string }> = {
   gold: {
-    bg: "bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-600 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.35),inset_2px_2px_6px_rgba(255,255,200,0.6),0_2px_8px_rgba(200,150,0,0.4)]",
-    icon: "text-yellow-900 drop-shadow-[0_1px_1px_rgba(255,255,200,0.5)]",
+    bg: "bg-gradient-to-br from-amber-500 via-yellow-700 to-amber-900 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.4),inset_2px_2px_4px_rgba(255,220,150,0.35),0_1px_4px_rgba(0,0,0,0.3)] ring-1 ring-yellow-400/15",
+    icon: "text-yellow-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
   },
   red: {
-    bg: "bg-gradient-to-br from-red-400 via-red-600 to-red-900 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.4),inset_2px_2px_6px_rgba(255,100,100,0.5),0_2px_8px_rgba(200,0,0,0.4)]",
-    icon: "text-red-100 drop-shadow-[0_1px_1px_rgba(100,0,0,0.5)]",
+    bg: "bg-gradient-to-br from-red-500 via-red-700 to-red-950 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.45),inset_2px_2px_4px_rgba(255,120,120,0.3),0_1px_4px_rgba(0,0,0,0.3)] ring-1 ring-red-400/15",
+    icon: "text-red-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
   },
   blue: {
-    bg: "bg-gradient-to-br from-blue-300 via-blue-500 to-blue-800 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.35),inset_2px_2px_6px_rgba(150,200,255,0.5),0_2px_8px_rgba(0,50,200,0.3)]",
-    icon: "text-blue-100 drop-shadow-[0_1px_1px_rgba(0,0,100,0.4)]",
+    bg: "bg-gradient-to-br from-blue-400 via-blue-600 to-blue-900 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.4),inset_2px_2px_4px_rgba(140,180,255,0.3),0_1px_4px_rgba(0,0,0,0.3)] ring-1 ring-blue-400/15",
+    icon: "text-blue-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
   },
   green: {
-    bg: "bg-gradient-to-br from-emerald-300 via-emerald-500 to-emerald-800 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.35),inset_2px_2px_6px_rgba(150,255,200,0.5),0_2px_8px_rgba(0,150,50,0.3)]",
-    icon: "text-emerald-100 drop-shadow-[0_1px_1px_rgba(0,80,0,0.4)]",
+    bg: "bg-gradient-to-br from-emerald-400 via-emerald-600 to-emerald-900 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.4),inset_2px_2px_4px_rgba(140,255,180,0.3),0_1px_4px_rgba(0,0,0,0.3)] ring-1 ring-emerald-400/15",
+    icon: "text-emerald-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
   },
   silver: {
-    bg: "bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.3),inset_2px_2px_6px_rgba(255,255,255,0.6),0_2px_8px_rgba(100,100,100,0.3)]",
-    icon: "text-gray-800 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]",
+    bg: "bg-gradient-to-br from-zinc-300 via-zinc-500 to-zinc-700 shadow-[inset_-2px_-2px_6px_rgba(0,0,0,0.3),inset_2px_2px_4px_rgba(255,255,255,0.35),0_1px_4px_rgba(0,0,0,0.25)] ring-1 ring-white/10",
+    icon: "text-zinc-900 drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)]",
   },
 };
 
@@ -55,7 +55,7 @@ export default function Icon3D({ icon: IconComponent, color = "gold", size = "sm
         animated && "animate-icon3d-float",
         className
       )}
-      style={!animated ? { transform: "perspective(80px) rotateX(-4deg) translateZ(0)" } : undefined}
+      style={!animated ? { transform: "perspective(100px) rotateX(-5deg) translateZ(0)" } : undefined}
     >
       <IconComponent size={s.icon} className={c.icon} strokeWidth={2.5} />
     </span>
