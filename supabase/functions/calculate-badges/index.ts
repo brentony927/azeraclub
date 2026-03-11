@@ -183,6 +183,7 @@ Deno.serve(async (req) => {
       accountAgeDays,
       profileComplete,
       referralConversions,
+      userPosition,
     };
 
     // Site owner gets ALL badges
