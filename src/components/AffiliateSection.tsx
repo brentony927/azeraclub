@@ -48,18 +48,8 @@ export default function AffiliateSection() {
   const [commissions, setCommissions] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>(null);
 
-  // Payout info
-  const [payoutInfo, setPayoutInfo] = useState<any>(null);
-  const [payFullName, setPayFullName] = useState("");
-  const [payCpf, setPayCpf] = useState("");
-  const [payPix, setPayPix] = useState("");
-  const [payPaypal, setPayPaypal] = useState("");
-  const [savingPayout, setSavingPayout] = useState(false);
-
-  // Withdrawal
-  const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawals, setWithdrawals] = useState<any[]>([]);
-  const [withdrawing, setWithdrawing] = useState(false);
+  // Stripe Connect
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   const isPro = canAccess("pro");
 
