@@ -1,75 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Correção de Vulnerabilidade Crítica de Segurança
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Problema Encontrado
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-Os triggers `prevent_site_owner_change` e `force_site_owner_false_on_insert` **não estão ativos no banco de dados**, apesar de terem migrações criadas. Isto significa que **qualquer utilizador autenticado pode se autopromover a site owner** editando o próprio `founder_profiles` e definindo `is_site_owner = true`.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-Com isso, ganha acesso a:
-- **Moderar qualquer utilizador** (ban/mute/warn via `user_moderation`)
-- **Ver todas as solicitações de afiliados** (dados pessoais + redes sociais)
-- **Aprovar/rejeitar afiliados**
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-## Solução
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-Uma única migração SQL que:
-
-1. **Recria e ativa os triggers** que bloqueiam alterações em `is_site_owner`:
-   - `BEFORE INSERT`: força `is_site_owner = false` em novos perfis
-   - `BEFORE UPDATE`: impede alteração de `is_site_owner` (com `DROP TRIGGER IF EXISTS` primeiro)
-
-2. **Também protege `is_verified`** com o mesmo padrão — impedir que utilizadores se auto-verifiquem
-
-### Migração SQL
-
-```sql
--- Drop any stale triggers
-DROP TRIGGER IF EXISTS prevent_site_owner_change ON public.founder_profiles;
-DROP TRIGGER IF EXISTS force_site_owner_false_on_insert ON public.founder_profiles;
-DROP TRIGGER IF EXISTS prevent_verified_change ON public.founder_profiles;
-
--- Recreate functions
-CREATE OR REPLACE FUNCTION public.prevent_site_owner_change()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
-BEGIN
-  IF NEW.is_site_owner IS DISTINCT FROM OLD.is_site_owner THEN
-    RAISE EXCEPTION 'Cannot modify is_site_owner';
-  END IF;
-  IF NEW.is_verified IS DISTINCT FROM OLD.is_verified THEN
-    RAISE EXCEPTION 'Cannot modify is_verified';
-  END IF;
-  RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION public.force_site_owner_false_on_insert()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
-BEGIN
-  NEW.is_site_owner := false;
-  NEW.is_verified := false;
-  RETURN NEW;
-END;
-$$;
-
--- Create triggers
-CREATE TRIGGER prevent_site_owner_change
-  BEFORE UPDATE ON public.founder_profiles
-  FOR EACH ROW EXECUTE FUNCTION public.prevent_site_owner_change();
-
-CREATE TRIGGER force_site_owner_false_on_insert
-  BEFORE INSERT ON public.founder_profiles
-  FOR EACH ROW EXECUTE FUNCTION public.force_site_owner_false_on_insert();
-```
-
-Nenhuma alteração de código necessária — apenas a migração SQL para ativar os triggers no banco.
-
-| Item | Estado |
-|---|---|
-| Triggers `is_site_owner` (INSERT) | Inativo → **Corrigir** |
-| Triggers `is_site_owner` (UPDATE) | Inativo → **Corrigir** |
-| Proteção `is_verified` | Inexistente → **Adicionar** |
-| RLS `user_moderation` | OK (usa `is_site_owner()`) |
-| RLS `affiliate_requests` | OK (usa `is_site_owner()`) |
-| RLS demais tabelas | OK |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
