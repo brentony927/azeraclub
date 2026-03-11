@@ -29,6 +29,7 @@ type AffiliateStatus = "none" | "pending" | "approved" | "rejected";
 export default function AffiliateSection() {
   const { user } = useAuth();
   const { canAccess } = useSubscription();
+  const [sectionOpen, setSectionOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<AffiliateStatus>("none");
   const [affiliateProfile, setAffiliateProfile] = useState<any>(null);
