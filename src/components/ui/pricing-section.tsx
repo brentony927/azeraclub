@@ -346,12 +346,17 @@ export default function PricingSection({
                       </p>
                       <ul className="space-y-2.5">
                         {plan.includes.slice(1).map((feature, fi) => {
-                          // Strip emoji prefixes for cleaner look
                           const cleanFeature = feature.replace(/^[\u{1F300}-\u{1FAD6}\u{2600}-\u{27BF}]\uFE0F?\s*/u, "");
+                          const isInsignia = cleanFeature.toLowerCase().includes("insígnia");
+                          const insigniaColor = isPro ? "green" : isBusiness ? "gold" : "silver";
                           return (
-                            <li key={fi} className="flex items-start gap-2.5 text-responsive-sm">
-                              <Check className={cn("h-4 w-4 shrink-0 mt-0.5", checkColor)} />
-                              <span className="leading-snug">{cleanFeature}</span>
+                            <li key={fi} className="flex items-center gap-2.5 text-responsive-sm">
+                              {isInsignia ? (
+                                <Icon3D icon={Shield} color={insigniaColor} size="sm" animated />
+                              ) : (
+                                <Check className={cn("h-4 w-4 shrink-0", checkColor)} />
+                              )}
+                              <span className={cn("leading-snug", isInsignia && "font-semibold")}>{cleanFeature}</span>
                             </li>
                           );
                         })}
