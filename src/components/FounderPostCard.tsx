@@ -83,7 +83,7 @@ export default function FounderPostCard({
   const handleComment = async () => {
     if (!user || !commentText.trim()) return;
     setSendingComment(true);
-    const { error } = await supabase.from("founder_post_comments" as any).insert({
+    const { error } = await supabase.from("founder_post_comments").insert({
       post_id: post.id,
       user_id: user.id,
       content: commentText.trim(),
