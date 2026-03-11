@@ -89,6 +89,7 @@ export default function Profile() {
 
   // profile background
   const [activeBackground, setActiveBackground] = useState("none");
+  const [earnedBadgesCount, setEarnedBadgesCount] = useState(0);
 
   // social proof
   const [connectionsCount, setConnectionsCount] = useState(0);
