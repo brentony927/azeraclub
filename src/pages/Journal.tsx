@@ -27,11 +27,11 @@ const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { st
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 const MOOD_OPTIONS = [
-  { id: "otimo", label: "Ótimo", emoji: "😊" },
-  { id: "neutro", label: "Neutro", emoji: "😐" },
-  { id: "reflexivo", label: "Reflexivo", emoji: "🤔" },
-  { id: "cansado", label: "Cansado", emoji: "😴" },
-  { id: "ansioso", label: "Ansioso", emoji: "😰" },
+  { id: "otimo", label: "Ótimo", icon: Smile, color: "green" as const },
+  { id: "neutro", label: "Neutro", icon: Minus, color: "silver" as const },
+  { id: "reflexivo", label: "Reflexivo", icon: Brain, color: "blue" as const },
+  { id: "cansado", label: "Cansado", icon: Moon, color: "silver" as const },
+  { id: "ansioso", label: "Ansioso", icon: AlertTriangle, color: "gold" as const },
 ];
 
 export default function Journal() {
