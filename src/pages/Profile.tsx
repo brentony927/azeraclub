@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock, Trash2, AlertTriangle } from "lucide-react";
+import { Camera, Save, Loader2, ArrowLeft, Search, Rocket, Shield, Eye, Users, Briefcase, Lightbulb, Lock, Trash2, AlertTriangle, Crown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -336,8 +336,15 @@ export default function Profile() {
               <div className="flex-1 text-center sm:text-left space-y-2">
                 <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
                   <h2 className="text-xl font-bold text-foreground">{displayName || "Seu Nome"}</h2>
-                  {isVerified && <Shield className="h-4 w-4 text-primary" />}
-                  <Badge variant="secondary" className="text-xs">{badge}</Badge>
+                   {isVerified && <Shield className="h-4 w-4 text-primary" />}
+                   {isOwner ? (
+                     <Badge className="owner-profile-badge px-3 py-1 gap-1.5 text-sm">
+                       <Crown className="w-4 h-4 fill-current" />
+                       <span className="font-bold tracking-wider">BRENTONY OWNER</span>
+                     </Badge>
+                   ) : (
+                     <Badge variant="secondary" className="text-xs">{badge}</Badge>
+                   )}
                 </div>
                 {(city || country) && (
                   <p className="text-sm text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
@@ -578,7 +585,7 @@ export default function Profile() {
             <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-1">
               {filteredInterests.map(interest => (
                 <button key={interest} type="button" onClick={() => toggleArray(setInterests, interest)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all ${
+                  className={`px-2.5 py-1 min-h-[44px] rounded-full text-[11px] font-medium transition-all flex items-center ${
                     interests.includes(interest)
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
