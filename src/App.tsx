@@ -41,6 +41,8 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const CommunityGuidelines = lazy(() => import("./pages/CommunityGuidelines"));
 const PaymentsPolicy = lazy(() => import("./pages/PaymentsPolicy"));
 const SecurityPolicy = lazy(() => import("./pages/SecurityPolicy"));
+const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
+const AIDisclaimer = lazy(() => import("./pages/AIDisclaimer"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -137,6 +139,8 @@ const App = () => (
             <Route path="/community-guidelines" element={<CommunityGuidelines />} />
             <Route path="/payments-policy" element={<PaymentsPolicy />} />
             <Route path="/security-policy" element={<SecurityPolicy />} />
+            <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
+            <Route path="/ai-disclaimer" element={<AIDisclaimer />} />
             <Route path="/earn" element={<Earn />} />
             <Route path="/join" element={<Earn />} />
             <Route path="/faq" element={<FAQ />} />

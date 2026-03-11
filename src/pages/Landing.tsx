@@ -428,6 +428,8 @@ export default function Landing() {
               { label: "Privacidade", to: "/privacy" },
               { label: "Diretrizes", to: "/community-guidelines" },
               { label: "Segurança", to: "/security-policy" },
+              { label: "Risco", to: "/risk-disclaimer" },
+              { label: "IA", to: "/ai-disclaimer" },
             ].map((link, i) => (
               <span key={link.to} className="flex items-center gap-4 sm:gap-6">
                 {i > 0 && <span className="text-muted-foreground/20 hidden sm:inline">·</span>}

@@ -13,6 +13,8 @@ const legalLinks = [
   { label: "Diretrizes", href: "/community-guidelines" },
   { label: "Pagamentos", href: "/payments-policy" },
   { label: "Segurança", href: "/security-policy" },
+  { label: "Risco", href: "/risk-disclaimer" },
+  { label: "IA", href: "/ai-disclaimer" },
   { label: "Cookies", href: "/cookies" },
 ];
 
@@ -59,7 +61,10 @@ export default function Footer() {
           </nav>
         </div>
 
-        <p className="text-[10px] text-muted-foreground text-center mt-4">© 2026 Azera Club</p>
+        <p className="text-[10px] text-muted-foreground/60 text-center mt-4 max-w-2xl mx-auto leading-relaxed">
+          Azera Club é uma plataforma digital destinada a networking entre empreendedores e não participa ou garante quaisquer acordos realizados entre usuários fora da plataforma.
+        </p>
+        <p className="text-[10px] text-muted-foreground text-center mt-2">© 2026 Azera Club</p>
       </div>
     </footer>
   );
