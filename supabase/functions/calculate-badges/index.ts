@@ -87,7 +87,7 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "first_challenge", check: s => s.challengesTotal >= 1 },
   { key: "journal_master", check: s => s.journalEntries >= 30 },
   { key: "five_opportunities", check: s => s.opportunities >= 5 },
-  { key: "early_adopter", check: s => s.accountAgeDays >= 30 },
+  { key: "early_adopter", check: s => s.userPosition <= 20 },
   { key: "profile_complete", check: s => s.profileComplete },
   { key: "mentor", check: s => s.totalScore >= 70 && s.connections >= 10 },
   { key: "diamond_founder", check: s => s.totalScore >= 95 && s.connections >= 50 },
