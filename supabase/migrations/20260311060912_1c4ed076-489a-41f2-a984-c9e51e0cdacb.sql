@@ -1,0 +1,1 @@
+ALTER TABLE public.affiliate_payout_info ADD COLUMN payout_method text DEFAULT 'pix';

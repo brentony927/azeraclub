@@ -85,6 +85,7 @@ export type Database = {
           cpf: string | null
           full_name: string | null
           id: string
+          payout_method: string | null
           paypal_email: string | null
           pix_key: string | null
           updated_at: string | null
@@ -94,6 +95,7 @@ export type Database = {
           cpf?: string | null
           full_name?: string | null
           id?: string
+          payout_method?: string | null
           paypal_email?: string | null
           pix_key?: string | null
           updated_at?: string | null
@@ -103,6 +105,7 @@ export type Database = {
           cpf?: string | null
           full_name?: string | null
           id?: string
+          payout_method?: string | null
           paypal_email?: string | null
           pix_key?: string | null
           updated_at?: string | null

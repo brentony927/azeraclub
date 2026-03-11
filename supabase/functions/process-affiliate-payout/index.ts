@@ -45,8 +45,27 @@ Deno.serve(async (req) => {
           .eq("affiliate_id", commission.affiliate_id)
           .maybeSingle();
 
-        if (!affiliate || !affiliate.stripe_account_id || !affiliate.stripe_onboarding_complete) {
-          console.log(`Skipping commission ${commission.id}: affiliate not ready for Stripe`);
+        if (!affiliate) {
+          console.log(`Skipping commission ${commission.id}: affiliate not found`);
+          continue;
+        }
+
+        // Check payout method — skip PIX users (processed manually by admin)
+        const { data: payoutInfo } = await supabaseAdmin
+          .from("affiliate_payout_info")
+          .select("payout_method")
+          .eq("user_id", affiliate.user_id)
+          .maybeSingle();
+
+        const payoutMethod = payoutInfo?.payout_method || "pix";
+
+        if (payoutMethod === "pix") {
+          console.log(`Skipping commission ${commission.id}: affiliate uses PIX (manual payout)`);
+          continue;
+        }
+
+        if (!affiliate.stripe_account_id || !affiliate.stripe_onboarding_complete) {
+          console.log(`Skipping commission ${commission.id}: Stripe not ready`);
           continue;
         }
 
