@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 import NumberFlow from "@number-flow/react";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { Check, Banknote } from "lucide-react";
+import { Check, Banknote, ShieldCheck, Lock, RefreshCw, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export interface PricingPlan {
   key: string;
@@ -69,6 +70,29 @@ const PricingSwitch = ({ onSwitch, selected }: { onSwitch: (value: Period) => vo
   );
 };
 
+function TrustBar() {
+  const items = [
+    { icon: Lock, label: "Encriptação 256-bit SSL" },
+    { icon: RefreshCw, label: "Cancele a qualquer momento" },
+    { icon: EyeOff, label: "Sem taxas ocultas" },
+  ];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.2, duration: 0.5 }}
+      className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-10"
+    >
+      {items.map((item, i) => (
+        <span key={i} className="flex items-center gap-2 text-xs text-muted-foreground/70">
+          <item.icon className="h-3.5 w-3.5" />
+          {item.label}
+        </span>
+      ))}
+    </motion.div>
+  );
+}
+
 export default function PricingSection({
   plans,
   onSubscribe,
@@ -89,6 +113,11 @@ export default function PricingSection({
     return plan.price;
   };
 
+  const getSavings = (plan: PricingPlan) => {
+    if (plan.price === 0) return 0;
+    return plan.price * 12 - plan.yearlyPrice;
+  };
+
   const getPeriodLabel = () => {
     if (isWeekly) return "/semana";
     if (isYearly) return "/ano";
@@ -98,7 +127,7 @@ export default function PricingSection({
   return (
     <div ref={pricingRef} className="w-full max-w-5xl mx-auto space-y-10 px-4 sm:px-0">
       {/* Header */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-5">
         <TimelineContent animationNum={0} timelineRef={pricingRef}>
           <h2 className="text-responsive-3xl font-serif font-bold">
             <VerticalCutReveal splitBy="words" staggerDuration={0.08}>
@@ -111,10 +140,26 @@ export default function PricingSection({
           <p className="text-muted-foreground max-w-lg mx-auto text-responsive-base">
             Gerencie seu estilo de vida com as ferramentas certas. Faça upgrade ou downgrade a qualquer momento.
           </p>
+          <div className="flex items-center justify-center gap-2 mt-3 text-xs text-muted-foreground/60">
+            <ShieldCheck className="h-3.5 w-3.5 text-primary/60" />
+            <span>Pagamento seguro via Stripe</span>
+          </div>
         </TimelineContent>
 
         <TimelineContent animationNum={2} timelineRef={pricingRef}>
-          <PricingSwitch onSwitch={setPeriod} selected={period} />
+          <div className="flex items-center justify-center gap-3">
+            <PricingSwitch onSwitch={setPeriod} selected={period} />
+            {isYearly && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <Badge className="moss-gradient text-primary-foreground text-[10px] px-2.5 py-0.5 border-0">
+                  Economize ~17%
+                </Badge>
+              </motion.div>
+            )}
+          </div>
           {isWeekly && (
             <motion.div
               initial={{ opacity: 0, y: -8 }}
@@ -141,13 +186,14 @@ export default function PricingSection({
       )}
 
       {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid md:grid-cols-3 gap-4 sm:gap-6 items-center">
         {plans.map((plan, index) => {
           const isCurrentPlan = currentTier === plan.key;
           const isFree = plan.price === 0;
           const price = getPrice(plan);
           const isPro = plan.key === "pro";
           const isBusiness = plan.key === "business";
+          const savings = getSavings(plan);
 
           const cardBg = isPro
             ? "linear-gradient(135deg, hsla(152,100%,50%,0.1), hsla(170,80%,40%,0.08), hsla(152,60%,30%,0.15), hsla(0,0%,6%,1))"
@@ -181,120 +227,145 @@ export default function PricingSection({
               ? { textShadow: "0 0 20px hsl(51,100%,50%,0.4), 0 0 40px hsl(51,100%,50%,0.15)" }
               : {};
 
-          const borderGradient = isPro
-            ? "linear-gradient(135deg, hsl(152,100%,50%), hsl(170,90%,50%), hsl(140,80%,45%)) 1"
-            : isBusiness
-              ? "linear-gradient(135deg, hsl(51,100%,50%), hsl(42,70%,55%), hsl(20,80%,50%)) 1"
-              : undefined;
-
           return (
             <TimelineContent key={plan.key} animationNum={index + 3} timelineRef={pricingRef}>
-              <Card
+              <motion.div
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className={cn(
-                  "relative glass-card-hover flex flex-col h-full",
-                  !isPro && !isBusiness && "border-border/50",
-                  isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50",
-                  isPro && "card-border-pro",
-                  isBusiness && "card-border-business"
+                  isPro && "md:scale-[1.05] md:z-10"
                 )}
-                style={{
-                  ...(cardBg ? { background: cardBg } : {}),
-                  ...((isCurrentPlan && (isPro || isBusiness)) ? {
-                    boxShadow: isPro 
-                      ? "0 0 30px -5px hsl(152,100%,50%,0.3), inset 0 1px 0 hsl(152,100%,50%,0.1)" 
-                      : "0 0 30px -5px hsl(51,100%,50%,0.3), inset 0 1px 0 hsl(51,100%,50%,0.1)",
-                  } : {}),
-                }}
               >
-                {plan.popular && !isCurrentPlan && (
-                  <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
-                    Mais Popular
-                  </div>
-                )}
-                {isCurrentPlan && (
-                  <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
-                    Seu Plano
-                  </div>
-                )}
-
-                {(isPro || isBusiness) && (
-                  <div className="absolute inset-0 overflow-hidden rounded-[var(--radius)]">
-                    <SparklesComp
-                      className="absolute inset-0"
-                      color={sparklesColor}
-                      size={1.4}
-                      density={120}
-                      speed={0.5}
-                      opacity={0.6}
-                    />
-                  </div>
-                )}
-
-                <CardHeader className="relative z-[1] pb-2 p-4 sm:p-6 sm:pb-2">
-                  <h3 className="font-serif font-bold text-responsive-lg">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mt-2" style={priceGlow}>
-                    {isFree ? (
-                      <span className="text-responsive-2xl font-serif font-bold">Grátis</span>
-                    ) : (
-                      <>
-                        <span className="text-sm text-muted-foreground">£</span>
-                        <NumberFlow
-                          value={price}
-                          className="text-responsive-2xl font-serif font-bold"
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          {getPeriodLabel()}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  {isWeekly && !isFree && (
-                    <Badge variant="outline" className="w-fit mt-2 text-[10px] gap-1 border-accent/30 text-accent">
-                      <Banknote className="h-3 w-3" /> PIX
-                    </Badge>
+                <Card
+                  className={cn(
+                    "relative flex flex-col h-full transition-shadow duration-300",
+                    "hover:shadow-xl hover:shadow-foreground/5",
+                    !isPro && !isBusiness && "border-border/50",
+                    isCurrentPlan && !isPro && !isBusiness && "ring-2 ring-primary/50",
+                    isPro && "card-border-pro",
+                    isBusiness && "card-border-business"
                   )}
-                  <p className="text-responsive-sm text-muted-foreground mt-2">{plan.description}</p>
-                </CardHeader>
+                  style={{
+                    ...(cardBg ? { background: cardBg } : {}),
+                    ...((isCurrentPlan && (isPro || isBusiness)) ? {
+                      boxShadow: isPro
+                        ? "0 0 30px -5px hsl(152,100%,50%,0.3), inset 0 1px 0 hsl(152,100%,50%,0.1)"
+                        : "0 0 30px -5px hsl(51,100%,50%,0.3), inset 0 1px 0 hsl(51,100%,50%,0.1)",
+                    } : {}),
+                  }}
+                >
+                  {plan.popular && !isCurrentPlan && (
+                    <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
+                      Mais Popular
+                    </div>
+                  )}
+                  {isCurrentPlan && (
+                    <div className={cn("absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-primary-foreground z-10", badgeGradient)}>
+                      Seu Plano
+                    </div>
+                  )}
 
-                <CardContent className="relative z-[1] flex-1 flex flex-col p-4 sm:p-6 pt-0 sm:pt-0">
-                  <Button
-                    className={cn(
-                      "w-full h-11 font-semibold mb-6",
-                      isCurrentPlan || plan.popular ? (isPro ? "moss-gradient text-primary-foreground hover:opacity-90" : isBusiness ? "gold-gradient text-primary-foreground hover:opacity-90" : "moss-gradient text-primary-foreground hover:opacity-90") : btnClass
+                  {(isPro || isBusiness) && (
+                    <div className="absolute inset-0 overflow-hidden rounded-[var(--radius)]">
+                      <SparklesComp
+                        className="absolute inset-0"
+                        color={sparklesColor}
+                        size={1.4}
+                        density={120}
+                        speed={0.5}
+                        opacity={0.6}
+                      />
+                    </div>
+                  )}
+
+                  <CardHeader className="relative z-[1] pb-2 p-4 sm:p-6 sm:pb-2">
+                    <h3 className="font-serif font-bold text-responsive-lg">{plan.name}</h3>
+                    <p className="text-responsive-sm text-muted-foreground mt-1">{plan.description}</p>
+
+                    <div className="flex items-baseline gap-1 mt-3" style={priceGlow}>
+                      {isFree ? (
+                        <span className="text-responsive-2xl font-serif font-bold">Grátis</span>
+                      ) : (
+                        <>
+                          <span className="text-sm text-muted-foreground">£</span>
+                          <NumberFlow
+                            value={price}
+                            className="text-responsive-2xl font-serif font-bold"
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {getPeriodLabel()}
+                          </span>
+                        </>
+                      )}
+                    </div>
+
+                    {isYearly && !isFree && savings > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        <Badge variant="outline" className="w-fit mt-2 text-[10px] gap-1 border-primary/30 text-primary font-semibold">
+                          Economize £{savings}
+                        </Badge>
+                      </motion.div>
                     )}
-                    disabled={isCurrentPlan || loadingPlan === plan.key}
-                    onClick={() =>
-                      isCurrentPlan ? onManage() : onSubscribe(plan.key, period as string)
-                    }
-                  >
-                    {isCurrentPlan
-                      ? "Plano Atual"
-                      : loadingPlan === plan.key
-                        ? "Processando..."
-                        : isWeekly && !isFree
-                          ? `Pagar via PIX`
-                          : plan.buttonText}
-                  </Button>
 
-                  <div className="space-y-3 flex-1">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {plan.includes[0]}
-                    </p>
-                    <ul className="space-y-2">
-                      {plan.includes.slice(1).map((feature, fi) => (
-                        <li key={fi} className="flex items-start gap-2 text-responsive-sm">
-                          <Check className={cn("h-4 w-4 shrink-0 mt-0.5", checkColor)} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
+                    {isWeekly && !isFree && (
+                      <Badge variant="outline" className="w-fit mt-2 text-[10px] gap-1 border-accent/30 text-accent">
+                        <Banknote className="h-3 w-3" /> PIX
+                      </Badge>
+                    )}
+                  </CardHeader>
+
+                  <CardContent className="relative z-[1] flex-1 flex flex-col p-4 sm:p-6 pt-0 sm:pt-0">
+                    <Button
+                      className={cn(
+                        "w-full h-11 font-semibold mb-4",
+                        isCurrentPlan || plan.popular ? (isPro ? "moss-gradient text-primary-foreground hover:opacity-90" : isBusiness ? "gold-gradient text-primary-foreground hover:opacity-90" : "moss-gradient text-primary-foreground hover:opacity-90") : btnClass
+                      )}
+                      disabled={isCurrentPlan || loadingPlan === plan.key}
+                      onClick={() =>
+                        isCurrentPlan ? onManage() : onSubscribe(plan.key, period as string)
+                      }
+                    >
+                      {isCurrentPlan
+                        ? "Plano Atual"
+                        : loadingPlan === plan.key
+                          ? "Processando..."
+                          : isWeekly && !isFree
+                            ? `Pagar via PIX`
+                            : plan.buttonText}
+                    </Button>
+
+                    <Separator className="mb-4 opacity-50" />
+
+                    <div className="space-y-3 flex-1">
+                      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                        {plan.includes[0]}
+                      </p>
+                      <ul className="space-y-2.5">
+                        {plan.includes.slice(1).map((feature, fi) => {
+                          // Strip emoji prefixes for cleaner look
+                          const cleanFeature = feature.replace(/^[\u{1F300}-\u{1FAD6}\u{2600}-\u{27BF}]\uFE0F?\s*/u, "");
+                          return (
+                            <li key={fi} className="flex items-start gap-2.5 text-responsive-sm">
+                              <Check className={cn("h-4 w-4 shrink-0 mt-0.5", checkColor)} />
+                              <span className="leading-snug">{cleanFeature}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </TimelineContent>
           );
         })}
       </div>
+
+      {/* Trust Bar */}
+      <TrustBar />
     </div>
   );
 }

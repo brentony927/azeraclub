@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PricingSection, { type PricingPlan } from "@/components/ui/pricing-section";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -71,7 +72,7 @@ const plans: PricingPlan[] = [
       "Insights semanais",
       "Modo foco (deep work planner)",
       "Weekly Intelligence Report",
-      "🛡️ Insígnia de Confiança Pro",
+      "Insígnia de Confiança Pro",
     ],
   },
   {
@@ -95,7 +96,7 @@ const plans: PricingPlan[] = [
       "Relatórios estratégicos mensais",
       "Life Strategy AI",
       "Oportunidades premium",
-      "🛡️ Insígnia de Confiança Business",
+      "Insígnia de Confiança Business",
     ],
   },
 ];
@@ -210,8 +211,8 @@ export default function Pricing() {
   const planLabel = PLAN_LABELS[currentPlan] || currentPlan;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-16">
-      <div className="w-full max-w-4xl mb-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-20">
+      <div className="w-full max-w-4xl mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
         </Button>
@@ -223,10 +224,51 @@ export default function Pricing() {
         currentTier={getCurrentTierName()}
         onManage={handleManage}
       />
+
+      {/* Money-back guarantee */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        className="text-[11px] text-muted-foreground/50 text-center mt-6 max-w-md"
+      >
+        Garantia de satisfação. Se não estiver satisfeito nos primeiros 7 dias, entre em contacto para reembolso total.
+      </motion.p>
+
+      {/* FAQ */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6, duration: 0.5 }}
+        className="w-full max-w-xl mt-14"
+      >
+        <h3 className="text-center font-serif font-bold text-responsive-lg mb-4">Perguntas Frequentes</h3>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="cancel">
+            <AccordionTrigger className="text-sm hover:no-underline">Posso cancelar a qualquer momento?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground text-sm">
+              Sim. Você pode cancelar sua assinatura a qualquer momento sem taxas adicionais. O acesso premium permanece ativo até o final do período pago.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="upgrade">
+            <AccordionTrigger className="text-sm hover:no-underline">Como funciona o upgrade de plano?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground text-sm">
+              Ao fazer upgrade, o valor proporcional já pago é descontado automaticamente. Você obtém acesso imediato às novas funcionalidades.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="security">
+            <AccordionTrigger className="text-sm hover:no-underline">Meus dados estão seguros?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground text-sm">
+              Absolutamente. Utilizamos encriptação de ponta a ponta, processamento de pagamentos via Stripe (PCI DSS Level 1) e nunca armazenamos dados de cartão nos nossos servidores.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 1.8 }}
         className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-10"
       >
         <Link to="/terms" className="hover:text-primary transition-colors">Termos de Serviço</Link>
