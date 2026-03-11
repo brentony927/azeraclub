@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EarlyBirdBanner from "@/components/EarlyBirdBanner";
 
 const tiers = {
   basic: { price_id: "price_free", price_id_yearly: "price_free", product_id: "prod_free" },
