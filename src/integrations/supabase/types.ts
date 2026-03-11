@@ -1184,6 +1184,27 @@ export type Database = {
           },
         ]
       }
+      profile_backgrounds: {
+        Row: {
+          active_background: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active_background?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active_background?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_visits: {
         Row: {
           id: string
