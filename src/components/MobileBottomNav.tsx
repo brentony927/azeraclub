@@ -1,18 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Brain, CalendarDays, Users, User } from "lucide-react";
+import { Home, Brain, CalendarDays, Users, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const navItems = [
   { icon: Home, label: "Início", path: "/dashboard" },
   { icon: Brain, label: "IA", path: "/ia" },
   { icon: CalendarDays, label: "Agenda", path: "/agenda" },
   { icon: Users, label: "Rede", path: "/founder-match" },
-  { icon: User, label: "Perfil", path: "/profile" },
 ];
 
 export default function MobileBottomNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-border/30 backdrop-blur-xl bg-background/80" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
@@ -33,6 +34,13 @@ export default function MobileBottomNav() {
             </button>
           );
         })}
+        <button
+          onClick={() => setOpenMobile(true)}
+          className="flex flex-col items-center justify-center gap-0.5 w-full h-full min-w-[48px] min-h-[48px] transition-colors text-muted-foreground"
+        >
+          <Menu className="h-5 w-5" />
+          <span className="text-[10px] font-medium">Menu</span>
+        </button>
       </div>
     </nav>
   );
