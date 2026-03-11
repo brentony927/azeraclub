@@ -13,9 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-  Copy, Check, Users, TrendingUp, Wallet, Loader2, Gift, Save,
-  Lock, Clock, CheckCircle, XCircle, BarChart3, ArrowUpRight, DollarSign,
-  Activity, Star,
+  Copy, Check, Users, TrendingUp, Wallet, Loader2, Gift,
+  Lock, Clock, CheckCircle, XCircle, BarChart3, DollarSign,
+  Activity, Star, ExternalLink, CreditCard,
 } from "lucide-react";
 import Icon3D from "@/components/ui/icon-3d";
 import AnimatedCounter from "@/components/AnimatedCounter";
