@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-  Copy, Check, Users, TrendingUp, Wallet, Loader2, Gift,
+  Copy, Check, Users, TrendingUp, Loader2, Gift,
   Lock, Clock, XCircle, BarChart3, DollarSign,
   Activity, Star, ExternalLink, CreditCard, CheckCircle,
 } from "lucide-react";
@@ -46,19 +46,9 @@ export default function AffiliateSection() {
   // Stats
   const [leads, setLeads] = useState<any[]>([]);
   const [commissions, setCommissions] = useState<any[]>([]);
-  const [wallet, setWallet] = useState<any>(null);
 
   // Stripe Connect
   const [connectingStripe, setConnectingStripe] = useState(false);
-
-  // Payout method
-  const [payoutMethod, setPayoutMethod] = useState<"pix" | "stripe">("pix");
-  const [pixName, setPixName] = useState("");
-  const [pixCpf, setPixCpf] = useState("");
-  const [pixKey, setPixKey] = useState("");
-  const [savingPayout, setSavingPayout] = useState(false);
-  const [requestingWithdraw, setRequestingWithdraw] = useState(false);
-  const [withdrawals, setWithdrawals] = useState<any[]>([]);
 
   const isPro = canAccess("pro");
 
@@ -72,9 +62,7 @@ export default function AffiliateSection() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("stripe_onboarding") === "complete") {
       toast.success("Conta Stripe conectada com sucesso!");
-      // Clean URL
       window.history.replaceState({}, "", window.location.pathname);
-      // Reload to get updated status
       if (user) loadAll();
     }
   }, []);
@@ -108,26 +96,13 @@ export default function AffiliateSection() {
 
       const affId = (prof as any).affiliate_id;
 
-      const [leadsRes, commRes, walletRes, payoutRes, withdrawRes] = await Promise.all([
+      const [leadsRes, commRes] = await Promise.all([
         supabase.from("affiliate_leads" as any).select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
         supabase.from("affiliate_commissions" as any).select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
-        supabase.from("affiliate_wallet" as any).select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("affiliate_payout_info" as any).select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("affiliate_withdrawals" as any).select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
 
       setLeads((leadsRes as any).data || []);
       setCommissions((commRes as any).data || []);
-      setWallet((walletRes as any).data);
-      setWithdrawals((withdrawRes as any).data || []);
-
-      const payout = (payoutRes as any).data;
-      if (payout) {
-        setPayoutMethod(payout.payout_method || "pix");
-        setPixName(payout.full_name || "");
-        setPixCpf(payout.cpf || "");
-        setPixKey(payout.pix_key || "");
-      }
     }
 
     setLoading(false);
@@ -344,13 +319,23 @@ export default function AffiliateSection() {
           </Button>
         </div>
 
-        {/* Payout method hint */}
+        {/* Stripe status hint */}
         <div className="flex items-center gap-2 p-2 rounded-lg bg-secondary/10 border border-border/30">
-          <Wallet className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">
-            Método de pagamento: <strong className="text-foreground">{payoutMethod === "stripe" && isStripeConnected ? "Stripe (automático)" : "PIX (manual)"}</strong>
-            {" · "}Configure na aba Financeiro
-          </span>
+          {isStripeConnected ? (
+            <>
+              <CheckCircle className="h-4 w-4 text-accent-foreground" />
+              <span className="text-xs text-muted-foreground">
+                Pagamentos automáticos via <strong className="text-foreground">Stripe Connect</strong> — comissões são transferidas diretamente para sua conta bancária.
+              </span>
+            </>
+          ) : (
+            <>
+              <CreditCard className="h-4 w-4 text-primary" />
+              <span className="text-xs text-muted-foreground">
+                Conecte sua conta Stripe na aba <strong className="text-foreground">Financeiro</strong> para receber comissões automaticamente.
+              </span>
+            </>
+          )}
         </div>
 
         <Tabs defaultValue="overview" className="w-full">
@@ -363,13 +348,12 @@ export default function AffiliateSection() {
 
           {/* OVERVIEW TAB */}
           <TabsContent value="overview" className="space-y-4 mt-3">
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
                 { label: "Leads", value: leadsCount, icon: Users, color: "blue" as const },
                 { label: "Conversão", value: conversionRate, suffix: "%", icon: TrendingUp, color: "green" as const },
                 { label: "Vendas", value: salesCount, icon: BarChart3, color: "gold" as const },
-                { label: "Comissão", value: totalCommission, prefix: "R$", icon: DollarSign, color: "green" as const },
-                { label: "Disponível", value: Number(wallet?.balance_available || 0), prefix: "R$", icon: Wallet, color: "gold" as const },
+                { label: "Total ganho", value: totalCommission, prefix: "R$", icon: DollarSign, color: "green" as const },
               ].map(s => (
                 <div key={s.label} className="flex flex-col items-center p-3 rounded-lg bg-secondary/30 border border-border/30">
                   <Icon3D icon={s.icon} color={s.color} size="xs" />
@@ -392,7 +376,7 @@ export default function AffiliateSection() {
                   date: l.created_at,
                   icon: <Users className="h-3 w-3 text-primary" />,
                 })), ...commissions.slice(0, 3).map(c => ({
-                  text: `Comissão R$${Number(c.amount).toFixed(2)} — ${c.status}`,
+                  text: `Comissão R$${Number(c.amount).toFixed(2)} — ${c.status === "paid" ? "Pago" : "Pendente"}`,
                   date: c.created_at,
                   icon: <DollarSign className="h-3 w-3 text-accent-foreground" />,
                 }))].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5).map((item, i) => (
@@ -461,179 +445,38 @@ export default function AffiliateSection() {
 
           {/* FINANCE TAB */}
           <TabsContent value="finance" className="space-y-4 mt-3">
-            {/* Wallet */}
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="p-3 rounded-lg bg-secondary/30 border border-border/30">
-                <p className="text-[10px] text-muted-foreground">Pendente</p>
-                <p className="text-sm font-bold text-foreground">R${Number(wallet?.balance_pending || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-3 rounded-lg bg-secondary/30 border border-border/30">
-                <p className="text-[10px] text-muted-foreground">Disponível</p>
-                <p className="text-sm font-bold text-foreground">R${Number(wallet?.balance_available || 0).toFixed(2)}</p>
-              </div>
-              <div className="p-3 rounded-lg bg-secondary/30 border border-border/30">
-                <p className="text-[10px] text-muted-foreground">Total pago</p>
-                <p className="text-sm font-bold text-foreground">R${Number(wallet?.total_paid || 0).toFixed(2)}</p>
-              </div>
-            </div>
-
-            {/* Payout method selector */}
-            <div className="space-y-2">
-              <Label className="text-xs font-semibold text-foreground">Método de pagamento</Label>
-              <Select value={payoutMethod} onValueChange={(v) => setPayoutMethod(v as "pix" | "stripe")}>
-                <SelectTrigger className="text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pix">PIX (manual)</SelectItem>
-                  <SelectItem value="stripe">Stripe (automático)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* PIX payout section */}
-            {payoutMethod === "pix" && (
-              <div className="space-y-3 p-3 rounded-lg border border-border/50 bg-secondary/10">
+            {/* Stripe Connect status */}
+            {isStripeConnected ? (
+              <div className="space-y-2 p-4 rounded-lg bg-accent/5 border border-accent/20">
                 <div className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Dados PIX</span>
+                  <CheckCircle className="h-5 w-5 text-accent-foreground" />
+                  <span className="text-sm font-semibold text-foreground">Pagamentos automáticos ativos</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Preencha seus dados para receber saques via PIX. Saques são processados manualmente em até 24h.
+                  Suas comissões são transferidas automaticamente para sua conta bancária via Stripe Connect.
+                  Não é necessário solicitar saques — o Stripe cuida de tudo.
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <div className="space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Nome completo</Label>
-                    <Input value={pixName} onChange={e => setPixName(e.target.value)} placeholder="Seu nome" className="text-xs" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">CPF</Label>
-                    <Input value={pixCpf} onChange={e => setPixCpf(e.target.value)} placeholder="000.000.000-00" className="text-xs" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Chave PIX</Label>
-                    <Input value={pixKey} onChange={e => setPixKey(e.target.value)} placeholder="CPF, email, telefone..." className="text-xs" />
-                  </div>
+                <div className="flex items-center gap-2 mt-2 p-2 rounded bg-secondary/20">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-bold text-foreground">
+                    Total ganho: R${totalCommission.toFixed(2)}
+                  </span>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={savingPayout || !pixName.trim() || !pixKey.trim()}
-                    onClick={async () => {
-                      if (!user) return;
-                      setSavingPayout(true);
-                      const { error } = await supabase.from("affiliate_payout_info" as any).upsert({
-                        user_id: user.id,
-                        full_name: pixName.trim(),
-                        cpf: pixCpf.trim() || null,
-                        pix_key: pixKey.trim(),
-                        payout_method: "pix",
-                        updated_at: new Date().toISOString(),
-                      } as any, { onConflict: "user_id" });
-                      if (error) toast.error("Erro ao salvar: " + error.message);
-                      else toast.success("Dados PIX salvos!");
-                      setSavingPayout(false);
-                    }}
-                  >
-                    {savingPayout ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
-                    Salvar dados
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="gold-gradient text-primary-foreground font-semibold"
-                    disabled={requestingWithdraw || Number(wallet?.balance_available || 0) < 100 || !pixKey.trim()}
-                    onClick={async () => {
-                      if (!user) return;
-                      const available = Number(wallet?.balance_available || 0);
-                      if (available < 100) {
-                        toast.error("Saldo mínimo para saque: R$100,00");
-                        return;
-                      }
-                      setRequestingWithdraw(true);
-                      const { error } = await supabase.from("affiliate_withdrawals" as any).insert({
-                        user_id: user.id,
-                        amount: available,
-                      } as any);
-                      if (error) toast.error("Erro ao solicitar: " + error.message);
-                      else {
-                        toast.success(`Saque de R$${available.toFixed(2)} solicitado! Será processado em até 24h.`);
-                        await loadAll();
-                      }
-                      setRequestingWithdraw(false);
-                    }}
-                  >
-                    {requestingWithdraw ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <DollarSign className="h-3 w-3 mr-1" />}
-                    Solicitar saque (mín. R$100)
-                  </Button>
-                </div>
-
-                {/* Withdrawal history */}
-                {withdrawals.length > 0 && (
-                  <div className="space-y-1 mt-2">
-                    <h4 className="text-[10px] font-semibold text-muted-foreground">Histórico de saques</h4>
-                    <div className="space-y-1 max-h-32 overflow-y-auto">
-                      {withdrawals.map((w: any) => (
-                        <div key={w.id} className="flex items-center justify-between text-xs p-2 rounded bg-secondary/20">
-                          <span className="font-medium text-foreground">R${Number(w.amount).toFixed(2)}</span>
-                          <Badge variant="outline" className="text-[10px]">
-                            {w.status === "paid" ? "Pago" : w.status === "pending" ? "Pendente" : w.status}
-                          </Badge>
-                          <span className="text-muted-foreground">{format(new Date(w.created_at), "dd/MM/yy")}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
-            )}
-
-            {/* Stripe payout section */}
-            {payoutMethod === "stripe" && (
-              <div className="space-y-2">
-                {isStripeConnected ? (
-                  <div className="space-y-2 p-3 rounded-lg bg-accent/5 border border-accent/20">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-accent-foreground" />
-                      <span className="text-sm font-medium text-foreground">Pagamentos automáticos</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Suas comissões são transferidas automaticamente para sua conta bancária via Stripe após o período de 7 dias de carência.
-                    </p>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={savingPayout}
-                      onClick={async () => {
-                        if (!user) return;
-                        setSavingPayout(true);
-                        await supabase.from("affiliate_payout_info" as any).upsert({
-                          user_id: user.id,
-                          payout_method: "stripe",
-                          updated_at: new Date().toISOString(),
-                        } as any, { onConflict: "user_id" });
-                        toast.success("Método de pagamento atualizado para Stripe!");
-                        setSavingPayout(false);
-                      }}
-                    >
-                      <Check className="h-3 w-3 mr-1" /> Confirmar Stripe como método
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-2 p-3 rounded-lg border border-primary/30 bg-primary/5">
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium text-foreground">Configure seus pagamentos</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Conecte sua conta Stripe para receber comissões automaticamente via PIX ou transferência bancária.
-                    </p>
-                    <Button onClick={handleConnectStripe} disabled={connectingStripe} size="sm" className="gold-gradient text-primary-foreground font-semibold">
-                      {connectingStripe ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
-                      Conectar conta Stripe
-                    </Button>
-                  </div>
-                )}
+            ) : (
+              <div className="space-y-3 p-4 rounded-lg border border-primary/30 bg-primary/5">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">Conecte sua conta Stripe</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Para receber suas comissões automaticamente, conecte sua conta bancária via Stripe.
+                  O processo leva apenas alguns minutos e seus ganhos serão transferidos diretamente.
+                </p>
+                <Button onClick={handleConnectStripe} disabled={connectingStripe} className="gold-gradient text-primary-foreground font-semibold">
+                  {connectingStripe ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ExternalLink className="h-4 w-4 mr-2" />}
+                  Conectar conta Stripe
+                </Button>
               </div>
             )}
 

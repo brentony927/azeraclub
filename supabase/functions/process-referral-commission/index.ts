@@ -30,15 +30,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ message: "No referral found" }), { headers: corsHeaders });
     }
 
-    // Check for existing commission (old partner system)
-    const { data: existingOld } = await supabaseAdmin
-      .from("commissions")
-      .select("id")
-      .eq("user_id", user_id)
-      .eq("affiliate_id", referral.referrer_id)
-      .maybeSingle();
-
-    // Check for existing commission (new affiliate system)
+    // Check for existing commission
     const { data: existingNew } = await supabaseAdmin
       .from("affiliate_commissions")
       .select("id")
@@ -46,90 +38,52 @@ Deno.serve(async (req) => {
       .eq("affiliate_id", referral.referrer_id)
       .maybeSingle();
 
-    if (existingOld || existingNew) {
+    if (existingNew) {
       return new Response(JSON.stringify({ message: "Commission already exists" }), { headers: corsHeaders });
     }
 
-    // Try new affiliate system first, fallback to old partner system
+    // Look up affiliate
     const { data: affiliate } = await supabaseAdmin
       .from("affiliate_profiles")
-      .select("affiliate_id, commission_rate, user_id, enabled")
+      .select("affiliate_id, commission_rate, user_id, enabled, stripe_onboarding_complete")
       .eq("affiliate_id", referral.referrer_id)
       .eq("enabled", true)
       .maybeSingle();
 
-    let rate = 0.25;
-    let affiliateUserId: string | null = null;
-
-    if (affiliate) {
-      rate = affiliate.commission_rate || 0.25;
-      affiliateUserId = affiliate.user_id;
-    } else {
-      // Fallback: old partner system
-      const { data: partner } = await supabaseAdmin
-        .from("partner_profiles")
-        .select("commission_rate, partner_id, user_id")
-        .eq("partner_id", referral.referrer_id)
-        .eq("enabled", true)
-        .maybeSingle();
-
-      if (!partner) {
-        return new Response(JSON.stringify({ message: "Affiliate/partner not found or disabled" }), { headers: corsHeaders });
-      }
-      rate = partner.commission_rate || 0.25;
+    if (!affiliate) {
+      return new Response(JSON.stringify({ message: "Affiliate not found or disabled" }), { headers: corsHeaders });
     }
 
+    const rate = affiliate.commission_rate || 0.25;
     const amount = plan_price * rate;
 
-    // Insert into new affiliate_commissions table
-    if (affiliate) {
-      await supabaseAdmin.from("affiliate_commissions").insert({
-        affiliate_id: referral.referrer_id,
-        user_id,
-        amount,
-        status: "pending",
-      });
+    // Record commission as "paid" — Stripe Connect handles the actual transfer
+    const status = affiliate.stripe_onboarding_complete ? "paid" : "pending";
 
-      // Update wallet pending balance
-      const { data: wallet } = await supabaseAdmin
-        .from("affiliate_wallet")
-        .select("*")
-        .eq("user_id", affiliateUserId!)
-        .maybeSingle();
-
-      if (wallet) {
-        await supabaseAdmin
-          .from("affiliate_wallet")
-          .update({
-            balance_pending: Number(wallet.balance_pending || 0) + amount,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("user_id", affiliateUserId!);
-      }
-
-      // Update affiliate lead purchase date
-      await supabaseAdmin
-        .from("affiliate_leads")
-        .update({ purchased_at: new Date().toISOString(), user_plan: "pro" })
-        .eq("user_id", user_id)
-        .eq("referrer_id", referral.referrer_id);
-
-      // Notify affiliate
-      await supabaseAdmin.from("founder_notifications").insert({
-        user_id: affiliateUserId!,
-        title: "Nova comissão gerada!",
-        body: `Você ganhou R$${amount.toFixed(2)} de comissão. O valor estará disponível após 7 dias.`,
-        type: "system",
-        action_url: "/profile",
-      });
-    }
-
-    // Also insert into old commissions table for backward compatibility
-    await supabaseAdmin.from("commissions").insert({
+    await supabaseAdmin.from("affiliate_commissions").insert({
       affiliate_id: referral.referrer_id,
       user_id,
       amount,
-      status: "pending",
+      status,
+      paid_at: status === "paid" ? new Date().toISOString() : null,
+    });
+
+    // Update affiliate lead purchase date
+    await supabaseAdmin
+      .from("affiliate_leads")
+      .update({ purchased_at: new Date().toISOString(), user_plan: "pro" })
+      .eq("user_id", user_id)
+      .eq("referrer_id", referral.referrer_id);
+
+    // Notify affiliate
+    await supabaseAdmin.from("founder_notifications").insert({
+      user_id: affiliate.user_id,
+      title: "Nova comissão gerada!",
+      body: status === "paid"
+        ? `Você ganhou R$${amount.toFixed(2)} de comissão. O valor será transferido automaticamente via Stripe.`
+        : `Você ganhou R$${amount.toFixed(2)} de comissão. Conecte sua conta Stripe para receber automaticamente.`,
+      type: "system",
+      action_url: "/profile",
     });
 
     // Check if commission rate tier should be upgraded
@@ -144,14 +98,14 @@ Deno.serve(async (req) => {
     else if ((totalSales || 0) >= 50) { newRate = 0.35; newLevel = "ambassador"; }
     else if ((totalSales || 0) >= 10) { newRate = 0.30; newLevel = "partner"; }
 
-    if (affiliate && newRate !== rate) {
+    if (newRate !== rate) {
       await supabaseAdmin
         .from("affiliate_profiles")
         .update({ commission_rate: newRate, level: newLevel })
         .eq("affiliate_id", referral.referrer_id);
     }
 
-    return new Response(JSON.stringify({ success: true, amount, newRate }), {
+    return new Response(JSON.stringify({ success: true, amount, status, newRate }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

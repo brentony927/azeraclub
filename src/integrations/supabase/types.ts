@@ -80,39 +80,6 @@ export type Database = {
         }
         Relationships: []
       }
-      affiliate_payout_info: {
-        Row: {
-          cpf: string | null
-          full_name: string | null
-          id: string
-          payout_method: string | null
-          paypal_email: string | null
-          pix_key: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          cpf?: string | null
-          full_name?: string | null
-          id?: string
-          payout_method?: string | null
-          paypal_email?: string | null
-          pix_key?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          cpf?: string | null
-          full_name?: string | null
-          id?: string
-          payout_method?: string | null
-          paypal_email?: string | null
-          pix_key?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       affiliate_profiles: {
         Row: {
           affiliate_id: string
@@ -191,57 +158,6 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           youtube?: string | null
-        }
-        Relationships: []
-      }
-      affiliate_wallet: {
-        Row: {
-          balance_available: number | null
-          balance_pending: number | null
-          id: string
-          total_paid: number | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          balance_available?: number | null
-          balance_pending?: number | null
-          id?: string
-          total_paid?: number | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          balance_available?: number | null
-          balance_pending?: number | null
-          id?: string
-          total_paid?: number | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      affiliate_withdrawals: {
-        Row: {
-          amount: number
-          created_at: string | null
-          id: string
-          status: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          created_at?: string | null
-          id?: string
-          status?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string | null
-          id?: string
-          status?: string
-          user_id?: string
         }
         Relationships: []
       }
