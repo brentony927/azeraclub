@@ -174,11 +174,14 @@ export default function Journal() {
                       <span className="text-xs text-muted-foreground">
                         {format(new Date(entry.created_at), "dd MMM yyyy · HH:mm", { locale: ptBR })}
                       </span>
-                      {entry.mood && (
-                        <span className="text-xs bg-secondary px-2 py-0.5 rounded-full">
-                          {MOOD_OPTIONS.find((m) => m.id === entry.mood)?.emoji} {MOOD_OPTIONS.find((m) => m.id === entry.mood)?.label}
-                        </span>
-                      )}
+                      {entry.mood && (() => {
+                        const moodOpt = MOOD_OPTIONS.find((m) => m.id === entry.mood);
+                        return moodOpt ? (
+                          <span className="text-xs bg-secondary px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Icon3D icon={moodOpt.icon} color={moodOpt.color} size="xs" /> {moodOpt.label}
+                          </span>
+                        ) : null;
+                      })()}
                     </div>
                     <button onClick={() => deleteEntry(entry.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                       <Trash2 className="h-3.5 w-3.5" />
