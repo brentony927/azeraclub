@@ -31,6 +31,7 @@ interface Stats {
   accountAgeDays: number;
   profileComplete: boolean;
   referralConversions: number;
+  userPosition: number;
 }
 
 const ALL_BADGE_KEYS = [
