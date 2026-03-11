@@ -1,41 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Correções de Lógica — 3 Problemas
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## 1. Botão "Conversar" no painel de afiliados não abre o chat direto
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-**Problema**: O `AffiliateManagerPanel` navega com `navigate(\`/founder-messages?user=\${aff.user_id}\`)` mas o `FounderMessages` só lê `location.state`, não `searchParams`. O utilizador é redirecionado para a página de mensagens mas nenhuma conversa é selecionada.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**Correção**: Alterar o `navigate` no `AffiliateManagerPanel` para usar `state` em vez de query params:
-```ts
-navigate("/founder-messages", { state: { userId: aff.user_id, userName: aff.name } })
-```
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-| Ficheiro | Alteração |
-|---|---|
-| `src/components/AffiliateManagerPanel.tsx` | Mudar `navigate` do botão "Conversar" para usar `state` |
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-## 2. Pesquisa de founders já funciona por nome
-
-A pesquisa na linha 279 do `FounderFeed.tsx` já filtra por `p.name.toLowerCase().includes(search)` e por `p.username`. **Não há bug aqui** — a pesquisa por nome já funciona. Se o utilizador não encontra alguém, é porque o perfil não está publicado (`is_published = false`).
-
-Nenhuma alteração necessária.
-
-## 3. Seção de Programa de Afiliados no perfil do utilizador não é colapsável
-
-**Problema**: O `AffiliateSection` renderiza cards fixos sem opção de expandir/recolher.
-
-**Correção**: Envolver o conteúdo do `AffiliateSection` num `Collapsible`, similar ao `AffiliateManagerPanel`. Adicionar um header clicável "Programa de Afiliados" com chevron que expande/recolhe todo o conteúdo.
-
-| Ficheiro | Alteração |
-|---|---|
-| `src/components/AffiliateSection.tsx` | Envolver em `Collapsible` com trigger no topo |
-
-## Resumo
-
-| Problema | Ficheiro | Tipo |
-|---|---|---|
-| Chat não abre direto | `AffiliateManagerPanel.tsx` | 1 linha |
-| Pesquisa por nome | Já funciona | Nenhum |
-| Afiliado colapsável | `AffiliateSection.tsx` | Wrapping em Collapsible |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

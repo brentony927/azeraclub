@@ -308,7 +308,7 @@ export default function AffiliateManagerPanel() {
                             <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={() => setExpandedStats(isExpanded ? null : aff.user_id)}>
                               <Eye className="h-3 w-3" /> {isExpanded ? "Ocultar" : "Detalhes"}
                             </Button>
-                            <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={() => navigate(`/founder-messages?user=${aff.user_id}`)}>
+                            <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={() => navigate("/founder-messages", { state: { userId: aff.user_id, userName: aff.name } })}>
                               <MessageSquare className="h-3 w-3" /> Conversar
                             </Button>
                             {aff.enabled ? (
