@@ -435,6 +435,13 @@ export default function Profile() {
           </Card>
         )}
 
+        {/* Profile Background Picker */}
+        <ProfileBackgroundPicker
+          currentBackground={activeBackground}
+          founderScore={founderScore}
+          onSelect={setActiveBackground}
+        />
+
         {/* Current Venture (read-only) */}
         {currentVenture && (
           <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-6">

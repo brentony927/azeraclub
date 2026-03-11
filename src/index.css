@@ -2417,3 +2417,60 @@
 .owner-stat-pop:nth-child(2) { animation-delay: 0.15s; }
 .owner-stat-pop:nth-child(3) { animation-delay: 0.3s; }
 .owner-stat-pop:nth-child(4) { animation-delay: 0.45s; }
+
+/* ====== Profile Background Animations ====== */
+@keyframes bg-profile-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes bg-profile-aurora {
+  0% { background-position: 0% 50%; }
+  33% { background-position: 100% 0%; }
+  66% { background-position: 50% 100%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes bg-profile-shimmer {
+  0%, 100% { background-position: 0% 50%; filter: brightness(1); }
+  25% { background-position: 50% 0%; filter: brightness(1.15); }
+  50% { background-position: 100% 50%; filter: brightness(1); }
+  75% { background-position: 50% 100%; filter: brightness(1.1); }
+}
+@keyframes bg-profile-pulse {
+  0%, 100% { background-position: 0% 50%; opacity: 0.5; }
+  50% { background-position: 100% 50%; opacity: 0.7; }
+}
+
+.bg-profile-shift {
+  animation: bg-profile-shift 8s ease infinite;
+}
+.bg-profile-aurora {
+  animation: bg-profile-aurora 12s ease infinite;
+}
+.bg-profile-shimmer {
+  animation: bg-profile-shimmer 6s ease infinite;
+}
+.bg-profile-pulse {
+  animation: bg-profile-pulse 5s ease infinite;
+}
+
+/* Owner exclusive metallic animated background */
+.owner-metallic-bg {
+  background: linear-gradient(135deg, 
+    hsl(240 20% 10%), 
+    hsl(220 30% 15%), 
+    hsl(200 25% 20%), 
+    hsl(270 25% 18%), 
+    hsl(220 30% 15%), 
+    hsl(240 20% 10%)
+  );
+  background-size: 400% 400%;
+  animation: bg-profile-shift 8s ease infinite;
+}
+.owner-metallic-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, hsl(0 0% 100% / 0.08) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: bg-profile-shimmer 4s ease infinite;
+}
