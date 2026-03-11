@@ -154,6 +154,13 @@ export default function Profile() {
       .eq("profile_user_id", user!.id);
     setVisitCount(vc || 0);
 
+    // Fetch active background
+    const { data: bgData } = await supabase.from("profile_backgrounds" as any)
+      .select("active_background")
+      .eq("user_id", user!.id)
+      .maybeSingle();
+    if (bgData) setActiveBackground((bgData as any).active_background || "none");
+
     setLoading(false);
   };
 
