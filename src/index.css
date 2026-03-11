@@ -448,7 +448,7 @@
   .stat-card::before {
     content: '';
     @apply absolute top-0 left-0 w-full h-[1px];
-    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+    background: linear-gradient(90deg, transparent, hsl(0 0% 50% / 0.4), hsl(0 0% 75% / 0.6), hsl(0 0% 50% / 0.4), transparent);
   }
 
   /* ====== Premium button effects ====== */
