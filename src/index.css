@@ -152,10 +152,59 @@
   opacity: 0.6;
 }
 
-/* Premium header gradient line */
+/* Premium header gradient line — chrome finish */
 .header-gradient-line {
-  background: linear-gradient(90deg, transparent, hsl(var(--border)) 30%, hsl(var(--border)) 70%, transparent);
+  background: linear-gradient(90deg, transparent, hsl(0 0% 40% / 0.3), hsl(0 0% 70% / 0.5), hsl(0 0% 40% / 0.3), transparent);
   height: 1px;
+}
+
+/* ====== Metallic utilities ====== */
+.metallic-surface {
+  background-image: linear-gradient(
+    180deg,
+    hsl(0 0% 100% / 0.06) 0%,
+    transparent 40%,
+    hsl(0 0% 0% / 0.03) 100%
+  );
+}
+.dark .metallic-surface {
+  background-image: linear-gradient(
+    180deg,
+    hsl(0 0% 100% / 0.04) 0%,
+    transparent 40%,
+    hsl(0 0% 0% / 0.06) 100%
+  );
+}
+
+.metallic-text {
+  background: linear-gradient(135deg, hsl(0 0% 25%), hsl(0 0% 55%), hsl(0 0% 25%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.dark .metallic-text {
+  background: linear-gradient(135deg, hsl(0 0% 70%), hsl(0 0% 95%), hsl(0 0% 70%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button metallic sheen on hover */
+.btn-metallic-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-metallic-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, hsl(0 0% 100% / 0.12) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+.btn-metallic-sheen:hover::after {
+  transform: translateX(100%);
 }
 
 @layer components {
