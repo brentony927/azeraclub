@@ -17,221 +17,227 @@ export default function TermsOfService() {
         <div className="glass-card p-8 space-y-8">
           <div className="space-y-2">
             <h1 className="text-3xl font-serif font-bold gold-text">Termos de Uso</h1>
-            <p className="text-sm text-muted-foreground">Última atualização: Março 2026</p>
+            <p className="text-sm text-muted-foreground">Última atualização: 2025</p>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Bem-vindo ao AZERA CLUB. Ao aceder ou utilizar a nossa plataforma, o utilizador concorda em cumprir integralmente estes Termos de Uso. Se não concordar com qualquer parte destes termos, não deve utilizar a plataforma.
-          </p>
-
-          {/* 1 — Natureza da Plataforma */}
           <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">1. Natureza da Plataforma</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">O AZERA CLUB é uma plataforma digital destinada a facilitar:</p>
+            <h2 className="text-lg font-serif font-semibold">1 — Aceitação dos Termos</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Ao acessar ou utilizar a plataforma Azera Club, o usuário concorda integralmente com estes Termos de Uso. Caso o usuário não concorde com qualquer parte destes termos, deve interromper imediatamente o uso da plataforma.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              O Azera Club reserva-se o direito de modificar estes termos a qualquer momento. O uso contínuo da plataforma após alterações representa aceitação das novas condições.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">2 — Descrição da Plataforma</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">O Azera Club é uma plataforma digital destinada a:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Networking profissional entre empreendedores</li>
+              <li>Networking entre empreendedores</li>
               <li>Descoberta de oportunidades de negócio</li>
-              <li>Compartilhamento de ideias e projetos</li>
-              <li>Conexão estratégica entre membros</li>
+              <li>Conexão entre founders</li>
+              <li>Compartilhamento de projetos</li>
+              <li>Criação de parcerias</li>
+              <li>Participação em comunidades privadas</li>
+              <li>Descoberta de tendências e oportunidades</li>
             </ul>
-            <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-              A plataforma não é responsável por negociações, acordos ou transações realizadas entre utilizadores.
-            </p>
-          </section>
-
-          {/* 2 — Responsabilidade do Utilizador */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">2. Responsabilidade do Utilizador</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">O utilizador é integralmente responsável por:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Todas as informações que publica na plataforma</li>
-              <li>Todas as interações com outros utilizadores</li>
-              <li>Todas as decisões de negócios tomadas dentro ou fora da plataforma</li>
-              <li>A veracidade e exatidão dos dados fornecidos no seu perfil</li>
-            </ul>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Todas as decisões tomadas dentro ou fora da plataforma são de responsabilidade exclusiva do utilizador.
-            </p>
-          </section>
-
-          {/* 3 — Interações entre Utilizadores */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">3. Interações entre Utilizadores</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">O AZERA CLUB não atua como:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Intermediador financeiro</li>
-              <li>Consultor de investimentos</li>
-              <li>Consultor jurídico</li>
-              <li>Agente de negociação</li>
-            </ul>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              A plataforma apenas fornece ferramentas de conexão. Qualquer transação ou acordo entre utilizadores é de exclusiva responsabilidade das partes envolvidas.
-            </p>
-          </section>
-
-          {/* 4 — Disclaimer de Negócios */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">4. Disclaimer de Negócios</h2>
-            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 space-y-2">
+            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 mt-2">
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                O AZERA CLUB não verifica, garante ou endossa qualquer oportunidade de negócio publicada por utilizadores.
+                A plataforma não fornece aconselhamento financeiro, jurídico ou de investimento.
               </p>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">3 — Elegibilidade</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Para utilizar a plataforma o usuário declara que:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Possui capacidade legal para aceitar os termos</li>
+              <li>Fornecerá informações verdadeiras</li>
+              <li>Utilizará a plataforma de forma legal</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Contas podem ser suspensas ou encerradas caso estas condições sejam violadas.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">4 — Contas de Usuário</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Cada usuário é responsável por:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Manter suas credenciais seguras</li>
+              <li>Todas as atividades realizadas em sua conta</li>
+              <li>Manter informações atualizadas</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              O Azera Club não se responsabiliza por acessos indevidos decorrentes de negligência do usuário.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">5 — Conteúdo Gerado por Usuários</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Usuários podem publicar:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Ideias de negócio</li>
+              <li>Oportunidades</li>
+              <li>Perfis profissionais</li>
+              <li>Comentários</li>
+              <li>Discussões</li>
+              <li>Projetos</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              O usuário é o único responsável pelo conteúdo publicado. O Azera Club não garante a veracidade, precisão ou qualidade das informações compartilhadas pelos usuários.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">6 — Interações Entre Usuários</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A plataforma apenas facilita conexões entre membros. O Azera Club não participa de:
+            </p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Negociações</li>
+              <li>Investimentos</li>
+              <li>Contratos</li>
+              <li>Parcerias</li>
+            </ul>
+            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 mt-2">
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                Qualquer acordo realizado entre usuários é de responsabilidade exclusiva das partes envolvidas.
+              </p>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">7 — Uso Proibido</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">É proibido utilizar a plataforma para:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Fraude</li>
+              <li>Spam</li>
+              <li>Criação de contas falsas</li>
+              <li>Manipulação de sistemas</li>
+              <li>Assédio ou comportamento abusivo</li>
+              <li>Divulgação enganosa</li>
+              <li>Coleta indevida de dados de outros usuários</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A violação pode resultar em suspensão permanente da conta.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">8 — Propriedade Intelectual</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">Todos os direitos relacionados a:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Design da plataforma</li>
+              <li>Código</li>
+              <li>Marca</li>
+              <li>Identidade visual</li>
+              <li>Funcionalidades</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              pertencem ao Azera Club. Usuários mantêm direitos sobre conteúdos próprios publicados, mas concedem licença à plataforma para exibição dentro do sistema.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">9 — Limitação de Responsabilidade</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">A plataforma é fornecida "como está". O Azera Club não garante:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Disponibilidade contínua</li>
+              <li>Ausência de erros</li>
+              <li>Resultados específicos</li>
+            </ul>
+            <p className="text-sm text-muted-foreground leading-relaxed">O Azera Club não será responsável por:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Perdas financeiras</li>
+              <li>Danos indiretos</li>
+              <li>Oportunidades perdidas</li>
+              <li>Negócios malsucedidos</li>
+            </ul>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-serif font-semibold">10 — Encerramento de Conta</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">O Azera Club pode suspender ou encerrar contas que:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+              <li>Violem os termos</li>
+              <li>Pratiquem fraude</li>
+              <li>Abusem do sistema</li>
+              <li>Prejudiquem a comunidade</li>
+            </ul>
+          </section>
+
+          {/* Programa de Afiliados */}
+          <div className="border-t border-border/50 pt-8">
+            <h2 className="text-2xl font-serif font-bold gold-text mb-6">Programa de Afiliados</h2>
+
+            <section className="space-y-3 mb-6">
+              <h3 className="text-lg font-serif font-semibold">1 — Elegibilidade</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Os utilizadores devem verificar de forma independente qualquer oportunidade ou parceria antes de se envolver em negócios. A plataforma não se responsabiliza por perdas decorrentes de oportunidades publicadas por terceiros.
+                Usuários podem solicitar participação no programa de afiliados. A aprovação é realizada manualmente pela plataforma. Usuários aprovados recebem um link de indicação exclusivo.
               </p>
-            </div>
-          </section>
+            </section>
 
-          {/* 5 — Atividades Fora da Plataforma */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">5. Atividades Fora da Plataforma</h2>
-            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                O AZERA CLUB não é responsável por quaisquer interações, acordos, transações, reuniões ou parcerias que ocorram fora da plataforma.
+            <section className="space-y-3 mb-6">
+              <h3 className="text-lg font-serif font-semibold">2 — Comissões</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Afiliados recebem comissões por assinaturas pagas realizadas através de seus links de indicação. As comissões são processadas automaticamente por meio do sistema de pagamentos integrado. Pagamentos podem ser realizados por meio de contas conectadas no sistema da Stripe.
               </p>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">Isto inclui, mas não se limita a:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Reuniões presenciais ou virtuais</li>
-              <li>Investimentos e transferências financeiras</li>
-              <li>Contratos e acordos comerciais</li>
-              <li>Negócios presenciais ou remotos</li>
-              <li>Qualquer comunicação realizada fora da plataforma</li>
-            </ul>
-          </section>
+            </section>
 
-          {/* 6 — Limitação de Responsabilidade */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">6. Limitação de Responsabilidade</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">O AZERA CLUB não se responsabiliza por:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Perdas financeiras de qualquer natureza</li>
-              <li>Fraudes ou esquemas entre utilizadores</li>
-              <li>Decisões de investimento tomadas com base em informações da plataforma</li>
-              <li>Falhas em projetos, startups ou empreendimentos</li>
-              <li>Conflitos entre utilizadores</li>
-              <li>Danos diretos, indiretos, incidentais ou consequenciais</li>
-            </ul>
-            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4 mt-3">
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                A plataforma é fornecida "tal como está" (as is), sem garantias de sucesso, lucro ou resultados comerciais.
+            <section className="space-y-3 mb-6">
+              <h3 className="text-lg font-serif font-semibold">3 — Proibições</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">É proibido:</p>
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
+                <li>Auto indicação</li>
+                <li>Criação de contas falsas</li>
+                <li>Manipulação de leads</li>
+                <li>Publicidade enganosa</li>
+                <li>Spam</li>
+              </ul>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                A violação pode resultar em remoção do programa.
               </p>
-            </div>
-          </section>
+            </section>
 
-          {/* 7 — Conteúdo Gerado por Utilizadores */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">7. Conteúdo Gerado por Utilizadores</h2>
+            <section className="space-y-3">
+              <h3 className="text-lg font-serif font-semibold">4 — Alteração do Programa</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                O Azera Club pode modificar porcentagem de comissão, regras do programa e elegibilidade a qualquer momento.
+              </p>
+            </section>
+          </div>
+
+          {/* Política de Reembolso */}
+          <div className="border-t border-border/50 pt-8">
+            <h2 className="text-2xl font-serif font-bold gold-text mb-4">Política de Reembolso</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Todo o conteúdo publicado pelos utilizadores — incluindo publicações, fotografias, comentários, partilhas e qualquer outro material — é da exclusiva responsabilidade de quem o publica.
+              Assinaturas podem ser canceladas a qualquer momento. Reembolsos podem ser concedidos a critério da plataforma dentro de um período razoável após a compra. Taxas de pagamento cobradas por provedores externos podem não ser reembolsáveis.
             </p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>O AZERA CLUB não modera, verifica nem aprova previamente o conteúdo publicado</li>
-              <li>Os utilizadores são os únicos responsáveis pela veracidade e legalidade do que publicam</li>
-              <li>A plataforma reserva-se o direito de remover conteúdo que viole estes termos ou as Diretrizes da Comunidade</li>
-            </ul>
-          </section>
+          </div>
 
-          {/* 8 — Conversas e Grupos */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">8. Conversas e Grupos</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              As comunicações entre utilizadores — incluindo conversas privadas, mensagens em grupos e qualquer troca de informações — são da inteira responsabilidade das partes envolvidas.
-            </p>
-            <div className="bg-secondary/50 border border-border/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                O AZERA CLUB não monitoriza, lê nem se responsabiliza pelo conteúdo das conversas entre utilizadores. Qualquer acordo, negócio ou compromisso estabelecido através de conversas na plataforma é de responsabilidade exclusiva dos participantes.
-              </p>
-            </div>
-          </section>
-
-          {/* 9 — Isenção Total de Responsabilidade */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">9. Isenção Total de Responsabilidade</h2>
+          {/* Isenção de Responsabilidade */}
+          <div className="border-t border-border/50 pt-8">
+            <h2 className="text-2xl font-serif font-bold gold-text mb-4">Isenção de Responsabilidade</h2>
             <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 space-y-3">
               <p className="text-sm text-muted-foreground leading-relaxed font-bold">
-                O AZERA CLUB NÃO SE RESPONSABILIZA POR QUALQUER AÇÃO, INTERAÇÃO, ACORDO, PERDA, DANO OU CONSEQUÊNCIA — DIRETA OU INDIRETA — DECORRENTE DA UTILIZAÇÃO DA PLATAFORMA.
+                O Azera Club atua apenas como plataforma digital de networking.
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Isto inclui, sem limitação:
-              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">A plataforma não:</p>
               <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-                <li>Conteúdo publicado por utilizadores (textos, imagens, vídeos, comentários)</li>
-                <li>Conversas privadas e em grupo entre membros</li>
-                <li>Qualquer interação, negócio ou acordo entre utilizadores</li>
-                <li>Perdas financeiras, danos materiais ou morais</li>
-                <li>Informações falsas ou enganosas publicadas por terceiros</li>
-                <li>Decisões tomadas com base em qualquer informação obtida na plataforma</li>
-                <li>Atividades realizadas fora da plataforma mas originadas através dela</li>
+                <li>Garante resultados</li>
+                <li>Garante sucesso financeiro</li>
+                <li>Participa de negociações</li>
+                <li>Intermedia investimentos</li>
               </ul>
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                Usuários devem avaliar cuidadosamente qualquer oportunidade antes de tomar decisões financeiras.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Ao utilizar o AZERA CLUB, o utilizador reconhece e aceita que a plataforma é um meio de conexão e que toda a responsabilidade sobre as suas ações e interações recai exclusivamente sobre si.
-            </p>
-          </section>
+          </div>
 
-          {/* 10 — Propriedade Intelectual */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">10. Propriedade Intelectual</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">Todo o conteúdo da plataforma pertence ao AZERA CLUB, incluindo:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Marca e identidade visual</li>
-              <li>Design e interface</li>
-              <li>Software e código-fonte</li>
-              <li>Conteúdos editoriais e textos</li>
-            </ul>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Os utilizadores não podem copiar, reproduzir, distribuir ou utilizar qualquer conteúdo da plataforma sem autorização expressa por escrito.
-            </p>
-          </section>
-
-          {/* 11 — Suspensão de Contas */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">11. Suspensão e Encerramento de Contas</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">O AZERA CLUB reserva-se o direito de suspender ou encerrar contas que:</p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>Violem estes Termos de Uso</li>
-              <li>Pratiquem fraude ou atividades ilícitas</li>
-              <li>Prejudiquem outros utilizadores</li>
-              <li>Utilizem a plataforma para spam ou fins abusivos</li>
-            </ul>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              A suspensão ou encerramento pode ocorrer sem aviso prévio quando necessário para proteger a integridade da plataforma e dos seus membros.
-            </p>
-          </section>
-
-          {/* 12 — Modificação dos Termos */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">12. Modificação dos Termos</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              O AZERA CLUB pode atualizar estes Termos de Uso a qualquer momento. Os utilizadores serão notificados em caso de alterações significativas. A continuação da utilização do serviço após quaisquer alterações constitui aceitação dos termos atualizados.
-            </p>
-          </section>
-
-          {/* 13 — Aceitação */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">13. Aceitação dos Termos</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Ao criar uma conta no AZERA CLUB, o utilizador confirma que leu, compreendeu e aceita estes Termos de Uso na sua totalidade, bem como a nossa Política de Privacidade.
-            </p>
-          </section>
-
-          {/* 14 — Programa de Parceiros */}
-          <section className="space-y-3">
-            <h2 className="text-lg font-serif font-semibold">14. Programa de Parceiros</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              O AZERA CLUB oferece um programa de parceiros que permite aos utilizadores indicar novos membros e receber comissões sobre assinaturas pagas.
-            </p>
-            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-2">
-              <li>O AZERA CLUB não garante ganhos financeiros através do programa de parceiros</li>
-              <li>Comissões podem ser revisadas, ajustadas ou canceladas em casos de fraude, abuso ou manipulação do sistema</li>
-              <li>Pagamentos são realizados apenas após verificação interna e um período mínimo de 7 dias após a compra</li>
-              <li>O uso de técnicas fraudulentas (contas duplicadas, auto-referência, manipulação de tráfego) resultará em cancelamento imediato da conta de parceiro</li>
-              <li>O AZERA CLUB reserva-se o direito de modificar as taxas de comissão, termos e condições do programa a qualquer momento</li>
-            </ul>
-          </section>
-
-          {/* Contacto */}
           <section className="space-y-3">
             <h2 className="text-lg font-serif font-semibold">Contacto</h2>
             <p className="text-sm text-muted-foreground">
