@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
     const [
       venturesRes, connectionsRes, projectsRes, objectivesCompletedRes, objectivesTotalRes,
       ideasRes, challengesCompletedRes, challengesTotalRes, postsRes, habitsRes,
-      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes, partnerRes,
+      scoreRes, planRes, profileRes, journalRes, tripsRes, opportunitiesRes, partnerRes, suggestionsRes,
     ] = await Promise.all([
       supabaseAdmin.from("ventures").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabaseAdmin.from("founder_connections").select("id", { count: "exact", head: true })
