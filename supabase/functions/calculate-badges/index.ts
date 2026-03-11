@@ -144,6 +144,13 @@ Deno.serve(async (req) => {
     const accountAgeDays = Math.floor((Date.now() - accountCreated.getTime()) / (1000 * 60 * 60 * 24));
     const profileComplete = !!(fp?.name && fp?.city && fp?.country && fp?.skills?.length && fp?.industry?.length && fp?.building && fp?.looking_for?.length && fp?.avatar_url);
 
+    // Determine user's position (how many profiles were created before this one)
+    const { count: earlierProfiles } = await supabaseAdmin
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .lte("created_at", accountCreated.toISOString());
+    const userPosition = earlierProfiles || 999;
+
     // Count referral conversions for partner badges
     let referralConversions = 0;
     const partnerData = (partnerRes as any)?.data;
