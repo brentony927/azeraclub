@@ -162,6 +162,13 @@ export default function FounderProfile() {
       acts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       setActivity(acts.slice(0, 5));
 
+      // Fetch active background
+      const { data: bgData } = await supabase.from("profile_backgrounds" as any)
+        .select("active_background")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (bgData) setActiveBackground((bgData as any).active_background || null);
+
       setLoading(false);
     };
     load();
