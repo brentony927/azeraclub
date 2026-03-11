@@ -1,69 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Painel Completo de Gestão de Afiliados (Owner)
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Objetivo
-Substituir o `AffiliateRequestsPanel` atual por um painel expandível completo no perfil do dono, com todas as opções de gestão: pendentes, afiliados ativos, resultados, conversar, banir, excluir, etc.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-## Componente: `AffiliateManagerPanel.tsx`
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-Novo componente que substitui `AffiliateRequestsPanel` no perfil do owner. Usa `Collapsible` para expandir/recolher.
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### Estrutura
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-```text
-┌─────────────────────────────────────────┐
-│ 👥 Gerenciar Afiliados          [▼]     │
-├─────────────────────────────────────────┤
-│ Tabs: Pendentes | Ativos | Histórico    │
-│                                         │
-│ [PENDENTES]                             │
-│  ┌─ Nome · Redes · Estratégia ────────┐ │
-│  │  [Aprovar] [Recusar]               │ │
-│  └────────────────────────────────────┘ │
-│                                         │
-│ [ATIVOS]                                │
-│  ┌─ Nome · Level · Leads · Vendas ───┐  │
-│  │  [Ver Resultados] [Conversar]     │  │
-│  │  [Desativar] [Excluir]            │  │
-│  └───────────────────────────────────┘  │
-│                                         │
-│ [HISTÓRICO]                             │
-│  Lista de rejeitados/desativados        │
-└─────────────────────────────────────────┘
-```
-
-### Dados carregados (via service role RLS — owner já tem SELECT em `affiliate_requests`)
-- `affiliate_requests` (todas: pending, approved, rejected)
-- `affiliate_profiles` (todos os afiliados ativos)
-- `affiliate_leads` + `affiliate_commissions` (resultados por afiliado)
-- `founder_profiles` (nomes/avatares dos afiliados)
-
-### Ações disponíveis
-| Ação | Implementação |
-|---|---|
-| Aprovar/Recusar pendente | Edge function `approve-affiliate` (já existe) |
-| Ver resultados | Expande card com leads, vendas, comissão, taxa |
-| Conversar | Navega para `/founder-messages` com o user_id |
-| Desativar afiliado | UPDATE `affiliate_profiles.enabled = false` (nova edge function) |
-| Reativar afiliado | UPDATE `affiliate_profiles.enabled = true` |
-| Excluir afiliado | DELETE `affiliate_profiles` + reset (nova edge function) |
-| Banir usuário | Usa `OwnerModPanel` inline |
-
-### Nova Edge Function: `manage-affiliate`
-Aceita ações `disable`, `enable`, `delete` sobre um afiliado. Verifica que o caller é site owner.
-
-### Alterações em RLS
-- `affiliate_profiles`: adicionar policy SELECT para site owner ver todos
-- `affiliate_leads`: adicionar policy SELECT para site owner ver todos
-- `affiliate_commissions`: adicionar policy SELECT para site owner ver todos
-
-### Ficheiros
-
-| Ficheiro | Ação |
-|---|---|
-| `src/components/AffiliateManagerPanel.tsx` | Criar — painel completo |
-| `supabase/functions/manage-affiliate/index.ts` | Criar — disable/enable/delete |
-| SQL Migration | RLS policies para owner ver affiliate data |
-| `src/pages/Profile.tsx` | Trocar `AffiliateRequestsPanel` por `AffiliateManagerPanel` |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
