@@ -1,45 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Painel de Aprovação de Afiliados no Perfil do Dono
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Resumo
-Criar um painel exclusivo no perfil do dono que exibe todas as solicitações de afiliação pendentes, permitindo aprovar ou recusar diretamente sem precisar de painel externo.
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-## Alterações
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-### 1. `src/components/AffiliateRequestsPanel.tsx` — Novo componente
-Painel que aparece apenas para o dono (`isOwner`), mostrando:
-- Lista de `affiliate_requests` com status `pending` (busca com service role via edge function)
-- Cada card mostra: nome, redes sociais, audiência, estratégia, data de solicitação
-- Botões "Aprovar" e "Recusar" que chamam a edge function `approve-affiliate` existente
-- Badge com contagem de pendentes no header
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-O dono não consegue ver `affiliate_requests` de outros usuários pela RLS (política `user_id = auth.uid()`). Duas opções:
-- **Opção A**: Criar uma edge function `list-affiliate-requests` que usa service role para buscar pendentes (mais seguro)
-- **Opção B**: Adicionar política SELECT para site owners via `is_site_owner(auth.uid())`
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-Vou usar a **Opção B** (política RLS) por ser mais simples — adicionar uma política SELECT permissiva para site owners.
-
-### 2. Migração SQL — Política SELECT para dono ver requests
-```sql
-CREATE POLICY "Site owner can view all affiliate requests"
-ON public.affiliate_requests FOR SELECT TO authenticated
-USING (public.is_site_owner(auth.uid()));
-```
-
-### 3. `src/pages/Profile.tsx` — Integrar o painel
-- Importar `AffiliateRequestsPanel`
-- Renderizar antes do `AffiliateSection`, apenas quando `isOwner === true`
-
-### 4. Notificação automática ao dono
-Quando um usuário submete uma solicitação (`AffiliateSection.handleApply`), inserir uma notificação para o dono. Precisa buscar o `user_id` do dono — pode fazer via edge function ou inserir a notificação server-side.
-
-Melhor abordagem: adicionar insert de notificação diretamente no `handleApply` do `AffiliateSection` buscando o dono via `founder_profiles.is_site_owner`.
-
-| Ficheiro | Ação |
-|---|---|
-| SQL Migration | Adicionar política SELECT para site owners em `affiliate_requests` |
-| `src/components/AffiliateRequestsPanel.tsx` | Criar — painel de aprovação/rejeição |
-| `src/pages/Profile.tsx` | Integrar painel quando isOwner |
-| `src/components/AffiliateSection.tsx` | Enviar notificação ao dono ao solicitar |
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

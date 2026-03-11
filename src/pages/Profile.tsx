@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import EliteBadge from "@/components/EliteBadge";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import AffiliateSection from "@/components/AffiliateSection";
+import AffiliateRequestsPanel from "@/components/AffiliateRequestsPanel";
 import ProfileBackgroundPicker from "@/components/ProfileBackgroundPicker";
 import ProfileBackgroundRenderer from "@/components/ProfileBackgroundRenderer";
 import {
@@ -623,6 +624,9 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Affiliate Requests Panel (owner only) */}
+        {isOwner && <AffiliateRequestsPanel />}
 
         {/* Affiliate Section */}
         <AffiliateSection />
