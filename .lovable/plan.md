@@ -1,38 +1,39 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Mobile Polish + Insígnia "BRENTONY OWNER" no Perfil
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## 1. Insígnia Vermelha "BRENTONY OWNER" no Perfil
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Adicionar uma insígnia vermelha metálica destacada no perfil do proprietário, visível logo ao lado do nome, com o texto **BRENTONY OWNER**. A insígnia terá:
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+- Gradiente vermelho metálico com animação shimmer (reutilizando o estilo `owner-badge` existente)
+- Ícone de coroa (Crown) ao lado do texto
+- Tamanho maior que badges normais para se destacar
+- Glow vermelho ao redor
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+**Ficheiro:** `src/pages/Profile.tsx`
+- Na secção do avatar/nome (linha ~337-341), quando `isOwner === true`, renderizar a insígnia "BRENTONY OWNER" com classe `owner-badge` e ícone Crown
+- Substituir o badge genérico "Desenvolvedor" pelo badge exclusivo do owner
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+## 2. Polish Mobile
+
+Melhorias para tornar a experiência mobile mais fluida:
+
+**Ficheiro:** `src/pages/Profile.tsx`
+- Interest chips (linha ~578-587): adicionar `min-h-[44px]` nos botões de interesses para cumprir touch targets
+- Select triggers: garantir `min-h-[44px]` nos selects
+- Username "Copiar Link" button: `min-h-[44px]`
+
+**Ficheiro:** `src/components/MobileBottomNav.tsx`
+- Sem mudanças necessárias, já tem touch targets corretos
+
+**Ficheiro:** `src/index.css`
+- Adicionar nova classe `.owner-profile-badge` com estilo metálico intensificado, maior que o badge normal do FounderCard, com shimmer e glow para destacar no perfil
+
+## Ficheiros a modificar
+
+| Ficheiro | Ação |
+|---|---|
+| `src/pages/Profile.tsx` | Adicionar insígnia owner + polish touch targets |
+| `src/index.css` | Adicionar `.owner-profile-badge` com estilo metálico vermelho |
+
