@@ -35,14 +35,73 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    const session = await stripe.checkout.sessions.create({
+    // Check for referral — find affiliate with connected Stripe
+    let transferData: Record<string, any> | undefined;
+    let applicationFeePercent: number | undefined;
+    let affiliateId: string | null = null;
+
+    // Anti-fraud: prevent self-referral
+    const { data: referral } = await supabaseClient
+      .from("referrals")
+      .select("referrer_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (referral) {
+      const { data: affiliate } = await supabaseClient
+        .from("affiliate_profiles")
+        .select("*")
+        .eq("affiliate_id", referral.referrer_id)
+        .eq("enabled", true)
+        .maybeSingle();
+
+      if (affiliate && affiliate.stripe_onboarding_complete && affiliate.stripe_account_id) {
+        // Anti-fraud: ensure affiliate is not the buyer
+        if (affiliate.user_id !== user.id) {
+          transferData = {
+            destination: affiliate.stripe_account_id,
+          };
+          // Platform keeps (1 - commission_rate), e.g. 75%
+          const commissionRate = affiliate.commission_rate || 0.25;
+          applicationFeePercent = Math.round((1 - commissionRate) * 100);
+          affiliateId = affiliate.affiliate_id;
+          console.log(`[create-checkout] Affiliate split: ${commissionRate * 100}% to ${affiliate.stripe_account_id}`);
+        } else {
+          console.log("[create-checkout] Blocked self-referral");
+        }
+      }
+    }
+
+    // Build checkout session params
+    const sessionParams: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
       success_url: `${req.headers.get("origin")}/dashboard?checkout=success`,
       cancel_url: `${req.headers.get("origin")}/planos`,
-    });
+    };
+
+    // Add Stripe Connect destination charges for subscriptions
+    if (transferData) {
+      sessionParams.subscription_data = {
+        transfer_data: transferData,
+        application_fee_percent: applicationFeePercent,
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
+
+    // If affiliate split was applied, record commission as paid (Stripe handles transfer)
+    if (affiliateId && transferData) {
+      // We'll record this after the subscription is actually created
+      // For now, update the lead purchase date
+      await supabaseClient
+        .from("affiliate_leads")
+        .update({ purchased_at: new Date().toISOString(), user_plan: "pro" })
+        .eq("user_id", user.id)
+        .eq("referrer_id", affiliateId);
+    }
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
