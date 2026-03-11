@@ -85,7 +85,7 @@ export default function AffiliateSection() {
     }
 
     const { data: prof } = await supabase
-      .from("affiliate_profiles" as any)
+      .from("affiliate_profiles")
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle();
