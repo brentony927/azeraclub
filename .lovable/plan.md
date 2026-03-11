@@ -1,38 +1,66 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Estado do Site — Diagnóstico
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## O que está OK
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+- **Triggers de segurança ativos**: 4 triggers na tabela `founder_profiles` — `is_site_owner` e `is_verified` estão protegidos contra manipulação (INSERT e UPDATE bloqueados)
+- **Autenticação e sessões**: funcionando normalmente
+- **Subscrições**: a verificação de plano responde corretamente
+- **RLS geral**: políticas ativas em todas as tabelas principais
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+## Problemas Encontrados
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 1. Vulnerabilidade: Membros rejeitados podem se re-aceitar em Ventures (REAL)
+Um utilizador cujo convite para uma Venture foi **rejeitado** pode executar um UPDATE no próprio registro e mudar o status para `accepted`, ganhando acesso a notas, tarefas e chat da Venture.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+**Correção**: Migração SQL para adicionar um trigger que impede a transição `rejected → accepted` por self-update.
+
+```sql
+CREATE OR REPLACE FUNCTION public.validate_venture_member_status()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
+BEGIN
+  -- Only venture owner can change status from rejected
+  IF OLD.status = 'rejected' AND NEW.status != 'rejected' THEN
+    IF NOT is_venture_owner(auth.uid(), OLD.venture_id) THEN
+      RAISE EXCEPTION 'Cannot change status from rejected';
+    END IF;
+  END IF;
+  -- Only venture owner or self can accept (self only from pending)
+  IF NEW.status = 'accepted' AND OLD.status != 'pending' THEN
+    IF NOT is_venture_owner(auth.uid(), OLD.venture_id) THEN
+      RAISE EXCEPTION 'Only venture owner can accept from this state';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER validate_venture_member_status
+  BEFORE UPDATE ON public.venture_members
+  FOR EACH ROW EXECUTE FUNCTION public.validate_venture_member_status();
+```
+
+### 2. Acessibilidade: DialogContent sem DialogTitle (MENOR)
+Vários dialogs no site não têm `DialogTitle`, gerando warnings no console. Não é um bug funcional mas afeta acessibilidade para leitores de tela.
+
+**Correção**: Localizar os dialogs sem título e adicionar `<DialogTitle>` com `<VisuallyHidden>` wrapper onde o título não deve ser visível.
+
+### Resumo
+
+| Item | Estado | Prioridade |
+|---|---|---|
+| Triggers `is_site_owner` | OK | - |
+| Triggers `is_verified` | OK | - |
+| Auth/Sessões | OK | - |
+| Subscrições | OK | - |
+| Venture member status bypass | Vulnerável | Alta |
+| Dialog acessibilidade | Warning | Baixa |
+
+### Plano de Implementação
+
+| Ficheiro | Ação |
+|---|---|
+| SQL Migration | Trigger para validar transições de status em `venture_members` |
+| Componentes com Dialog | Adicionar `DialogTitle` onde falta (identificar quais) |
+
