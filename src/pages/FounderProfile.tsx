@@ -26,6 +26,7 @@ import { sendNotification } from "@/lib/sendNotification";
 import FounderPostCard from "@/components/FounderPostCard";
 import BadgeShowcase from "@/components/BadgeShowcase";
 import OwnerModPanel from "@/components/OwnerModPanel";
+import ProfileBackgroundRenderer from "@/components/ProfileBackgroundRenderer";
 
 /* ---------- badge mapping ---------- */
 function getFounderBadge(profile: any): string {
