@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Copy, QrCode, ShieldCheck, CalendarClock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EarlyBirdBanner from "@/components/EarlyBirdBanner";
 
 const tiers = {
   basic: { price_id: "price_free", price_id_yearly: "price_free", product_id: "prod_free" },
@@ -212,11 +213,12 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-20">
-      <div className="w-full max-w-4xl mb-6">
+      <div className="w-full max-w-5xl mb-6 flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
         </Button>
       </div>
+      <EarlyBirdBanner />
       <PricingSection
         plans={plans}
         onSubscribe={handleSubscribe}

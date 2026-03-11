@@ -60,7 +60,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   { key: "first_challenge", name: "Primeiro Desafio", description: "Aceitou seu primeiro desafio", criterion: "1+ desafio criado", icon: Flame, colorClass: "badge-orange" },
   { key: "journal_master", name: "Mestre do Diário", description: "30+ reflexões escritas", criterion: "30+ entradas no diário", icon: FileText, colorClass: "badge-purple" },
   { key: "five_opportunities", name: "Caçador de Oportunidades", description: "5 oportunidades criadas", criterion: "5+ oportunidades", icon: Telescope, colorClass: "badge-yellow" },
-  { key: "early_adopter", name: "Early Adopter", description: "Membro fundador", criterion: "Conta criada há 30+ dias", icon: Coffee, colorClass: "badge-black" },
+  { key: "early_adopter", name: "Early Adopter", description: "Um dos 20 primeiros membros da plataforma", criterion: "Entre os 20 primeiros usuários", icon: Coffee, colorClass: "badge-gold-metallic" },
   { key: "profile_complete", name: "Perfil Completo", description: "Todas as informações preenchidas", criterion: "Perfil 100% completo", icon: Eye, colorClass: "badge-green" },
   { key: "mentor", name: "Mentor", description: "Ajudou outros founders", criterion: "Score 70+ e 10+ conexões", icon: GraduationCap, colorClass: "badge-blue" },
   { key: "diamond_founder", name: "Diamante Founder", description: "Top 1% da plataforma", criterion: "Score 95+ e 50+ conexões", icon: Gem, colorClass: "badge-gold-metallic" },

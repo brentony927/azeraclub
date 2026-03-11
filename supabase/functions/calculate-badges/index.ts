@@ -31,6 +31,7 @@ interface Stats {
   accountAgeDays: number;
   profileComplete: boolean;
   referralConversions: number;
+  userPosition: number;
 }
 
 const ALL_BADGE_KEYS = [
@@ -86,7 +87,7 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "first_challenge", check: s => s.challengesTotal >= 1 },
   { key: "journal_master", check: s => s.journalEntries >= 30 },
   { key: "five_opportunities", check: s => s.opportunities >= 5 },
-  { key: "early_adopter", check: s => s.accountAgeDays >= 30 },
+  { key: "early_adopter", check: s => s.userPosition <= 20 },
   { key: "profile_complete", check: s => s.profileComplete },
   { key: "mentor", check: s => s.totalScore >= 70 && s.connections >= 10 },
   { key: "diamond_founder", check: s => s.totalScore >= 95 && s.connections >= 50 },
@@ -143,6 +144,13 @@ Deno.serve(async (req) => {
     const accountAgeDays = Math.floor((Date.now() - accountCreated.getTime()) / (1000 * 60 * 60 * 24));
     const profileComplete = !!(fp?.name && fp?.city && fp?.country && fp?.skills?.length && fp?.industry?.length && fp?.building && fp?.looking_for?.length && fp?.avatar_url);
 
+    // Determine user's position (how many profiles were created before this one)
+    const { count: earlierProfiles } = await supabaseAdmin
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .lte("created_at", accountCreated.toISOString());
+    const userPosition = earlierProfiles || 999;
+
     // Count referral conversions for partner badges
     let referralConversions = 0;
     const partnerData = (partnerRes as any)?.data;
@@ -175,6 +183,7 @@ Deno.serve(async (req) => {
       accountAgeDays,
       profileComplete,
       referralConversions,
+      userPosition,
     };
 
     // Site owner gets ALL badges

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import EarlyBirdBanner from "@/components/EarlyBirdBanner";
 import { motion } from "framer-motion";
 import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -114,6 +115,8 @@ export default function Index() {
         <OnboardingTutorial userId={user.id} onComplete={() => setShowTutorial(false)} />
       )}
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20 md:pb-0">
+      {/* Early Bird Promo */}
+      <EarlyBirdBanner />
       {/* Greeting */}
       <motion.div variants={item} className="space-y-1">
         <div className="flex items-center justify-between">
