@@ -97,6 +97,8 @@ const BADGE_RULES: BadgeRule[] = [
   { key: "growth_partner", check: s => s.referralConversions >= 1 },
   { key: "azera_ambassador", check: s => s.referralConversions >= 10 },
   { key: "top_connector", check: s => s.referralConversions >= 50 },
+  // Suggestion badge
+  { key: "fertile_mind", check: s => s.approvedSuggestions >= 5 },
 ];
 
 Deno.serve(async (req) => {
