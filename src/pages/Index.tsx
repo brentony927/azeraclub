@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import EarlyBirdBanner from "@/components/EarlyBirdBanner";
 import { motion } from "framer-motion";
 import { CalendarDays, Brain, Handshake, ArrowRight, Trophy, Zap, Bell, Trash2, Radar, Users, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
