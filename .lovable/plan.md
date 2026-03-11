@@ -1,38 +1,50 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Atualização Completa: Páginas Legais do Azera Club
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Resumo
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Atualizar todos os conteúdos legais com o texto fornecido e criar 2 novas páginas de disclaimer (`/risk-disclaimer` e `/ai-disclaimer`) para proteção jurídica adicional.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+## Alterações
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+### 1. Reescrever `src/pages/TermsOfService.tsx`
+Substituir todo o conteúdo pelos novos termos fornecidos (10 secções), incluindo também as secções de Programa de Afiliados, Política de Reembolso e Isenção de Responsabilidade integradas no mesmo documento. Data: 2025.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+### 2. Reescrever `src/pages/PrivacyPolicy.tsx`
+Substituir pelo novo texto de Política de Privacidade (5 secções: Informações Coletadas, Uso, Pagamentos/Stripe, Compartilhamento, Segurança).
+
+### 3. Reescrever `src/pages/CommunityGuidelines.tsx`
+Substituir pelo texto simplificado das Diretrizes da Comunidade.
+
+### 4. Criar `src/pages/RiskDisclaimer.tsx` (nova)
+Página de aviso de risco cobrindo: networking, oportunidades, investimentos, decisões financeiras, conteúdo de terceiros.
+
+### 5. Criar `src/pages/AIDisclaimer.tsx` (nova)
+Página de disclaimer de IA cobrindo: natureza informativa da IA, não substituição de aconselhamento profissional, limitações, responsabilidade do utilizador.
+
+### 6. Atualizar `src/App.tsx`
+Adicionar rotas `/risk-disclaimer` e `/ai-disclaimer` nas rotas públicas, com lazy imports.
+
+### 7. Atualizar `src/components/Footer.tsx`
+Adicionar links "Risco" (`/risk-disclaimer`) e "IA" (`/ai-disclaimer`) ao array `legalLinks`.
+
+### 8. Atualizar aviso no rodapé do Footer
+Adicionar a frase legal: "Azera Club é uma plataforma digital destinada a networking entre empreendedores e não participa ou garante quaisquer acordos realizados entre usuários fora da plataforma."
+
+### 9. Atualizar `src/pages/Landing.tsx`
+Adicionar links para as novas páginas no footer da landing page.
+
+## Ficheiros
+
+| Ficheiro | Ação |
+|---|---|
+| `src/pages/TermsOfService.tsx` | Reescrever |
+| `src/pages/PrivacyPolicy.tsx` | Reescrever |
+| `src/pages/CommunityGuidelines.tsx` | Reescrever |
+| `src/pages/RiskDisclaimer.tsx` | Criar |
+| `src/pages/AIDisclaimer.tsx` | Criar |
+| `src/App.tsx` | Editar (rotas + imports) |
+| `src/components/Footer.tsx` | Editar (links + aviso legal) |
+| `src/pages/Landing.tsx` | Editar (links no footer) |
+
