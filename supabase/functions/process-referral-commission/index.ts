@@ -9,15 +9,39 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { user_id, plan_price } = await req.json();
-    if (!user_id || !plan_price) {
-      return new Response(JSON.stringify({ error: "Missing user_id or plan_price" }), { status: 400, headers: corsHeaders });
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: userData, error: userError } = await authClient.auth.getUser();
+    if (userError || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const user_id = userData.user.id;
+    const { plan_price } = await req.json();
+
+    if (typeof plan_price !== "number" || plan_price <= 0) {
+      return new Response(JSON.stringify({ error: "Invalid plan_price" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
     // Check if user came via referral
     const { data: referral } = await supabaseAdmin
@@ -57,7 +81,6 @@ Deno.serve(async (req) => {
     const rate = affiliate.commission_rate || 0.25;
     const amount = plan_price * rate;
 
-    // Record commission as "paid" — Stripe Connect handles the actual transfer
     const status = affiliate.stripe_onboarding_complete ? "paid" : "pending";
 
     await supabaseAdmin.from("affiliate_commissions").insert({
@@ -68,14 +91,12 @@ Deno.serve(async (req) => {
       paid_at: status === "paid" ? new Date().toISOString() : null,
     });
 
-    // Update affiliate lead purchase date
     await supabaseAdmin
       .from("affiliate_leads")
       .update({ purchased_at: new Date().toISOString(), user_plan: "pro" })
       .eq("user_id", user_id)
       .eq("referrer_id", referral.referrer_id);
 
-    // Notify affiliate
     await supabaseAdmin.from("founder_notifications").insert({
       user_id: affiliate.user_id,
       title: "Nova comissão gerada!",
@@ -86,7 +107,6 @@ Deno.serve(async (req) => {
       action_url: "/profile",
     });
 
-    // Check if commission rate tier should be upgraded
     const { count: totalSales } = await supabaseAdmin
       .from("affiliate_commissions")
       .select("id", { count: "exact", head: true })
@@ -110,6 +130,6 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error("process-referral-commission error:", err);
-    return new Response(JSON.stringify({ error: "Internal error" }), { status: 500, headers: corsHeaders });
+    return new Response(JSON.stringify({ error: "Request failed" }), { status: 500, headers: corsHeaders });
   }
 });
