@@ -141,9 +141,9 @@ export default function Journal() {
                   <button
                     key={m.id}
                     onClick={() => setMood(mood === m.id ? null : m.id)}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-all ${mood === m.id ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
+                    className={`text-xs px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${mood === m.id ? "bg-foreground text-background" : "bg-secondary text-muted-foreground hover:text-foreground"}`}
                   >
-                    {m.emoji} {m.label}
+                    <Icon3D icon={m.icon} color={m.color} size="xs" animated /> {m.label}
                   </button>
                 ))}
               </div>
