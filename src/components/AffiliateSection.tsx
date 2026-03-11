@@ -108,15 +108,26 @@ export default function AffiliateSection() {
 
       const affId = (prof as any).affiliate_id;
 
-      const [leadsRes, commRes, walletRes] = await Promise.all([
+      const [leadsRes, commRes, walletRes, payoutRes, withdrawRes] = await Promise.all([
         supabase.from("affiliate_leads" as any).select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
         supabase.from("affiliate_commissions" as any).select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
         supabase.from("affiliate_wallet" as any).select("*").eq("user_id", user.id).maybeSingle(),
+        supabase.from("affiliate_payout_info" as any).select("*").eq("user_id", user.id).maybeSingle(),
+        supabase.from("affiliate_withdrawals" as any).select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       ]);
 
       setLeads((leadsRes as any).data || []);
       setCommissions((commRes as any).data || []);
       setWallet((walletRes as any).data);
+      setWithdrawals((withdrawRes as any).data || []);
+
+      const payout = (payoutRes as any).data;
+      if (payout) {
+        setPayoutMethod(payout.payout_method || "pix");
+        setPixName(payout.full_name || "");
+        setPixCpf(payout.cpf || "");
+        setPixKey(payout.pix_key || "");
+      }
     }
 
     setLoading(false);
