@@ -61,11 +61,11 @@ export default function FounderPostCard({
   const toggleLike = async () => {
     if (!user) return;
     if (liked) {
-      await supabase.from("founder_post_likes" as any).delete().eq("post_id", post.id).eq("user_id", user.id);
+      await supabase.from("founder_post_likes").delete().eq("post_id", post.id).eq("user_id", user.id);
       setLiked(false);
       setLikes(prev => Math.max(0, prev - 1));
     } else {
-      await supabase.from("founder_post_likes" as any).insert({ post_id: post.id, user_id: user.id });
+      await supabase.from("founder_post_likes").insert({ post_id: post.id, user_id: user.id });
       setLiked(true);
       setLikes(prev => prev + 1);
       // Notify post author
@@ -83,7 +83,7 @@ export default function FounderPostCard({
   const handleComment = async () => {
     if (!user || !commentText.trim()) return;
     setSendingComment(true);
-    const { error } = await supabase.from("founder_post_comments" as any).insert({
+    const { error } = await supabase.from("founder_post_comments").insert({
       post_id: post.id,
       user_id: user.id,
       content: commentText.trim(),
@@ -107,7 +107,7 @@ export default function FounderPostCard({
 
   const handleDelete = async () => {
     setDeleting(true);
-    await supabase.from("founder_posts" as any).delete().eq("id", post.id);
+    await supabase.from("founder_posts").delete().eq("id", post.id);
     setDeleting(false);
     onRefresh();
     toast({ title: "Post excluído ✓" });

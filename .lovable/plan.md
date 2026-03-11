@@ -1,36 +1,38 @@
 
+Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-# Plan: Fix Errors and Clean Up Unused Code
+Diagnóstico (baseado no código atual):
+- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
+- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
+- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
+- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
 
-## Issues Found
+Plano de implementação:
+1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
+- Substituir globalmente:
+  - `.dark.pro-theme` → `.dark .pro-theme`
+  - `.dark.business-theme` → `.dark .business-theme`
+- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
 
-### 1. Unnecessary `as any` type casts on Supabase table names
-All tables (`affiliate_requests`, `affiliate_profiles`, `affiliate_leads`, `affiliate_commissions`, `founder_posts`, `founder_post_likes`, `founder_post_comments`, `user_moderation`, `user_reports`) exist in the generated types file. The `as any` casts suppress TypeScript type checking and can hide real bugs.
+2) Blindar a sidebar para não voltar a quebrar
+- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
+  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
+- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
 
-**Files to fix:**
-- `src/components/AffiliateSection.tsx` — Remove `as any` from all `.from()` calls (6 instances)
-- `src/components/FounderPostCard.tsx` — Remove `as any` from `.from()` calls (4 instances)
-- `src/pages/FounderFeed.tsx` — Remove `as any` from `.from()` calls (4 instances)
-- `src/components/ProtectedLayout.tsx` — Remove `as any` from `user_moderation` query
-- `src/components/OwnerModPanel.tsx` — Remove `as any` from `user_moderation` insert
-- `src/components/ReportUserDialog.tsx` — Remove `as any` from `user_reports` insert
+3) Verificação técnica final no CSS
+- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
+  - `.dark.pro-theme`
+  - `.dark.business-theme`
+- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
 
-### 2. Unused legacy component: `PartnerSection.tsx`
-This component references the old partner system (`partner_profiles`, `commissions`, `payouts` tables) and is not imported anywhere. It should be deleted to reduce bundle size and avoid confusion.
+Validação visual (fim-a-fim):
+- Testar no preview em `/dashboard`:
+  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
+  - PRO + light: manter aparência clara esperada.
+  - BUSINESS + dark/light: mesmo comportamento correto.
+- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
 
-**Action:** Delete `src/components/PartnerSection.tsx`
-
-### 3. Legacy tables still in the database
-The `partner_profiles`, `commissions`, and `payouts` tables are leftovers from the old partner system (replaced by the affiliate system). They serve no purpose.
-
-**Action:** Drop tables `partner_profiles`, `commissions`, `payouts` via migration.
-
-### 4. No runtime errors detected
-Network requests all return 200. No console errors. No edge function errors. The profile persistence fix from the previous change is working correctly with `upsert`.
-
-## Summary of Changes
-
-1. Remove `as any` casts from ~20 Supabase `.from()` calls across 6 files
-2. Delete `src/components/PartnerSection.tsx` (unused)
-3. DB migration to drop legacy tables: `partner_profiles`, `commissions`, `payouts`
-
+Detalhes técnicos (objetivo “de uma vez por todas”):
+- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
+- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
+- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.

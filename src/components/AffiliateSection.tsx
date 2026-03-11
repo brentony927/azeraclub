@@ -72,7 +72,7 @@ export default function AffiliateSection() {
     setLoading(true);
 
     const { data: req } = await supabase
-      .from("affiliate_requests" as any)
+      .from("affiliate_requests")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
@@ -85,7 +85,7 @@ export default function AffiliateSection() {
     }
 
     const { data: prof } = await supabase
-      .from("affiliate_profiles" as any)
+      .from("affiliate_profiles")
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -97,8 +97,8 @@ export default function AffiliateSection() {
       const affId = (prof as any).affiliate_id;
 
       const [leadsRes, commRes] = await Promise.all([
-        supabase.from("affiliate_leads" as any).select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
-        supabase.from("affiliate_commissions" as any).select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
+        supabase.from("affiliate_leads").select("*").eq("referrer_id", affId).order("created_at", { ascending: false }),
+        supabase.from("affiliate_commissions").select("*").eq("affiliate_id", affId).order("created_at", { ascending: false }),
       ]);
 
       setLeads((leadsRes as any).data || []);
@@ -114,7 +114,7 @@ export default function AffiliateSection() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("affiliate_requests" as any).insert({
+    const { error } = await supabase.from("affiliate_requests").insert({
       user_id: user.id,
       full_name: formName,
       instagram: formInstagram || null,

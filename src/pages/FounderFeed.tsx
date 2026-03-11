@@ -137,7 +137,7 @@ export default function FounderFeed() {
     setPostsLoading(true);
 
     const { data: postsData } = await supabase
-      .from("founder_posts" as any)
+      .from("founder_posts")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(50);
@@ -152,9 +152,9 @@ export default function FounderFeed() {
 
     const [authorsRes, likesRes, myLikesRes, commentsRes] = await Promise.all([
       supabase.from("founder_profiles").select("user_id, name, avatar_url, username").in("user_id", userIds),
-      supabase.from("founder_post_likes" as any).select("post_id").in("post_id", postIds),
-      supabase.from("founder_post_likes" as any).select("post_id").eq("user_id", user.id).in("post_id", postIds),
-      supabase.from("founder_post_comments" as any).select("*").in("post_id", postIds).order("created_at", { ascending: true }),
+      supabase.from("founder_post_likes").select("post_id").in("post_id", postIds),
+      supabase.from("founder_post_likes").select("post_id").eq("user_id", user.id).in("post_id", postIds),
+      supabase.from("founder_post_comments").select("*").in("post_id", postIds).order("created_at", { ascending: true }),
     ]);
 
     // Authors
