@@ -225,15 +225,8 @@ export default function Pricing() {
         onManage={handleManage}
       />
 
-      {/* Money-back guarantee */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="text-[11px] text-muted-foreground/50 text-center mt-6 max-w-md"
-      >
-        Garantia de satisfação. Se não estiver satisfeito nos primeiros 7 dias, entre em contacto para reembolso total.
-      </motion.p>
+
+
 
       {/* FAQ */}
       <motion.div
