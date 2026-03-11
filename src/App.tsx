@@ -41,6 +41,8 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const CommunityGuidelines = lazy(() => import("./pages/CommunityGuidelines"));
 const PaymentsPolicy = lazy(() => import("./pages/PaymentsPolicy"));
 const SecurityPolicy = lazy(() => import("./pages/SecurityPolicy"));
+const RiskDisclaimer = lazy(() => import("./pages/RiskDisclaimer"));
+const AIDisclaimer = lazy(() => import("./pages/AIDisclaimer"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
