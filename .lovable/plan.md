@@ -1,38 +1,52 @@
+# Plan: Dual Payout — Stripe + PIX Manual
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
+## Problem
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+Currently only Stripe Connect is offered. Many Brazilian affiliates don't have Stripe. Need a manual PIX withdrawal option as fallback.
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Solution
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+Offer two payout methods:
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+1. **Stripe Connect** — automatic transfers (existing)
+2. **PIX Manual** — affiliate enters PIX key, requests withdrawal, admin processes manually
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+## Changes
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+### 1. `src/components/AffiliateSection.tsx` — Finance tab redesign
+
+- Add "Método de pagamento" selector: **Stripe (automático)** or **PIX (manual)**
+- If PIX selected:
+  - Show form: Nome completo, CPF, Chave PIX (already in `affiliate_payout_info` table)
+  - Show "Solicitar saque" button (min R$100) that inserts into `affiliate_withdrawals`
+  - Show withdrawal history list
+- If Stripe selected: show existing Stripe Connect flow
+- Save payout preference to `affiliate_payout_info` table
+
+### 2. DB Migration
+
+- Add `payout_method text DEFAULT 'pix'` to `affiliate_payout_info` table
+- This stores the user's preferred payout method ('stripe' or 'pix')
+
+### 3. `supabase/functions/process-affiliate-payout/index.ts`
+
+- Skip affiliates whose payout method is 'pix' (those are processed manually by admin)
+- Only auto-transfer for affiliates with Stripe connected AND payout_method = 'stripe'
+
+### 4. Admin visibility (existing `OwnerModPanel`)
+
+- PIX withdrawal requests appear in `affiliate_withdrawals` table for admin to process manually
+
+## Flow
+
+```text
+Affiliate chooses payout method:
+├─ Stripe → connects account → payouts are automatic after 7 days
+└─ PIX → fills PIX key/CPF → requests withdrawal manually → admin processes in 24h
+```
+
+## Files
+
+1. `src/components/AffiliateSection.tsx` — Add PIX payout UI alongside Stripe
+2. DB migration — Add `payout_method` column to `affiliate_payout_info`
+3. `supabase/functions/process-affiliate-payout/index.ts` — Respect payout method
