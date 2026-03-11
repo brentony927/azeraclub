@@ -228,14 +228,9 @@ export default function Profile() {
         username: username || null,
       };
 
-      if (hasFounderProfile) {
-        const { error } = await supabase.from("founder_profiles").update(founderData).eq("user_id", user.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("founder_profiles").insert(founderData);
-        if (error) throw error;
-        setHasFounderProfile(true);
-      }
+      const { error: founderError } = await supabase.from("founder_profiles").upsert(founderData, { onConflict: "user_id" });
+      if (founderError) throw founderError;
+      setHasFounderProfile(true);
 
       // Save GPS to founder_locations (separate table for privacy)
       if (latitude != null && longitude != null) {
