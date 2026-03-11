@@ -1,38 +1,63 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Plan: Stripe Connect for Automatic Affiliate Payouts
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Current State
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+The system tracks commissions in the database but **does not transfer money**. The withdrawal button just inserts a record. No actual PIX/bank transfer happens.
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+## Solution: Stripe Connect
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+Stripe Connect allows your platform to automatically split payments with affiliates. Each affiliate gets a **Stripe Express account** (onboarding handled by Stripe), and when a referred user subscribes, a **Transfer** is automatically created to the affiliate's connected account after the 7-day hold.
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+## Flow
+
+```text
+Lead buys plan via Stripe Checkout
+  → Payment goes to YOUR Stripe account (platform)
+  → After 7 days, Edge Function transfers 25% to affiliate's connected Stripe account
+  → Affiliate receives money directly in their bank (Stripe handles PIX/bank transfer)
+```
+
+## Changes
+
+### 1. Edge Function: `create-connect-account`
+- Creates a Stripe Express connected account for the affiliate
+- Returns an onboarding link (Stripe-hosted form where affiliate enters bank/PIX details)
+- Saves `stripe_account_id` to `affiliate_profiles`
+
+### 2. DB Migration
+- Add `stripe_account_id text` column to `affiliate_profiles`
+- Add `stripe_onboarding_complete boolean DEFAULT false` to `affiliate_profiles`
+
+### 3. Edge Function: `process-affiliate-payout`
+- Scheduled (cron) or triggered manually
+- Finds commissions older than 7 days with status `pending`
+- Uses `stripe.transfers.create()` to send money to affiliate's connected account
+- Updates commission status to `paid` and wallet balances
+
+### 4. Update `create-checkout`
+- After successful subscription of a referred user, call `process-referral-commission` to record the commission
+
+### 5. Update `AffiliateSection.tsx`
+- Replace PIX/PayPal payout form with "Connect your Stripe account" button
+- Show onboarding status (pending/complete)
+- When complete, show "Your payouts are automatic via Stripe"
+- Remove manual withdrawal flow (Stripe handles it)
+
+### 6. Update `approve-affiliate` Edge Function
+- On approval, also create the Stripe Connect account and return onboarding URL
+
+## Files Modified/Created
+
+1. `supabase/functions/create-connect-account/index.ts` — New
+2. `supabase/functions/process-affiliate-payout/index.ts` — New
+3. `supabase/functions/approve-affiliate/index.ts` — Add Stripe account creation
+4. `supabase/functions/process-referral-commission/index.ts` — Use `affiliate_profiles` table
+5. `src/components/AffiliateSection.tsx` — Replace manual payout with Stripe Connect onboarding
+6. DB migration — Add `stripe_account_id` and `stripe_onboarding_complete` to `affiliate_profiles`
+
+## Important Note
+
+Stripe Connect requires your Stripe account to be activated for Connect (in Stripe Dashboard → Settings → Connect). This is a Stripe platform feature that needs to be enabled on your account. The affiliate receives money directly to their bank account — Stripe handles PIX in Brazil automatically.
+
