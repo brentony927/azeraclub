@@ -625,8 +625,19 @@ export default function Profile() {
           </CardContent>
         </Card>
 
-        {/* Owner Dashboard Panel (owner only) */}
-        {isOwner && <OwnerDashboardPanel />}
+        {/* Owner: Link to Azera OS */}
+        {isOwner && (
+          <Card className="border-primary/30 bg-card/80 backdrop-blur-sm mb-6">
+            <CardContent className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Crown className="h-5 w-5 text-primary" />
+                <span className="font-bold text-foreground">Azera OS</span>
+                <span className="text-xs text-muted-foreground">Painel de Controlo</span>
+              </div>
+              <Button size="sm" onClick={() => navigate("/admin")}>Abrir</Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Affiliate Section */}
         <AffiliateSection />

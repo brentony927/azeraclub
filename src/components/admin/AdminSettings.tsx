@@ -49,7 +49,7 @@ export default function AdminSettings() {
     }));
 
     for (const row of rows) {
-      await supabase.from("platform_settings").upsert(row, { onConflict: "key" });
+      await (supabase.from as any)("platform_settings").upsert(row, { onConflict: "key" });
     }
     toast.success("Configurações salvas");
     setSaving(false);

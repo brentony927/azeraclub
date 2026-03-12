@@ -202,6 +202,7 @@ const App = () => (
               <Route path="/founder-notifications" element={<FounderNotificationsPage />} />
               <Route path="/global-map" element={<GlobalFounderMap />} />
               <Route path="/como-usar" element={<HowToUse />} />
+              <Route path="/admin" element={<Admin />} />
 
               {/* Legacy routes */}
               <Route path="/experiencias" element={<Experiences />} />
