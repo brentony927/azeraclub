@@ -406,7 +406,23 @@ export function AppSidebar() {
         {/* Main — always visible */}
         <SidebarGroup className="border-[#0f1512]">
           <SidebarGroupContent>
-            <SidebarMenu>{renderItems(mainItems)}</SidebarMenu>
+            <SidebarMenu>
+              {renderItems(mainItems)}
+              {isOwner && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild className="h-11 mb-0.5">
+                    <NavLink
+                      to="/admin"
+                      onClick={handleNavClick}
+                      className={`flex items-center gap-3 px-3 sidebar-nav-item ${location.pathname === "/admin" ? "sidebar-nav-item-active" : ""}`}
+                    >
+                      <Crown className="h-4 w-4 text-primary sidebar-nav-icon" />
+                      {!collapsed && <span className="text-sm font-medium text-primary">Azera OS</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
