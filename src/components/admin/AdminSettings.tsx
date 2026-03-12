@@ -27,7 +27,7 @@ export default function AdminSettings() {
   useEffect(() => { loadSettings(); }, []);
 
   const loadSettings = async () => {
-    const { data } = await supabase.from("platform_settings").select("*");
+    const { data } = await (supabase.from as any)("platform_settings").select("*");
     const map: Record<string, any> = {};
     (data || []).forEach((s: any) => { map[s.key] = s.value; });
 
