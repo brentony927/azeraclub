@@ -1,38 +1,57 @@
 
-Objetivo: corrigir definitivamente o visual “claro” da área de abas/sidebar quando o app está em tema escuro.
 
-Diagnóstico (baseado no código atual):
-- O `ThemeProvider` aplica `.dark` no elemento raiz (`html`).
-- O plano (`.pro-theme` / `.business-theme`) é aplicado em um `div` no `Layout`.
-- Ainda existem muitos seletores em `src/index.css` no formato `.dark.pro-theme` e `.dark.business-theme` (sem espaço), que exigem ambas classes no mesmo elemento — isso não acontece.
-- Como resultado, vários overrides de dark mode não entram; em especial, a sidebar fica com fundo claro por causa de regras com `!important` da versão light.
+# Fix: Defense-in-depth for founder_profiles UPDATE + dismiss referrals finding
 
-Plano de implementação:
-1) Normalizar TODOS os seletores quebrados de tema escuro em `src/index.css`
-- Substituir globalmente:
-  - `.dark.pro-theme` → `.dark .pro-theme`
-  - `.dark.business-theme` → `.dark .business-theme`
-- Isso inclui blocos de: animated background, glass-card, header, scrollbar, bordas e fundo da sidebar.
+## Current State
+- **Referrals**: Already fixed — policy uses `WITH CHECK (user_id = auth.uid())`. Scanner finding is stale.
+- **founder_profiles**: Triggers block the exploit, but the RLS policy is still overly broad. Adding a `WITH CHECK` constraint provides defense-in-depth.
 
-2) Blindar a sidebar para não voltar a quebrar
-- Trocar regras hardcoded de fundo claro da sidebar para variáveis de tema:
-  - usar `hsl(var(--sidebar-background))` e `hsl(var(--sidebar-border))` nos blocos de sidebar PRO/BUSINESS.
-- Assim, o claro/escuro passa a depender dos tokens já definidos no tema, reduzindo regressões por seletor.
+## Changes
 
-3) Verificação técnica final no CSS
-- Fazer busca no projeto para garantir que não restou nenhuma ocorrência de:
-  - `.dark.pro-theme`
-  - `.dark.business-theme`
-- Confirmar que os blocos de dark da sidebar estão em formato descendente e com precedência correta.
+### SQL Migration
+Replace the broad UPDATE policy with one that explicitly prevents changing `is_site_owner` and `is_verified`:
 
-Validação visual (fim-a-fim):
-- Testar no preview em `/dashboard`:
-  - PRO + dark: sidebar e “abas” com fundo/contraste escuros corretos.
-  - PRO + light: manter aparência clara esperada.
-  - BUSINESS + dark/light: mesmo comportamento correto.
-- Validar estados: item ativo, hover, grupos colapsáveis, header e footer da sidebar.
+```sql
+DROP POLICY "Users update own founder profile" ON founder_profiles;
 
-Detalhes técnicos (objetivo “de uma vez por todas”):
-- Causa raiz não é componente React, é especificidade/estrutura dos seletores CSS.
-- A correção principal é estrutural (descendente + tokens), não apenas pontual em 1-2 linhas.
-- Isso resolve o bug atual e evita repetição quando novos blocos premium forem adicionados.
+CREATE POLICY "Users update own founder profile" ON founder_profiles
+  FOR UPDATE TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (
+    user_id = auth.uid()
+    AND is_site_owner = false
+    AND is_verified = false
+  );
+```
+
+This means: any user updating their own row must have `is_site_owner = false` and `is_verified = false` in the new row. The actual site owner's updates are handled via service role (edge functions), so this won't break owner functionality since the owner never updates `is_site_owner` through the client — it was set directly in the database.
+
+Wait — this would block the actual owner from updating ANY column on their profile (since their row has `is_site_owner = true`, the WITH CHECK would fail). Better approach: ensure the new values match the old values for these columns.
+
+Revised approach — use a SECURITY DEFINER function:
+
+```sql
+CREATE OR REPLACE FUNCTION public.check_founder_profile_update()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
+BEGIN
+  IF NEW.is_site_owner IS DISTINCT FROM OLD.is_site_owner THEN
+    RAISE EXCEPTION 'Cannot modify is_site_owner';
+  END IF;
+  IF NEW.is_verified IS DISTINCT FROM OLD.is_verified THEN
+    RAISE EXCEPTION 'Cannot modify is_verified';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+```
+
+This trigger already exists (`prevent_site_owner_change`). The triggers are the correct defense. The RLS policy itself cannot check "old vs new" values — only triggers can do that.
+
+**Conclusion**: The triggers ARE the correct remediation. The scanner doesn't detect triggers. I'll mark both findings as resolved.
+
+### Actions
+1. Mark the `founder_profiles_is_site_owner_escalation` finding with an ignore + reason explaining the trigger protection
+2. Mark the `referrals_insert_fraud` finding as resolved (already fixed)
+
+No code or migration changes needed — the protections are already in place.
+
