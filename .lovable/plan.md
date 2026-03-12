@@ -1,57 +1,144 @@
 
 
-# Fix: Defense-in-depth for founder_profiles UPDATE + dismiss referrals finding
+# Plano: Azera OS — Founder Control Center
 
-## Current State
-- **Referrals**: Already fixed — policy uses `WITH CHECK (user_id = auth.uid())`. Scanner finding is stale.
-- **founder_profiles**: Triggers block the exploit, but the RLS policy is still overly broad. Adding a `WITH CHECK` constraint provides defense-in-depth.
+## Visão Geral
 
-## Changes
+Criar um painel administrativo completo acessível apenas pelo owner, em uma rota dedicada `/admin`. No perfil do owner, substituir o `OwnerDashboardPanel` por um botão/link que leva ao painel admin completo. A verificação de acesso é feita via `is_site_owner()` RPC no banco.
 
-### SQL Migration
-Replace the broad UPDATE policy with one that explicitly prevents changing `is_site_owner` and `is_verified`:
+## Arquitetura
 
-```sql
-DROP POLICY "Users update own founder profile" ON founder_profiles;
-
-CREATE POLICY "Users update own founder profile" ON founder_profiles
-  FOR UPDATE TO authenticated
-  USING (user_id = auth.uid())
-  WITH CHECK (
-    user_id = auth.uid()
-    AND is_site_owner = false
-    AND is_verified = false
-  );
+```text
+/admin (nova rota protegida)
+├── AdminLayout (verifica is_site_owner via RPC, redireciona se não)
+│   ├── Sidebar lateral com navegação entre seções
+│   └── Conteúdo principal:
+│       ├── Dashboard (stats gerais)
+│       ├── Usuários (lista + filtros + ações)
+│       ├── Assinaturas (Stripe overview)
+│       ├── Afiliados (migrar AffiliateManagerPanel)
+│       ├── Sugestões (migrar SuggestionsManagerPanel)
+│       ├── Insígnias (dar/remover badges)
+│       ├── Mapa Global (gerenciar perfis)
+│       ├── Oportunidades (moderar posts)
+│       ├── Moderação (fila de denúncias)
+│       ├── Analytics (uso de features)
+│       └── Configurações (limites, comissões)
 ```
 
-This means: any user updating their own row must have `is_site_owner = false` and `is_verified = false` in the new row. The actual site owner's updates are handled via service role (edge functions), so this won't break owner functionality since the owner never updates `is_site_owner` through the client — it was set directly in the database.
+## Segurança
 
-Wait — this would block the actual owner from updating ANY column on their profile (since their row has `is_site_owner = true`, the WITH CHECK would fail). Better approach: ensure the new values match the old values for these columns.
+- A rota `/admin` fica dentro do `ProtectedLayout` (requer auth)
+- O componente `AdminLayout` faz uma chamada RPC `is_site_owner(auth.uid())` e redireciona para `/dashboard` se `false`
+- Todas as queries admin usam as policies RLS existentes que já verificam `is_site_owner()`
+- Ações destrutivas (ban, remover badge) continuam via Edge Functions com service role
 
-Revised approach — use a SECURITY DEFINER function:
+## Ficheiros a Criar
 
+| Ficheiro | Descrição |
+|---|---|
+| `src/pages/Admin.tsx` | Página principal com sidebar + tabs para as 11 seções |
+| `src/components/admin/AdminDashboard.tsx` | Dashboard com stats (users, receita, atividade) |
+| `src/components/admin/AdminUsers.tsx` | Lista de usuários com filtros e ações |
+| `src/components/admin/AdminSubscriptions.tsx` | Overview de assinaturas |
+| `src/components/admin/AdminAffiliates.tsx` | Migração do AffiliateManagerPanel |
+| `src/components/admin/AdminSuggestions.tsx` | Migração do SuggestionsManagerPanel |
+| `src/components/admin/AdminBadges.tsx` | Dar/remover badges |
+| `src/components/admin/AdminMap.tsx` | Gerenciar perfis no mapa |
+| `src/components/admin/AdminOpportunities.tsx` | Moderar oportunidades |
+| `src/components/admin/AdminModeration.tsx` | Fila de moderação |
+| `src/components/admin/AdminAnalytics.tsx` | Uso de features |
+| `src/components/admin/AdminSettings.tsx` | Configurações da plataforma |
+
+## Ficheiros a Modificar
+
+| Ficheiro | Mudança |
+|---|---|
+| `src/App.tsx` | Adicionar rota `/admin` dentro do ProtectedLayout |
+| `src/pages/Profile.tsx` | Substituir `OwnerDashboardPanel` por botão "Abrir Azera OS" que navega para `/admin` |
+| `src/components/AppSidebar.tsx` | Adicionar link "Azera OS" visível apenas para owner |
+
+## Banco de Dados (Migração SQL)
+
+Criar tabela `platform_settings` para configurações editáveis:
 ```sql
-CREATE OR REPLACE FUNCTION public.check_founder_profile_update()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
-BEGIN
-  IF NEW.is_site_owner IS DISTINCT FROM OLD.is_site_owner THEN
-    RAISE EXCEPTION 'Cannot modify is_site_owner';
-  END IF;
-  IF NEW.is_verified IS DISTINCT FROM OLD.is_verified THEN
-    RAISE EXCEPTION 'Cannot modify is_verified';
-  END IF;
-  RETURN NEW;
-END;
-$$;
+CREATE TABLE public.platform_settings (
+  key text PRIMARY KEY,
+  value jsonb NOT NULL DEFAULT '{}'::jsonb,
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.platform_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Only owner can manage settings" ON platform_settings
+  FOR ALL TO authenticated
+  USING (is_site_owner(auth.uid()))
+  WITH CHECK (is_site_owner(auth.uid()));
 ```
 
-This trigger already exists (`prevent_site_owner_change`). The triggers are the correct defense. The RLS policy itself cannot check "old vs new" values — only triggers can do that.
+Criar tabela `content_reports` para denúncias (se não existir):
+```sql
+CREATE TABLE public.content_reports (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporter_id uuid NOT NULL,
+  content_type text NOT NULL, -- 'post', 'profile', 'opportunity'
+  content_id uuid NOT NULL,
+  reason text,
+  status text NOT NULL DEFAULT 'pending',
+  created_at timestamptz DEFAULT now()
+);
 
-**Conclusion**: The triggers ARE the correct remediation. The scanner doesn't detect triggers. I'll mark both findings as resolved.
+ALTER TABLE public.content_reports ENABLE ROW LEVEL SECURITY;
 
-### Actions
-1. Mark the `founder_profiles_is_site_owner_escalation` finding with an ignore + reason explaining the trigger protection
-2. Mark the `referrals_insert_fraud` finding as resolved (already fixed)
+CREATE POLICY "Users insert own reports" ON content_reports
+  FOR INSERT TO authenticated WITH CHECK (reporter_id = auth.uid());
 
-No code or migration changes needed — the protections are already in place.
+CREATE POLICY "Owner can manage all reports" ON content_reports
+  FOR ALL TO authenticated
+  USING (is_site_owner(auth.uid()))
+  WITH CHECK (is_site_owner(auth.uid()));
+```
+
+## Implementação por Seção
+
+### 1. Dashboard
+Queries agregadas: `count` em `profiles`, `founder_profiles`, `affiliate_profiles`, `suggestions`, `founder_posts`, `founder_opportunities`. Filtros por data (hoje, semana, mês).
+
+### 2. Usuários
+Query `founder_profiles` + `profiles` + `user_plans` + `founder_scores`. Filtros client-side. Ações via `user_moderation` insert (ban/suspend) e `user_badges` insert/delete.
+
+### 3. Assinaturas
+Query `user_plans` + stats. Ações via Edge Functions existentes (`cancel-subscription`).
+
+### 4-5. Afiliados e Sugestões
+Migrar lógica existente dos componentes atuais para formato full-page.
+
+### 6. Insígnias
+Query `user_badges` + `founder_profiles`. Interface para selecionar user + badge e inserir/deletar em `user_badges`.
+
+### 7-9. Mapa, Oportunidades, Moderação
+Queries nas tabelas existentes com ações de delete/update via RLS de owner.
+
+### 10. Analytics
+Contagens agrupadas por tabela para medir uso de features.
+
+### 11. Configurações
+CRUD na tabela `platform_settings`.
+
+## UI
+
+- Sidebar escura com ícones + labels para cada seção
+- Layout responsivo (sidebar colapsa em mobile)
+- Cards com stats usando `NumberFlow` para animação
+- Tabelas com `Table` component existente
+- Ações confirmadas via `AlertDialog`
+
+## Nota sobre Escopo
+
+Este é um módulo grande (11 seções). Será implementado em fases para manter qualidade:
+- **Fase 1**: AdminLayout + Dashboard + Usuários + Sugestões + Afiliados (core)
+- **Fase 2**: Insígnias + Moderação + Oportunidades
+- **Fase 3**: Analytics + Configurações + Mapa
+
+Vou implementar a Fase 1 completa agora e as demais em seguida.
 
