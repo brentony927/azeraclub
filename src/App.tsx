@@ -89,6 +89,7 @@ const FounderNotificationsPage = lazy(() => import("./pages/FounderNotifications
 const GlobalFounderMap = lazy(() => import("./pages/GlobalFounderMap"));
 const HowToUse = lazy(() => import("./pages/HowToUse"));
 const Earn = lazy(() => import("./pages/Earn"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
