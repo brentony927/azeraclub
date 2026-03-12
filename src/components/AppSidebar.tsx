@@ -262,6 +262,15 @@ export function AppSidebar() {
 
   const { setOpenMobile } = useSidebar();
 
+  // Check if user is site owner
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("founder_profiles").select("is_site_owner").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => { if (data?.is_site_owner) setIsOwner(true); });
+  }, [user]);
+
   // Unread messages count for "Conversas" badge
   const [unreadMessages, setUnreadMessages] = useState(0);
 
