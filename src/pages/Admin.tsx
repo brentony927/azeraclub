@@ -98,10 +98,10 @@ export default function Admin() {
     <div className="flex min-h-[calc(100vh-4rem)]">
       {/* Sidebar */}
       <aside className="w-60 shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-sm hidden md:flex flex-col">
-        <div className="p-4 border-b border-border/30 flex items-center gap-2 bg-gradient-to-r from-red-900/20 to-red-800/10">
-          <Crown className="h-5 w-5 text-red-400" />
+        <div className="p-4 border-b border-border/30 flex items-center gap-2 bg-gradient-to-r from-destructive/20 to-destructive/5">
+          <Crown className="h-5 w-5 text-destructive" />
           <h2 className="font-bold text-foreground tracking-wide">Azera OS</h2>
-          <span className="text-[10px] text-red-400/70 ml-auto font-mono">OWNER</span>
+          <span className="text-[10px] text-destructive/70 ml-auto font-mono">OWNER</span>
         </div>
         <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
           {sections.map((s) => (

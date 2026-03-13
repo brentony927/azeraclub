@@ -218,7 +218,7 @@ export default function AdminUsers() {
                             <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" />
                           </Button>
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleSuspend(u.user_id)} disabled={actionLoading === u.user_id}>
-                            <UserMinus className="h-3.5 w-3.5 text-yellow-500" />
+                            <UserMinus className="h-3.5 w-3.5 text-accent-foreground" />
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
