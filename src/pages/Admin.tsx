@@ -6,6 +6,7 @@ import { LoadingBreadcrumb } from "@/components/ui/animated-loading-svg-text-shi
 import {
   LayoutDashboard, Users, CreditCard, Handshake, Lightbulb,
   Award, Globe, Briefcase, Shield, BarChart3, Settings, Crown,
+  Wallet, ArrowDownToLine, ScrollText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminDashboard from "@/components/admin/AdminDashboard";
@@ -19,18 +20,24 @@ import AdminOpportunities from "@/components/admin/AdminOpportunities";
 import AdminModeration from "@/components/admin/AdminModeration";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminSettings from "@/components/admin/AdminSettings";
+import AdminPayments from "@/components/admin/AdminPayments";
+import AdminWithdrawals from "@/components/admin/AdminWithdrawals";
+import AdminLogs from "@/components/admin/AdminLogs";
 
 const sections = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "users", label: "Usuários", icon: Users },
   { id: "subscriptions", label: "Assinaturas", icon: CreditCard },
+  { id: "payments", label: "Pagamentos", icon: Wallet },
   { id: "affiliates", label: "Afiliados", icon: Handshake },
+  { id: "withdrawals", label: "Saques", icon: ArrowDownToLine },
   { id: "suggestions", label: "Sugestões", icon: Lightbulb },
   { id: "badges", label: "Insígnias", icon: Award },
   { id: "map", label: "Mapa Global", icon: Globe },
   { id: "opportunities", label: "Oportunidades", icon: Briefcase },
   { id: "moderation", label: "Moderação", icon: Shield },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "logs", label: "Logs", icon: ScrollText },
   { id: "settings", label: "Configurações", icon: Settings },
 ] as const;
 
@@ -73,13 +80,16 @@ export default function Admin() {
       case "dashboard": return <AdminDashboard />;
       case "users": return <AdminUsers />;
       case "subscriptions": return <AdminSubscriptions />;
+      case "payments": return <AdminPayments />;
       case "affiliates": return <AdminAffiliates />;
+      case "withdrawals": return <AdminWithdrawals />;
       case "suggestions": return <AdminSuggestions />;
       case "badges": return <AdminBadges />;
       case "map": return <AdminMap />;
       case "opportunities": return <AdminOpportunities />;
       case "moderation": return <AdminModeration />;
       case "analytics": return <AdminAnalytics />;
+      case "logs": return <AdminLogs />;
       case "settings": return <AdminSettings />;
     }
   };
@@ -88,9 +98,10 @@ export default function Admin() {
     <div className="flex min-h-[calc(100vh-4rem)]">
       {/* Sidebar */}
       <aside className="w-60 shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-sm hidden md:flex flex-col">
-        <div className="p-4 border-b border-border/30 flex items-center gap-2">
-          <Crown className="h-5 w-5 text-primary" />
+        <div className="p-4 border-b border-border/30 flex items-center gap-2 bg-gradient-to-r from-red-900/20 to-red-800/10">
+          <Crown className="h-5 w-5 text-red-400" />
           <h2 className="font-bold text-foreground tracking-wide">Azera OS</h2>
+          <span className="text-[10px] text-red-400/70 ml-auto font-mono">OWNER</span>
         </div>
         <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
           {sections.map((s) => (

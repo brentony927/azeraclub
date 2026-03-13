@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, DollarSign, Handshake, Activity, Loader2 } from "lucide-react";
+import { Users, DollarSign, Handshake, Activity, MapPin, Loader2 } from "lucide-react";
 
 interface Stats {
   totalUsers: number;
@@ -15,15 +15,16 @@ interface Stats {
   totalSuggestions: number;
   proUsers: number;
   businessUsers: number;
+  totalLocations: number;
+  totalConnections: number;
+  totalComments: number;
 }
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadStats();
-  }, []);
+  useEffect(() => { loadStats(); }, []);
 
   const loadStats = async () => {
     const now = new Date();
@@ -34,7 +35,8 @@ export default function AdminDashboard() {
       usersRes, newTodayRes, newWeekRes,
       affiliatesRes, pendingAffRes, leadsRes,
       postsRes, oppsRes, suggestionsRes,
-      proRes, businessRes,
+      proRes, businessRes, locationsRes,
+      connectionsRes, commentsRes,
     ] = await Promise.all([
       supabase.from("founder_profiles").select("id", { count: "exact", head: true }),
       supabase.from("founder_profiles").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
@@ -47,6 +49,9 @@ export default function AdminDashboard() {
       supabase.from("suggestions").select("id", { count: "exact", head: true }).eq("status", "pendente"),
       supabase.from("user_plans").select("id", { count: "exact", head: true }).eq("plan", "pro"),
       supabase.from("user_plans").select("id", { count: "exact", head: true }).eq("plan", "business"),
+      supabase.from("founder_locations").select("id", { count: "exact", head: true }),
+      supabase.from("founder_connections").select("id", { count: "exact", head: true }).eq("status", "accepted"),
+      supabase.from("founder_post_comments").select("id", { count: "exact", head: true }),
     ]);
 
     setStats({
@@ -61,6 +66,9 @@ export default function AdminDashboard() {
       totalSuggestions: suggestionsRes.count || 0,
       proUsers: proRes.count || 0,
       businessUsers: businessRes.count || 0,
+      totalLocations: locationsRes.count || 0,
+      totalConnections: connectionsRes.count || 0,
+      totalComments: commentsRes.count || 0,
     });
     setLoading(false);
   };
@@ -75,9 +83,10 @@ export default function AdminDashboard() {
 
   const cards = [
     { title: "Total Usuários", value: stats.totalUsers, icon: Users, sub: `+${stats.newToday} hoje · +${stats.newWeek} semana` },
-    { title: "Assinantes PRO", value: stats.proUsers, icon: DollarSign, sub: `${stats.businessUsers} Business` },
-    { title: "Afiliados Ativos", value: stats.totalAffiliates, icon: Handshake, sub: `${stats.pendingAffiliates} pendentes · ${stats.totalLeads} leads` },
-    { title: "Posts Criados", value: stats.totalPosts, icon: Activity, sub: `${stats.totalOpportunities} oportunidades` },
+    { title: "Assinantes Pagantes", value: stats.proUsers + stats.businessUsers, icon: DollarSign, sub: `${stats.proUsers} Pro · ${stats.businessUsers} Business` },
+    { title: "Afiliados", value: stats.totalAffiliates, icon: Handshake, sub: `${stats.pendingAffiliates} pendentes · ${stats.totalLeads} leads` },
+    { title: "Atividade", value: stats.totalPosts, icon: Activity, sub: `${stats.totalComments} comentários · ${stats.totalOpportunities} oportunidades` },
+    { title: "Founders no Mapa", value: stats.totalLocations, icon: MapPin, sub: `${stats.totalConnections} conexões aceitas` },
   ];
 
   return (
@@ -87,7 +96,7 @@ export default function AdminDashboard() {
         <p className="text-sm text-muted-foreground">Visão geral da plataforma</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((c) => (
           <Card key={c.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">

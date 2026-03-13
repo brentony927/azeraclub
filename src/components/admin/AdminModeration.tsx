@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Ban, CheckCircle, Eye } from "lucide-react";
+import { Loader2, Ban, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -44,16 +44,40 @@ export default function AdminModeration() {
     setLoading(false);
   };
 
-  const handleBan = async (userId: string) => {
+  const handleBan = async (userId: string, reportId: string) => {
     if (!user) return;
-    setActionLoading(userId);
+    setActionLoading(reportId);
     await supabase.from("user_moderation").insert({
       user_id: userId,
       moderator_id: user.id,
       action: "ban",
       reason: "Banido via moderação Azera OS",
     });
+    await (supabase.from as any)("admin_logs").insert({
+      actor_id: user.id,
+      action: "ban_from_report",
+      target_type: "user",
+      target_id: userId,
+      details: { report_id: reportId },
+    });
     toast.success("Utilizador banido");
+    setReports(prev => prev.filter(r => r.id !== reportId));
+    setActionLoading(null);
+  };
+
+  const handleDismiss = async (reportId: string) => {
+    setActionLoading(reportId);
+    await supabase.from("user_reports").delete().eq("id", reportId);
+    if (user) {
+      await (supabase.from as any)("admin_logs").insert({
+        actor_id: user.id,
+        action: "dismiss_report",
+        target_type: "report",
+        target_id: reportId,
+      });
+    }
+    toast.success("Denúncia ignorada");
+    setReports(prev => prev.filter(r => r.id !== reportId));
     setActionLoading(null);
   };
 
@@ -88,15 +112,23 @@ export default function AdminModeration() {
                     <TableCell className="font-medium">{r.reportedName}</TableCell>
                     <TableCell><Badge variant="outline">{r.reason}</Badge></TableCell>
                     <TableCell className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleDateString("pt-BR")}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right space-x-1">
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleBan(r.reported_user_id)}
-                        disabled={actionLoading === r.reported_user_id}
+                        onClick={() => handleBan(r.reported_user_id, r.id)}
+                        disabled={actionLoading === r.id}
                       >
-                        {actionLoading === r.reported_user_id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Ban className="h-3 w-3 mr-1" />}
+                        {actionLoading === r.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Ban className="h-3 w-3 mr-1" />}
                         Banir
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDismiss(r.id)}
+                        disabled={actionLoading === r.id}
+                      >
+                        <EyeOff className="h-3 w-3 mr-1" /> Ignorar
                       </Button>
                     </TableCell>
                   </TableRow>
