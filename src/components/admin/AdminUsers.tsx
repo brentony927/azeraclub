@@ -205,7 +205,7 @@ export default function AdminUsers() {
                     </TableCell>
                     <TableCell>{u.reputation_score || 0}</TableCell>
                     <TableCell>
-                      {u.is_site_owner && <Badge className="bg-red-500/20 text-red-400 text-[10px]">Owner</Badge>}
+                      {u.is_site_owner && <Badge className="bg-destructive/20 text-destructive text-[10px]">Owner</Badge>}
                       {u.is_verified && <Badge variant="outline" className="text-[10px] ml-1">Verificado</Badge>}
                     </TableCell>
                     <TableCell className="text-right space-x-1">
