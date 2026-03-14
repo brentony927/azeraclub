@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Brain, CalendarDays, Users, MessageCircle, Rocket,
   Target, Lightbulb, BookOpen, Radar, TrendingUp, ArrowRight, Zap,
-  HelpCircle, Globe, Trophy, Crown, CreditCard
+  HelpCircle, Globe, Trophy, Crown, CreditCard, Store, Shield, Star
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -64,7 +64,8 @@ const sections: GuideSection[] = [
     steps: [
       "Aceda a 'Conversas' no menu Founder Alignment",
       "Selecione uma conversa ou inicie uma nova a partir de um perfil",
-      "Use o menu ⋮ para bloquear ou denunciar utilizadores",
+      "Clique no avatar para visitar o perfil do founder",
+      "Use o menu ⋮ para adicionar a um grupo, bloquear ou denunciar",
       "Plano gratuito: 10 mensagens/semana — upgrade para ilimitado",
     ],
   },
@@ -77,6 +78,39 @@ const sections: GuideSection[] = [
       "Clique em 'Publicar Oportunidade' para criar a sua",
       "Adicione título, descrição, e o que procura",
       "Clique no ícone de mensagem para contactar o autor em privado",
+    ],
+  },
+  {
+    icon: Store,
+    title: "Deal Marketplace",
+    description: "Marketplace interno para publicar startups, parcerias e investimentos.",
+    steps: [
+      "Aceda ao 'Deals' no menu",
+      "Publique um deal com título, categoria e valor estimado",
+      "Explore deals de outros founders por categoria",
+      "Clique em 'Join Deal' para abrir uma conversa privada",
+    ],
+  },
+  {
+    icon: Shield,
+    title: "Circles Privados",
+    description: "Crie masterminds e grupos exclusivos com regras de entrada personalizadas.",
+    steps: [
+      "Na aba 'Grupos' das Conversas, clique em 'Novo Grupo'",
+      "Defina nome, descrição e foto do grupo",
+      "Selecione membros das suas conexões",
+      "Gerencie membros e funções dentro do grupo",
+    ],
+  },
+  {
+    icon: Star,
+    title: "Reputation Economy",
+    description: "Sistema de reputação que transforma a sua atividade em poder na comunidade.",
+    steps: [
+      "Cada ação gera Founder Score: oportunidades (+20), sugestões aprovadas (+30), referrals (+40)",
+      "Suba de nível: New → Active → Rising → Elite Founder",
+      "Founders com maior score têm mais visibilidade no mapa e nas buscas",
+      "Consulte o Leaderboard para ver o seu ranking",
     ],
   },
   {
@@ -192,7 +226,6 @@ export default function HowToUse() {
                 ))}
               </div>
 
-              {/* Visual arrow indicator */}
               <div className="mt-4 pt-3 border-t border-border/30 flex items-center gap-2 text-muted-foreground">
                 <Zap className="h-3.5 w-3.5 text-primary" />
                 <span className="text-[11px]">Menu lateral</span>

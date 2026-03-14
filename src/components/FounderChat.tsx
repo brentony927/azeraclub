@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Lock, MoreVertical, Trash2, Ban, Flag, AlertTriangle } from "lucide-react";
+import { Send, Lock, MoreVertical, Trash2, Ban, Flag, AlertTriangle, UserPlus } from "lucide-react";
 import Icon3D from "@/components/ui/icon-3d";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
@@ -15,7 +15,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import ReportUserDialog from "@/components/ReportUserDialog";
 
 interface Message {
@@ -57,12 +64,13 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
   const [weeklyCount, setWeeklyCount] = useState(0);
   const [reportOpen, setReportOpen] = useState(false);
   const [myAvatar, setMyAvatar] = useState<string | null>(null);
+  const [addToGroupOpen, setAddToGroupOpen] = useState(false);
+  const [myGroups, setMyGroups] = useState<{ id: string; name: string }[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const isFounder = !canAccess("pro");
   const remaining = Math.max(0, WEEKLY_LIMIT - weeklyCount);
 
-  // Load my avatar
   useEffect(() => {
     if (!user) return;
     supabase.from("founder_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle()
@@ -167,7 +175,6 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
 
   const handleDeleteConversation = async () => {
     if (!user) return;
-    // Delete only own sent messages TO this specific user
     await supabase
       .from("founder_messages")
       .delete()
@@ -194,13 +201,56 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
     }
   };
 
+  const loadMyGroups = async () => {
+    if (!user) return;
+    const { data: memberRows } = await (supabase.from("message_group_members") as any)
+      .select("group_id")
+      .eq("user_id", user.id)
+      .or("role.eq.admin,role.eq.admin");
+
+    if (!memberRows || memberRows.length === 0) { setMyGroups([]); return; }
+
+    const groupIds = memberRows.map((r: any) => r.group_id);
+    const { data: groupsData } = await (supabase.from("message_groups") as any)
+      .select("id, name")
+      .in("id", groupIds);
+
+    setMyGroups((groupsData || []) as { id: string; name: string }[]);
+  };
+
+  const handleAddToGroup = async (groupId: string) => {
+    const { error } = await (supabase.from("message_group_members") as any).insert({
+      group_id: groupId,
+      user_id: otherUserId,
+      role: "member",
+    });
+
+    if (error && error.code === "23505") {
+      toast({ title: "Já é membro", description: `${otherUserName} já está neste grupo.` });
+    } else if (error) {
+      toast({ title: "Erro", description: "Não foi possível adicionar ao grupo.", variant: "destructive" });
+    } else {
+      toast({ title: "Adicionado!", description: `${otherUserName} foi adicionado ao grupo.` });
+    }
+    setAddToGroupOpen(false);
+  };
+
   const limitReached = isFounder && weeklyCount >= WEEKLY_LIMIT;
 
   return (
     <div className="flex flex-col h-full">
       {/* Header with actions */}
       <div className="p-4 border-b border-border/50 flex items-center justify-between">
-        <h3 className="font-semibold text-foreground">{otherUserName}</h3>
+        <button
+          onClick={() => navigate(`/founder-profile/${otherUserId}`)}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <Avatar className="h-8 w-8">
+            {otherUserAvatar ? <AvatarImage src={otherUserAvatar} /> : null}
+            <AvatarFallback className="text-xs">{otherUserName?.charAt(0)?.toUpperCase() || "?"}</AvatarFallback>
+          </Avatar>
+          <h3 className="font-semibold text-foreground">{otherUserName}</h3>
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -208,6 +258,14 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => navigate(`/founder-profile/${otherUserId}`)}>
+              Ver Perfil
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => { loadMyGroups(); setAddToGroupOpen(true); }}>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Adicionar a Grupo
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleDeleteConversation} className="text-destructive focus:text-destructive">
               <Trash2 className="h-4 w-4 mr-2" />
               Apagar Conversa
@@ -251,10 +309,12 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
           return (
             <div key={msg.id} className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
               {!isMine && (
-                <Avatar className="h-6 w-6 shrink-0">
-                  {avatar ? <AvatarImage src={avatar} /> : null}
-                  <AvatarFallback className="text-[9px]">{initials}</AvatarFallback>
-                </Avatar>
+                <button onClick={() => navigate(`/founder-profile/${otherUserId}`)} className="shrink-0 hover:opacity-80 transition-opacity">
+                  <Avatar className="h-6 w-6">
+                    {avatar ? <AvatarImage src={avatar} /> : null}
+                    <AvatarFallback className="text-[9px]">{initials}</AvatarFallback>
+                  </Avatar>
+                </button>
               )}
               <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
                 isOwnerMsg
@@ -312,6 +372,30 @@ export default function FounderChat({ otherUserId, otherUserName, onBlock, onDel
         onOpenChange={setReportOpen}
         trigger={<span className="hidden" />}
       />
+
+      {/* Add to group dialog */}
+      <Dialog open={addToGroupOpen} onOpenChange={setAddToGroupOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Adicionar {otherUserName} a um grupo</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-1 max-h-60 overflow-y-auto">
+            {myGroups.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">Você não administra nenhum grupo.</p>
+            ) : (
+              myGroups.map(g => (
+                <button
+                  key={g.id}
+                  onClick={() => handleAddToGroup(g.id)}
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-secondary transition-colors text-foreground"
+                >
+                  {g.name}
+                </button>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
