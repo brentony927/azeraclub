@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Rocket, CalendarDays, Brain, Users, Sparkles } from "lucide-react";
+import { Rocket, CalendarDays, Brain, Users, Sparkles, TrendingUp, Store, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const SLIDES = [
@@ -28,6 +28,24 @@ const SLIDES = [
     title: "Founder Alignment",
     description: "Encontre co-founders, forme equipas, construa startups e acesse uma rede global de empreendedores ambiciosos.",
     highlight: true,
+  },
+  {
+    icon: TrendingUp,
+    title: "Reputation Economy",
+    description: "Ganhe Founder Score com cada ação: networking, oportunidades, sugestões aprovadas. Suba de nível e destaque-se.",
+    highlight: false,
+  },
+  {
+    icon: Store,
+    title: "Deal Marketplace",
+    description: "Publique startups, parcerias e investimentos. Conecte-se diretamente com founders interessados.",
+    highlight: false,
+  },
+  {
+    icon: Shield,
+    title: "Circles Privados",
+    description: "Crie ou junte-se a masterminds e grupos de nicho exclusivos para founders ambiciosos.",
+    highlight: false,
   },
   {
     icon: Sparkles,
