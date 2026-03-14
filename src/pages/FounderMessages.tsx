@@ -252,8 +252,11 @@ export default function FounderMessages() {
             </TabsContent>
 
             <TabsContent value="groups" className="flex-1 overflow-y-auto m-0">
+              <div className="p-2 border-b border-border/30">
+                <MessageGroupDialog onGroupCreated={() => window.location.reload()} connections={connectedUsers} />
+              </div>
               {groups.length === 0 ? (
-                <div className="p-6 text-center text-sm text-muted-foreground">Nenhum grupo ainda.</div>
+                <div className="p-6 text-center text-sm text-muted-foreground">Nenhum grupo ainda. Crie o primeiro!</div>
               ) : (
                 groups.map(g => (
                   <button
